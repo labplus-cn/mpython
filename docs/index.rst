@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-handPy掌控11112
+handPy掌控
 ======================================
 
 MicroPython是Python 3编程语言的精简高效实现 ，包括Python标准库的一小部分，并且经过优化，可在微控制器和受限环境中运行。
