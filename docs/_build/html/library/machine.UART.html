@@ -1,0 +1,618 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>类 UART – 双工串行通信总线 &mdash; handPy掌控 0.1 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="类 SPI – 串行外设接口总线协议 (主端)" href="machine.SPI.html" />
+    <link rel="prev" title="类 Pin – 控制 I/O 引脚" href="machine.Pin.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">handPy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inc/introduction.html">handPy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">handPy快速入门教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class1.html">Class1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class2.html">Class2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class3.html">Class3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class4.html">Class4</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">MicroPython 库</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-standard-libraries-and-micro-libraries">Python standard libraries and micro-libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="builtins.html">内置函数和异常</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="builtins.html#functions-and-types">Functions and types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="builtins.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="array.html"><code class="docutils literal notranslate"><span class="pre">array</span></code> – 数值数组</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="array.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gc.html"><code class="docutils literal notranslate"><span class="pre">gc</span></code> –  控制垃圾收集器</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gc.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="math.html"><code class="docutils literal notranslate"><span class="pre">math</span></code> – 数学运算函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="math.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="math.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sys.html"><code class="docutils literal notranslate"><span class="pre">sys</span></code> – 系统特定功能</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sys.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sys.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ubinascii.html"><code class="docutils literal notranslate"><span class="pre">ubinascii</span></code> – 二进制/ ASCII转换</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ubinascii.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ucollections.html"><code class="docutils literal notranslate"><span class="pre">ucollections</span></code> – 集合和容器类型</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ucollections.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uerrno.html"><code class="docutils literal notranslate"><span class="pre">uerrno</span></code> – 系统错误代码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uerrno.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uhashlib.html"><code class="docutils literal notranslate"><span class="pre">uhashlib</span></code> – 散列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uhashlib.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uhashlib.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uheapq.html"><code class="docutils literal notranslate"><span class="pre">uheapq</span></code> – 堆队列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uheapq.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uio.html"><code class="docutils literal notranslate"><span class="pre">uio</span></code> – 输入/输出流</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#conceptual-hierarchy">Conceptual hierarchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ujson.html"><code class="docutils literal notranslate"><span class="pre">ujson</span></code> – JSON 编码和解码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ujson.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uos.html"><code class="docutils literal notranslate"><span class="pre">uos</span></code> – 基本的“操作系统”服务</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uos.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ure.html"><code class="docutils literal notranslate"><span class="pre">ure</span></code> – 简单的正则表达式</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#regex-objects">Regex objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#match-objects">Match objects</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uselect.html"><code class="docutils literal notranslate"><span class="pre">uselect</span></code> – wait for events on a set of streams</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uselect.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uselect.html#class-poll">class <code class="docutils literal notranslate"><span class="pre">Poll</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="usocket.html"><code class="docutils literal notranslate"><span class="pre">usocket</span></code> – socket module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#socket-address-format-s">Socket address format(s)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#constants">Constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ussl.html"><code class="docutils literal notranslate"><span class="pre">ussl</span></code> – SSL/TLS module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#exceptions">Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ustruct.html"><code class="docutils literal notranslate"><span class="pre">ustruct</span></code> – pack and unpack primitive data types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ustruct.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="utime.html"><code class="docutils literal notranslate"><span class="pre">utime</span></code> – 时间相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utime.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uzlib.html"><code class="docutils literal notranslate"><span class="pre">uzlib</span></code> – zlib decompression</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uzlib.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#micropython-specific-libraries">MicroPython-specific libraries</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="btree.html"><code class="docutils literal notranslate"><span class="pre">btree</span></code> – 简单的 BTree 数据库</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#methods">Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="framebuf.html"><code class="docutils literal notranslate"><span class="pre">framebuf</span></code> — 帧缓冲操作</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#class-framebuffer">class FrameBuffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#drawing-primitive-shapes">Drawing primitive shapes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#drawing-text">Drawing text</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#other-methods">Other methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="machine.html"><code class="docutils literal notranslate"><span class="pre">machine</span></code> — 与硬件相关的功能</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id1">复位相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id2">中断相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id3">电源相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id4">其他函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#machine-constants">常量</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="machine.html#id6">类</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="micropython.html"><code class="docutils literal notranslate"><span class="pre">micropython</span></code> – access and control MicroPython internals</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="micropython.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="network.html"><code class="docutils literal notranslate"><span class="pre">network</span></code> — network configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="network.html#common-network-adapter-interface">Common network adapter interface</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uctypes.html"><code class="docutils literal notranslate"><span class="pre">uctypes</span></code> – access binary data in a structured way</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#defining-structure-layout">Defining structure layout</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#structure-descriptors-and-instantiating-structure-objects">Structure descriptors and instantiating structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#structure-objects">Structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#limitations">Limitations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">MicroPython 语法</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/glossary.html">专业术语</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/repl.html">MicroPython交互式解释器模式（又称REPL）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#auto-indent">Auto-indent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#auto-completion">Auto-completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#interrupting-a-running-program">Interrupting a running program</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#paste-mode">Paste Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#soft-reset">Soft Reset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#the-special-variable-underscore">The special variable _ (underscore)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#raw-mode">Raw Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/isr_rules.html">编写中断处理程序</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/isr_rules.html#tips-and-recommended-practices">Tips and recommended practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/isr_rules.html#micropython-issues">MicroPython Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#the-emergency-exception-buffer">The emergency exception buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#simplicity">Simplicity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#communication-between-an-isr-and-the-main-program">Communication between an ISR and the main program</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#the-use-of-object-methods-as-callbacks">The use of object methods as callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#creation-of-python-objects">Creation of Python objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#use-of-python-objects">Use of Python objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#overcoming-the-float-limitation">Overcoming the float limitation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#using-micropython-schedule">Using micropython.schedule</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/isr_rules.html#exceptions">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/isr_rules.html#general-issues">General Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#interrupt-handler-design">Interrupt Handler Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#reentrancy">Reentrancy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#critical-sections">Critical Sections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#interrupts-and-the-repl">Interrupts and the REPL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/speed_python.html">最大化MicroPython速度</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#designing-for-speed">Designing for speed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#algorithms">Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#ram-allocation">RAM Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#buffers">Buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#floating-point">Floating Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#arrays">Arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#identifying-the-slowest-section-of-code">Identifying the slowest section of code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#micropython-code-improvements">MicroPython code improvements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#the-const-declaration">The const() declaration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#caching-object-references">Caching object references</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#controlling-garbage-collection">Controlling garbage collection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#the-native-code-emitter">The Native code emitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#the-viper-code-emitter">The Viper code emitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#accessing-hardware-directly">Accessing hardware directly</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/constrained.html">微控制器上的MicroPython</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#flash-memory">Flash Memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#ram">RAM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#compilation-phase">Compilation Phase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#execution-phase">Execution Phase</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#the-heap">The Heap</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#fragmentation">Fragmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#reporting">Reporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#control-of-garbage-collection">Control of Garbage Collection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#string-operations">String Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#postscript">Postscript</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#footnote-gc-collect-return-value">Footnote: gc.collect() return value</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/packages.html">分发包，包管理和部署应用程序</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#distribution-packages">Distribution packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#upip-package-manager"><code class="docutils literal notranslate"><span class="pre">upip</span></code> package manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#cross-installing-packages">Cross-installing packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#cross-installing-packages-with-freezing">Cross-installing packages with freezing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#creating-distribution-packages">Creating distribution packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#application-resources">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/asm_thumb2_index.html">Thumb2架构的内联汇编程序</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/asm_thumb2_index.html#document-conventions">Document conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/asm_thumb2_index.html#instruction-categories">Instruction Categories</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/asm_thumb2_index.html#usage-examples">Usage examples</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/asm_thumb2_index.html#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">handPy掌控</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">MicroPython 库</a> &raquo;</li>
+        
+          <li><a href="machine.html"><code class="docutils literal notranslate"><span class="pre">machine</span></code> — 与硬件相关的功能</a> &raquo;</li>
+        
+      <li>类 UART – 双工串行通信总线</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/library/machine.UART.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="uart">
+<span id="machine-uart"></span><h1>类 UART – 双工串行通信总线<a class="headerlink" href="#uart" title="永久链接至标题">¶</a></h1>
+<p>UART实现标准UART / USART双工串行通信协议。在物理层面，它由2根线组成：RX和TX。
+通信单元是一个字符（不要与字符串混淆），可以是8bit或9bit宽。</p>
+<p>可以使用以下命令创建和初始化UART对象:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">machine</span> <span class="k">import</span> <span class="n">UART</span>
+
+<span class="n">uart</span> <span class="o">=</span> <span class="n">UART</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9600</span><span class="p">)</span>                         <span class="c1"># init with given baudrate</span>
+<span class="n">uart</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="mi">9600</span><span class="p">,</span> <span class="n">bits</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">parity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># init with given parameters</span>
+</pre></div>
+</div>
+<p>UART对象就像一个 <code class="docutils literal notranslate"><span class="pre">stream</span></code> 对象，使用标准流方法完成读写:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">uart</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>       <span class="c1"># read 10 characters, returns a bytes object</span>
+<span class="n">uart</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>         <span class="c1"># read all available characters</span>
+<span class="n">uart</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>     <span class="c1"># read a line</span>
+<span class="n">uart</span><span class="o">.</span><span class="n">readinto</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>  <span class="c1"># read and store into the given buffer</span>
+<span class="n">uart</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;abc&#39;</span><span class="p">)</span>   <span class="c1"># write the 3 characters</span>
+</pre></div>
+</div>
+<div class="section" id="id1">
+<h2>构建函数<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<dl class="class">
+<dt id="machine.UART">
+<em class="property">class </em><code class="descclassname">machine.</code><code class="descname">UART</code><span class="sig-paren">(</span><em>id</em>, <em>...</em><span class="sig-paren">)</span><a class="headerlink" href="#machine.UART" title="永久链接至目标">¶</a></dt>
+<dd><p>构造给定id的UART对象</p>
+</dd></dl>
+
+</div>
+<div class="section" id="id2">
+<h2>方法<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<dl class="method">
+<dt id="machine.UART.init">
+<code class="descclassname">UART.</code><code class="descname">init</code><span class="sig-paren">(</span><em>baudrate=9600</em>, <em>bits=8</em>, <em>parity=None</em>, <em>stop=1</em>, <em>*</em>, <em>pins=(TX</em>, <em>RX</em>, <em>RTS</em>, <em>CTS)</em><span class="sig-paren">)</span><a class="headerlink" href="#machine.UART.init" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<p>使用给定参数初始化UART总线:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">baudrate</span></code> 时钟频率</li>
+<li><code class="docutils literal notranslate"><span class="pre">bits</span></code> 每个字符的位数，7,8或9</li>
+<li><code class="docutils literal notranslate"><span class="pre">parity</span></code> 奇偶校验是奇偶校验， <code class="docutils literal notranslate"><span class="pre">None</span></code> 0（偶数）或1（奇数）</li>
+<li><code class="docutils literal notranslate"><span class="pre">stop</span></code> 停止位的数量，1或2</li>
+<li><code class="docutils literal notranslate"><span class="pre">pins</span></code> 一个4或2项列表，指示TX、RX、RTS和CTS引脚(按该顺序)。如果想让UART在功能有限的情况下运行，任何一个引脚都可以是空的。如果RTS引脚是给定的，那么RX引脚也必须给定。CTS也是如此。如果没有引脚，则获取TX和RX引脚的默认设置，以及硬件流量控制将被禁用。如果pins=None，则不会进行pin赋值。</li>
+</ul>
+</div></blockquote>
+<dl class="method">
+<dt id="machine.UART.deinit">
+<code class="descclassname">UART.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#machine.UART.deinit" title="永久链接至目标">¶</a></dt>
+<dd><p>关闭UART总线。</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine.UART.any">
+<code class="descclassname">UART.</code><code class="descname">any</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#machine.UART.any" title="永久链接至目标">¶</a></dt>
+<dd><blockquote>
+<div>返回一个整数，计算可以无阻塞地读取的字符数。如果没有可用字符，它将返回0，如果有字符，则返回正数。
+即使有多个可读的字符，该方法也可以返回1。</div></blockquote>
+<p>要查询更复杂的可用字符，请使用select.poll:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poll</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span>
+<span class="n">poll</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">uart</span><span class="p">,</span> <span class="n">select</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">)</span>
+<span class="n">poll</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine.UART.read">
+<code class="descclassname">UART.</code><code class="descname">read</code><span class="sig-paren">(</span><span class="optional">[</span><em>nbytes</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#machine.UART.read" title="永久链接至目标">¶</a></dt>
+<dd><p>读字符。如果 <code class="docutils literal notranslate"><span class="pre">nbytes</span></code> 指定，则最多读取多个字节，否则读取尽可能多的数据。</p>
+<p>返回值：包含读入的字节的字节对象。 <code class="docutils literal notranslate"><span class="pre">None</span></code> 超时时返回。</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine.UART.readinto">
+<code class="descclassname">UART.</code><code class="descname">readinto</code><span class="sig-paren">(</span><em>buf</em><span class="optional">[</span>, <em>nbytes</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#machine.UART.readinto" title="永久链接至目标">¶</a></dt>
+<dd><p>将字节读入 <code class="docutils literal notranslate"><span class="pre">buf</span></code> 。如果 <code class="docutils literal notranslate"><span class="pre">nbytes</span></code> 指定，则最多读取多个字节。否则，最多读取 <code class="docutils literal notranslate"><span class="pre">len(buf)</span></code> 字节数。</p>
+<p>返回值：读取和存储到超时 <code class="docutils literal notranslate"><span class="pre">buf</span></code> 或 <code class="docutils literal notranslate"><span class="pre">None</span></code> 超时的字节数。</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine.UART.readline">
+<code class="descclassname">UART.</code><code class="descname">readline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#machine.UART.readline" title="永久链接至目标">¶</a></dt>
+<dd><p>读一行，以换行符结尾。</p>
+<p>返回值：读取行或 <code class="docutils literal notranslate"><span class="pre">None</span></code> 超时。</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine.UART.write">
+<code class="descclassname">UART.</code><code class="descname">write</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span><a class="headerlink" href="#machine.UART.write" title="永久链接至目标">¶</a></dt>
+<dd><p>将字节缓冲区写入总线。</p>
+<p>返回值：写入或 <code class="docutils literal notranslate"><span class="pre">None</span></code> 超时的字节数。</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine.UART.sendbreak">
+<code class="descclassname">UART.</code><code class="descname">sendbreak</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#machine.UART.sendbreak" title="永久链接至目标">¶</a></dt>
+<dd><p>发送中断条件在总线上。使总线驱动的持续时间长于正常传输字符所需的持续时间。</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine.UART.irq">
+<code class="descclassname">UART.</code><code class="descname">irq</code><span class="sig-paren">(</span><em>trigger</em>, <em>priority=1</em>, <em>handler=None</em>, <em>wake=machine.IDLE</em><span class="sig-paren">)</span><a class="headerlink" href="#machine.UART.irq" title="永久链接至目标">¶</a></dt>
+<dd><p>创建一个回调，以便在UART上接收数据时触发。</p>
+<blockquote>
+<div><blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">trigger</span></code> 只能是 <code class="docutils literal notranslate"><span class="pre">UART.RX_ANY</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">priority</span></code> 可以取1-7范围内的值。值越高表示优先级越高。</li>
+<li><code class="docutils literal notranslate"><span class="pre">handler</span></code> 当新字符到达时要调用的可选函数</li>
+<li><code class="docutils literal notranslate"><span class="pre">wake</span></code> 只能是 <code class="docutils literal notranslate"><span class="pre">machine.IDLE</span></code>.</li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<blockquote>
+<div><p>当满足以下两个条件之一时，将调用handler:</p>
+<blockquote>
+<div><ul class="simple">
+<li>已经接收到8个新字符。</li>
+<li>在Rx缓冲区中至少有一个新字符正在等待，并且Rx在1个完整帧的持续时间内一直处于静默状态。</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p class="last">这意味着当调用处理函数时，将有1到8个字符在等待。</p>
+</div>
+<p>返回一个irq对象。</p>
+</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="id3">
+<h2>常数<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<dl class="data">
+<dt id="machine.UART.RX_ANY">
+<code class="descclassname">UART.</code><code class="descname">RX_ANY</code><a class="headerlink" href="#machine.UART.RX_ANY" title="永久链接至目标">¶</a></dt>
+<dd><p>IRQ触发源</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="machine.SPI.html" class="btn btn-neutral float-right" title="类 SPI – 串行外设接口总线协议 (主端)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="machine.Pin.html" class="btn btn-neutral" title="类 Pin – 控制 I/O 引脚" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, labplus.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            LANGUAGE:'zh_CN',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,775 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>编写中断处理程序 &mdash; handPy掌控 0.1 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="最大化MicroPython速度" href="speed_python.html" />
+    <link rel="prev" title="MicroPython交互式解释器模式（又称REPL）" href="repl.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">handPy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inc/introduction.html">handPy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">handPy快速入门教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class1.html">Class1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class2.html">Class2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class3.html">Class3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class4.html">Class4</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../library/index.html">MicroPython 库</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../library/index.html#python-standard-libraries-and-micro-libraries">Python standard libraries and micro-libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../library/builtins.html">内置函数和异常</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/builtins.html#functions-and-types">Functions and types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/builtins.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/array.html"><code class="docutils literal notranslate"><span class="pre">array</span></code> – 数值数组</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/array.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/gc.html"><code class="docutils literal notranslate"><span class="pre">gc</span></code> –  控制垃圾收集器</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/gc.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/math.html"><code class="docutils literal notranslate"><span class="pre">math</span></code> – 数学运算函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/math.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/math.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/sys.html"><code class="docutils literal notranslate"><span class="pre">sys</span></code> – 系统特定功能</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/sys.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/sys.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/ubinascii.html"><code class="docutils literal notranslate"><span class="pre">ubinascii</span></code> – 二进制/ ASCII转换</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/ubinascii.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/ucollections.html"><code class="docutils literal notranslate"><span class="pre">ucollections</span></code> – 集合和容器类型</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/ucollections.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uerrno.html"><code class="docutils literal notranslate"><span class="pre">uerrno</span></code> – 系统错误代码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uerrno.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uhashlib.html"><code class="docutils literal notranslate"><span class="pre">uhashlib</span></code> – 散列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uhashlib.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uhashlib.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uheapq.html"><code class="docutils literal notranslate"><span class="pre">uheapq</span></code> – 堆队列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uheapq.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uio.html"><code class="docutils literal notranslate"><span class="pre">uio</span></code> – 输入/输出流</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uio.html#conceptual-hierarchy">Conceptual hierarchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uio.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uio.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/ujson.html"><code class="docutils literal notranslate"><span class="pre">ujson</span></code> – JSON 编码和解码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/ujson.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uos.html"><code class="docutils literal notranslate"><span class="pre">uos</span></code> – 基本的“操作系统”服务</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uos.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/ure.html"><code class="docutils literal notranslate"><span class="pre">ure</span></code> – 简单的正则表达式</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/ure.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/ure.html#regex-objects">Regex objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/ure.html#match-objects">Match objects</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uselect.html"><code class="docutils literal notranslate"><span class="pre">uselect</span></code> – wait for events on a set of streams</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uselect.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uselect.html#class-poll">class <code class="docutils literal notranslate"><span class="pre">Poll</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/usocket.html"><code class="docutils literal notranslate"><span class="pre">usocket</span></code> – socket module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/usocket.html#socket-address-format-s">Socket address format(s)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/usocket.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/usocket.html#constants">Constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/usocket.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/ussl.html"><code class="docutils literal notranslate"><span class="pre">ussl</span></code> – SSL/TLS module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/ussl.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/ussl.html#exceptions">Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/ussl.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/ustruct.html"><code class="docutils literal notranslate"><span class="pre">ustruct</span></code> – pack and unpack primitive data types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/ustruct.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/utime.html"><code class="docutils literal notranslate"><span class="pre">utime</span></code> – 时间相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/utime.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uzlib.html"><code class="docutils literal notranslate"><span class="pre">uzlib</span></code> – zlib decompression</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uzlib.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../library/index.html#micropython-specific-libraries">MicroPython-specific libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../library/btree.html"><code class="docutils literal notranslate"><span class="pre">btree</span></code> – 简单的 BTree 数据库</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/btree.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/btree.html#methods">Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/btree.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/framebuf.html"><code class="docutils literal notranslate"><span class="pre">framebuf</span></code> — 帧缓冲操作</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/framebuf.html#class-framebuffer">class FrameBuffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/framebuf.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/framebuf.html#drawing-primitive-shapes">Drawing primitive shapes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/framebuf.html#drawing-text">Drawing text</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/framebuf.html#other-methods">Other methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/framebuf.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/machine.html"><code class="docutils literal notranslate"><span class="pre">machine</span></code> — 与硬件相关的功能</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/machine.html#id1">复位相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/machine.html#id2">中断相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/machine.html#id3">电源相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/machine.html#id4">其他函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/machine.html#machine-constants">常量</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/machine.html#id6">类</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/micropython.html"><code class="docutils literal notranslate"><span class="pre">micropython</span></code> – access and control MicroPython internals</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/micropython.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/network.html"><code class="docutils literal notranslate"><span class="pre">network</span></code> — network configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/network.html#common-network-adapter-interface">Common network adapter interface</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uctypes.html"><code class="docutils literal notranslate"><span class="pre">uctypes</span></code> – access binary data in a structured way</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uctypes.html#defining-structure-layout">Defining structure layout</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uctypes.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uctypes.html#structure-descriptors-and-instantiating-structure-objects">Structure descriptors and instantiating structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uctypes.html#structure-objects">Structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uctypes.html#limitations">Limitations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">MicroPython 语法</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">专业术语</a></li>
+<li class="toctree-l1"><a class="reference internal" href="repl.html">MicroPython交互式解释器模式（又称REPL）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="repl.html#auto-indent">Auto-indent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repl.html#auto-completion">Auto-completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repl.html#interrupting-a-running-program">Interrupting a running program</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repl.html#paste-mode">Paste Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repl.html#soft-reset">Soft Reset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repl.html#the-special-variable-underscore">The special variable _ (underscore)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repl.html#raw-mode">Raw Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">编写中断处理程序</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#tips-and-recommended-practices">Tips and recommended practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#micropython-issues">MicroPython Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-emergency-exception-buffer">The emergency exception buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simplicity">Simplicity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#communication-between-an-isr-and-the-main-program">Communication between an ISR and the main program</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-use-of-object-methods-as-callbacks">The use of object methods as callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creation-of-python-objects">Creation of Python objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-of-python-objects">Use of Python objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#overcoming-the-float-limitation">Overcoming the float limitation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-micropython-schedule">Using micropython.schedule</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#general-issues">General Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#interrupt-handler-design">Interrupt Handler Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reentrancy">Reentrancy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#critical-sections">Critical Sections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#interrupts-and-the-repl">Interrupts and the REPL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="speed_python.html">最大化MicroPython速度</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="speed_python.html#designing-for-speed">Designing for speed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="speed_python.html#algorithms">Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="speed_python.html#ram-allocation">RAM Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="speed_python.html#buffers">Buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="speed_python.html#floating-point">Floating Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="speed_python.html#arrays">Arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="speed_python.html#identifying-the-slowest-section-of-code">Identifying the slowest section of code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="speed_python.html#micropython-code-improvements">MicroPython code improvements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="speed_python.html#the-const-declaration">The const() declaration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="speed_python.html#caching-object-references">Caching object references</a></li>
+<li class="toctree-l3"><a class="reference internal" href="speed_python.html#controlling-garbage-collection">Controlling garbage collection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="speed_python.html#the-native-code-emitter">The Native code emitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="speed_python.html#the-viper-code-emitter">The Viper code emitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="speed_python.html#accessing-hardware-directly">Accessing hardware directly</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="constrained.html">微控制器上的MicroPython</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="constrained.html#flash-memory">Flash Memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constrained.html#ram">RAM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="constrained.html#compilation-phase">Compilation Phase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="constrained.html#execution-phase">Execution Phase</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="constrained.html#the-heap">The Heap</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="constrained.html#fragmentation">Fragmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="constrained.html#reporting">Reporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="constrained.html#control-of-garbage-collection">Control of Garbage Collection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="constrained.html#string-operations">String Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constrained.html#postscript">Postscript</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="constrained.html#footnote-gc-collect-return-value">Footnote: gc.collect() return value</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="packages.html">分发包，包管理和部署应用程序</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="packages.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packages.html#distribution-packages">Distribution packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packages.html#upip-package-manager"><code class="docutils literal notranslate"><span class="pre">upip</span></code> package manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packages.html#cross-installing-packages">Cross-installing packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packages.html#cross-installing-packages-with-freezing">Cross-installing packages with freezing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packages.html#creating-distribution-packages">Creating distribution packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packages.html#application-resources">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packages.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="asm_thumb2_index.html">Thumb2架构的内联汇编程序</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="asm_thumb2_index.html#document-conventions">Document conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asm_thumb2_index.html#instruction-categories">Instruction Categories</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="asm_thumb2_index.html#usage-examples">Usage examples</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="asm_thumb2_index.html#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">handPy掌控</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>编写中断处理程序</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/isr_rules.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="isr-rules">
+<span id="id1"></span><h1>编写中断处理程序<a class="headerlink" href="#isr-rules" title="永久链接至标题">¶</a></h1>
+<p>On suitable hardware MicroPython offers the ability to write interrupt handlers in Python. Interrupt handlers
+- also known as interrupt service routines (ISR’s) - are defined as callback functions. These are executed
+in response to an event such as a timer trigger or a voltage change on a pin. Such events can occur at any point
+in the execution of the program code. This carries significant consequences, some specific to the MicroPython
+language. Others are common to all systems capable of responding to real time events. This document covers
+the language specific issues first, followed by a brief introduction to real time programming for those new to it.</p>
+<p>This introduction uses vague terms like “slow” or “as fast as possible”. This is deliberate, as speeds are
+application dependent. Acceptable durations for an ISR are dependent on the rate at which interrupts occur,
+the nature of the main program, and the presence of other concurrent events.</p>
+<div class="section" id="tips-and-recommended-practices">
+<h2>Tips and recommended practices<a class="headerlink" href="#tips-and-recommended-practices" title="永久链接至标题">¶</a></h2>
+<p>This summarises the points detailed below and lists the principal recommendations for interrupt handler code.</p>
+<ul class="simple">
+<li>Keep the code as short and simple as possible.</li>
+<li>Avoid memory allocation: no appending to lists or insertion into dictionaries, no floating point.</li>
+<li>Consider using <code class="docutils literal notranslate"><span class="pre">micropython.schedule</span></code> to work around the above constraint.</li>
+<li>Where an ISR returns multiple bytes use a pre-allocated <code class="docutils literal notranslate"><span class="pre">bytearray</span></code>. If multiple integers are to be
+shared between an ISR and the main program consider an array (<code class="docutils literal notranslate"><span class="pre">array.array</span></code>).</li>
+<li>Where data is shared between the main program and an ISR, consider disabling interrupts prior to accessing
+the data in the main program and re-enabling them immediately afterwards (see Critical Sections).</li>
+<li>Allocate an emergency exception buffer (see below).</li>
+</ul>
+</div>
+<div class="section" id="micropython-issues">
+<h2>MicroPython Issues<a class="headerlink" href="#micropython-issues" title="永久链接至标题">¶</a></h2>
+<div class="section" id="the-emergency-exception-buffer">
+<h3>The emergency exception buffer<a class="headerlink" href="#the-emergency-exception-buffer" title="永久链接至标题">¶</a></h3>
+<p>If an error occurs in an ISR, MicroPython is unable to produce an error report unless a special buffer is created
+for the purpose. Debugging is simplified if the following code is included in any program using interrupts.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">micropython</span>
+<span class="n">micropython</span><span class="o">.</span><span class="n">alloc_emergency_exception_buf</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="simplicity">
+<h3>Simplicity<a class="headerlink" href="#simplicity" title="永久链接至标题">¶</a></h3>
+<p>For a variety of reasons it is important to keep ISR code as short and simple as possible. It should do only what
+has to be done immediately after the event which caused it: operations which can be deferred should be delegated
+to the main program loop. Typically an ISR will deal with the hardware device which caused the interrupt, making
+it ready for the next interrupt to occur. It will communicate with the main loop by updating shared data to indicate
+that the interrupt has occurred, and it will return. An ISR should return control to the main loop as quickly
+as possible. This is not a specific MicroPython issue so is covered in more detail <a class="reference internal" href="#isr"><span class="std std-ref">below</span></a>.</p>
+</div>
+<div class="section" id="communication-between-an-isr-and-the-main-program">
+<h3>Communication between an ISR and the main program<a class="headerlink" href="#communication-between-an-isr-and-the-main-program" title="永久链接至标题">¶</a></h3>
+<p>Normally an ISR needs to communicate with the main program. The simplest means of doing this is via one or more
+shared data objects, either declared as global or shared via a class (see below). There are various restrictions
+and hazards around doing this, which are covered in more detail below. Integers, <code class="docutils literal notranslate"><span class="pre">bytes</span></code> and <code class="docutils literal notranslate"><span class="pre">bytearray</span></code> objects
+are commonly used for this purpose along with arrays (from the array module) which can store various data types.</p>
+</div>
+<div class="section" id="the-use-of-object-methods-as-callbacks">
+<h3>The use of object methods as callbacks<a class="headerlink" href="#the-use-of-object-methods-as-callbacks" title="永久链接至标题">¶</a></h3>
+<p>MicroPython supports this powerful technique which enables an ISR to share instance variables with the underlying
+code. It also enables a class implementing a device driver to support multiple device instances. The following
+example causes two LED’s to flash at different rates.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyb</span><span class="o">,</span> <span class="nn">micropython</span>
+<span class="n">micropython</span><span class="o">.</span><span class="n">alloc_emergency_exception_buf</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timer</span><span class="p">,</span> <span class="n">led</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">led</span> <span class="o">=</span> <span class="n">led</span>
+        <span class="n">timer</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cb</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tim</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">led</span><span class="o">.</span><span class="n">toggle</span><span class="p">()</span>
+
+<span class="n">red</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="n">pyb</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">pyb</span><span class="o">.</span><span class="n">LED</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">green</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="n">pyb</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mf">0.8</span><span class="p">),</span> <span class="n">pyb</span><span class="o">.</span><span class="n">LED</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>In this example the <code class="docutils literal notranslate"><span class="pre">red</span></code> instance associates timer 4 with LED 1: when a timer 4 interrupt occurs <code class="docutils literal notranslate"><span class="pre">red.cb()</span></code>
+is called causing LED 1 to change state. The <code class="docutils literal notranslate"><span class="pre">green</span></code> instance operates similarly: a timer 2 interrupt
+results in the execution of <code class="docutils literal notranslate"><span class="pre">green.cb()</span></code> and toggles LED 2. The use of instance methods confers two
+benefits. Firstly a single class enables code to be shared between multiple hardware instances. Secondly, as
+a bound method the callback function’s first argument is <code class="docutils literal notranslate"><span class="pre">self</span></code>. This enables the callback to access instance
+data and to save state between successive calls. For example, if the class above had a variable <code class="docutils literal notranslate"><span class="pre">self.count</span></code>
+set to zero in the constructor, <code class="docutils literal notranslate"><span class="pre">cb()</span></code> could increment the counter. The <code class="docutils literal notranslate"><span class="pre">red</span></code> and <code class="docutils literal notranslate"><span class="pre">green</span></code> instances would
+then maintain independent counts of the number of times each LED had changed state.</p>
+</div>
+<div class="section" id="creation-of-python-objects">
+<h3>Creation of Python objects<a class="headerlink" href="#creation-of-python-objects" title="永久链接至标题">¶</a></h3>
+<p>ISR’s cannot create instances of Python objects. This is because MicroPython needs to allocate memory for the
+object from a store of free memory block called the heap. This is not permitted in an interrupt handler because
+heap allocation is not re-entrant. In other words the interrupt might occur when the main program is part way
+through performing an allocation - to maintain the integrity of the heap the interpreter disallows memory
+allocations in ISR code.</p>
+<p>A consequence of this is that ISR’s can’t use floating point arithmetic; this is because floats are Python objects. Similarly
+an ISR can’t append an item to a list. In practice it can be hard to determine exactly which code constructs will
+attempt to perform memory allocation and provoke an error message: another reason for keeping ISR code short and simple.</p>
+<p>One way to avoid this issue is for the ISR to use pre-allocated buffers. For example a class constructor
+creates a <code class="docutils literal notranslate"><span class="pre">bytearray</span></code> instance and a boolean flag. The ISR method assigns data to locations in the buffer and sets
+the flag. The memory allocation occurs in the main program code when the object is instantiated rather than in the ISR.</p>
+<p>The MicroPython library I/O methods usually provide an option to use a pre-allocated buffer. For
+example <code class="docutils literal notranslate"><span class="pre">pyb.i2c.recv()</span></code> can accept a mutable buffer as its first argument: this enables its use in an ISR.</p>
+<p>A means of creating an object without employing a class or globals is as follows:</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">set_volume</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">buf</span><span class="o">=</span><span class="nb">bytearray</span><span class="p">(</span><span class="mi">3</span><span class="p">)):</span>
+    <span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0xa5</span>
+    <span class="n">buf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span>
+    <span class="n">buf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x5a</span>
+    <span class="k">return</span> <span class="n">buf</span>
+</pre></div>
+</div>
+<p>The compiler instantiates the default <code class="docutils literal notranslate"><span class="pre">buf</span></code> argument when the function is
+loaded for the first time (usually when the module it’s in is imported).</p>
+</div>
+<div class="section" id="use-of-python-objects">
+<h3>Use of Python objects<a class="headerlink" href="#use-of-python-objects" title="永久链接至标题">¶</a></h3>
+<p>A further restriction on objects arises because of the way Python works. When an <code class="docutils literal notranslate"><span class="pre">import</span></code> statement is executed the
+Python code is compiled to bytecode, with one line of code typically mapping to multiple bytecodes. When the code
+runs the interpreter reads each bytecode and executes it as a series of machine code instructions. Given that an
+interrupt can occur at any time between machine code instructions, the original line of Python code may be only
+partially executed. Consequently a Python object such as a set, list or dictionary modified in the main loop
+may lack internal consistency at the moment the interrupt occurs.</p>
+<p>A typical outcome is as follows. On rare occasions the ISR will run at the precise moment in time when the object
+is partially updated. When the ISR tries to read the object, a crash results. Because such problems typically occur
+on rare, random occasions they can be hard to diagnose. There are ways to circumvent this issue, described in
+<a class="reference internal" href="#critical"><span class="std std-ref">Critical Sections</span></a> below.</p>
+<p>It is important to be clear about what constitutes the modification of an object. An alteration to a built-in type
+such as a dictionary is problematic. Altering the contents of an array or bytearray is not. This is because bytes
+or words are written as a single machine code instruction which is not interruptible: in the parlance of real time
+programming the write is atomic. A user defined object might instantiate an integer, array or bytearray. It is valid
+for both the main loop and the ISR to alter the contents of these.</p>
+<p>MicroPython supports integers of arbitrary precision. Values between 2**30 -1 and -2**30 will be stored in
+a single machine word. Larger values are stored as Python objects. Consequently changes to long integers cannot
+be considered atomic. The use of long integers in ISR’s is unsafe because memory allocation may be
+attempted as the variable’s value changes.</p>
+</div>
+<div class="section" id="overcoming-the-float-limitation">
+<h3>Overcoming the float limitation<a class="headerlink" href="#overcoming-the-float-limitation" title="永久链接至标题">¶</a></h3>
+<p>In general it is best to avoid using floats in ISR code: hardware devices normally handle integers and conversion
+to floats is normally done in the main loop. However there are a few DSP algorithms which require floating point.
+On platforms with hardware floating point (such as the Pyboard) the inline ARM Thumb assembler can be used to work
+round this limitation. This is because the processor stores float values in a machine word; values can be shared
+between the ISR and main program code via an array of floats.</p>
+</div>
+<div class="section" id="using-micropython-schedule">
+<h3>Using micropython.schedule<a class="headerlink" href="#using-micropython-schedule" title="永久链接至标题">¶</a></h3>
+<p>This function enables an ISR to schedule a callback for execution “very soon”. The callback is queued for
+execution which will take place at a time when the heap is not locked. Hence it can create Python objects
+and use floats. The callback is also guaranteed to run at a time when the main program has completed any
+update of Python objects, so the callback will not encounter partially updated objects.</p>
+<p>Typical usage is to handle sensor hardware. The ISR acquires data from the hardware and enables it to
+issue a further interrupt. It then schedules a callback to process the data.</p>
+<p>Scheduled callbacks should comply with the principles of interrupt handler design outlined below. This is to
+avoid problems resulting from I/O activity and the modification of shared data which can arise in any code
+which pre-empts the main program loop.</p>
+<p>Execution time needs to be considered in relation to the frequency with which interrupts can occur. If an
+interrupt occurs while the previous callback is executing, a further instance of the callback will be queued
+for execution; this will run after the current instance has completed. A sustained high interrupt repetition
+rate therefore carries a risk of unconstrained queue growth and eventual failure with a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code>.</p>
+</div>
+</div>
+<div class="section" id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="永久链接至标题">¶</a></h2>
+<p>If an ISR raises an exception it will not propagate to the main loop. The interrupt will be disabled unless the
+exception is handled by the ISR code.</p>
+</div>
+<div class="section" id="general-issues">
+<h2>General Issues<a class="headerlink" href="#general-issues" title="永久链接至标题">¶</a></h2>
+<p>This is merely a brief introduction to the subject of real time programming. Beginners should note
+that design errors in real time programs can lead to faults which are particularly hard to diagnose. This is because
+they can occur rarely and at intervals which are essentially random. It is crucial to get the initial design right and
+to anticipate issues before they arise. Both interrupt handlers and the main program need to be designed
+with an appreciation of the following issues.</p>
+<div class="section" id="interrupt-handler-design">
+<span id="isr"></span><h3>Interrupt Handler Design<a class="headerlink" href="#interrupt-handler-design" title="永久链接至标题">¶</a></h3>
+<p>As mentioned above, ISR’s should be designed to be as simple as possible. They should always return in a short,
+predictable period of time. This is important because when the ISR is running, the main loop is not: inevitably
+the main loop experiences pauses in its execution at random points in the code. Such pauses can be a source of hard
+to diagnose bugs particularly if their duration is long or variable. In order to understand the implications of
+ISR run time, a basic grasp of interrupt priorities is required.</p>
+<p>Interrupts are organised according to a priority scheme. ISR code may itself be interrupted by a higher priority
+interrupt. This has implications if the two interrupts share data (see Critical Sections below). If such an interrupt
+occurs it interposes a delay into the ISR code. If a lower priority interrupt occurs while the ISR is running, it
+will be delayed until the ISR is complete: if the delay is too long, the lower priority interrupt may fail. A
+further issue with slow ISR’s is the case where a second interrupt of the same type occurs during its execution.
+The second interrupt will be handled on termination of the first. However if the rate of incoming interrupts
+consistently exceeds the capacity of the ISR to service them the outcome will not be a happy one.</p>
+<p>Consequently looping constructs should be avoided or minimised. I/O to devices other than to the interrupting device
+should normally be avoided: I/O such as disk access, <code class="docutils literal notranslate"><span class="pre">print</span></code> statements and UART access is relatively slow, and
+its duration may vary. A further issue here is that filesystem functions are not reentrant: using filesystem I/O
+in an ISR and the main program would be hazardous. Crucially ISR code should not wait on an event. I/O is acceptable
+if the code can be guaranteed to return in a predictable period, for example toggling a pin or LED. Accessing the
+interrupting device via I2C or SPI may be necessary but the time taken for such accesses should be calculated or
+measured and its impact on the application assessed.</p>
+<p>There is usually a need to share data between the ISR and the main loop. This may be done either through global
+variables or via class or instance variables. Variables are typically integer or boolean types, or integer or byte
+arrays (a pre-allocated integer array offers faster access than a list). Where multiple values are modified by
+the ISR it is necessary to consider the case where the interrupt occurs at a time when the main program has
+accessed some, but not all, of the values. This can lead to inconsistencies.</p>
+<p>Consider the following design. An ISR stores incoming data in a bytearray, then adds the number of bytes
+received to an integer representing total bytes ready for processing. The main program reads the number of bytes,
+processes the bytes, then clears down the number of bytes ready. This will work until an interrupt occurs just
+after the main program has read the number of bytes. The ISR puts the added data into the buffer and updates
+the number received, but the main program has already read the number, so processes the data originally received.
+The newly arrived bytes are lost.</p>
+<p>There are various ways of avoiding this hazard, the simplest being to use a circular buffer. If it is not possible
+to use a structure with inherent thread safety other ways are described below.</p>
+</div>
+<div class="section" id="reentrancy">
+<h3>Reentrancy<a class="headerlink" href="#reentrancy" title="永久链接至标题">¶</a></h3>
+<p>A potential hazard may occur if a function or method is shared between the main program and one or more ISR’s or
+between multiple ISR’s. The issue here is that the function may itself be interrupted and a further instance of
+that function run. If this is to occur, the function must be designed to be reentrant. How this is done is an
+advanced topic beyond the scope of this tutorial.</p>
+</div>
+<div class="section" id="critical-sections">
+<span id="critical"></span><h3>Critical Sections<a class="headerlink" href="#critical-sections" title="永久链接至标题">¶</a></h3>
+<p>An example of a critical section of code is one which accesses more than one variable which can be affected by an ISR. If
+the interrupt happens to occur between accesses to the individual variables, their values will be inconsistent. This is
+an instance of a hazard known as a race condition: the ISR and the main program loop race to alter the variables. To
+avoid inconsistency a means must be employed to ensure that the ISR does not alter the values for the duration of
+the critical section. One way to achieve this is to issue <code class="docutils literal notranslate"><span class="pre">pyb.disable_irq()</span></code> before the start of the section, and
+<code class="docutils literal notranslate"><span class="pre">pyb.enable_irq()</span></code> at the end. Here is an example of this approach:</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyb</span><span class="o">,</span> <span class="nn">micropython</span><span class="o">,</span> <span class="nn">array</span>
+<span class="n">micropython</span><span class="o">.</span><span class="n">alloc_emergency_exception_buf</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">BoundsException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">ARRAYSIZE</span> <span class="o">=</span> <span class="n">const</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ARRAYSIZE</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">callback1</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">data</span><span class="p">,</span> <span class="n">index</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">rng</span><span class="p">()</span> <span class="c1"># simulate input</span>
+        <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="n">ARRAYSIZE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BoundsException</span><span class="p">(</span><span class="s1">&#39;Array bounds exceeded&#39;</span><span class="p">)</span>
+
+<span class="n">tim4</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">callback1</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">loop</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">irq_state</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">disable_irq</span><span class="p">()</span> <span class="c1"># Start of critical section</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">pyb</span><span class="o">.</span><span class="n">enable_irq</span><span class="p">(</span><span class="n">irq_state</span><span class="p">)</span> <span class="c1"># End of critical section</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;loop </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loop</span><span class="p">))</span>
+    <span class="n">pyb</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">tim4</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A critical section can comprise a single line of code and a single variable. Consider the following code fragment.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">def</span> <span class="nf">cb</span><span class="p">():</span> <span class="c1"># An interrupt callback</span>
+    <span class="n">count</span> <span class="o">+=</span><span class="mi">1</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="c1"># Code to set up the interrupt callback omitted</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>This example illustrates a subtle source of bugs. The line <code class="docutils literal notranslate"><span class="pre">count</span> <span class="pre">+=</span> <span class="pre">1</span></code> in the main loop carries a specific race
+condition hazard known as a read-modify-write. This is a classic cause of bugs in real time systems. In the main loop
+MicroPython reads the value of <code class="docutils literal notranslate"><span class="pre">t.counter</span></code>, adds 1 to it, and writes it back. On rare occasions the  interrupt occurs
+after the read and before the write. The interrupt modifies <code class="docutils literal notranslate"><span class="pre">t.counter</span></code> but its change is overwritten by the main
+loop when the ISR returns. In a real system this could lead to rare, unpredictable failures.</p>
+<p>As mentioned above, care should be taken if an instance of a Python built in type is modified in the main code and
+that instance is accessed in an ISR. The code performing the modification should be regarded as a critical
+section to ensure that the instance is in a valid state when the ISR runs.</p>
+<p>Particular care needs to be taken if a dataset is shared between different ISR’s. The hazard here is that the higher
+priority interrupt may occur when the lower priority one has partially updated the shared data. Dealing with this
+situation is an advanced topic beyond the scope of this introduction other than to note that mutex objects described
+below can sometimes be used.</p>
+<p>Disabling interrupts for the duration of a critical section is the usual and simplest way to proceed, but it disables
+all interrupts rather than merely the one with the potential to cause problems. It is generally undesirable to disable
+an interrupt for long. In the case of timer interrupts it introduces variability to the time when a callback occurs.
+In the case of device interrupts, it can lead to the device being serviced too late with possible loss of data or
+overrun errors in the device hardware. Like ISR’s, a critical section in the main code should have a short, predictable
+duration.</p>
+<p>An approach to dealing with critical sections which radically reduces the time for which interrupts are disabled is to
+use an object termed a mutex (name derived from the notion of mutual exclusion). The main program locks the mutex
+before running the critical section and unlocks it at the end. The ISR tests whether the mutex is locked. If it is,
+it avoids the critical section and returns. The design challenge is defining what the ISR should do in the event
+that access to the critical variables is denied. A simple example of a mutex may be found
+<a class="reference external" href="https://github.com/peterhinch/micropython-samples.git">here</a>. Note that the mutex code does disable interrupts,
+but only for the duration of eight machine instructions: the benefit of this approach is that other interrupts are
+virtually unaffected.</p>
+</div>
+<div class="section" id="interrupts-and-the-repl">
+<h3>Interrupts and the REPL<a class="headerlink" href="#interrupts-and-the-repl" title="永久链接至标题">¶</a></h3>
+<p>Interrupt handlers, such as those associated with timers, can continue to run
+after a program terminates.  This may produce unexpected results where you might
+have expected the object raising the callback to have gone out of scope.  For
+example on the Pyboard:</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">bar</span><span class="p">():</span>
+    <span class="n">foo</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+<span class="n">bar</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This continues to run until the timer is explicitly disabled or the board is
+reset with <code class="docutils literal notranslate"><span class="pre">ctrl</span> <span class="pre">D</span></code>.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="speed_python.html" class="btn btn-neutral float-right" title="最大化MicroPython速度" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="repl.html" class="btn btn-neutral" title="MicroPython交互式解释器模式（又称REPL）" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, labplus.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            LANGUAGE:'zh_CN',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

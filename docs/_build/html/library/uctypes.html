@@ -1,0 +1,693 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>uctypes – access binary data in a structured way &mdash; handPy掌控 0.1 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="专业术语" href="../reference/glossary.html" />
+    <link rel="prev" title="network — network configuration" href="network.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">handPy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inc/introduction.html">handPy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">handPy快速入门教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class1.html">Class1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class2.html">Class2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class3.html">Class3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class4.html">Class4</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">MicroPython 库</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-standard-libraries-and-micro-libraries">Python standard libraries and micro-libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="builtins.html">内置函数和异常</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="builtins.html#functions-and-types">Functions and types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="builtins.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="array.html"><code class="docutils literal notranslate"><span class="pre">array</span></code> – 数值数组</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="array.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gc.html"><code class="docutils literal notranslate"><span class="pre">gc</span></code> –  控制垃圾收集器</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gc.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="math.html"><code class="docutils literal notranslate"><span class="pre">math</span></code> – 数学运算函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="math.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="math.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sys.html"><code class="docutils literal notranslate"><span class="pre">sys</span></code> – 系统特定功能</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sys.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sys.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ubinascii.html"><code class="docutils literal notranslate"><span class="pre">ubinascii</span></code> – 二进制/ ASCII转换</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ubinascii.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ucollections.html"><code class="docutils literal notranslate"><span class="pre">ucollections</span></code> – 集合和容器类型</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ucollections.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uerrno.html"><code class="docutils literal notranslate"><span class="pre">uerrno</span></code> – 系统错误代码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uerrno.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uhashlib.html"><code class="docutils literal notranslate"><span class="pre">uhashlib</span></code> – 散列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uhashlib.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uhashlib.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uheapq.html"><code class="docutils literal notranslate"><span class="pre">uheapq</span></code> – 堆队列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uheapq.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uio.html"><code class="docutils literal notranslate"><span class="pre">uio</span></code> – 输入/输出流</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#conceptual-hierarchy">Conceptual hierarchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ujson.html"><code class="docutils literal notranslate"><span class="pre">ujson</span></code> – JSON 编码和解码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ujson.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uos.html"><code class="docutils literal notranslate"><span class="pre">uos</span></code> – 基本的“操作系统”服务</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uos.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ure.html"><code class="docutils literal notranslate"><span class="pre">ure</span></code> – 简单的正则表达式</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#regex-objects">Regex objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#match-objects">Match objects</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uselect.html"><code class="docutils literal notranslate"><span class="pre">uselect</span></code> – wait for events on a set of streams</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uselect.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uselect.html#class-poll">class <code class="docutils literal notranslate"><span class="pre">Poll</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="usocket.html"><code class="docutils literal notranslate"><span class="pre">usocket</span></code> – socket module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#socket-address-format-s">Socket address format(s)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#constants">Constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ussl.html"><code class="docutils literal notranslate"><span class="pre">ussl</span></code> – SSL/TLS module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#exceptions">Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ustruct.html"><code class="docutils literal notranslate"><span class="pre">ustruct</span></code> – pack and unpack primitive data types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ustruct.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="utime.html"><code class="docutils literal notranslate"><span class="pre">utime</span></code> – 时间相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utime.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uzlib.html"><code class="docutils literal notranslate"><span class="pre">uzlib</span></code> – zlib decompression</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uzlib.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#micropython-specific-libraries">MicroPython-specific libraries</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="btree.html"><code class="docutils literal notranslate"><span class="pre">btree</span></code> – 简单的 BTree 数据库</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#methods">Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="framebuf.html"><code class="docutils literal notranslate"><span class="pre">framebuf</span></code> — 帧缓冲操作</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#class-framebuffer">class FrameBuffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#drawing-primitive-shapes">Drawing primitive shapes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#drawing-text">Drawing text</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#other-methods">Other methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="machine.html"><code class="docutils literal notranslate"><span class="pre">machine</span></code> — 与硬件相关的功能</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id1">复位相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id2">中断相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id3">电源相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id4">其他函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#machine-constants">常量</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id6">类</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="micropython.html"><code class="docutils literal notranslate"><span class="pre">micropython</span></code> – access and control MicroPython internals</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="micropython.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="network.html"><code class="docutils literal notranslate"><span class="pre">network</span></code> — network configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="network.html#common-network-adapter-interface">Common network adapter interface</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">uctypes</span></code> – access binary data in a structured way</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#defining-structure-layout">Defining structure layout</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#structure-descriptors-and-instantiating-structure-objects">Structure descriptors and instantiating structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#structure-objects">Structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#limitations">Limitations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">MicroPython 语法</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/glossary.html">专业术语</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/repl.html">MicroPython交互式解释器模式（又称REPL）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#auto-indent">Auto-indent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#auto-completion">Auto-completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#interrupting-a-running-program">Interrupting a running program</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#paste-mode">Paste Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#soft-reset">Soft Reset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#the-special-variable-underscore">The special variable _ (underscore)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#raw-mode">Raw Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/isr_rules.html">编写中断处理程序</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/isr_rules.html#tips-and-recommended-practices">Tips and recommended practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/isr_rules.html#micropython-issues">MicroPython Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#the-emergency-exception-buffer">The emergency exception buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#simplicity">Simplicity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#communication-between-an-isr-and-the-main-program">Communication between an ISR and the main program</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#the-use-of-object-methods-as-callbacks">The use of object methods as callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#creation-of-python-objects">Creation of Python objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#use-of-python-objects">Use of Python objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#overcoming-the-float-limitation">Overcoming the float limitation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#using-micropython-schedule">Using micropython.schedule</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/isr_rules.html#exceptions">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/isr_rules.html#general-issues">General Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#interrupt-handler-design">Interrupt Handler Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#reentrancy">Reentrancy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#critical-sections">Critical Sections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#interrupts-and-the-repl">Interrupts and the REPL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/speed_python.html">最大化MicroPython速度</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#designing-for-speed">Designing for speed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#algorithms">Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#ram-allocation">RAM Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#buffers">Buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#floating-point">Floating Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#arrays">Arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#identifying-the-slowest-section-of-code">Identifying the slowest section of code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#micropython-code-improvements">MicroPython code improvements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#the-const-declaration">The const() declaration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#caching-object-references">Caching object references</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#controlling-garbage-collection">Controlling garbage collection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#the-native-code-emitter">The Native code emitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#the-viper-code-emitter">The Viper code emitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#accessing-hardware-directly">Accessing hardware directly</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/constrained.html">微控制器上的MicroPython</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#flash-memory">Flash Memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#ram">RAM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#compilation-phase">Compilation Phase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#execution-phase">Execution Phase</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#the-heap">The Heap</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#fragmentation">Fragmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#reporting">Reporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#control-of-garbage-collection">Control of Garbage Collection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#string-operations">String Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#postscript">Postscript</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#footnote-gc-collect-return-value">Footnote: gc.collect() return value</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/packages.html">分发包，包管理和部署应用程序</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#distribution-packages">Distribution packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#upip-package-manager"><code class="docutils literal notranslate"><span class="pre">upip</span></code> package manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#cross-installing-packages">Cross-installing packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#cross-installing-packages-with-freezing">Cross-installing packages with freezing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#creating-distribution-packages">Creating distribution packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#application-resources">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/asm_thumb2_index.html">Thumb2架构的内联汇编程序</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/asm_thumb2_index.html#document-conventions">Document conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/asm_thumb2_index.html#instruction-categories">Instruction Categories</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/asm_thumb2_index.html#usage-examples">Usage examples</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/asm_thumb2_index.html#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">handPy掌控</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">MicroPython 库</a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">uctypes</span></code> – access binary data in a structured way</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/library/uctypes.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-uctypes">
+<span id="uctypes-access-binary-data-in-a-structured-way"></span><h1><a class="reference internal" href="#module-uctypes" title="uctypes: access binary data in a structured way"><code class="xref py py-mod docutils literal notranslate"><span class="pre">uctypes</span></code></a> – access binary data in a structured way<a class="headerlink" href="#module-uctypes" title="永久链接至标题">¶</a></h1>
+<p>This module implements “foreign data interface” for MicroPython. The idea
+behind it is similar to CPython’s <code class="docutils literal notranslate"><span class="pre">ctypes</span></code> modules, but the actual API is
+different, streamlined and optimized for small size. The basic idea of the
+module is to define data structure layout with about the same power as the
+C language allows, and the access it using familiar dot-syntax to reference
+sub-fields.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">参见</p>
+<dl class="last docutils">
+<dt>Module <a class="reference internal" href="ustruct.html#module-ustruct" title="ustruct: pack and unpack primitive data types"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ustruct</span></code></a></dt>
+<dd>Standard Python way to access binary data structures (doesn’t scale
+well to large and complex structures).</dd>
+</dl>
+</div>
+<div class="section" id="defining-structure-layout">
+<h2>Defining structure layout<a class="headerlink" href="#defining-structure-layout" title="永久链接至标题">¶</a></h2>
+<p>Structure layout is defined by a “descriptor” - a Python dictionary which
+encodes field names as keys and other properties required to access them as
+associated values. Currently, uctypes requires explicit specification of
+offsets for each field. Offset are given in bytes from a structure start.</p>
+<p>Following are encoding examples for various field types:</p>
+<ul>
+<li><p class="first">Scalar types:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;field_name&quot;</span><span class="p">:</span> <span class="n">uctypes</span><span class="o">.</span><span class="n">UINT32</span> <span class="o">|</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>in other words, value is scalar type identifier ORed with field offset
+(in bytes) from the start of the structure.</p>
+</li>
+<li><p class="first">Recursive structures:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;sub&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;b0&quot;</span><span class="p">:</span> <span class="n">uctypes</span><span class="o">.</span><span class="n">UINT8</span> <span class="o">|</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;b1&quot;</span><span class="p">:</span> <span class="n">uctypes</span><span class="o">.</span><span class="n">UINT8</span> <span class="o">|</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p>i.e. value is a 2-tuple, first element of which is offset, and second is
+a structure descriptor dictionary (note: offsets in recursive descriptors
+are relative to a structure it defines).</p>
+</li>
+<li><p class="first">Arrays of primitive types:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;arr&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">uctypes</span><span class="o">.</span><span class="n">ARRAY</span> <span class="o">|</span> <span class="mi">0</span><span class="p">,</span> <span class="n">uctypes</span><span class="o">.</span><span class="n">UINT8</span> <span class="o">|</span> <span class="mi">2</span><span class="p">),</span>
+</pre></div>
+</div>
+<p>i.e. value is a 2-tuple, first element of which is ARRAY flag ORed
+with offset, and second is scalar element type ORed number of elements
+in array.</p>
+</li>
+<li><p class="first">Arrays of aggregate types:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;arr2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">uctypes</span><span class="o">.</span><span class="n">ARRAY</span> <span class="o">|</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="n">uctypes</span><span class="o">.</span><span class="n">UINT8</span> <span class="o">|</span> <span class="mi">0</span><span class="p">}),</span>
+</pre></div>
+</div>
+<p>i.e. value is a 3-tuple, first element of which is ARRAY flag ORed
+with offset, second is a number of elements in array, and third is
+descriptor of element type.</p>
+</li>
+<li><p class="first">Pointer to a primitive type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;ptr&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">uctypes</span><span class="o">.</span><span class="n">PTR</span> <span class="o">|</span> <span class="mi">0</span><span class="p">,</span> <span class="n">uctypes</span><span class="o">.</span><span class="n">UINT8</span><span class="p">),</span>
+</pre></div>
+</div>
+<p>i.e. value is a 2-tuple, first element of which is PTR flag ORed
+with offset, and second is scalar element type.</p>
+</li>
+<li><p class="first">Pointer to an aggregate type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;ptr2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">uctypes</span><span class="o">.</span><span class="n">PTR</span> <span class="o">|</span> <span class="mi">0</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="n">uctypes</span><span class="o">.</span><span class="n">UINT8</span> <span class="o">|</span> <span class="mi">0</span><span class="p">}),</span>
+</pre></div>
+</div>
+<p>i.e. value is a 2-tuple, first element of which is PTR flag ORed
+with offset, second is descriptor of type pointed to.</p>
+</li>
+<li><p class="first">Bitfields:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;bitf0&quot;</span><span class="p">:</span> <span class="n">uctypes</span><span class="o">.</span><span class="n">BFUINT16</span> <span class="o">|</span> <span class="mi">0</span> <span class="o">|</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">uctypes</span><span class="o">.</span><span class="n">BF_POS</span> <span class="o">|</span> <span class="mi">8</span> <span class="o">&lt;&lt;</span> <span class="n">uctypes</span><span class="o">.</span><span class="n">BF_LEN</span><span class="p">,</span>
+</pre></div>
+</div>
+<p>i.e. value is type of scalar value containing given bitfield (typenames are
+similar to scalar types, but prefixes with “BF”), ORed with offset for
+scalar value containing the bitfield, and further ORed with values for
+bit offset and bit length of the bitfield within scalar value, shifted by
+BF_POS and BF_LEN positions, respectively. Bitfield position is counted
+from the least significant bit, and is the number of right-most bit of a
+field (in other words, it’s a number of bits a scalar needs to be shifted
+right to extra the bitfield).</p>
+<p>In the example above, first UINT16 value will be extracted at offset 0
+(this detail may be important when accessing hardware registers, where
+particular access size and alignment are required), and then bitfield
+whose rightmost bit is least-significant bit of this UINT16, and length
+is 8 bits, will be extracted - effectively, this will access
+least-significant byte of UINT16.</p>
+<p>Note that bitfield operations are independent of target byte endianness,
+in particular, example above will access least-significant byte of UINT16
+in both little- and big-endian structures. But it depends on the least
+significant bit being numbered 0. Some targets may use different
+numbering in their native ABI, but <code class="docutils literal notranslate"><span class="pre">uctypes</span></code> always uses normalized
+numbering described above.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="永久链接至标题">¶</a></h2>
+<dl class="class">
+<dt id="uctypes.struct">
+<em class="property">class </em><code class="descclassname">uctypes.</code><code class="descname">struct</code><span class="sig-paren">(</span><em>addr</em>, <em>descriptor</em>, <em>layout_type=NATIVE</em><span class="sig-paren">)</span><a class="headerlink" href="#uctypes.struct" title="永久链接至目标">¶</a></dt>
+<dd><p>Instantiate a “foreign data structure” object based on structure address in
+memory, descriptor (encoded as a dictionary), and layout type (see below).</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="uctypes.LITTLE_ENDIAN">
+<code class="descclassname">uctypes.</code><code class="descname">LITTLE_ENDIAN</code><a class="headerlink" href="#uctypes.LITTLE_ENDIAN" title="永久链接至目标">¶</a></dt>
+<dd><p>Layout type for a little-endian packed structure. (Packed means that every
+field occupies exactly as many bytes as defined in the descriptor, i.e.
+the alignment is 1).</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="uctypes.BIG_ENDIAN">
+<code class="descclassname">uctypes.</code><code class="descname">BIG_ENDIAN</code><a class="headerlink" href="#uctypes.BIG_ENDIAN" title="永久链接至目标">¶</a></dt>
+<dd><p>Layout type for a big-endian packed structure.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="uctypes.NATIVE">
+<code class="descclassname">uctypes.</code><code class="descname">NATIVE</code><a class="headerlink" href="#uctypes.NATIVE" title="永久链接至目标">¶</a></dt>
+<dd><p>Layout type for a native structure - with data endianness and alignment
+conforming to the ABI of the system on which MicroPython runs.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="uctypes.sizeof">
+<code class="descclassname">uctypes.</code><code class="descname">sizeof</code><span class="sig-paren">(</span><em>struct</em><span class="sig-paren">)</span><a class="headerlink" href="#uctypes.sizeof" title="永久链接至目标">¶</a></dt>
+<dd><p>Return size of data structure in bytes. Argument can be either structure
+class or specific instantiated structure object (or its aggregate field).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="uctypes.addressof">
+<code class="descclassname">uctypes.</code><code class="descname">addressof</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#uctypes.addressof" title="永久链接至目标">¶</a></dt>
+<dd><p>Return address of an object. Argument should be bytes, bytearray or
+other object supporting buffer protocol (and address of this buffer
+is what actually returned).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="uctypes.bytes_at">
+<code class="descclassname">uctypes.</code><code class="descname">bytes_at</code><span class="sig-paren">(</span><em>addr</em>, <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#uctypes.bytes_at" title="永久链接至目标">¶</a></dt>
+<dd><p>Capture memory at the given address and size as bytes object. As bytes
+object is immutable, memory is actually duplicated and copied into
+bytes object, so if memory contents change later, created object
+retains original value.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="uctypes.bytearray_at">
+<code class="descclassname">uctypes.</code><code class="descname">bytearray_at</code><span class="sig-paren">(</span><em>addr</em>, <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#uctypes.bytearray_at" title="永久链接至目标">¶</a></dt>
+<dd><p>Capture memory at the given address and size as bytearray object.
+Unlike bytes_at() function above, memory is captured by reference,
+so it can be both written too, and you will access current value
+at the given memory address.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="structure-descriptors-and-instantiating-structure-objects">
+<h2>Structure descriptors and instantiating structure objects<a class="headerlink" href="#structure-descriptors-and-instantiating-structure-objects" title="永久链接至标题">¶</a></h2>
+<p>Given a structure descriptor dictionary and its layout type, you can
+instantiate a specific structure instance at a given memory address
+using <a class="reference internal" href="#uctypes.struct" title="uctypes.struct"><code class="xref py py-class docutils literal notranslate"><span class="pre">uctypes.struct()</span></code></a> constructor. Memory address usually comes from
+following sources:</p>
+<ul class="simple">
+<li>Predefined address, when accessing hardware registers on a baremetal
+system. Lookup these addresses in datasheet for a particular MCU/SoC.</li>
+<li>As a return value from a call to some FFI (Foreign Function Interface)
+function.</li>
+<li>From uctypes.addressof(), when you want to pass arguments to an FFI
+function, or alternatively, to access some data for I/O (for example,
+data read from a file or network socket).</li>
+</ul>
+</div>
+<div class="section" id="structure-objects">
+<h2>Structure objects<a class="headerlink" href="#structure-objects" title="永久链接至标题">¶</a></h2>
+<p>Structure objects allow accessing individual fields using standard dot
+notation: <code class="docutils literal notranslate"><span class="pre">my_struct.substruct1.field1</span></code>. If a field is of scalar type,
+getting it will produce a primitive value (Python integer or float)
+corresponding to the value contained in a field. A scalar field can also
+be assigned to.</p>
+<p>If a field is an array, its individual elements can be accessed with
+the standard subscript operator <code class="docutils literal notranslate"><span class="pre">[]</span></code> - both read and assigned to.</p>
+<p>If a field is a pointer, it can be dereferenced using <code class="docutils literal notranslate"><span class="pre">[0]</span></code> syntax
+(corresponding to C <code class="docutils literal notranslate"><span class="pre">*</span></code> operator, though <code class="docutils literal notranslate"><span class="pre">[0]</span></code> works in C too).
+Subscripting a pointer with other integer values but 0 are supported too,
+with the same semantics as in C.</p>
+<p>Summing up, accessing structure fields generally follows C syntax,
+except for pointer dereference, when you need to use <code class="docutils literal notranslate"><span class="pre">[0]</span></code> operator
+instead of <code class="docutils literal notranslate"><span class="pre">*</span></code>.</p>
+</div>
+<div class="section" id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="永久链接至标题">¶</a></h2>
+<p>Accessing non-scalar fields leads to allocation of intermediate objects
+to represent them. This means that special care should be taken to
+layout a structure which needs to be accessed when memory allocation
+is disabled (e.g. from an interrupt). The recommendations are:</p>
+<ul class="simple">
+<li>Avoid nested structures. For example, instead of
+<code class="docutils literal notranslate"><span class="pre">mcu_registers.peripheral_a.register1</span></code>, define separate layout
+descriptors for each peripheral, to be accessed as
+<code class="docutils literal notranslate"><span class="pre">peripheral_a.register1</span></code>.</li>
+<li>Avoid other non-scalar data, like array. For example, instead of
+<code class="docutils literal notranslate"><span class="pre">peripheral_a.register[0]</span></code> use <code class="docutils literal notranslate"><span class="pre">peripheral_a.register0</span></code>.</li>
+</ul>
+<p>Note that these recommendations will lead to decreased readability
+and conciseness of layouts, so they should be used only if the need
+to access structure fields without allocation is anticipated (it’s
+even possible to define 2 parallel layouts - one for normal usage,
+and a restricted one to use when memory allocation is prohibited).</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../reference/glossary.html" class="btn btn-neutral float-right" title="专业术语" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="network.html" class="btn btn-neutral" title="network — network configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, labplus.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            LANGUAGE:'zh_CN',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

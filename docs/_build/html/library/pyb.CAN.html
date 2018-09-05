@@ -1,0 +1,784 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>class CAN – controller area network communication bus &mdash; handPy掌控 0.1 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">handPy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inc/introduction.html">handPy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">handPy快速入门教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class1.html">Class1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class2.html">Class2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class3.html">Class3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class4.html">Class4</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">MicroPython 库</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-standard-libraries-and-micro-libraries">Python standard libraries and micro-libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="builtins.html">内置函数和异常</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="builtins.html#functions-and-types">Functions and types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="builtins.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="array.html"><code class="docutils literal notranslate"><span class="pre">array</span></code> – 数值数组</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="array.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gc.html"><code class="docutils literal notranslate"><span class="pre">gc</span></code> –  控制垃圾收集器</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gc.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="math.html"><code class="docutils literal notranslate"><span class="pre">math</span></code> – 数学运算函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="math.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="math.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sys.html"><code class="docutils literal notranslate"><span class="pre">sys</span></code> – 系统特定功能</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sys.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sys.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ubinascii.html"><code class="docutils literal notranslate"><span class="pre">ubinascii</span></code> – 二进制/ ASCII转换</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ubinascii.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ucollections.html"><code class="docutils literal notranslate"><span class="pre">ucollections</span></code> – 集合和容器类型</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ucollections.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uerrno.html"><code class="docutils literal notranslate"><span class="pre">uerrno</span></code> – 系统错误代码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uerrno.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uhashlib.html"><code class="docutils literal notranslate"><span class="pre">uhashlib</span></code> – 散列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uhashlib.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uhashlib.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uheapq.html"><code class="docutils literal notranslate"><span class="pre">uheapq</span></code> – 堆队列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uheapq.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uio.html"><code class="docutils literal notranslate"><span class="pre">uio</span></code> – 输入/输出流</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#conceptual-hierarchy">Conceptual hierarchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ujson.html"><code class="docutils literal notranslate"><span class="pre">ujson</span></code> – JSON 编码和解码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ujson.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uos.html"><code class="docutils literal notranslate"><span class="pre">uos</span></code> – 基本的“操作系统”服务</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uos.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ure.html"><code class="docutils literal notranslate"><span class="pre">ure</span></code> – 简单的正则表达式</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#regex-objects">Regex objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#match-objects">Match objects</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uselect.html"><code class="docutils literal notranslate"><span class="pre">uselect</span></code> – wait for events on a set of streams</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uselect.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uselect.html#class-poll">class <code class="docutils literal notranslate"><span class="pre">Poll</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="usocket.html"><code class="docutils literal notranslate"><span class="pre">usocket</span></code> – socket module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#socket-address-format-s">Socket address format(s)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#constants">Constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ussl.html"><code class="docutils literal notranslate"><span class="pre">ussl</span></code> – SSL/TLS module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#exceptions">Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ustruct.html"><code class="docutils literal notranslate"><span class="pre">ustruct</span></code> – pack and unpack primitive data types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ustruct.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="utime.html"><code class="docutils literal notranslate"><span class="pre">utime</span></code> – 时间相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utime.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uzlib.html"><code class="docutils literal notranslate"><span class="pre">uzlib</span></code> – zlib decompression</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uzlib.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#micropython-specific-libraries">MicroPython-specific libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="btree.html"><code class="docutils literal notranslate"><span class="pre">btree</span></code> – 简单的 BTree 数据库</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#methods">Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="framebuf.html"><code class="docutils literal notranslate"><span class="pre">framebuf</span></code> — 帧缓冲操作</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#class-framebuffer">class FrameBuffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#drawing-primitive-shapes">Drawing primitive shapes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#drawing-text">Drawing text</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#other-methods">Other methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="machine.html"><code class="docutils literal notranslate"><span class="pre">machine</span></code> — 与硬件相关的功能</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id1">复位相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id2">中断相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id3">电源相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id4">其他函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#machine-constants">常量</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id6">类</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="micropython.html"><code class="docutils literal notranslate"><span class="pre">micropython</span></code> – access and control MicroPython internals</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="micropython.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="network.html"><code class="docutils literal notranslate"><span class="pre">network</span></code> — network configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="network.html#common-network-adapter-interface">Common network adapter interface</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uctypes.html"><code class="docutils literal notranslate"><span class="pre">uctypes</span></code> – access binary data in a structured way</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#defining-structure-layout">Defining structure layout</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#structure-descriptors-and-instantiating-structure-objects">Structure descriptors and instantiating structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#structure-objects">Structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#limitations">Limitations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">MicroPython 语法</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/glossary.html">专业术语</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/repl.html">MicroPython交互式解释器模式（又称REPL）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#auto-indent">Auto-indent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#auto-completion">Auto-completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#interrupting-a-running-program">Interrupting a running program</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#paste-mode">Paste Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#soft-reset">Soft Reset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#the-special-variable-underscore">The special variable _ (underscore)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/repl.html#raw-mode">Raw Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/isr_rules.html">编写中断处理程序</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/isr_rules.html#tips-and-recommended-practices">Tips and recommended practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/isr_rules.html#micropython-issues">MicroPython Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#the-emergency-exception-buffer">The emergency exception buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#simplicity">Simplicity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#communication-between-an-isr-and-the-main-program">Communication between an ISR and the main program</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#the-use-of-object-methods-as-callbacks">The use of object methods as callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#creation-of-python-objects">Creation of Python objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#use-of-python-objects">Use of Python objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#overcoming-the-float-limitation">Overcoming the float limitation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#using-micropython-schedule">Using micropython.schedule</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/isr_rules.html#exceptions">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/isr_rules.html#general-issues">General Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#interrupt-handler-design">Interrupt Handler Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#reentrancy">Reentrancy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#critical-sections">Critical Sections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/isr_rules.html#interrupts-and-the-repl">Interrupts and the REPL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/speed_python.html">最大化MicroPython速度</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#designing-for-speed">Designing for speed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#algorithms">Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#ram-allocation">RAM Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#buffers">Buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#floating-point">Floating Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#arrays">Arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#identifying-the-slowest-section-of-code">Identifying the slowest section of code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#micropython-code-improvements">MicroPython code improvements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#the-const-declaration">The const() declaration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#caching-object-references">Caching object references</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/speed_python.html#controlling-garbage-collection">Controlling garbage collection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#the-native-code-emitter">The Native code emitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#the-viper-code-emitter">The Viper code emitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/speed_python.html#accessing-hardware-directly">Accessing hardware directly</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/constrained.html">微控制器上的MicroPython</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#flash-memory">Flash Memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#ram">RAM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#compilation-phase">Compilation Phase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#execution-phase">Execution Phase</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#the-heap">The Heap</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#fragmentation">Fragmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#reporting">Reporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#control-of-garbage-collection">Control of Garbage Collection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#string-operations">String Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/constrained.html#postscript">Postscript</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/constrained.html#footnote-gc-collect-return-value">Footnote: gc.collect() return value</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/packages.html">分发包，包管理和部署应用程序</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#distribution-packages">Distribution packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#upip-package-manager"><code class="docutils literal notranslate"><span class="pre">upip</span></code> package manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#cross-installing-packages">Cross-installing packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#cross-installing-packages-with-freezing">Cross-installing packages with freezing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#creating-distribution-packages">Creating distribution packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#application-resources">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/packages.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/asm_thumb2_index.html">Thumb2架构的内联汇编程序</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/asm_thumb2_index.html#document-conventions">Document conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/asm_thumb2_index.html#instruction-categories">Instruction Categories</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/asm_thumb2_index.html#usage-examples">Usage examples</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/asm_thumb2_index.html#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">handPy掌控</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>class CAN – controller area network communication bus</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/library/pyb.CAN.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="class-can-controller-area-network-communication-bus">
+<span id="pyb-can"></span><h1>class CAN – controller area network communication bus<a class="headerlink" href="#class-can-controller-area-network-communication-bus" title="永久链接至标题">¶</a></h1>
+<p>CAN implements the standard CAN communications protocol.  At
+the physical level it consists of 2 lines: RX and TX.  Note that
+to connect the pyboard to a CAN bus you must use a CAN transceiver
+to convert the CAN logic signals from the pyboard to the correct
+voltage levels on the bus.</p>
+<p>Example usage (works without anything connected):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyb</span> <span class="k">import</span> <span class="n">CAN</span>
+<span class="n">can</span> <span class="o">=</span> <span class="n">CAN</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">CAN</span><span class="o">.</span><span class="n">LOOPBACK</span><span class="p">)</span>
+<span class="n">can</span><span class="o">.</span><span class="n">setfilter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">CAN</span><span class="o">.</span><span class="n">LIST16</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="mi">124</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">126</span><span class="p">))</span>  <span class="c1"># set a filter to receive messages with id=123, 124, 125 and 126</span>
+<span class="n">can</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;message!&#39;</span><span class="p">,</span> <span class="mi">123</span><span class="p">)</span>   <span class="c1"># send a message with id 123</span>
+<span class="n">can</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>                 <span class="c1"># receive message on FIFO 0</span>
+</pre></div>
+</div>
+<div class="section" id="constructors">
+<h2>Constructors<a class="headerlink" href="#constructors" title="永久链接至标题">¶</a></h2>
+<dl class="class">
+<dt id="pyb.pyb.CAN">
+<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">CAN</code><span class="sig-paren">(</span><em>bus</em>, <em>...</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.pyb.CAN" title="永久链接至目标">¶</a></dt>
+<dd><p>Construct a CAN object on the given bus.  <code class="docutils literal notranslate"><span class="pre">bus</span></code> can be 1-2, or ‘YA’ or ‘YB’.
+With no additional parameters, the CAN object is created but not
+initialised (it has the settings from the last initialisation of
+the bus, if any).  If extra arguments are given, the bus is initialised.
+See <code class="docutils literal notranslate"><span class="pre">init</span></code> for parameters of initialisation.</p>
+<p>The physical pins of the CAN busses are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">CAN(1)</span></code> is on <code class="docutils literal notranslate"><span class="pre">YA</span></code>: <code class="docutils literal notranslate"><span class="pre">(RX,</span> <span class="pre">TX)</span> <span class="pre">=</span> <span class="pre">(Y3,</span> <span class="pre">Y4)</span> <span class="pre">=</span> <span class="pre">(PB8,</span> <span class="pre">PB9)</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">CAN(2)</span></code> is on <code class="docutils literal notranslate"><span class="pre">YB</span></code>: <code class="docutils literal notranslate"><span class="pre">(RX,</span> <span class="pre">TX)</span> <span class="pre">=</span> <span class="pre">(Y5,</span> <span class="pre">Y6)</span> <span class="pre">=</span> <span class="pre">(PB12,</span> <span class="pre">PB13)</span></code></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="class-methods">
+<h2>Class Methods<a class="headerlink" href="#class-methods" title="永久链接至标题">¶</a></h2>
+<dl class="classmethod">
+<dt id="pyb.CAN.initfilterbanks">
+<em class="property">classmethod </em><code class="descclassname">CAN.</code><code class="descname">initfilterbanks</code><span class="sig-paren">(</span><em>nr</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.initfilterbanks" title="永久链接至目标">¶</a></dt>
+<dd><p>Reset and disable all filter banks and assign how many banks should be available for CAN(1).</p>
+<p>STM32F405 has 28 filter banks that are shared between the two available CAN bus controllers.
+This function configures how many filter banks should be assigned to each. <code class="docutils literal notranslate"><span class="pre">nr</span></code> is the number of banks
+that will be assigned to CAN(1), the rest of the 28 are assigned to CAN(2).
+At boot, 14 banks are assigned to each controller.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="永久链接至标题">¶</a></h2>
+<dl class="method">
+<dt id="pyb.CAN.init">
+<code class="descclassname">CAN.</code><code class="descname">init</code><span class="sig-paren">(</span><em>mode</em>, <em>extframe=False</em>, <em>prescaler=100</em>, <em>*</em>, <em>sjw=1</em>, <em>bs1=6</em>, <em>bs2=8</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.init" title="永久链接至目标">¶</a></dt>
+<dd><p>Initialise the CAN bus with the given parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">mode</span></code> is one of:  NORMAL, LOOPBACK, SILENT, SILENT_LOOPBACK</li>
+<li>if <code class="docutils literal notranslate"><span class="pre">extframe</span></code> is True then the bus uses extended identifiers in the frames
+(29 bits); otherwise it uses standard 11 bit identifiers</li>
+<li><code class="docutils literal notranslate"><span class="pre">prescaler</span></code> is used to set the duration of 1 time quanta; the time quanta
+will be the input clock (PCLK1, see <a class="reference internal" href="pyb.html#pyb.freq" title="pyb.freq"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pyb.freq()</span></code></a>) divided by the prescaler</li>
+<li><code class="docutils literal notranslate"><span class="pre">sjw</span></code> is the resynchronisation jump width in units of the time quanta;
+it can be 1, 2, 3, 4</li>
+<li><code class="docutils literal notranslate"><span class="pre">bs1</span></code> defines the location of the sample point in units of the time quanta;
+it can be between 1 and 1024 inclusive</li>
+<li><code class="docutils literal notranslate"><span class="pre">bs2</span></code> defines the location of the transmit point in units of the time quanta;
+it can be between 1 and 16 inclusive</li>
+</ul>
+</div></blockquote>
+<p>The time quanta tq is the basic unit of time for the CAN bus.  tq is the CAN
+prescaler value divided by PCLK1 (the frequency of internal peripheral bus 1);
+see <a class="reference internal" href="pyb.html#pyb.freq" title="pyb.freq"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pyb.freq()</span></code></a> to determine PCLK1.</p>
+<p>A single bit is made up of the synchronisation segment, which is always 1 tq.
+Then follows bit segment 1, then bit segment 2.  The sample point is after bit
+segment 1 finishes.  The transmit point is after bit segment 2 finishes.
+The baud rate will be 1/bittime, where the bittime is 1 + BS1 + BS2 multiplied
+by the time quanta tq.</p>
+<p>For example, with PCLK1=42MHz, prescaler=100, sjw=1, bs1=6, bs2=8, the value of
+tq is 2.38 microseconds.  The bittime is 35.7 microseconds, and the baudrate
+is 28kHz.</p>
+<p>See page 680 of the STM32F405 datasheet for more details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.CAN.deinit">
+<code class="descclassname">CAN.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.deinit" title="永久链接至目标">¶</a></dt>
+<dd><p>Turn off the CAN bus.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.CAN.setfilter">
+<code class="descclassname">CAN.</code><code class="descname">setfilter</code><span class="sig-paren">(</span><em>bank</em>, <em>mode</em>, <em>fifo</em>, <em>params</em>, <em>*</em>, <em>rtr</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.setfilter" title="永久链接至目标">¶</a></dt>
+<dd><p>Configure a filter bank:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">bank</span></code> is the filter bank that is to be configured.</li>
+<li><code class="docutils literal notranslate"><span class="pre">mode</span></code> is the mode the filter should operate in.</li>
+<li><code class="docutils literal notranslate"><span class="pre">fifo</span></code> is which fifo (0 or 1) a message should be stored in, if it is accepted by this filter.</li>
+<li><code class="docutils literal notranslate"><span class="pre">params</span></code> is an array of values the defines the filter. The contents of the array depends on the <code class="docutils literal notranslate"><span class="pre">mode</span></code> argument.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><code class="docutils literal notranslate"><span class="pre">mode</span></code></th>
+<th class="head">contents of parameter array</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>CAN.LIST16</td>
+<td>Four 16 bit ids that will be accepted</td>
+</tr>
+<tr class="row-odd"><td>CAN.LIST32</td>
+<td>Two 32 bit ids that will be accepted</td>
+</tr>
+<tr class="row-even"><td>CAN.MASK16</td>
+<td><dl class="first last docutils">
+<dt>Two 16 bit id/mask pairs. E.g. (1, 3, 4, 4)</dt>
+<dd><div class="first last line-block">
+<div class="line">The first pair, 1 and 3 will accept all ids</div>
+<div class="line">that have bit 0 = 1 and bit 1 = 0.</div>
+<div class="line">The second pair, 4 and 4, will accept all ids</div>
+<div class="line">that have bit 2 = 1.</div>
+</div>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="row-odd"><td>CAN.MASK32</td>
+<td>As with CAN.MASK16 but with only one 32 bit id/mask pair.</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">rtr</span></code> is an array of booleans that states if a filter should accept a
+remote transmission request message.  If this argument is not given
+then it defaults to False for all entries.  The length of the array
+depends on the <code class="docutils literal notranslate"><span class="pre">mode</span></code> argument.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><code class="docutils literal notranslate"><span class="pre">mode</span></code></th>
+<th class="head">length of rtr array</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>CAN.LIST16</td>
+<td>4</td>
+</tr>
+<tr class="row-odd"><td>CAN.LIST32</td>
+<td>2</td>
+</tr>
+<tr class="row-even"><td>CAN.MASK16</td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>CAN.MASK32</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.CAN.clearfilter">
+<code class="descclassname">CAN.</code><code class="descname">clearfilter</code><span class="sig-paren">(</span><em>bank</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.clearfilter" title="永久链接至目标">¶</a></dt>
+<dd><p>Clear and disables a filter bank:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">bank</span></code> is the filter bank that is to be cleared.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.CAN.any">
+<code class="descclassname">CAN.</code><code class="descname">any</code><span class="sig-paren">(</span><em>fifo</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.any" title="永久链接至目标">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if any message waiting on the FIFO, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.CAN.recv">
+<code class="descclassname">CAN.</code><code class="descname">recv</code><span class="sig-paren">(</span><em>fifo</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.recv" title="永久链接至目标">¶</a></dt>
+<dd><p>Receive data on the bus:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">fifo</span></code> is an integer, which is the FIFO to receive on</li>
+<li><code class="docutils literal notranslate"><span class="pre">timeout</span></code> is the timeout in milliseconds to wait for the receive.</li>
+</ul>
+</div></blockquote>
+<p>Return value: A tuple containing four values.</p>
+<blockquote>
+<div><ul class="simple">
+<li>The id of the message.</li>
+<li>A boolean that indicates if the message is an RTR message.</li>
+<li>The FMI (Filter Match Index) value.</li>
+<li>An array containing the data.</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.CAN.send">
+<code class="descclassname">CAN.</code><code class="descname">send</code><span class="sig-paren">(</span><em>data</em>, <em>id</em>, <em>*</em>, <em>timeout=0</em>, <em>rtr=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.send" title="永久链接至目标">¶</a></dt>
+<dd><p>Send a message on the bus:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">data</span></code> is the data to send (an integer to send, or a buffer object).</li>
+<li><code class="docutils literal notranslate"><span class="pre">id</span></code> is the id of the message to be sent.</li>
+<li><code class="docutils literal notranslate"><span class="pre">timeout</span></code> is the timeout in milliseconds to wait for the send.</li>
+<li><code class="docutils literal notranslate"><span class="pre">rtr</span></code> is a boolean that specifies if the message shall be sent as
+a remote transmission request.  If <code class="docutils literal notranslate"><span class="pre">rtr</span></code> is True then only the length
+of <code class="docutils literal notranslate"><span class="pre">data</span></code> is used to fill in the DLC slot of the frame; the actual
+bytes in <code class="docutils literal notranslate"><span class="pre">data</span></code> are unused.</li>
+</ul>
+<p>If timeout is 0 the message is placed in a buffer in one of three hardware
+buffers and the method returns immediately. If all three buffers are in use
+an exception is thrown. If timeout is not 0, the method waits until the
+message is transmitted. If the message can’t be transmitted within the
+specified time an exception is thrown.</p>
+</div></blockquote>
+<p>Return value: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.CAN.rxcallback">
+<code class="descclassname">CAN.</code><code class="descname">rxcallback</code><span class="sig-paren">(</span><em>fifo</em>, <em>fun</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.rxcallback" title="永久链接至目标">¶</a></dt>
+<dd><p>Register a function to be called when a message is accepted into a empty fifo:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">fifo</span></code> is the receiving fifo.</li>
+<li><code class="docutils literal notranslate"><span class="pre">fun</span></code> is the function to be called when the fifo becomes non empty.</li>
+</ul>
+<p>The callback function takes two arguments the first is the can object it self the second is
+a integer that indicates the reason for the callback.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Reason</th>
+<th class="head">&#160;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>A message has been accepted into a empty FIFO.</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>The FIFO is full</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>A message has been lost due to a full FIFO</td>
+</tr>
+</tbody>
+</table>
+<p>Example use of rxcallback:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cb0</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="n">reason</span><span class="p">):</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;cb0&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">reason</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;pending&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">reason</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;full&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">reason</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;overflow&#39;</span><span class="p">)</span>
+
+<span class="n">can</span> <span class="o">=</span> <span class="n">CAN</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">CAN</span><span class="o">.</span><span class="n">LOOPBACK</span><span class="p">)</span>
+<span class="n">can</span><span class="o">.</span><span class="n">rxcallback</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cb0</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="constants">
+<h2>Constants<a class="headerlink" href="#constants" title="永久链接至标题">¶</a></h2>
+<dl class="data">
+<dt id="pyb.CAN.NORMAL">
+<code class="descclassname">CAN.</code><code class="descname">NORMAL</code><a class="headerlink" href="#pyb.CAN.NORMAL" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="pyb.CAN.LOOPBACK">
+<code class="descclassname">CAN.</code><code class="descname">LOOPBACK</code><a class="headerlink" href="#pyb.CAN.LOOPBACK" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="pyb.CAN.SILENT">
+<code class="descclassname">CAN.</code><code class="descname">SILENT</code><a class="headerlink" href="#pyb.CAN.SILENT" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="pyb.CAN.SILENT_LOOPBACK">
+<code class="descclassname">CAN.</code><code class="descname">SILENT_LOOPBACK</code><a class="headerlink" href="#pyb.CAN.SILENT_LOOPBACK" title="永久链接至目标">¶</a></dt>
+<dd><p>the mode of the CAN bus</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyb.CAN.LIST16">
+<code class="descclassname">CAN.</code><code class="descname">LIST16</code><a class="headerlink" href="#pyb.CAN.LIST16" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="pyb.CAN.MASK16">
+<code class="descclassname">CAN.</code><code class="descname">MASK16</code><a class="headerlink" href="#pyb.CAN.MASK16" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="pyb.CAN.LIST32">
+<code class="descclassname">CAN.</code><code class="descname">LIST32</code><a class="headerlink" href="#pyb.CAN.LIST32" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="pyb.CAN.MASK32">
+<code class="descclassname">CAN.</code><code class="descname">MASK32</code><a class="headerlink" href="#pyb.CAN.MASK32" title="永久链接至目标">¶</a></dt>
+<dd><p>the operation mode of a filter</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, labplus.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            LANGUAGE:'zh_CN',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
