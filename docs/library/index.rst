@@ -38,11 +38,8 @@ MicroPython 库
 除了本文档中描述的内置库之外，在 :term:`micropython-lib`  中还可以找到来自Python标准库的更多模块以及对它的进一步微Python扩展。
 
 
-<<<<<<< HEAD
-Python standard libraries and micro-libraries
-=======
+
 Python 标准库 和 micro-库
->>>>>>> '备注信息'
 ---------------------------------------------
 
 以下标准Python库已经“微观化”以适应MicroPython的理念。它们提供该模块的核心功能，旨在成为标准Python库的直接替代品。
@@ -83,11 +80,7 @@ Python 标准库 和 micro-库
       
 
 
-<<<<<<< HEAD
-MicroPython-specific libraries
-=======
 MicroPython-专有库
->>>>>>> '备注信息'
 ------------------------------
 
 以下库中提供了特定于MicroPython实现的功能。
