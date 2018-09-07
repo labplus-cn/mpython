@@ -15,6 +15,25 @@
 
 
 
+类
+-------
+
+ .. toctree::
+   :maxdepth: 1
+
+   machine.Pin.rst
+   machine.ADC.rst 
+   machine.PWM.rst
+   machine.UART.rst
+   machine.I2C.rst
+   machine.SPI.rst
+   machine.Timer.rst
+   machine.RTC.rst
+   machine.WDT.rst
+
+
+
+
 复位相关函数
 -----------------------
 
@@ -80,19 +99,9 @@
 
 .. function:: time_pulse_us(pin, pulse_level, timeout_us=1000000)
 
-   Time a pulse on the given *pin*, and return the duration of the pulse in
-   microseconds.  The *pulse_level* argument should be 0 to time a low pulse
-   or 1 to time a high pulse.
-
-   If the current input value of the pin is different to *pulse_level*,
-   the function first (*) waits until the pin input becomes equal to *pulse_level*,
-   then (**) times the duration that the pin is equal to *pulse_level*.
-   If the pin is already equal to *pulse_level* then timing starts straight away.
-
-   The function will return -2 if there was timeout waiting for condition marked
-   (*) above, and -1 if there was timeout during the main measurement, marked (**)
-   above. The timeout is the same for both cases and given by *timeout_us* (which
-   is in microseconds).
+    在给定的引脚上测试外部脉冲电平持续时间，并以微秒为单位返回外部脉冲电平的持续时间。 ``pulse_level`` =1测试高电平持续时间，pulse_level=0测试低电平持续时间。
+    当设置电平和现在脉冲的电平不一致时，则会等到输入电平和设置的电平一致时开始计时，如果设置的电平和现在脉冲的电平一致时，那么就会立即开始计时。
+    当引脚电平和设置电平一直相反时，则会等待超时，超时返回-2。当引脚电平和设置电平一直相同时，也会等待超时，超时返回-1， ``timeout_us`` 即为超时时间。
 
 .. _machine_constants:
 
@@ -118,19 +127,3 @@
           machine.RTC_WAKE
 
     唤醒原因.
-
-类
--------
-
- .. toctree::
-   :maxdepth: 1
-
-   machine.Pin.rst
-   machine.UART.rst
-   machine.SPI.rst
-   machine.I2C.rst
-   machine.RTC.rst
-   machine.Timer.rst
-   machine.WDT.rst
-   machine.ADC.rst
-   machine.SD.rst

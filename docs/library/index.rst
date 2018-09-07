@@ -80,10 +80,10 @@ Python 标准库 和 micro-库
       
 
 
-MicroPython-专有库
+MicroPython-ESP32专有库
 ------------------------------
 
-以下库中提供了特定于MicroPython实现的功能。
+以下库中提供了特定于MicroPython-ESP32实现的功能。
 
 
 .. toctree::
