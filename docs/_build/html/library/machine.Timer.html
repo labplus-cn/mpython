@@ -1,0 +1,443 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>类 Timer – 控制硬件定时器 &mdash; handPy掌控 0.1 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="类 WDT – 看门狗定时器" href="machine.WDT.html" />
+    <link rel="prev" title="类 RTC – 实时时钟" href="machine.RTC.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">handPy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inc/introduction.html">handPy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">handPy快速入门教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class1.html">Class1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class2.html">Class2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class3.html">Class3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class4.html">Class4</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">MicroPython 库</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-micro">Python 标准库 和 micro-库</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="builtins.html">内置函数和异常</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="builtins.html#functions-and-types">Functions and types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="builtins.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="array.html"><code class="docutils literal notranslate"><span class="pre">array</span></code> – 数值数组</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="array.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gc.html"><code class="docutils literal notranslate"><span class="pre">gc</span></code> –  控制垃圾收集器</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gc.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="math.html"><code class="docutils literal notranslate"><span class="pre">math</span></code> – 数学运算函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="math.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="math.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sys.html"><code class="docutils literal notranslate"><span class="pre">sys</span></code> – 系统特定功能</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sys.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sys.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ubinascii.html"><code class="docutils literal notranslate"><span class="pre">ubinascii</span></code> – 二进制/ ASCII转换</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ubinascii.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ucollections.html"><code class="docutils literal notranslate"><span class="pre">ucollections</span></code> – 集合和容器类型</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ucollections.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uerrno.html"><code class="docutils literal notranslate"><span class="pre">uerrno</span></code> – 系统错误代码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uerrno.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uhashlib.html"><code class="docutils literal notranslate"><span class="pre">uhashlib</span></code> – 散列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uhashlib.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uhashlib.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uheapq.html"><code class="docutils literal notranslate"><span class="pre">uheapq</span></code> – 堆队列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uheapq.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uio.html"><code class="docutils literal notranslate"><span class="pre">uio</span></code> – 输入/输出流</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#conceptual-hierarchy">Conceptual hierarchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ujson.html"><code class="docutils literal notranslate"><span class="pre">ujson</span></code> – JSON 编码和解码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ujson.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uos.html"><code class="docutils literal notranslate"><span class="pre">uos</span></code> – 基本的“操作系统”服务</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uos.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ure.html"><code class="docutils literal notranslate"><span class="pre">ure</span></code> – 简单的正则表达式</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#regex-objects">Regex objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#match-objects">Match objects</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uselect.html"><code class="docutils literal notranslate"><span class="pre">uselect</span></code> – wait for events on a set of streams</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uselect.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uselect.html#class-poll">class <code class="docutils literal notranslate"><span class="pre">Poll</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="usocket.html"><code class="docutils literal notranslate"><span class="pre">usocket</span></code> – socket module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#socket-address-format-s">Socket address format(s)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#constants">Constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ussl.html"><code class="docutils literal notranslate"><span class="pre">ussl</span></code> – SSL/TLS module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#exceptions">Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ustruct.html"><code class="docutils literal notranslate"><span class="pre">ustruct</span></code> – pack and unpack primitive data types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ustruct.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="utime.html"><code class="docutils literal notranslate"><span class="pre">utime</span></code> – 时间相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utime.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uzlib.html"><code class="docutils literal notranslate"><span class="pre">uzlib</span></code> – zlib decompression</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uzlib.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#id1">MicroPython-专有库</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="btree.html"><code class="docutils literal notranslate"><span class="pre">btree</span></code> – 简单的 BTree 数据库</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#methods">Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="framebuf.html"><code class="docutils literal notranslate"><span class="pre">framebuf</span></code> — 帧缓冲操作</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#class-framebuffer">class FrameBuffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#drawing-primitive-shapes">Drawing primitive shapes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#drawing-text">Drawing text</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#other-methods">Other methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="machine.html"><code class="docutils literal notranslate"><span class="pre">machine</span></code> — 与硬件相关的功能</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id1">复位相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id2">中断相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id3">电源相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id4">其他函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#machine-constants">常量</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="machine.html#id6">类</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="micropython.html"><code class="docutils literal notranslate"><span class="pre">micropython</span></code> – access and control MicroPython internals</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="micropython.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="network.html"><code class="docutils literal notranslate"><span class="pre">network</span></code> — network configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="network.html#common-network-adapter-interface">Common network adapter interface</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uctypes.html"><code class="docutils literal notranslate"><span class="pre">uctypes</span></code> – access binary data in a structured way</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#defining-structure-layout">Defining structure layout</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#structure-descriptors-and-instantiating-structure-objects">Structure descriptors and instantiating structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#structure-objects">Structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#limitations">Limitations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">MicroPython 语法</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">MicroPython 语法</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">handPy掌控</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">MicroPython 库</a> &raquo;</li>
+        
+          <li><a href="machine.html"><code class="docutils literal notranslate"><span class="pre">machine</span></code> — 与硬件相关的功能</a> &raquo;</li>
+        
+      <li>类 Timer – 控制硬件定时器</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/library/machine.Timer.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="timer">
+<span id="machine-timer"></span><h1>类 Timer – 控制硬件定时器<a class="headerlink" href="#timer" title="永久链接至标题">¶</a></h1>
+<p>硬件定时器处理周期和事件的时间。定时器可能是MCU和SoC中最灵活和异构的硬件类型，从一个模型到另一个模型的差别很大。
+MicroPython的Timer类定义了在给定时间段内（或在一段延迟后执行一次回调）执行回调的基线操作，并允许特定的板定义更多的非标准行为（因此不能移植到其他板）。</p>
+<p>请参阅有关Timer回调的 <a class="reference internal" href="machine.html#machine-callbacks"><span class="std std-ref">重要约束</span></a> 。</p>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<p class="last">内存不能在irq处理程序（中断）中分配，因此处理程序中引发的异常不会提供太多信息。
+了解 <a class="reference internal" href="micropython.html#micropython.alloc_emergency_exception_buf" title="micropython.alloc_emergency_exception_buf"><code class="xref py py-func docutils literal notranslate"><span class="pre">micropython.alloc_emergency_exception_buf()</span></code></a> 如何解决此限制。</p>
+</div>
+<div class="section" id="id1">
+<h2>构建函数<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<dl class="class">
+<dt id="machine.Timer">
+<em class="property">class </em><code class="descclassname">machine.</code><code class="descname">Timer</code><span class="sig-paren">(</span><em>id</em>, <em>...</em><span class="sig-paren">)</span><a class="headerlink" href="#machine.Timer" title="永久链接至目标">¶</a></dt>
+<dd><p>构造给定id的新计时器对象。Id为-1构造虚拟计时器（如果board支持）。</p>
+</dd></dl>
+
+</div>
+<div class="section" id="id2">
+<h2>方法<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<dl class="method">
+<dt id="machine.Timer.init">
+<code class="descclassname">Timer.</code><code class="descname">init</code><span class="sig-paren">(</span><em>*</em>, <em>mode=Timer.PERIODIC</em>, <em>period=-1</em>, <em>callback=None</em><span class="sig-paren">)</span><a class="headerlink" href="#machine.Timer.init" title="永久链接至目标">¶</a></dt>
+<dd><p>初始化计时器，示例:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tim</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">period</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>                         <span class="c1"># periodic with 100ms period</span>
+<span class="n">tim</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">Timer</span><span class="o">.</span><span class="n">ONE_SHOT</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>   <span class="c1"># one shot firing after 1000ms</span>
+</pre></div>
+</div>
+<p>关键参数:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">mode</span></code> 可以是以下之一:<ul>
+<li><code class="docutils literal notranslate"><span class="pre">Timer.ONE_SHOT</span></code> - 计时器运行一次，直到配置完毕通道的期限到期。</li>
+<li><code class="docutils literal notranslate"><span class="pre">Timer.PERIODIC</span></code> - 定时器以通道的配置频率定期运行。</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine.Timer.deinit">
+<code class="descclassname">Timer.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#machine.Timer.deinit" title="永久链接至目标">¶</a></dt>
+<dd><p>取消定时器的初始化。停止计时器，并禁用计时器外围设备。</p>
+</dd></dl>
+
+</div>
+<div class="section" id="id3">
+<h2>常数<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<dl class="data">
+<dt id="machine.Timer.ONE_SHOT">
+<code class="descclassname">Timer.</code><code class="descname">ONE_SHOT</code><a class="headerlink" href="#machine.Timer.ONE_SHOT" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="machine.Timer.PERIODIC">
+<code class="descclassname">Timer.</code><code class="descname">PERIODIC</code><a class="headerlink" href="#machine.Timer.PERIODIC" title="永久链接至目标">¶</a></dt>
+<dd><p>定时器的操作模式</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="machine.WDT.html" class="btn btn-neutral float-right" title="类 WDT – 看门狗定时器" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="machine.RTC.html" class="btn btn-neutral" title="类 RTC – 实时时钟" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, labplus.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            LANGUAGE:'zh_CN',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

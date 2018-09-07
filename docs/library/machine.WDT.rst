@@ -1,36 +1,29 @@
 .. currentmodule:: machine
 .. _machine.WDT:
 
-class WDT -- watchdog timer
+类 WDT -- 看门狗定时器
 ===========================
 
-The WDT is used to restart the system when the application crashes and ends
-up into a non recoverable state. Once started it cannot be stopped or
-reconfigured in any way. After enabling, the application must "feed" the
-watchdog periodically to prevent it from expiring and resetting the system.
+当程序崩溃并最终进入不可恢复状态时，WDT用于重新启动系统。一旦启动，就无法以任何方式停止或重新配置。
+启用后，程序必须定期 ``喂狗`` ，以防止它过期和重置系统。
 
-Example usage::
+示例::
 
     from machine import WDT
     wdt = WDT(timeout=2000)  # enable it with a timeout of 2s
     wdt.feed()
 
-Availability of this class: pyboard, WiPy.
 
-Constructors
+构建函数
 ------------
 
 .. class:: WDT(id=0, timeout=5000)
 
-   Create a WDT object and start it. The timeout must be given in seconds and
-   the minimum value that is accepted is 1 second. Once it is running the timeout
-   cannot be changed and the WDT cannot be stopped either.
+  创建一个WDT对象并启动它。超时必须以秒为单位，并且接受的最小值为1秒。一旦运行，就无法更改超时，也无法停止WDT。
 
-Methods
+方法
 -------
 
 .. method:: wdt.feed()
 
-   Feed the WDT to prevent it from resetting the system. The application
-   should place this call in a sensible place ensuring that the WDT is
-   only fed after verifying that everything is functioning correctly.
+  对WDT喂狗以防止它重置系统。程序应该将此调用放置在一个合理的位置，以确保在验证所有操作都正确之后才会对WDT进行喂狗。

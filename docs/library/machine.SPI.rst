@@ -24,67 +24,61 @@ SS信号的管理应该在用户代码中进行（通过 :class:`machine.Pin` �
 
 .. method:: SPI.init(baudrate=1000000, \*, polarity=0, phase=0, bits=8, firstbit=SPI.MSB, sck=None, mosi=None, miso=None, pins=(SCK, MOSI, MISO))
 
-   Initialise the SPI bus with the given parameters:
+   使用给定参数初始化SPI总线：
 
-     - ``baudrate`` is the SCK clock rate.
-     - ``polarity`` can be 0 or 1, and is the level the idle clock line sits at.
-     - ``phase`` can be 0 or 1 to sample data on the first or second clock edge
-       respectively.
-     - ``bits`` is the width in bits of each transfer. Only 8 is guaranteed to be supported by all hardware.
-     - ``firstbit`` can be ``SPI.MSB`` or ``SPI.LSB``.
-     - ``sck``, ``mosi``, ``miso`` are pins (machine.Pin) objects to use for bus signals. For most
-       hardware SPI blocks (as selected by ``id`` parameter to the constructor), pins are fixed
-       and cannot be changed. In some cases, hardware blocks allow 2-3 alternative pin sets for
-       a hardware SPI block. Arbitrary pin assignments are possible only for a bitbanging SPI driver
-       (``id`` = -1).
-     - ``pins`` - WiPy port doesn't ``sck``, ``mosi``, ``miso`` arguments, and instead allows to
-       specify them as a tuple of ``pins`` parameter.
+     - ``baudrate`` SCK时钟频率。
+     - ``polarity`` 0或1，空闲时钟线所在的电平。
+     - ``phase`` 0或1来分别在第一或第二时钟边沿上采样数据。
+     - ``bits`` 每次传输的宽度（以位为单位）。所有硬件都保证只支持8个。
+     - ``firstbit`` 可以是  ``SPI.MSB`` 或 ``SPI.LSB``.
+     - ``sck``, ``mosi``, ``miso`` 是 pins (machine.Pin) 对象以用于总线信号。对于大多数硬件SPI块（由 ``id`` 构造函数的参数选择），引脚是固定的，不能更改。在某些情况下，硬件模块允许2-3个替代引脚组用于硬件SPI模块。任意引脚分配仅适用于bitbanging SPI驱动程序（ ``id`` = -1）。
+     - ``pins`` -  esp32没有 ``sck`` ， ``mosi`` ， ``miso`` 参数，而是允许指定它们作为一个元组 ``pins`` 参数。
 
 .. method:: SPI.deinit()
 
-   Turn off the SPI bus.
+   关闭SPI总线。
 
 .. method:: SPI.read(nbytes, write=0x00)
 
-    Read a number of bytes specified by ``nbytes`` while continuously writing
-    the single byte given by ``write``.
-    Returns a ``bytes`` object with the data that was read.
+   读取指定的字节数， ``nbytes`` 同时连续写入由给定的单字节 ``write`` 。返回包含 ``bytes`` 已读取数据的对象。
 
 .. method:: SPI.readinto(buf, write=0x00)
 
-    Read into the buffer specified by ``buf`` while continuously writing the
-    single byte given by ``write``.
-    Returns ``None``.
+    读入 ``buf`` 指定的缓冲区，同时不断写入由 ``write`` 给出的单字节。
 
-    Note: on WiPy this function returns the number of bytes read.
+    返回 ``None``。
+
+    注意：在 ``esp32`` 上，此函数返回读取的字节数。
+
 
 .. method:: SPI.write(buf)
 
-    Write the bytes contained in ``buf``.
-    Returns ``None``.
+    写入`` buf`` 中的字节。
 
-    Note: on WiPy this function returns the number of bytes written.
+    返回 ``None``。
+
+    注意：：在 ``esp32`` 上，此函数返回写入的字节数。
 
 .. method:: SPI.write_readinto(write_buf, read_buf)
 
-    Write the bytes from ``write_buf`` while reading into ``read_buf``.  The
-    buffers can be the same or different, but both buffers must have the
-    same length.
-    Returns ``None``.
+    从 ``write_buf`` 中写入字节，同时读入 ``read_buf`` 中。缓冲区可以是相同的，也可以是不同的，但是两个缓冲区都必须具有
+    长度相同。
 
-    Note: on WiPy this function returns the number of bytes written.
+    返回 ``None``。
 
-Constants
+    注意：在 ``esp32`` 上，此函数返回写入的字节数。
+
+常数
 ---------
 
 .. data:: SPI.MASTER
 
-   for initialising the SPI bus to master; this is only used for the WiPy
+   用于初始化SPI总线到主机; 这仅用于 ``esp32``。
 
 .. data:: SPI.MSB
 
-   set the first bit to be the most significant bit
+   将第一位设置为最高位。
 
 .. data:: SPI.LSB
 
-   set the first bit to be the least significant bit
+   将第一个位设置为最低位。

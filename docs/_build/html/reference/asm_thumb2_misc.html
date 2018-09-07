@@ -1,0 +1,381 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Miscellaneous instructions &mdash; handPy掌控 0.1 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">handPy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inc/introduction.html">handPy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">handPy快速入门教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class1.html">Class1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class2.html">Class2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class3.html">Class3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class4.html">Class4</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../library/index.html">MicroPython 库</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../library/index.html#python-micro">Python 标准库 和 micro-库</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../library/builtins.html">内置函数和异常</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/builtins.html#functions-and-types">Functions and types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/builtins.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/array.html"><code class="docutils literal notranslate"><span class="pre">array</span></code> – 数值数组</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/array.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/gc.html"><code class="docutils literal notranslate"><span class="pre">gc</span></code> –  控制垃圾收集器</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/gc.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/math.html"><code class="docutils literal notranslate"><span class="pre">math</span></code> – 数学运算函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/math.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/math.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/sys.html"><code class="docutils literal notranslate"><span class="pre">sys</span></code> – 系统特定功能</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/sys.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/sys.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/ubinascii.html"><code class="docutils literal notranslate"><span class="pre">ubinascii</span></code> – 二进制/ ASCII转换</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/ubinascii.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/ucollections.html"><code class="docutils literal notranslate"><span class="pre">ucollections</span></code> – 集合和容器类型</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/ucollections.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uerrno.html"><code class="docutils literal notranslate"><span class="pre">uerrno</span></code> – 系统错误代码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uerrno.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uhashlib.html"><code class="docutils literal notranslate"><span class="pre">uhashlib</span></code> – 散列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uhashlib.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uhashlib.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uheapq.html"><code class="docutils literal notranslate"><span class="pre">uheapq</span></code> – 堆队列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uheapq.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uio.html"><code class="docutils literal notranslate"><span class="pre">uio</span></code> – 输入/输出流</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uio.html#conceptual-hierarchy">Conceptual hierarchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uio.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uio.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/ujson.html"><code class="docutils literal notranslate"><span class="pre">ujson</span></code> – JSON 编码和解码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/ujson.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uos.html"><code class="docutils literal notranslate"><span class="pre">uos</span></code> – 基本的“操作系统”服务</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uos.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/ure.html"><code class="docutils literal notranslate"><span class="pre">ure</span></code> – 简单的正则表达式</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/ure.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/ure.html#regex-objects">Regex objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/ure.html#match-objects">Match objects</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uselect.html"><code class="docutils literal notranslate"><span class="pre">uselect</span></code> – wait for events on a set of streams</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uselect.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uselect.html#class-poll">class <code class="docutils literal notranslate"><span class="pre">Poll</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/usocket.html"><code class="docutils literal notranslate"><span class="pre">usocket</span></code> – socket module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/usocket.html#socket-address-format-s">Socket address format(s)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/usocket.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/usocket.html#constants">Constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/usocket.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/ussl.html"><code class="docutils literal notranslate"><span class="pre">ussl</span></code> – SSL/TLS module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/ussl.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/ussl.html#exceptions">Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/ussl.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/ustruct.html"><code class="docutils literal notranslate"><span class="pre">ustruct</span></code> – pack and unpack primitive data types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/ustruct.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/utime.html"><code class="docutils literal notranslate"><span class="pre">utime</span></code> – 时间相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/utime.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uzlib.html"><code class="docutils literal notranslate"><span class="pre">uzlib</span></code> – zlib decompression</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uzlib.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../library/index.html#id1">MicroPython-专有库</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../library/btree.html"><code class="docutils literal notranslate"><span class="pre">btree</span></code> – 简单的 BTree 数据库</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/btree.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/btree.html#methods">Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/btree.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/framebuf.html"><code class="docutils literal notranslate"><span class="pre">framebuf</span></code> — 帧缓冲操作</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/framebuf.html#class-framebuffer">class FrameBuffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/framebuf.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/framebuf.html#drawing-primitive-shapes">Drawing primitive shapes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/framebuf.html#drawing-text">Drawing text</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/framebuf.html#other-methods">Other methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/framebuf.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/machine.html"><code class="docutils literal notranslate"><span class="pre">machine</span></code> — 与硬件相关的功能</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/machine.html#id1">复位相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/machine.html#id2">中断相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/machine.html#id3">电源相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/machine.html#id4">其他函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/machine.html#machine-constants">常量</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/machine.html#id6">类</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/micropython.html"><code class="docutils literal notranslate"><span class="pre">micropython</span></code> – access and control MicroPython internals</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/micropython.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/network.html"><code class="docutils literal notranslate"><span class="pre">network</span></code> — network configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/network.html#common-network-adapter-interface">Common network adapter interface</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../library/uctypes.html"><code class="docutils literal notranslate"><span class="pre">uctypes</span></code> – access binary data in a structured way</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../library/uctypes.html#defining-structure-layout">Defining structure layout</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uctypes.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uctypes.html#structure-descriptors-and-instantiating-structure-objects">Structure descriptors and instantiating structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uctypes.html#structure-objects">Structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../library/uctypes.html#limitations">Limitations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">MicroPython 语法</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">MicroPython 语法</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">handPy掌控</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Miscellaneous instructions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/asm_thumb2_misc.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="miscellaneous-instructions">
+<h1>Miscellaneous instructions<a class="headerlink" href="#miscellaneous-instructions" title="永久链接至标题">¶</a></h1>
+<ul class="simple">
+<li>nop() <code class="docutils literal notranslate"><span class="pre">pass</span></code> no operation.</li>
+<li>wfi() Suspend execution in a low power state until an interrupt occurs.</li>
+<li>cpsid(flags) set the Priority Mask Register - disable interrupts.</li>
+<li>cpsie(flags) clear the Priority Mask Register - enable interrupts.</li>
+<li>mrs(Rd, special_reg) <code class="docutils literal notranslate"><span class="pre">Rd</span> <span class="pre">=</span> <span class="pre">special_reg</span></code> copy a special register to a general register. The special register
+may be IPSR (Interrupt Status Register) or BASEPRI (Base Priority Register). The IPSR provides a means of determining
+the exception number of an interrupt being processed. It contains zero if no interrupt is being processed.</li>
+</ul>
+<p>Currently the <code class="docutils literal notranslate"><span class="pre">cpsie()</span></code> and <code class="docutils literal notranslate"><span class="pre">cpsid()</span></code> functions are partially implemented.
+They require but ignore the flags argument and serve as a means of enabling and disabling interrupts.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, labplus.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            LANGUAGE:'zh_CN',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

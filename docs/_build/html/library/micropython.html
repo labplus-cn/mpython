@@ -1,0 +1,509 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>micropython – access and control MicroPython internals &mdash; handPy掌控 0.1 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="network — network configuration" href="network.html" />
+    <link rel="prev" title="class SD – secure digital memory card" href="machine.SD.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">handPy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inc/introduction.html">handPy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">handPy快速入门教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class1.html">Class1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class2.html">Class2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class3.html">Class3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class4.html">Class4</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">MicroPython 库</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-micro">Python 标准库 和 micro-库</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="builtins.html">内置函数和异常</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="builtins.html#functions-and-types">Functions and types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="builtins.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="array.html"><code class="docutils literal notranslate"><span class="pre">array</span></code> – 数值数组</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="array.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gc.html"><code class="docutils literal notranslate"><span class="pre">gc</span></code> –  控制垃圾收集器</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gc.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="math.html"><code class="docutils literal notranslate"><span class="pre">math</span></code> – 数学运算函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="math.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="math.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sys.html"><code class="docutils literal notranslate"><span class="pre">sys</span></code> – 系统特定功能</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sys.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sys.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ubinascii.html"><code class="docutils literal notranslate"><span class="pre">ubinascii</span></code> – 二进制/ ASCII转换</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ubinascii.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ucollections.html"><code class="docutils literal notranslate"><span class="pre">ucollections</span></code> – 集合和容器类型</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ucollections.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uerrno.html"><code class="docutils literal notranslate"><span class="pre">uerrno</span></code> – 系统错误代码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uerrno.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uhashlib.html"><code class="docutils literal notranslate"><span class="pre">uhashlib</span></code> – 散列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uhashlib.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uhashlib.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uheapq.html"><code class="docutils literal notranslate"><span class="pre">uheapq</span></code> – 堆队列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uheapq.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uio.html"><code class="docutils literal notranslate"><span class="pre">uio</span></code> – 输入/输出流</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#conceptual-hierarchy">Conceptual hierarchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ujson.html"><code class="docutils literal notranslate"><span class="pre">ujson</span></code> – JSON 编码和解码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ujson.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uos.html"><code class="docutils literal notranslate"><span class="pre">uos</span></code> – 基本的“操作系统”服务</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uos.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ure.html"><code class="docutils literal notranslate"><span class="pre">ure</span></code> – 简单的正则表达式</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#regex-objects">Regex objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#match-objects">Match objects</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uselect.html"><code class="docutils literal notranslate"><span class="pre">uselect</span></code> – wait for events on a set of streams</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uselect.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uselect.html#class-poll">class <code class="docutils literal notranslate"><span class="pre">Poll</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="usocket.html"><code class="docutils literal notranslate"><span class="pre">usocket</span></code> – socket module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#socket-address-format-s">Socket address format(s)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#constants">Constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ussl.html"><code class="docutils literal notranslate"><span class="pre">ussl</span></code> – SSL/TLS module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#exceptions">Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ustruct.html"><code class="docutils literal notranslate"><span class="pre">ustruct</span></code> – pack and unpack primitive data types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ustruct.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="utime.html"><code class="docutils literal notranslate"><span class="pre">utime</span></code> – 时间相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utime.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uzlib.html"><code class="docutils literal notranslate"><span class="pre">uzlib</span></code> – zlib decompression</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uzlib.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#id1">MicroPython-专有库</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="btree.html"><code class="docutils literal notranslate"><span class="pre">btree</span></code> – 简单的 BTree 数据库</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#methods">Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="framebuf.html"><code class="docutils literal notranslate"><span class="pre">framebuf</span></code> — 帧缓冲操作</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#class-framebuffer">class FrameBuffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#drawing-primitive-shapes">Drawing primitive shapes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#drawing-text">Drawing text</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#other-methods">Other methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="machine.html"><code class="docutils literal notranslate"><span class="pre">machine</span></code> — 与硬件相关的功能</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id1">复位相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id2">中断相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id3">电源相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id4">其他函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#machine-constants">常量</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id6">类</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">micropython</span></code> – access and control MicroPython internals</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="network.html"><code class="docutils literal notranslate"><span class="pre">network</span></code> — network configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="network.html#common-network-adapter-interface">Common network adapter interface</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uctypes.html"><code class="docutils literal notranslate"><span class="pre">uctypes</span></code> – access binary data in a structured way</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#defining-structure-layout">Defining structure layout</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#structure-descriptors-and-instantiating-structure-objects">Structure descriptors and instantiating structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#structure-objects">Structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#limitations">Limitations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">MicroPython 语法</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">MicroPython 语法</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">handPy掌控</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">MicroPython 库</a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">micropython</span></code> – access and control MicroPython internals</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/library/micropython.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-micropython">
+<span id="micropython-access-and-control-micropython-internals"></span><h1><a class="reference internal" href="#module-micropython" title="micropython: access and control MicroPython internals"><code class="xref py py-mod docutils literal notranslate"><span class="pre">micropython</span></code></a> – access and control MicroPython internals<a class="headerlink" href="#module-micropython" title="永久链接至标题">¶</a></h1>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="永久链接至标题">¶</a></h2>
+<dl class="function">
+<dt id="micropython.const">
+<code class="descclassname">micropython.</code><code class="descname">const</code><span class="sig-paren">(</span><em>expr</em><span class="sig-paren">)</span><a class="headerlink" href="#micropython.const" title="永久链接至目标">¶</a></dt>
+<dd><p>Used to declare that the expression is a constant so that the compile can
+optimise it.  The use of this function should be as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">micropython</span> <span class="k">import</span> <span class="n">const</span>
+
+<span class="n">CONST_X</span> <span class="o">=</span> <span class="n">const</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">CONST_Y</span> <span class="o">=</span> <span class="n">const</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">CONST_X</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Constants declared this way are still accessible as global variables from
+outside the module they are declared in.  On the other hand, if a constant
+begins with an underscore then it is hidden, it is not available as a global
+variable, and does not take up any memory during execution.</p>
+<p>This <cite>const</cite> function is recognised directly by the MicroPython parser and is
+provided as part of the <a class="reference internal" href="#module-micropython" title="micropython: access and control MicroPython internals"><code class="xref py py-mod docutils literal notranslate"><span class="pre">micropython</span></code></a> module mainly so that scripts can be
+written which run under both CPython and MicroPython, by following the above
+pattern.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="micropython.opt_level">
+<code class="descclassname">micropython.</code><code class="descname">opt_level</code><span class="sig-paren">(</span><span class="optional">[</span><em>level</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#micropython.opt_level" title="永久链接至目标">¶</a></dt>
+<dd><p>If <em>level</em> is given then this function sets the optimisation level for subsequent
+compilation of scripts, and returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.  Otherwise it returns the current
+optimisation level.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="micropython.alloc_emergency_exception_buf">
+<code class="descclassname">micropython.</code><code class="descname">alloc_emergency_exception_buf</code><span class="sig-paren">(</span><em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#micropython.alloc_emergency_exception_buf" title="永久链接至目标">¶</a></dt>
+<dd><p>Allocate <em>size</em> bytes of RAM for the emergency exception buffer (a good
+size is around 100 bytes).  The buffer is used to create exceptions in cases
+when normal RAM allocation would fail (eg within an interrupt handler) and
+therefore give useful traceback information in these situations.</p>
+<p>A good way to use this function is to put it at the start of your main script
+(eg <code class="docutils literal notranslate"><span class="pre">boot.py</span></code> or <code class="docutils literal notranslate"><span class="pre">main.py</span></code>) and then the emergency exception buffer will be active
+for all the code following it.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="micropython.mem_info">
+<code class="descclassname">micropython.</code><code class="descname">mem_info</code><span class="sig-paren">(</span><span class="optional">[</span><em>verbose</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#micropython.mem_info" title="永久链接至目标">¶</a></dt>
+<dd><p>Print information about currently used memory.  If the <em>verbose</em> argument
+is given then extra information is printed.</p>
+<p>The information that is printed is implementation dependent, but currently
+includes the amount of stack and heap used.  In verbose mode it prints out
+the entire heap indicating which blocks are used and which are free.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="micropython.qstr_info">
+<code class="descclassname">micropython.</code><code class="descname">qstr_info</code><span class="sig-paren">(</span><span class="optional">[</span><em>verbose</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#micropython.qstr_info" title="永久链接至目标">¶</a></dt>
+<dd><p>Print information about currently interned strings.  If the <em>verbose</em>
+argument is given then extra information is printed.</p>
+<p>The information that is printed is implementation dependent, but currently
+includes the number of interned strings and the amount of RAM they use.  In
+verbose mode it prints out the names of all RAM-interned strings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="micropython.stack_use">
+<code class="descclassname">micropython.</code><code class="descname">stack_use</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#micropython.stack_use" title="永久链接至目标">¶</a></dt>
+<dd><p>Return an integer representing the current amount of stack that is being
+used.  The absolute value of this is not particularly useful, rather it
+should be used to compute differences in stack usage at different points.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="micropython.heap_lock">
+<code class="descclassname">micropython.</code><code class="descname">heap_lock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#micropython.heap_lock" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="micropython.heap_unlock">
+<code class="descclassname">micropython.</code><code class="descname">heap_unlock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#micropython.heap_unlock" title="永久链接至目标">¶</a></dt>
+<dd><p>Lock or unlock the heap.  When locked no memory allocation can occur and a
+<cite>MemoryError</cite> will be raised if any heap allocation is attempted.</p>
+<p>These functions can be nested, ie <cite>heap_lock()</cite> can be called multiple times
+in a row and the lock-depth will increase, and then <cite>heap_unlock()</cite> must be
+called the same number of times to make the heap available again.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="micropython.kbd_intr">
+<code class="descclassname">micropython.</code><code class="descname">kbd_intr</code><span class="sig-paren">(</span><em>chr</em><span class="sig-paren">)</span><a class="headerlink" href="#micropython.kbd_intr" title="永久链接至目标">¶</a></dt>
+<dd><p>Set the character that will raise a <cite>KeyboardInterrupt</cite> exception.  By
+default this is set to 3 during script execution, corresponding to Ctrl-C.
+Passing -1 to this function will disable capture of Ctrl-C, and passing 3
+will restore it.</p>
+<p>This function can be used to prevent the capturing of Ctrl-C on the
+incoming stream of characters that is usually used for the REPL, in case
+that stream is used for other purposes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="micropython.schedule">
+<code class="descclassname">micropython.</code><code class="descname">schedule</code><span class="sig-paren">(</span><em>func</em>, <em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#micropython.schedule" title="永久链接至目标">¶</a></dt>
+<dd><p>Schedule the function <em>func</em> to be executed “very soon”.  The function
+is passed the value <em>arg</em> as its single argument.  “Very soon” means that
+the MicroPython runtime will do its best to execute the function at the
+earliest possible time, given that it is also trying to be efficient, and
+that the following conditions hold:</p>
+<ul class="simple">
+<li>A scheduled function will never preempt another scheduled function.</li>
+<li>Scheduled functions are always executed “between opcodes” which means
+that all fundamental Python operations (such as appending to a list)
+are guaranteed to be atomic.</li>
+<li>A given port may define “critical regions” within which scheduled
+functions will never be executed.  Functions may be scheduled within
+a critical region but they will not be executed until that region
+is exited.  An example of a critical region is a preempting interrupt
+handler (an IRQ).</li>
+</ul>
+<p>A use for this function is to schedule a callback from a preempting IRQ.
+Such an IRQ puts restrictions on the code that runs in the IRQ (for example
+the heap may be locked) and scheduling a function to call later will lift
+those restrictions.</p>
+<p>There is a finite stack to hold the scheduled functions and <cite>schedule</cite>
+will raise a <cite>RuntimeError</cite> if the stack is full.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="network.html" class="btn btn-neutral float-right" title="network — network configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="machine.SD.html" class="btn btn-neutral" title="class SD – secure digital memory card" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, labplus.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            LANGUAGE:'zh_CN',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

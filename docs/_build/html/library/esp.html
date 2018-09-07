@@ -1,0 +1,458 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>esp — functions related to the ESP8266 &mdash; handPy掌控 0.1 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">handPy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inc/introduction.html">handPy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">handPy快速入门教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class1.html">Class1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class2.html">Class2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class3.html">Class3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/class4.html">Class4</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">MicroPython 库</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-micro">Python 标准库 和 micro-库</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="builtins.html">内置函数和异常</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="builtins.html#functions-and-types">Functions and types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="builtins.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="array.html"><code class="docutils literal notranslate"><span class="pre">array</span></code> – 数值数组</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="array.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gc.html"><code class="docutils literal notranslate"><span class="pre">gc</span></code> –  控制垃圾收集器</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gc.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="math.html"><code class="docutils literal notranslate"><span class="pre">math</span></code> – 数学运算函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="math.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="math.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sys.html"><code class="docutils literal notranslate"><span class="pre">sys</span></code> – 系统特定功能</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sys.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sys.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ubinascii.html"><code class="docutils literal notranslate"><span class="pre">ubinascii</span></code> – 二进制/ ASCII转换</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ubinascii.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ucollections.html"><code class="docutils literal notranslate"><span class="pre">ucollections</span></code> – 集合和容器类型</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ucollections.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uerrno.html"><code class="docutils literal notranslate"><span class="pre">uerrno</span></code> – 系统错误代码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uerrno.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uhashlib.html"><code class="docutils literal notranslate"><span class="pre">uhashlib</span></code> – 散列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uhashlib.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uhashlib.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uheapq.html"><code class="docutils literal notranslate"><span class="pre">uheapq</span></code> – 堆队列算法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uheapq.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uio.html"><code class="docutils literal notranslate"><span class="pre">uio</span></code> – 输入/输出流</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#conceptual-hierarchy">Conceptual hierarchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uio.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ujson.html"><code class="docutils literal notranslate"><span class="pre">ujson</span></code> – JSON 编码和解码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ujson.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uos.html"><code class="docutils literal notranslate"><span class="pre">uos</span></code> – 基本的“操作系统”服务</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uos.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ure.html"><code class="docutils literal notranslate"><span class="pre">ure</span></code> – 简单的正则表达式</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#regex-objects">Regex objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ure.html#match-objects">Match objects</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uselect.html"><code class="docutils literal notranslate"><span class="pre">uselect</span></code> – wait for events on a set of streams</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uselect.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uselect.html#class-poll">class <code class="docutils literal notranslate"><span class="pre">Poll</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="usocket.html"><code class="docutils literal notranslate"><span class="pre">usocket</span></code> – socket module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#socket-address-format-s">Socket address format(s)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#constants">Constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ussl.html"><code class="docutils literal notranslate"><span class="pre">ussl</span></code> – SSL/TLS module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#exceptions">Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ussl.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ustruct.html"><code class="docutils literal notranslate"><span class="pre">ustruct</span></code> – pack and unpack primitive data types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ustruct.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="utime.html"><code class="docutils literal notranslate"><span class="pre">utime</span></code> – 时间相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utime.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uzlib.html"><code class="docutils literal notranslate"><span class="pre">uzlib</span></code> – zlib decompression</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uzlib.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#id1">MicroPython-专有库</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="btree.html"><code class="docutils literal notranslate"><span class="pre">btree</span></code> – 简单的 BTree 数据库</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#methods">Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="btree.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="framebuf.html"><code class="docutils literal notranslate"><span class="pre">framebuf</span></code> — 帧缓冲操作</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#class-framebuffer">class FrameBuffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#drawing-primitive-shapes">Drawing primitive shapes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#drawing-text">Drawing text</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#other-methods">Other methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="framebuf.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="machine.html"><code class="docutils literal notranslate"><span class="pre">machine</span></code> — 与硬件相关的功能</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id1">复位相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id2">中断相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id3">电源相关函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id4">其他函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#machine-constants">常量</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#id6">类</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="micropython.html"><code class="docutils literal notranslate"><span class="pre">micropython</span></code> – access and control MicroPython internals</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="micropython.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="network.html"><code class="docutils literal notranslate"><span class="pre">network</span></code> — network configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="network.html#common-network-adapter-interface">Common network adapter interface</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uctypes.html"><code class="docutils literal notranslate"><span class="pre">uctypes</span></code> – access binary data in a structured way</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#defining-structure-layout">Defining structure layout</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#structure-descriptors-and-instantiating-structure-objects">Structure descriptors and instantiating structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#structure-objects">Structure objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uctypes.html#limitations">Limitations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">MicroPython 语法</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">MicroPython 语法</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">handPy掌控</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">esp</span></code> — functions related to the ESP8266</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/library/esp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-esp">
+<span id="esp-functions-related-to-the-esp8266"></span><h1><a class="reference internal" href="#module-esp" title="esp: functions related to the ESP8266"><code class="xref py py-mod docutils literal notranslate"><span class="pre">esp</span></code></a> — functions related to the ESP8266<a class="headerlink" href="#module-esp" title="永久链接至标题">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">esp</span></code> module contains specific functions related to the ESP8266 module.</p>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="永久链接至标题">¶</a></h2>
+<dl class="function">
+<dt id="esp.sleep_type">
+<code class="descclassname">esp.</code><code class="descname">sleep_type</code><span class="sig-paren">(</span><span class="optional">[</span><em>sleep_type</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#esp.sleep_type" title="永久链接至目标">¶</a></dt>
+<dd><p>Get or set the sleep type.</p>
+<p>If the <em>sleep_type</em> parameter is provided, sets the sleep type to its
+value. If the function is called without parameters, returns the current
+sleep type.</p>
+<p>The possible sleep types are defined as constants:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">SLEEP_NONE</span></code> – all functions enabled,</li>
+<li><code class="docutils literal notranslate"><span class="pre">SLEEP_MODEM</span></code> – modem sleep, shuts down the WiFi Modem circuit.</li>
+<li><code class="docutils literal notranslate"><span class="pre">SLEEP_LIGHT</span></code> – light sleep, shuts down the WiFi Modem circuit
+and suspends the processor periodically.</li>
+</ul>
+</div></blockquote>
+<p>The system enters the set sleep mode automatically when possible.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="esp.deepsleep">
+<code class="descclassname">esp.</code><code class="descname">deepsleep</code><span class="sig-paren">(</span><em>time=0</em><span class="sig-paren">)</span><a class="headerlink" href="#esp.deepsleep" title="永久链接至目标">¶</a></dt>
+<dd><p>Enter deep sleep.</p>
+<p>The whole module powers down, except for the RTC clock circuit, which can
+be used to restart the module after the specified time if the pin 16 is
+connected to the reset pin. Otherwise the module will sleep until manually
+reset.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="esp.flash_id">
+<code class="descclassname">esp.</code><code class="descname">flash_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#esp.flash_id" title="永久链接至目标">¶</a></dt>
+<dd><p>Read the device ID of the flash memory.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="esp.flash_read">
+<code class="descclassname">esp.</code><code class="descname">flash_read</code><span class="sig-paren">(</span><em>byte_offset</em>, <em>length_or_buffer</em><span class="sig-paren">)</span><a class="headerlink" href="#esp.flash_read" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="esp.flash_write">
+<code class="descclassname">esp.</code><code class="descname">flash_write</code><span class="sig-paren">(</span><em>byte_offset</em>, <em>bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#esp.flash_write" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="esp.flash_erase">
+<code class="descclassname">esp.</code><code class="descname">flash_erase</code><span class="sig-paren">(</span><em>sector_no</em><span class="sig-paren">)</span><a class="headerlink" href="#esp.flash_erase" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="esp.set_native_code_location">
+<code class="descclassname">esp.</code><code class="descname">set_native_code_location</code><span class="sig-paren">(</span><em>start</em>, <em>length</em><span class="sig-paren">)</span><a class="headerlink" href="#esp.set_native_code_location" title="永久链接至目标">¶</a></dt>
+<dd><p>Set the location that native code will be placed for execution after it is
+compiled.  Native code is emitted when the <code class="docutils literal notranslate"><span class="pre">&#64;micropython.native</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&#64;micropython.viper</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;micropython.asm_xtensa</span></code> decorators are applied
+to a function.  The ESP8266 must execute code from either iRAM or the lower
+1MByte of flash (which is memory mapped), and this function controls the
+location.</p>
+<p>If <em>start</em> and <em>length</em> are both <code class="docutils literal notranslate"><span class="pre">None</span></code> then the native code location is
+set to the unused portion of memory at the end of the iRAM1 region.  The
+size of this unused portion depends on the firmware and is typically quite
+small (around 500 bytes), and is enough to store a few very small
+functions.  The advantage of using this iRAM1 region is that it does not
+get worn out by writing to it.</p>
+<p>If neither <em>start</em> nor <em>length</em> are <code class="docutils literal notranslate"><span class="pre">None</span></code> then they should be integers.
+<em>start</em> should specify the byte offset from the beginning of the flash at
+which native code should be stored.  <em>length</em> specifies how many bytes of
+flash from <em>start</em> can be used to store native code.  <em>start</em> and <em>length</em>
+should be multiples of the sector size (being 4096 bytes).  The flash will
+be automatically erased before writing to it so be sure to use a region of
+flash that is not otherwise used, for example by the firmware or the
+filesystem.</p>
+<p>When using the flash to store native code <em>start+length</em> must be less
+than or equal to 1MByte.  Note that the flash can be worn out if repeated
+erasures (and writes) are made so use this feature sparingly.
+In particular, native code needs to be recompiled and rewritten to flash
+on each boot (including wake from deepsleep).</p>
+<p>In both cases above, using iRAM1 or flash, if there is no more room left
+in the specified region then the use of a native decorator on a function
+will lead to <cite>MemoryError</cite> exception being raised during compilation of
+that function.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, labplus.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            LANGUAGE:'zh_CN',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

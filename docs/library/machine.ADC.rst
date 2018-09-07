@@ -1,10 +1,10 @@
 .. currentmodule:: machine
 .. _machine.ADC:
 
-class ADC -- analog to digital conversion
+类 ADC -- 模数转换
 =========================================
 
-Usage::
+示例::
 
    import machine
 
@@ -12,15 +12,14 @@ Usage::
    apin = adc.channel(pin='GP3')   # create an analog pin on GP3
    val = apin()                    # read an analog value
 
-Constructors
+构建函数
 ------------
 
 .. class:: ADC(id=0, \*, bits=12)
 
-   Create an ADC object associated with the given pin.
-   This allows you to then read analog values on that pin.
-   For more info check the `pinout and alternate functions
-   table. <https://raw.githubusercontent.com/wipy/wipy/master/docs/PinOUT.png>`_ 
+创建与设定引脚关联的ADC对象。这样您就可以读取该引脚上的模拟值。
+
+有关更多信息，请查看 `ESP32引脚功能表. <../../../images/esp32_pinout.png>`_ 
 
    .. warning:: 
 
