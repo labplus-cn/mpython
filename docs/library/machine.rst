@@ -23,6 +23,7 @@
 
    machine.Pin.rst
    machine.ADC.rst 
+   machine.TouchPad.rst
    machine.PWM.rst
    machine.UART.rst
    machine.I2C.rst

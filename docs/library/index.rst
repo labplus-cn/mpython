@@ -32,7 +32,7 @@ MicroPython 库
 
 在一些端口上，您可以发现可用的内置库，可以通过在REPL中输入以下内容来导入::
 
-    help('modules')
+    >>> help('modules')
 
 
 除了本文档中描述的内置库之外，在 :term:`micropython-lib`  中还可以找到来自Python标准库的更多模块以及对它的进一步微Python扩展。
@@ -92,6 +92,6 @@ MicroPython-ESP32专有库
    btree.rst
    framebuf.rst
    machine.rst
-   micropython.rst
    network.rst
    uctypes.rst
+   micropython.rst

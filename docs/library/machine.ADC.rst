@@ -12,12 +12,7 @@
 
 创建与设定引脚关联的ADC对象。这样您就可以读取该引脚上的模拟值。
 
-.. Attention::
-
-      ADC在专用引脚上可用，ESP32可用引脚有： ``GPIO36`` / ``ADC1_CH0`` 、``GPIO39`` / ``ADC1_CH3`` 、``GPIO34``/``ADC1_CH6``、``GPIO35``/``ADC1_CH7``、
-      ``GPIO32``/``ADC1_CH4``、``GPIO33``/``ADC1_CH5``，可测电压范围为0~3.3V。
-
-有关更多信息，请查看 `ESP32引脚功能表. <../../../images/esp32_pinout.png>`_ 
+ - ``Pin``  ADC在专用引脚上可用，ESP32可用引脚有： ``GPIO36`` / ``ADC1_CH0`` 、``GPIO39`` / ``ADC1_CH3`` 、``GPIO34``/``ADC1_CH6``、``GPIO35``/``ADC1_CH7``、``GPIO32``/``ADC1_CH4``、``GPIO33``/``ADC1_CH5``，可测电压范围为0~3.3V。有关更多信息，请查看 `ESP32引脚功能表. <../../../images/esp32_pinout.png>`_ 
 
 示例::
 
@@ -62,18 +57,42 @@
 
 衰减比
 ````````
+.. data:: ADC.ATTN_0DB
 
-- ``ADC.ATTN_0DB`` 等于0,满量程：1.2v
-- ``ADC.ATTN_2_5DB`` 等于1,满量程：1.5v
-- ``ADC.ATTN_6DB`` 等于2,满量程：2.0v
-- ``ADC.ATTN_11DB`` 等于3,满量程：3.3v
+等于0,满量程：1.2v
+
+.. data:: ADC.ATTN_2_5DB
+
+等于1,满量程：1.5v
+
+.. data:: ADC.ATTN_6DB
+
+等于2,满量程：2.0v
+
+.. data:: ADC.ATTN_11DB
+
+等于3,满量程：3.3v
+
 
 数据宽度
 ````````
-- ``ADC.WIDTH_9BIT`` 等于0，9位数据宽度， 即满量程0x1ff(511)
-- ``ADC.WIDTH_10BIT`` 等于1，10位数据宽度， 即满量程0x7ff(2047)
-- ``ADC.WIDTH_11BIT`` 等于2，11位数据宽度， 即满量程0x3ff(1023)
-- ``ADC.WIDTH_12BIT`` 等于3，12位数据宽度， 即满量程0xfff(4095)
+.. data:: ADC.WIDTH_9BIT
+
+等于0，9位数据宽度， 即满量程0x1ff(511)
+
+.. data:: ADC.WIDTH_10BIT
+
+等于1，10位数据宽度， 即满量程0x7ff(2047)
+
+.. data:: ADC.WIDTH_11BIT
+
+等于2，11位数据宽度， 即满量程0x3ff(1023)
+
+.. data:: ADC.WIDTH_12BIT
+
+等于3，12位数据宽度， 即满量程0xfff(4095)
+
+
 
 
 
