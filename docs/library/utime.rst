@@ -1,12 +1,12 @@
-:mod:`utime` -- 时间相关函数
+:mod:`time` -- 时间相关函数
 ======================================
 
-.. module:: utime
+.. module:: time
    :synopsis: 时间相关函数
 
 这个模块实现了相应 :term:`CPython` 模块的一个子集，如下所述。有关更多信息，请参阅原始CPython文档: `time <https://docs.python.org/3.5/library/time.html#module-time>`_
 
-The ``utime`` module provides functions for getting the current time and date,
+The ``time`` module provides functions for getting the current time and date,
 measuring time intervals, and for delays.
 
 **Time Epoch**: Unix port uses standard for POSIX systems epoch of
@@ -104,7 +104,7 @@ Functions
    in the system. This is usually CPU clocks, and that's why the function is named that
    way. But it doesn't have to be a CPU clock, some other timing source available in a
    system (e.g. high-resolution timer) can be used instead. The exact timing unit
-   (resolution) of this function is not specified on ``utime`` module level, but
+   (resolution) of this function is not specified on ``time`` module level, but
    documentation for a specific port may provide more specific information. This
    function is intended for very fine benchmarking or very tight real-time loops.
    Avoid using it in portable code.

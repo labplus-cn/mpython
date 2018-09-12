@@ -39,7 +39,7 @@
  pwm.init(1000, 500)
 
 
-.. method:: freq([freq_val])
+.. method:: PWM.freq([freq_val])
 
 当没有参数时，函数获得并返回PWM频率。当设置参数时，函数用来设置PWM频率，无返回值。
 

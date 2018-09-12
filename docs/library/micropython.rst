@@ -1,116 +1,162 @@
-:mod:`micropython` -- access and control MicroPython internals
+:mod:`micropython` -- 访问和控制MicroPython内部
 ==============================================================
 
 .. module:: micropython
-   :synopsis: access and control MicroPython internals
+   :synopsis: 访问和控制MicroPython内部
 
-Functions
+
+函数
 ---------
 
 .. function:: const(expr)
 
-   Used to declare that the expression is a constant so that the compile can
-   optimise it.  The use of this function should be as follows::
+  用于声明表达式是常量，以便编译可以优化它。该功能的使用应如下::
 
     from micropython import const
 
     CONST_X = const(123)
     CONST_Y = const(2 * CONST_X + 1)
+    print(CONST_X)
+    print(CONST_Y)
 
-   Constants declared this way are still accessible as global variables from
-   outside the module they are declared in.  On the other hand, if a constant
-   begins with an underscore then it is hidden, it is not available as a global
-   variable, and does not take up any memory during execution.
+  运行结果::
 
-   This `const` function is recognised directly by the MicroPython parser and is
-   provided as part of the :mod:`micropython` module mainly so that scripts can be
-   written which run under both CPython and MicroPython, by following the above
-   pattern.
+    >>>123
+    >>>247
+
+
+
+  以这种方式声明的常量仍可作为全局变量从它们声明的模块外部访问。另一方面，如果常量以下划线开头，则它被隐藏，
+  它不可用作全局变量，并且不会占用执行期间的任何内存。
+
+  此 ``const`` 函数由MicroPython解析器直接识别，并作为  :mod:`micropython`  模块的一部分提供，主要是通过遵循上述模式可以编写在
+  CPython和MicroPython下运行的脚本。
+
+
 
 .. function:: opt_level([level])
 
-   If *level* is given then this function sets the optimisation level for subsequent
-   compilation of scripts, and returns ``None``.  Otherwise it returns the current
-   optimisation level.
+  如果水平给出那么这个函数设置脚本，并返回的后续编译优化级别 ``None`` 。否则返回当前优化级别。
+
+  优化级别控制以下编译功能:
+
+    * 断言:在0级断言语句被启用并编译成字节码; 在级别1和更高级别的断言未编译。
+    * 内置 ``__debug__`` 变量:在0级，此变量扩展为 ``True``; 在1级和更高级别，它扩展到 ``False``。
+    * 源代码行号:在0,1和2级源代码行号与字节码一起存储，以便异常可以报告它们出现的行号; 在级别3和更高的行号不存储。
+
+  默认优化级别通常为0级。
 
 .. function:: alloc_emergency_exception_buf(size)
 
-   Allocate *size* bytes of RAM for the emergency exception buffer (a good
-   size is around 100 bytes).  The buffer is used to create exceptions in cases
-   when normal RAM allocation would fail (eg within an interrupt handler) and
-   therefore give useful traceback information in these situations.
+  设置紧急情况下的（栈溢出，普通RAM不足等）保险RAM分配，使在紧急情况下仍有RAM可用。
 
-   A good way to use this function is to put it at the start of your main script
-   (eg ``boot.py`` or ``main.py``) and then the emergency exception buffer will be active
-   for all the code following it.
+    - ``size``:保险剩余RAM的大小，一般为100
+
+
+  使用此函数的一种好方法是将它放在主脚本的开头（例如 ``boot.py`` 或 ``main.py`` ），
+  然后紧急异常缓冲区将对其后的所有代码生效。
+
 
 .. function:: mem_info([verbose])
 
-   Print information about currently used memory.  If the *verbose* argument
-   is given then extra information is printed.
+  函数说明： 打印当前内存使用的情况（包括栈和堆的使用量）。
 
-   The information that is printed is implementation dependent, but currently
-   includes the amount of stack and heap used.  In verbose mode it prints out
-   the entire heap indicating which blocks are used and which are free.
+  .. 注意::
+
+      如果给出参数level（任何数据类型），则打印出更加详细的信息，它会打印整个堆，指示哪些内存块被使用，哪些内存是空闲的。 
+
+  不给参数::
+
+    >>>micropython.mem_info()
+    stack: 736 out of 15360
+    GC: total: 48000, used: 7984, free: 40016
+    No. of 1-blocks: 72, 2-blocks: 31, max blk sz: 264, max free sz: 2492
+    >>>
+
+  给定参数::
+
+      >>>micropython.mem_info("level")
+    stack: 752 out of 15360
+    GC: total: 48000, used: 8400, free: 39600
+    No. of 1-blocks: 82, 2-blocks: 36, max blk sz: 264, max free sz: 2466
+    GC memory layout; from 3ffc4930:
+    00000: h=ShhBMh=DhBhDBBBBhAh===h===Ahh==h==============================
+    00400: ================================================================
+    00800: ================================================================
+    00c00: ================================================================
+    01000: =========================================hBh==Ah=ShShhThhAh=BhBh
+    01400: hhBhTShh=h==h=hh=Bh=BDhhh=hh=Bh=hh=Bh=BhBh=hh=hh=h===h=Bhh=h=BhB
+    01800: h=hh=h=Bh=hBh=h=hBh=h=hBh=h=h=hh=======h========================
+    01c00: ============================================Bh=hBhTh==hh=hh=Sh=h
+    02000: h==Bh=B..h...h==....h=..........................................
+          (37 lines all free)
+    0b800: ........................................................
+    >>>
 
 .. function:: qstr_info([verbose])
 
-   Print information about currently interned strings.  If the *verbose*
-   argument is given then extra information is printed.
+  打印当前所有已使用的字符串在内存中的个数，占用内存大小等信息。
 
-   The information that is printed is implementation dependent, but currently
-   includes the number of interned strings and the amount of RAM they use.  In
-   verbose mode it prints out the names of all RAM-interned strings.
+  .. 注意::
+
+    如果给出参数，则打印出具体的字符串信息。打印的信息是依赖于实际情况的，包括被录入的字符串数量和它们使用的RAM的数量。
+    在详细模式中，它打印出所有字符串的名称。 
+
+  不给参数::
+
+    >>>micropython.qstr_info()  
+    qstr pool: n_pool=1, n_qstr=4, n_str_data_bytes=31, n_total_bytes=1135
+    >>>
+    
+  给定参数::
+
+    >>>micropython.qstr_info("level")  
+    qstr pool: n_pool=1, n_qstr=4, n_str_data_bytes=31, n_total_bytes=1135
+    Q(b)
+    Q(2)
+    Q(asdfa222)
+    Q(level)
+    >>>
 
 .. function:: stack_use()
 
-   Return an integer representing the current amount of stack that is being
-   used.  The absolute value of this is not particularly useful, rather it
-   should be used to compute differences in stack usage at different points.
+  返回一个整数，表示当前正在使用的堆栈量。这个绝对值并不是特别有用，而应该用它来计算不同点的堆栈使用差异。
+
+  示例::
+
+    >>>micropython.stack_use()
+    720
 
 .. function:: heap_lock()
+
+  锁定堆，当堆被锁定时，任何操作都不会分配内存 。如果尝试内存分配操作，则会产生MemoryError错误。。
+
+  
+
 .. function:: heap_unlock()
 
-   Lock or unlock the heap.  When locked no memory allocation can occur and a
-   `MemoryError` will be raised if any heap allocation is attempted.
-
-   These functions can be nested, ie `heap_lock()` can be called multiple times
-   in a row and the lock-depth will increase, and then `heap_unlock()` must be
-   called the same number of times to make the heap available again.
+  解锁堆
 
 .. function:: kbd_intr(chr)
 
-   Set the character that will raise a `KeyboardInterrupt` exception.  By
-   default this is set to 3 during script execution, corresponding to Ctrl-C.
-   Passing -1 to this function will disable capture of Ctrl-C, and passing 3
-   will restore it.
+  设置将引发KeyboardInterrupt异常的字符。默认情况下，在脚本执行期间将其设置为3，对应于Ctrl-C。
+  将-1传递给此函数将禁用Ctrl-C的捕获，传递3将恢复它。
 
-   This function can be used to prevent the capturing of Ctrl-C on the
-   incoming stream of characters that is usually used for the REPL, in case
-   that stream is used for other purposes.
+  如果该流用于其他目的，此函数可用于防止在通常用于REPL的传入字符流上捕获Ctrl-C。
 
 .. function:: schedule(func, arg)
 
-   Schedule the function *func* to be executed "very soon".  The function
-   is passed the value *arg* as its single argument.  "Very soon" means that
-   the MicroPython runtime will do its best to execute the function at the
-   earliest possible time, given that it is also trying to be efficient, and
-   that the following conditions hold:
+  安排函数func “很快”执行。该函数传递值arg作为其单个参数。“很快”意味着MicroPython运行时将尽最大努力在尽可能早的时间执行该功能，
+  因为它也试图提高效率，并且以下条件成立：
 
-   - A scheduled function will never preempt another scheduled function.
-   - Scheduled functions are always executed "between opcodes" which means
-     that all fundamental Python operations (such as appending to a list)
-     are guaranteed to be atomic.
-   - A given port may define "critical regions" within which scheduled
-     functions will never be executed.  Functions may be scheduled within
-     a critical region but they will not be executed until that region
-     is exited.  An example of a critical region is a preempting interrupt
-     handler (an IRQ).
+  - 预定的功能永远不会抢占另一个预定的功能。
+  - 计划函数总是在“操作码之间”执行，这意味着所有基本的Python操作（例如附加到列表）都保证是原子的。
+  - 给定端口可以定义“关键区域”，在该区域内永远不会执行调度函数。可以在关键区域内安排功能，但在退出该区域之前不会执行这些功能。关键区域的示例是抢占中断处理程序（IRQ）。
 
-   A use for this function is to schedule a callback from a preempting IRQ.
-   Such an IRQ puts restrictions on the code that runs in the IRQ (for example
-   the heap may be locked) and scheduling a function to call later will lift
-   those restrictions.
+  此功能的用途是从抢占IRQ安排回调。这样的IRQ限制了在IRQ中运行的代码（例如，堆可能被锁定），并且调度稍后调用的函数将解除这些限制。
 
-   There is a finite stack to hold the scheduled functions and `schedule`
-   will raise a `RuntimeError` if the stack is full.
+  注意：如果 ``schedule()`` 从抢占IRQ调用，则当不允许内存分配并且要传递的回调 ``schedule()`` 是绑定方法时，直接传递它将失败。这是因为创建对绑定方法的引用会导致内存分配。解决方案是在类构造函数中创建对方法的引用并将该引用传递给 ``schedule()`` 。
+  这里将在“创建Python对象”下的参考文档中详细讨论 。
+
+  有一个有限的堆栈来保存预定的函数，如果堆栈已满，``schedule()`` 则会引发一个 ``RuntimeError`` 。
+

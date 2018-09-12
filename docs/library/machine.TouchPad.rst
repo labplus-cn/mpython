@@ -30,7 +30,7 @@
 
 读取TouchPad的电平。若TouchPad接高电平则返回1，若接GND则返回0。 
 
-.. method:: config(value)
+.. method:: TouchPad.config(value)
 
 设置触摸板的标识。
 

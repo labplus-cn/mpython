@@ -4,6 +4,9 @@
 .. module:: sys
    :synopsis: 系统特定功能
 
+
+sys模块中提供了与MicroPython运行环境有关的函数和变量。
+
 这个模块实现了相应 :term:`CPython` 模块的一个子集，如下所述。有关更多信息，请参阅原始CPython文档: `sys <https://docs.python.org/3.5/library/sys.html#module-sys>`_
 
 Functions
@@ -11,113 +14,94 @@ Functions
 
 .. function:: exit(retval=0)
 
-   Terminate current program with a given exit code. Underlyingly, this
-   function raise as `SystemExit` exception. If an argument is given, its
-   value given as an argument to `SystemExit`.
+   使用给定的退出代码终止当前程序。在此基础上，此功能提升为 ``SystemExit`` 。如果给出一个参数，则将其值作为参数给出 ``SystemExit``  。
 
 .. function:: print_exception(exc, file=sys.stdout)
 
-   Print exception with a traceback to a file-like object *file* (or
-   `sys.stdout` by default).
 
-   .. admonition:: Difference to CPython
+    通过回溯到类文件对象文件（或 ``sys.stdout`` 默认情况下）来打印异常。
+
+   .. admonition:: 与CPython的区别
       :class: attention
 
-      This is simplified version of a function which appears in the
-      ``traceback`` module in CPython. Unlike ``traceback.print_exception()``,
-      this function takes just exception value instead of exception type,
-      exception value, and traceback object; *file* argument should be
-      positional; further arguments are not supported. CPython-compatible
-      ``traceback`` module can be found in `micropython-lib`.
+        这是 ``traceback``  CPython模块中出现的函数的简化版本 。与 ``traceback.print_exception()`` 此不同，此函数仅使用异常值而不是异常类型，异常值和回溯对象; file参数应该是位置的; 不支持其他参数。
+        ``traceback``  可以找到CPython兼容 模块 ``micropython-lib`` 。
 
-Constants
+常量
 ---------
 
 .. data:: argv
 
-   A mutable list of arguments the current program was started with.
+    当前程序启动的可变参数列表。
 
 .. data:: byteorder
 
-   The byte order of the system (``"little"`` or ``"big"``).
+    系统的字节顺序（ ``little`` 或 ``big`` ）。
 
 .. data:: implementation
 
-   Object with information about the current Python implementation. For
-   MicroPython, it has following attributes:
+    包含有关当前Python实现的信息的对象。对于MicroPython，它具有以下属性：
 
-   * *name* - string "micropython"
-   * *version* - tuple (major, minor, micro), e.g. (1, 7, 0)
+    * *name* - 字符串 "micropython"
+    * *version* - 元组 (major, minor, micro), e.g. (1, 7, 0)
 
-   This object is the recommended way to distinguish MicroPython from other
-   Python implementations (note that it still may not exist in the very
-   minimal ports).
+    这个方法推荐用来识别不同平台的MicroPython。
 
-   .. admonition:: Difference to CPython
-      :class: attention
 
-      CPython mandates more attributes for this object, but the actual useful
-      bare minimum is implemented in MicroPython.
+    示例::
+
+        >>> print(sys.implementation)
+        (name='micropython', version=(1, 9, 1))
 
 .. data:: maxsize
 
-   Maximum value which a native integer type can hold on the current platform,
-   or maximum value representable by MicroPython integer type, if it's smaller
-   than platform max value (that is the case for MicroPython ports without
-   long int support).
+    本机整数类型可以在当前平台上保存的最大值，或MicroPython整数类型可表示的最大值，如果它小于平台最大值
+    （对于没有长int支持的MicroPython端口的情况）。
 
-   This attribute is useful for detecting "bitness" of a platform (32-bit vs
-   64-bit, etc.). It's recommended to not compare this attribute to some
-   value directly, but instead count number of bits in it::
+    此属性对于检测平台的“位数”（32位与64位等）非常有用。建议不要直接将此属性与某个值进行比较，而是计算其中的位数::
 
-    bits = 0
-    v = sys.maxsize
-    while v:
-        bits += 1
-        v >>= 1
-    if bits > 32:
-        # 64-bit (or more) platform
-        ...
-    else:
-        # 32-bit (or less) platform
-        # Note that on 32-bit platform, value of bits may be less than 32
-        # (e.g. 31) due to peculiarities described above, so use "> 16",
-        # "> 32", "> 64" style of comparisons.
+        bits = 0
+        v = sys.maxsize
+        while v:
+            bits += 1
+            v >>= 1
+        if bits > 32:
+            # 64-bit (or more) platform
+            ...
+        else:
+            # 32-bit (or less) platform
+            # Note that on 32-bit platform, value of bits may be less than 32
+            # (e.g. 31) due to peculiarities described above, so use "> 16",
+            # "> 32", "> 64" style of comparisons.
 
 .. data:: modules
 
-   Dictionary of loaded modules. On some ports, it may not include builtin
-   modules.
+    已载入模块字典。在某些移植版中，它可能不包含在内建模块中。
 
 .. data:: path
 
-   A mutable list of directories to search for imported modules.
+    用于搜索导入模块的可变目录列表。
 
 .. data:: platform
 
-   The platform that MicroPython is running on. For OS/RTOS ports, this is
-   usually an identifier of the OS, e.g. ``"linux"``. For baremetal ports it
-   is an identifier of a board, e.g. ``"pyboard"`` for the original MicroPython
-   reference board. It thus can be used to distinguish one board from another.
-   If you need to check whether your program runs on MicroPython (vs other
-   Python implementation), use `sys.implementation` instead.
+   获取MicroPython运行的平台。
 
 .. data:: stderr
 
-   Standard error stream.
+  标准错误 ``stream``
 
 .. data:: stdin
 
-   Standard input stream.
+   标准输入 ``stream``
 
 .. data:: stdout
 
-   Standard output stream.
+   标准输出 ``stream``
 
 .. data:: version
 
-   Python language version that this implementation conforms to, as a string.
+    返回 MicroPython 语言版本，字符串
 
 .. data:: version_info
 
-   Python language version that this implementation conforms to, as a tuple of ints.
+   返回 MicroPython 语言版本，整形元组

@@ -95,3 +95,6 @@ MicroPython-ESP32专有库
    network.rst
    uctypes.rst
    micropython.rst
+   neopixel.rst
+   random.rst
+   dht.rst

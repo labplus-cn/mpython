@@ -6,17 +6,15 @@
 
 这个模块实现了相应 :term:`CPython` 模块的一个子集，如下所述。有关更多信息，请参阅原始CPython文档: `io <https://docs.python.org/3.5/library/io.html#module-io>`_
 
-This module contains additional types of stream (file-like) objects
-and helper functions.
+此模块包含其他类型的stream（类文件）对象和帮助程序函数。
 
-Conceptual hierarchy
+概念层次
 --------------------
 
-.. admonition:: Difference to CPython
+.. admonition:: 与CPython的区别
    :class: attention
 
-   Conceptual hierarchy of stream base classes is simplified in MicroPython,
-   as described in this section.
+   如本节所述，MicroPython中简化了流基类的概念层次结构。
 
 (Abstract) base stream classes, which serve as a foundation for behavior
 of all the concrete classes, adhere to few dichotomies (pair-wise
@@ -74,41 +72,35 @@ Note that for efficiency, MicroPython doesn't provide abstract base
 classes corresponding to the hierarchy above, and it's not possible
 to implement, or subclass, a stream class in pure Python.
 
-Functions
+函数
 ---------
 
 .. function:: open(name, mode='r', **kwargs)
 
-    Open a file. Builtin ``open()`` function is aliased to this function.
-    All ports (which provide access to file system) are required to support
-    `mode` parameter, but support for other arguments vary by port.
+   打开一个文件。内置open()函数是此函数的别名。
 
-Classes
+类
 -------
 
 .. class:: FileIO(...)
 
-    This is type of a file open in binary mode, e.g. using ``open(name, "rb")``.
-    You should not instantiate this class directly.
+    这是以二进制模式打开的文件类型，例如使用 ``open(name, "rb")`` 
+    您不应该直接实例化这个类。
 
 .. class:: TextIOWrapper(...)
 
-    This is type of a file open in text mode, e.g. using ``open(name, "rt")``.
-    You should not instantiate this class directly.
+    这是在文本模式下打开的文件类型，例如使用 ``open(name, "rt")`` 。
+    您不应该直接实例化这个类。
 
 .. class:: StringIO([string])
+
 .. class:: BytesIO([string])
 
-    In-memory file-like objects for input/output. `StringIO` is used for
-    text-mode I/O (similar to a normal file opened with "t" modifier).
-    `BytesIO` is used for binary-mode I/O (similar to a normal file
-    opened with "b" modifier). Initial contents of file-like objects
-    can be specified with `string` parameter (should be normal string
-    for `StringIO` or bytes object for `BytesIO`). All the usual file
-    methods like ``read()``, ``write()``, ``seek()``, ``flush()``,
-    ``close()`` are available on these objects, and additionally, a
-    following method:
+
+    用于输入/输出的内存文件类对象。 ``StringIO`` 用于文本模式I / O（类似于使用“t”修饰符打开的普通文件）。``BytesIO`` 用于二进制模式I ​​/ O（类似于使用“b”修饰符打开的普通文件）。可以使用字符串参数指定类文件对象的初始内容（应为普通字符串StringIO或字节对象BytesIO）。
+    所有常见的文件的方法，如 ``read()`` ， ``write()`` ， ``seek()`` ， ``flush()`` ， ``close()``  在这些对象上可用以下的方法:
+
 
     .. method:: getvalue()
 
-        Get the current contents of the underlying buffer which holds data.
+       获取保存数据的底层缓冲区的当前内容。

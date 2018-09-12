@@ -70,13 +70,18 @@ Functions and types
 
 .. class:: int()
 
-   .. classmethod:: from_bytes(bytes, byteorder)
+
+   .. method:: from_bytes(bytes, byteorder)
+
 
      在MicroPython中， `byteorder` 参数必须是位置的（这与CPython兼容）
+
 
    .. method:: to_bytes(size, byteorder)
 
+
      在MicroPython中， `byteorder` 参数必须是位置的（这与CPython兼容）
+     
 
 .. function:: isinstance()
 

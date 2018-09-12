@@ -1,8 +1,8 @@
-:mod:`gc` --  控制垃圾收集器
+:mod:`gc` --  回收内存碎片
 ==========================================
 
 .. module:: gc
-   :synopsis:  控制垃圾收集器
+   :synopsis:  回收内存碎片
 
 这个模块实现了相应 :term:`CPython` 模块的一个子集，如下所述。有关更多信息，请参阅原始CPython文档:`array <https://docs.python.org/3.5/library/gc.html#module-gc>`_.
 
@@ -11,16 +11,16 @@ Functions
 
 .. function:: enable()
 
-   启用自动垃圾收集.
+   启用自动回收内存碎片。
 
 .. function:: disable()
 
-  禁用自动垃圾收集。堆内存仍然可以分配，垃圾收集仍然可以使用 :meth:`gc.collect` 手动启动.
+  禁用自动回收。堆内存仍然可以分配，但可以通过 :meth:`gc.collect` 函数进行手动回收内存碎片。
 
 
 .. function:: collect()
 
-   运行垃圾收集.
+   回收内存碎片。
 
 .. function:: mem_alloc()
 
@@ -40,6 +40,10 @@ Functions
       :class: attention
 
        此功能是MicroPython扩展.
+
+.. function:: isenabled()
+
+  判断是否启动自动内存碎片收集。
 
 .. function:: threshold([amount])
 
