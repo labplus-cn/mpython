@@ -12,7 +12,7 @@
 
 创建与设定引脚关联的TouchPad对象。
 
- - ``Pin`` 可用引脚有：``GPIO4``、``GPIO0``、``GPIO2``、``GPIO15``、``GPIO13``、``GPIO12``、``GPIO14``、``GPIO27``、``GPIO33``、``GPIO32``。有关更多信息，请查看 `ESP32引脚功能表. <../../../images/esp32_pinout.png>`_ 
+ - ``Pin`` 可用引脚有：``GPIO4``、``GPIO0``、``GPIO2``、``GPIO15``、``GPIO13``、``GPIO12``、``GPIO14``、``GPIO27``、``GPIO33``、``GPIO32``。有关更多信息，请查看 `ESP32引脚功能表. <../../../images/pinout_wroom_pinout.png>`_ 
  
 
 示例::

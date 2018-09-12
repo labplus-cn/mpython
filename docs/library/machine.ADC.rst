@@ -12,7 +12,7 @@
 
 创建与设定引脚关联的ADC对象。这样您就可以读取该引脚上的模拟值。
 
- - ``Pin``  ADC在专用引脚上可用，ESP32可用引脚有： ``GPIO36`` / ``ADC1_CH0`` 、``GPIO39`` / ``ADC1_CH3`` 、``GPIO34``/``ADC1_CH6``、``GPIO35``/``ADC1_CH7``、``GPIO32``/``ADC1_CH4``、``GPIO33``/``ADC1_CH5``，可测电压范围为0~3.3V。有关更多信息，请查看 `ESP32引脚功能表. <../../../images/esp32_pinout.png>`_ 
+ - ``Pin``  ADC在专用引脚上可用，ESP32可用引脚有： ``GPIO36`` / ``ADC1_CH0`` 、``GPIO39`` / ``ADC1_CH3`` 、``GPIO34``/``ADC1_CH6``、``GPIO35``/``ADC1_CH7``、``GPIO32``/``ADC1_CH4``、``GPIO33``/``ADC1_CH5``，可测电压范围为0~3.3V。有关更多信息，请查看 `ESP32引脚功能表. <../../../images/pinout_wroom_pinout.png>`_ 
 
 示例::
 

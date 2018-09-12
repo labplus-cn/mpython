@@ -3,26 +3,32 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-handPy掌控
+handPy掌控文档
 ======================================
 
-MicroPython是Python 3编程语言的精简高效实现 ，包括Python标准库的一小部分，并且经过优化，可在微控制器和受限环境中运行。
+欢迎您，使用掌控！
 
-handPy掌控是一块MicroPython微控制器板。专为物联网设计，板载ESP-WROOM-32双核芯片，支持WiFi和蓝牙双模通信。
-板上集成1.3英寸OLED显示屏、加速度计、声、光传感器、蜂鸣器、2个物理按键、5个触摸按键。除此外，还有一个阻性输入接口，方便接入各种阻性传感器。
-丰富多样的传感器和小体积的尺寸、结合蓝牙和WiFi双无线通讯，可现实不同的物联网应用场景。
-
-MicroPython包含许多高级功能，如交互式提示，任意精度整数，闭包，列表理解，生成器，异常处理等。然而它非常紧凑，可以在仅256k的代码空间和16k的RAM内运行。
-
-MicroPython旨在尽可能与普通Python兼容，以便您轻松地将代码从桌面传输到微控制器或嵌入式系统。
+handPy掌控是一块MicroPython微控制器板，专为物联网设计。使用当下最流行的Python语言，以便您轻松地将代码从桌面传输到微控制器或嵌入式系统。
 
 .. image:: /images/掌控-动态.gif
+
+
+
+
+.. Hint::
+
+    我们已将掌控项目的软硬件资源分享至GitHub，供各位掌控爱好者学习阅览! GitHub：https://github.com/labplus-cn/handPy/
+
+.. Attention::
+
+     该项目正在积极开发中。由于ESP32仍然面向开发人员。并非所有外围设备都能完美使用，可能仍然存在一些bug，我们将会不断及时更新并修复。
 
 .. toctree::
    :maxdepth: 2
    :caption: handPy掌控
 
    board/introduction.rst
+   board/hw_overview.rst
 
    
 .. toctree::

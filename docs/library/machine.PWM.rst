@@ -14,7 +14,7 @@
 
 创建与设定引脚关联的PWM对象。这样您就可以写该引脚上的模拟值。
 
- - ``pin`` 支持PWM的引脚  ``GPIO0``、``GPIO2``、``GPIO4``、``GPIO5``、``GPIO10``、``GPIO12~19``、``GPIO21``、``GPIO22``、``GPIO23``、``GPIO25~27``。详见 `ESP32引脚功能表. <../../../images/esp32_pinout.png>`_ 
+ - ``pin`` 支持PWM的引脚  ``GPIO0``、``GPIO2``、``GPIO4``、``GPIO5``、``GPIO10``、``GPIO12~19``、``GPIO21``、``GPIO22``、``GPIO23``、``GPIO25~27``。详见 `ESP32引脚功能表. <../../../images/pinout_wroom_pinout.png>`_ 
  - ``freq`` 频率,0 < freq <= 78125
  - ``duty``  占空比, 0 ≤ duty ≤ 0x03FF (十进制：0 ≤ duty ≤ 1023)
 
