@@ -55,7 +55,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'handPy掌控'
+project = u'mPython掌控'
 copyright = u'2018, labplus'
 author = u'tangliufeng'
 
@@ -231,7 +231,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-   (master_doc, 'handPy.tex', u'handPy Documentation',
+   (master_doc, 'mPython.tex', u'mPython Documentation',
     u'eonwen', 'manual'),
 ]
 

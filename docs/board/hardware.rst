@@ -1,7 +1,7 @@
 硬件说明
 ====================
 
-handPy掌控是一块MicroPython微控制器板，很好的支持MicroPython/Python软件上功能。
+mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Python软件上功能。
 
 .. image:: /images/掌控-立2.png
 

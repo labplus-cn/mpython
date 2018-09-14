@@ -138,10 +138,10 @@
 
 示例::
 
-  >>> print(random.choice("handPy"))
-  d
-  >>> print(random.choice("handPy"))
-  y
+  >>> print(random.choice("mPython"))
+  m
+  >>> print(random.choice("mPython"))
+  n
   >>> print(random.choice([0, 2, 4, 3]))
   3
   >>> print(random.choice([0, 2, 4, 3]))

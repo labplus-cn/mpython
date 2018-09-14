@@ -1,21 +1,21 @@
-.. handPy掌控 documentation master file, created by
+.. mPython掌控板 documentation master file, created by
    sphinx-quickstart on Tue Aug 28 17:25:35 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-handPy掌控文档
+mPython掌控板文档
 ======================================
 
-欢迎您，使用掌控！
+欢迎您，使用掌控板！
 
-handPy掌控是一块MicroPython微控制器板，专为物联网设计。使用当下最流行的Python编程语言，以便您轻松地将代码从桌面传输到微控制器或嵌入式系统。
+mPython掌控板是一块MicroPython微控制器板，专为物联网设计。使用当下最流行的Python编程语言，以便您轻松地将代码从桌面传输到微控制器或嵌入式系统。
 
 .. image:: /images/掌控-动态.gif
 
 
 
-| GitHub: https://github.com/labplus-cn/handPy
-| handPy掌控在线文档: https://handpy.readthedocs.io
+| GitHub: https://github.com/labplus-cn/mPython
+| mPython掌控板在线文档: https://mPython.readthedocs.io
 
 .. Hint::
 
@@ -27,7 +27,7 @@ handPy掌控是一块MicroPython微控制器板，专为物联网设计。使用
 
 .. toctree::
    :maxdepth: 2
-   :caption: handPy掌控
+   :caption: mPython掌控板
 
    board/introduction.rst
    board/hardware.rst
@@ -36,7 +36,7 @@ handPy掌控是一块MicroPython微控制器板，专为物联网设计。使用
    
 .. toctree::
    :maxdepth: 1
-   :caption: 掌控快速入门教程
+   :caption: 掌控板快速入门教程
  
 
    tutorials/repl.rst

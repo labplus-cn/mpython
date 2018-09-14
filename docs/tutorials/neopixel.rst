@@ -2,16 +2,16 @@ NeoPixel彩带
 =====================
 
 
-handPy掌控板载3颗ws2812灯珠，WS2812是一种集成了电流控制芯片的低功耗的RGB三色灯。采用特殊的单线通讯方式控制rgb灯颜色，使用简单。
+mPython掌控板载3颗ws2812灯珠，WS2812是一种集成了电流控制芯片的低功耗的RGB三色灯。采用特殊的单线通讯方式控制rgb灯颜色，使用简单。
 
 板载RGB
 ----------
 
-控制handPy掌控上的3颗RGB， 首先导入handPy模块::
+控制mPython掌控上的3颗RGB， 首先导入mPython模块::
 
-    >>> from handPy import*
+    >>> from mPython import*
     
-.. Note:: 导入handPy模块后，会为掌控创建一个NeoPixel对象rgb,控制板载的RGB只需对rgb对象操作。
+.. Note:: 导入mPython模块后，会为掌控创建一个NeoPixel对象rgb,控制板载的RGB只需对rgb对象操作。
 
 
 设置每个像素点颜色::
