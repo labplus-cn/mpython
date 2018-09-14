@@ -116,11 +116,11 @@ The 3-tuples have the form *(name, type, inode)*:
 
 示例::
 
->>> os.listdir("./lib")
-['test.py']
->>> os.remove("./lib/test.py")
->>> os.listdir("./lib")
-[]
+  >>> os.listdir("./lib")
+  ['test.py']
+  >>> os.remove("./lib/test.py")
+  >>> os.listdir("./lib")
+  []
 
 
 

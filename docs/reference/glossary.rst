@@ -5,9 +5,8 @@
 .. glossary::
 
     baremetal
-        A system without (full-fledged) OS, like an :term:`MCU`. When
-        running on a baremetal system, MicroPython effectively becomes
-        its user-facing OS with a command interpreter (REPL).
+        没有（完全成熟的）OS的系统，例如基于 :term:`MCU` 的系统。
+        在裸机系统上运行时，MicroPython通过命令解释器（REPL）有效地成为面向用户的操作系统。
 
     board
         A PCB board. Oftentimes, the term is used to denote a particular
@@ -17,17 +16,10 @@
         :term:`Unix port <MicroPython Unix port>`).
 
     CPython
-        CPython is the reference implementation of Python programming
-        language, and the most well-known one, which most of the people
-        run. It is however one of many implementations (among which
-        Jython, IronPython, PyPy, and many more, including MicroPython).
-        As there is no formal specification of the Python language, only
-        CPython documentation, it is not always easy to draw a line
-        between Python the language and CPython its particular
-        implementation. This however leaves more freedom for other
-        implementations. For example, MicroPython does a lot of things
-        differently than CPython, while still aspiring to be a Python
-        language implementation.
+        CPython是Python编程语言的参考实现，也是大多数人运行的最着名的编程语言。
+        然而，它是众多实现中的一种（其中包括Jython，IronPython，PyPy等等，包括MicroPython）。
+        由于没有正式的Python语言规范，只有CPython文档，因此在Python语言和CPython的特定实现之间划一条线并不总是很容易。
+        然而，这为其他实现留下了更多的自由。例如，MicroPython做了很多与CPython不同的事情，同时仍然渴望成为Python语言实现。
 
     GPIO
         General-purpose input/output. The simplest means to control
@@ -43,10 +35,9 @@
         register).
 
     MCU
-        Microcontroller. Microcontrollers usually have much less resources
-        than a full-fledged computing system, but smaller, cheaper and
-        require much less power. MicroPython is designed to be small and
-        optimized enough to run on an average modern microcontroller.
+
+        微控制器。微控制器通常比完整的计算系统具有更少的资源，但更小，更便宜并且需要更少的功率。
+        MicroPython设计小巧，经过优化，足以在普通的现代微控制器上运行。
 
     micropython-lib
         MicroPython is (usually) distributed as a single executable/binary

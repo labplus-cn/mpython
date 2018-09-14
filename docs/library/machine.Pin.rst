@@ -36,7 +36,7 @@
 构造函数
 ------------
 
-.. class:: Pin(id, mode=-1, pull=-1, \*, value, drive, alt)
+.. class:: Pin(id, mode=1, pull=1, value, drive, alt)
 
   访问与给定相关的引脚外设（GPIO引脚） ``id`` 。如果在构造函数中给出了其他参数，则它们用于初始化引脚。
   未指定的任何设置将保持其先前的状态。
@@ -81,7 +81,7 @@
 方法
 -------
 
-.. method:: Pin.init(mode=-1, pull=-1, \*, value, drive, alt)
+.. method:: Pin.init(mode=1, pull=1, value, drive, alt)
 
    使用给定参数重新初始化引脚。只会设置指定的参数。引脚外围状态的其余部分将保持不变。
    有关参数的详细信息，请参阅构造函数文档。
@@ -138,7 +138,7 @@
 
   并非所有端口都实现此方法.
 
-.. method:: Pin.irq(handler=None, trigger=(Pin.IRQ_FALLING | Pin.IRQ_RISING), \*, priority=1, wake=None)
+.. method:: Pin.irq(handler=None, trigger=(Pin.IRQ_FALLING | Pin.IRQ_RISING), priority=1, wake=None)
 
    配置在引脚的触发源处于活动状态时调用的中断处理程序。如果引脚模式是， ``Pin.IN`` 则触发源是引脚上的外部值。
    如果引脚模式是， ``Pin.OUT`` 则触发源是引脚的输出缓冲器。

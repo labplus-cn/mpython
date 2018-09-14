@@ -1,9 +1,12 @@
-硬件概述
+硬件说明
 ====================
 
 handPy掌控是一块MicroPython微控制器板，很好的支持MicroPython/Python软件上功能。
 
 .. image:: /images/掌控-立2.png
+
+技术参数
+-----------
 
 该板具有以下硬件特性:
 
@@ -39,5 +42,13 @@ handPy掌控是一块MicroPython微控制器板，很好的支持MicroPython/Pyt
     - 5通道12bit模拟输入ADC，A0~A4  
     - 1路的外部输入鳄鱼夹接口:EXT/GND
     - 支持I2C、UART、SPI通讯协议
+
+
+接口说明/引脚定义
+--------------
+
+
+
+
 
 

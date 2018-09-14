@@ -8,16 +8,18 @@ handPy掌控文档
 
 欢迎您，使用掌控！
 
-handPy掌控是一块MicroPython微控制器板，专为物联网设计。使用当下最流行的Python语言，以便您轻松地将代码从桌面传输到微控制器或嵌入式系统。
+handPy掌控是一块MicroPython微控制器板，专为物联网设计。使用当下最流行的Python编程语言，以便您轻松地将代码从桌面传输到微控制器或嵌入式系统。
 
 .. image:: /images/掌控-动态.gif
 
 
 
+| GitHub: https://github.com/labplus-cn/handPy
+| handPy掌控在线文档: https://handpy.readthedocs.io
 
 .. Hint::
 
-    我们已将掌控项目的软硬件资源分享至GitHub，供各位掌控爱好者学习阅览! GitHub：https://github.com/labplus-cn/handPy/
+    我们已将掌控项目的软硬件资源分享至GitHub，供各位掌控爱好者学习阅览！
 
 .. Attention::
 
@@ -28,17 +30,20 @@ handPy掌控是一块MicroPython微控制器板，专为物联网设计。使用
    :caption: handPy掌控
 
    board/introduction.rst
-   board/hw_overview.rst
+   board/hardware.rst
+   board/software.rst
 
    
 .. toctree::
-   :maxdepth: 2
-   :caption: handPy快速入门教程
+   :maxdepth: 1
+   :caption: 掌控快速入门教程
+ 
 
-   tutorials/class1.rst
-   tutorials/class2.rst
-   tutorials/class3.rst
-   tutorials/class4.rst
+   tutorials/repl.rst
+   tutorials/filesystem.rst
+   tutorials/neopixel.rst
+
+
    
   
 
