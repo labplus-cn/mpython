@@ -44,11 +44,19 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
     - 支持I2C、UART、SPI通讯协议
 
 
-接口说明/引脚定义
+元件布局
 --------------
 
+.. image:: /images/布局-正面.png
+
+.. image:: /images/布局-背面.png
 
 
+引脚定义
+--------------
 
+.. image:: /images/掌控板引脚定义-正面.png
 
+.. image:: /images/掌控板引脚定义-背面.png
 
+.. image:: /images/掌控板-pinout_wroom.png

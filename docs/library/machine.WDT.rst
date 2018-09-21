@@ -14,7 +14,7 @@
     wdt.feed()
 
 
-构建函数
+构建对象
 ------------
 
 .. class:: WDT(id=0, timeout=5000)

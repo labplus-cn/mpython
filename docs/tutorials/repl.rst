@@ -125,32 +125,28 @@ Tab键可以查看模块所有成员列表。这对于找出模块或对象具�
 这将以1Hz（半秒开，半秒关）翻转LED。要停止切换按 ``ctrl-C`` ，这将引发KeyboardInterrupt异常并退出循环
 
 
-Paste mode
+粘贴模式
 ~~~~~~~~~~
 
-Pressing ctrl-E will enter a special paste mode.  This allows you to copy and
-paste a chunk of text into the REPL.  If you press ctrl-E you will see the
-paste-mode prompt::
+按 ``ctrl-E`` 将进入特殊粘贴模式。这允许您将一大块文本复制并粘贴到REPL中。如果按ctrl-E，您将看到粘贴模式提示::
 
     paste mode; Ctrl-C to cancel, Ctrl-D to finish
     === 
 
-You can then paste (or type) your text in.  Note that none of the special keys
-or commands work in paste mode (eg Tab or backspace), they are just accepted
-as-is.  Press ctrl-D to finish entering the text and execute it.
+然后，您可以粘贴（或键入）您的文本。请注意，没有任何特殊键或命令在粘贴模式下工作（例如Tab或退格）
+，它们只是按原样接受。按 ``ctrl-D`` 完成输入文本并执行。
 
-Other control commands
+其他控制命令
 ~~~~~~~~~~~~~~~~~~~~~~
 
-There are four other control commands:
+还有其他四个控制命令：
 
-* Ctrl-A on a blank line will enter raw REPL mode.  This is like a permanent
-  paste mode, except that characters are not echoed back.
+* 空白行上的Ctrl-A将进入原始REPL模式。这类似于永久粘贴模式，除了不回显字符。
 
-* Ctrl-B on a blank like goes to normal REPL mode.
+* 空白处的Ctrl-B转到正常的REPL模式。
 
-* Ctrl-C cancels any input, or interrupts the currently running code.
+* ``Ctrl-C`` 取消任何输入，或中断当前运行的代码。
 
-* Ctrl-D on a blank line will do a soft reset.
+* 空白行上的 ``Ctrl-D`` 将执行软重启。
 
-Note that ctrl-A and ctrl-D do not work with WebREPL.
+

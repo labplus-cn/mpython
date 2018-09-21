@@ -22,7 +22,7 @@ UART对象就像一个 ``stream`` 对象，使用标准流方法完成读写::
     uart.readinto(buf)  # read and store into the given buffer
     uart.write('abc')   # write the 3 characters
 
-构建函数
+构建对象
 ------------
 
 .. class:: UART(id, ...)

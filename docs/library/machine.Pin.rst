@@ -14,31 +14,26 @@
 
     from machine import Pin
 
-    # create an output pin on pin #0
-    p0 = Pin(0, Pin.OUT)
+    # create an output pin on pin #32
+    p0 = Pin(32, Pin.OUT)
 
     # set the value low then high
     p0.value(0)
     p0.value(1)
 
-    # create an input pin on pin #2, with a pull up resistor
-    p2 = Pin(2, Pin.IN, Pin.PULL_UP)
+    # create an input pin on pin #33, with a pull up resistor
+    p2 = Pin(33, Pin.IN, Pin.PULL_UP)
 
-    # read and print the pin value
-    print(p2.value())
-
-    # reconfigure pin #0 in input mode
-    p0.mode(p0.IN)
 
     # configure an irq callback
-    p0.irq(lambda p:print(p))
+    p2.irq(trigger=Pin.IRQ_FALLING, handler=lambda t:print("IRQ"))
 
-构造函数
+构建对象
 ------------
 
 .. class:: Pin(id, mode=1, pull=1, value, drive, alt)
 
-  访问与给定相关的引脚外设（GPIO引脚） ``id`` 。如果在构造函数中给出了其他参数，则它们用于初始化引脚。
+  访问与给定相关的引脚外设（GPIO引脚） ``id`` 。如果在构建对象中给出了其他参数，则它们用于初始化引脚。
   未指定的任何设置将保持其先前的状态。
 
    参数:
@@ -75,7 +70,7 @@
 
    如上所述，Pin类允许为特定引脚设置复用功能，但它不在此类引脚上指定任何进一步的操作。
    在复用功能模式下配置的引脚通常不用作GPIO，而是由其他硬件外设驱动。
-   这种引脚支持的唯一操作是通过调用构造函数或 :meth:`Pin.init` 方法重新初始化。
+   这种引脚支持的唯一操作是通过调用构建对象或 :meth:`Pin.init` 方法重新初始化。
    如果引脚在复用功能模式下配置 ``Pin.IN`` ， ``Pin.OUT`` 或者  ``Pin.OPEN_DRAIN`` 将重新初始化  ，复用功能将从pin中删除。
 
 方法
@@ -84,7 +79,7 @@
 .. method:: Pin.init(mode=1, pull=1, value, drive, alt)
 
    使用给定参数重新初始化引脚。只会设置指定的参数。引脚外围状态的其余部分将保持不变。
-   有关参数的详细信息，请参阅构造函数文档。
+   有关参数的详细信息，请参阅构建对象文档。
 
    返回 ``None``.
 
@@ -111,32 +106,7 @@
 
    设置此方法返回的值时 ``None``.
 
-.. method:: Pin.__call__([x])
 
-   Pin对象是可调用的。call方法提供了一个（快速）快捷方式来设置和获取引脚的值。它相当于Pin.value（[x]）。
-   有关 :meth:`Pin.value` 详细信息，请参阅
-
-.. method:: Pin.on()
-
-   设置引脚输出电平为"1".
-
-.. method:: Pin.off()
-
-   设置引脚输出电平为"0".
-
-.. method:: Pin.mode([mode])
-
-   获取或设置引脚模式。有关 ``mode`` 参数的详细信息，请参阅构造函数文档。
-
-.. method:: Pin.pull([pull])
-
-   获取或设置引脚拉动状态。有关 ``pull`` 参数的详细信息，请参阅构造函数文档。
-
-.. method:: Pin.drive([drive])
-
-  获取或设置引脚驱动强度。有关 ``drive`` 参数的详细信息，请参阅构造函数文档。
-
-  并非所有端口都实现此方法.
 
 .. method:: Pin.irq(handler=None, trigger=(Pin.IRQ_FALLING | Pin.IRQ_RISING), priority=1, wake=None)
 

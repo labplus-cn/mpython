@@ -40,8 +40,17 @@ mPython掌控板是一块MicroPython微控制器板，专为物联网设计。�
  
 
    tutorials/repl.rst
-   tutorials/filesystem.rst
+   tutorials/display.rst
+   tutorials/gpio.rst
+   tutorials/buttons.rst
+   tutorials/pwm.rst
+   tutorials/adc.rst
+   tutorials/accelerometer.rst
    tutorials/neopixel.rst
+   tutorials/i2c.rst
+   tutorials/network.rst
+   tutorials/filesystem.rst
+  
 
 
    

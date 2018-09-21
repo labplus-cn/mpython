@@ -14,7 +14,7 @@
         用于访问二进制数据结构的标准Python方法（不能很好地扩展到大型和复杂的结构）。
 
 
-构造函数
+构建对象
 ------------
 
 .. class:: uctypes.struct(addr, descriptor, type) 

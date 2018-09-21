@@ -14,7 +14,7 @@ MicroPython的Timer类定义了在给定时间段内（或在一段延迟后执�
     内存不能在irq处理程序（中断）中分配，因此处理程序中引发的异常不会提供太多信息。
     了解 :func:`micropython.alloc_emergency_exception_buf` 如何解决此限制。
 
-构建函数
+构建对象
 ------------
 
 .. class:: Timer(id, ...)

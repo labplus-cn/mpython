@@ -26,7 +26,7 @@ I2C是用于设备之间通信的双线协议。在物理层面，它由2条线�
     i2c.writeto_mem(42, 2, b'\x10') # write 1 byte to memory of slave 42
                                     #   starting at address 2 in the slave
 
-构建函数
+构建对象
 ------------
 
 .. class:: I2C(id=-1, \*, scl, sda, freq=400000)

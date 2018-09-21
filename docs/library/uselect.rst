@@ -19,7 +19,7 @@
 
 等待一组对象上的活动。
 
-该功能由一些MicroPython端口提供，以实现兼容性并且效率不高。 :class:`Poll`  推荐使用。
+
 
 
 .. _class: Poll
