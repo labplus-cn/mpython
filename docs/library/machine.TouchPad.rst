@@ -28,7 +28,7 @@
 
 .. method:: TouchPad.read()
 
-读取TouchPad的电平。若TouchPad接高电平则返回1，若接GND则返回0。 
+读取TouchPad的电平。
 
 .. method:: TouchPad.config(value)
 

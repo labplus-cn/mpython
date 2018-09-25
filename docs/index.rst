@@ -30,8 +30,9 @@ mPython掌控板是一块MicroPython微控制器板，专为物联网设计。�
    :caption: mPython掌控板
 
    board/introduction.rst
-   board/hardware.rst
    board/software.rst
+   board/hardware.rst
+   
 
    
 .. toctree::
