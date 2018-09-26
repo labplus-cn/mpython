@@ -1,163 +1,141 @@
 *******************************
-:mod:`usocket` -- socket module
+:mod:`usocket` -- socket 模块
 *******************************
 
 .. module:: usocket
-   :synopsis: socket module
+   :synopsis: socket 模块
 
 这个模块实现了相应 :term:`CPython` 模块的一个子集，如下所述。有关更多信息，请参阅原始CPython文档: `socket <https://docs.python.org/3.5/library/socket.html#module-socket>`_
 
-This module provides access to the BSD socket interface.
+该模块提供BSD socket接口的访问。
 
-.. admonition:: Difference to CPython
+.. admonition:: 与CPython区别
    :class: attention
 
-   For efficiency and consistency, socket objects in MicroPython implement a stream
-   (file-like) interface directly. In CPython, you need to convert a socket to
-   a file-like object using `makefile()` method. This method is still supported
-   by MicroPython (but is a no-op), so where compatibility with CPython matters,
-   be sure to use it.
+    为提高效率与一致性，MicroPython中的套接字对象直接实现流（类文件）接口。在CPython中，
+    需使用 ``makefile()`` 方法来将socket转换为类文件对象。该方法仍由MicroPython（但是是无操作）支持，
+    所以在CPython的兼容性问题上，请一定使用该方法。
 
-Socket address format(s)
+Socket地址格式
 ------------------------
 
-The native socket address format of the ``usocket`` module is an opaque data type
-returned by `getaddrinfo` function, which must be used to resolve textual address
-(including numeric addresses)::
+下面函数使用 (ipv4_address, port) 网络地址, ipv4_address 是由点和数字组成的字符串，如 ``"8.8.8.8"`` ，
+端口是 1-65535 的数字。注意不能使用域名做为 ipv4_address，域名需要先用 ``socket.getaddrinfo()`` 进行解析。
+
+``usocket`` 模块的本机套接字地址格式是一个由 ``getaddrinfo`` 函数返回的不透明数据类型，
+须用其来解析文本地址（包括数字型地址）::
 
     sockaddr = usocket.getaddrinfo('www.micropython.org', 80)[0][-1]
-    # You must use getaddrinfo() even for numeric addresses
+    # You must use getaddrinfo() even for numeric addresses 您必须使用getaddrinfo()，即使是用于数字型地址
     sockaddr = usocket.getaddrinfo('127.0.0.1', 80)[0][-1]
-    # Now you can use that address
+    # Now you can use that address 现在您可以使用这一地址了
     sock.connect(addr)
 
-Using `getaddrinfo` is the most efficient (both in terms of memory and processing
-power) and portable way to work with addresses.
+使用 ``getaddrinfo`` 是处理地址最有效（在内存和处理能力方面皆是如此）且最便捷的方式。
 
-However, ``socket`` module (note the difference with native MicroPython
-``usocket`` module described here) provides CPython-compatible way to specify
-addresses using tuples, as described below. Note that depending on a
-`MicroPython port`, ``socket`` module can be builtin or need to be
-installed from `micropython-lib` (as in the case of `MicroPython Unix port`),
-and some ports still accept only numeric addresses in the tuple format,
-and require to use `getaddrinfo` function to resolve domain names.
 
-Summing up:
 
-* Always use `getaddrinfo` when writing portable applications.
-* Tuple addresses described below can be used as a shortcut for
-  quick hacks and interactive use, if your port supports them.
-
-Tuple address format for ``socket`` module:
-
-* IPv4: *(ipv4_address, port)*, where *ipv4_address* is a string with
-  dot-notation numeric IPv4 address, e.g. ``"8.8.8.8"``, and *port* is and
-  integer port number in the range 1-65535. Note the domain names are not
-  accepted as *ipv4_address*, they should be resolved first using
-  `usocket.getaddrinfo()`.
-* IPv6: *(ipv6_address, port, flowinfo, scopeid)*, where *ipv6_address*
-  is a string with colon-notation numeric IPv6 address, e.g. ``"2001:db8::1"``,
-  and *port* is an integer port number in the range 1-65535. *flowinfo*
-  must be 0. *scopeid* is the interface scope identifier for link-local
-  addresses. Note the domain names are not accepted as *ipv6_address*,
-  they should be resolved first using `usocket.getaddrinfo()`. Availability
-  of IPv6 support depends on a `MicroPython port`.
-
-Functions
+函数
 ---------
 
 .. function:: socket(af=AF_INET, type=SOCK_STREAM, proto=IPPROTO_TCP)
 
-   Create a new socket using the given address family, socket type and
-   protocol number. Note that specifying *proto* in most cases is not
-   required (and not recommended, as some MicroPython ports may omit
-   ``IPPROTO_*`` constants). Instead, *type* argument will select needed
-   protocol automatically::
+  - ``af`` ：地址
+  - ``type`` ：类型
+  - ``proto`` ：协议号
 
-        # Create STREAM TCP socket
-        socket(AF_INET, SOCK_STREAM)
-        # Create DGRAM UDP socket
-        socket(AF_INET, SOCK_DGRAM)
+
+一般不指定proto参数，因为有些MicroPython固件提供默认参数::
+
+  >>> s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  >>> print(s)
+  <socket>
 
 .. function:: getaddrinfo(host, port)
 
-   Translate the host/port argument into a sequence of 5-tuples that contain all the 
-   necessary arguments for creating a socket connected to that service. The list of 
-   5-tuples has following structure::
+将主机域名（host）和端口（port）转换为用于创建套接字的5元组序列。元组列表的结构如下::
 
-      (family, type, proto, canonname, sockaddr)
+  (family, type, proto, canonname, sockaddr)
 
-   The following example shows how to connect to a given url::
+下面显示了怎样连接到一个网址:：
 
-      s = usocket.socket()
-      s.connect(usocket.getaddrinfo('www.micropython.org', 80)[0][-1])
+  s = usocket.socket()
+  s.connect(usocket.getaddrinfo('www.micropython.org', 80)[0][-1])
 
-   .. admonition:: Difference to CPython
-      :class: attention
+.. admonition:: 与CPython区别
+  :class: attention
 
-      CPython raises a ``socket.gaierror`` exception (`OSError` subclass) in case
-      of error in this function. MicroPython doesn't have ``socket.gaierror``
-      and raises OSError directly. Note that error numbers of `getaddrinfo()`
-      form a separate namespace and may not match error numbers from
-      `uerrno` module. To distinguish `getaddrinfo()` errors, they are
-      represented by negative numbers, whereas standard system errors are
-      positive numbers (error numbers are accessible using ``e.args[0]`` property
-      from an exception object). The use of negative values is a provisional
-      detail which may change in the future.
+  CPython raises a ``socket.gaierror`` exception (`OSError` subclass) in case
+  of error in this function. MicroPython doesn't have ``socket.gaierror``
+  and raises OSError directly. Note that error numbers of `getaddrinfo()`
+  form a separate namespace and may not match error numbers from
+  `uerrno` module. To distinguish `getaddrinfo()` errors, they are
+  represented by negative numbers, whereas standard system errors are
+  positive numbers (error numbers are accessible using ``e.args[0]`` property
+  from an exception object). The use of negative values is a provisional
+  detail which may change in the future.
 
-.. function:: inet_ntop(af, bin_addr)
+  该函数发生错误时，会引发一个 ``socket.gaierror`` 异常（ ``OSError`` 子类）。 
+  MicroPython并不具有 ``socket.gaierror`` ，会直接引发OSError。 
+  注意： ``getaddrinfo()`` 的错误数量组成一个单独的名称空间，
+  可能与 ``uerrno`` 系统错误代码模块中的错误数量不匹配。
+   为区分 ``getaddrinfo()`` 错误，该错误使用负数标记，标准系统错误为正数（错误数可通过使用异常对象的 e.args[0] 特性访问）。
+   暂时使用负数，未来可能改变。
 
-   Convert a binary network address *bin_addr* of the given address family *af*
-   to a textual representation::
 
-        >>> usocket.inet_ntop(usocket.AF_INET, b"\x7f\0\0\1")
-        '127.0.0.1'
-
-.. function:: inet_pton(af, txt_addr)
-
-   Convert a textual network address *txt_addr* of the given address family *af*
-   to a binary representation::
-
-        >>> usocket.inet_pton(usocket.AF_INET, "1.2.3.4")
-        b'\x01\x02\x03\x04'
-
-Constants
+常数
 ---------
 
+地址簇
+++++++
+
 .. data:: AF_INET
-          AF_INET6
 
-   Address family types. Availability depends on a particular `MicroPython port`.
+等于2,TCP/IP – IPv4
 
-.. data:: SOCK_STREAM
-          SOCK_DGRAM
+.. data:: AF_INET6
 
-   Socket types.
+等于10,TCP/IP – IPv6
+
+
+socket类型
+++++++
+
+
+
+
+.. data:: SOCK_STREAM 等于1 — TCP流
+
+.. data:: SOCK_DGRAM
+
+等于2 — UDP数据报
+
+.. data:: SOCK_RAW 
+
+等于3 — 原始套接字
+
+.. data:: SO_REUSEADDR  
+
+等于4 — socket可重用
+
+IP协议号
++++++++
 
 .. data:: IPPROTO_UDP
-          IPPROTO_TCP
 
-   IP protocol numbers. Availability depends on a particular `MicroPython port`.
-   Note that you don't need to specify these in a call to `usocket.socket()`,
-   because `SOCK_STREAM` socket type automatically selects `IPPROTO_TCP`, and
-   `SOCK_DGRAM` - `IPPROTO_UDP`. Thus, the only real use of these constants
-   is as an argument to `setsockopt()`.
+默认值为16
 
-.. data:: usocket.SOL_*
+.. data:: IPPROTO_TCP
 
-   Socket option levels (an argument to `setsockopt()`). The exact
-   inventory depends on a `MicroPython port`.
+默认值为17
 
-.. data:: usocket.SO_*
+socket选项级别
+++++++++++
 
-   Socket options (an argument to `setsockopt()`). The exact
-   inventory depends on a `MicroPython port`.
+.. data:: SOL_SOCKET 
 
-Constants specific to WiPy:
+默认值为4095
 
-.. data:: IPPROTO_SEC
-
-    Special protocol value to create SSL-compatible socket.
 
 class socket
 ============
