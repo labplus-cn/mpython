@@ -8,7 +8,7 @@ mPython掌控板文档
 
 欢迎您，使用掌控板！
 
-mPython掌控板是一块MicroPython微控制器板，专为物联网设计。使用当下最流行的Python编程语言，以便您轻松地将代码从桌面传输到微控制器或嵌入式系统。
+mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双核芯片，使用当下最流行的Python编程语言，以便您轻松地将代码从桌面传输到微控制器或嵌入式系统。
 
 .. image:: /images/掌控-动态.gif
 
