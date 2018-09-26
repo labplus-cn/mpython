@@ -40,7 +40,7 @@ MicroPython将运行您输入的代码并打印结果（如果有的话）。如
 
 可以尝试下载mPython的oled显示屏上显示字符::
 
-    >>> from mPython import display
+    >>> from mpython import display
     >>> display.DispChar('hello,world!',0,0)
     >>> display.show()
     >>> 
