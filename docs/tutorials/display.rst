@@ -14,7 +14,7 @@ display-oled显示
 
 使用前，导入mpython模块::
 
-  >>> from mpython import*
+  >>> from mpython import *
   >>> 
 
 
