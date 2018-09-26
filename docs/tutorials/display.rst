@@ -12,9 +12,9 @@ display-oled显示
 文本显示
 -------
 
-使用前，导入mPython模块::
+使用前，导入mpython模块::
 
-  >>> from mPython import*
+  >>> from mpython import*
   >>> 
 
 
@@ -45,7 +45,7 @@ display-oled显示
 
 hello word多种字体显示示例::
 
-  from mPython import*
+  from mpython import *
 
   #oled
   display.DispChar('你好世界', 38, 0)
@@ -104,7 +104,7 @@ oled还可绘制一些点、直线、矩形形状。
 
 以下是绘制线条例子::
 
-  from mPython import *
+  from mpython import *
   import time
 
     def testdrawline():
