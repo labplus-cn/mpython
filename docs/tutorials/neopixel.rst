@@ -7,11 +7,11 @@ mPython掌控板载3颗ws2812灯珠，WS2812是一种集成了电流控制芯片
 板载RGB
 ----------
 
-控制mPython掌控上的3颗RGB， 首先导入mPython模块::
+控制mPython掌控上的3颗RGB， 首先导入mpython模块::
 
-    >>> from mPython import*
+    >>> from mpython import*
     
-.. Note:: 导入mPython模块后，会为掌控创建一个NeoPixel对象rgb,控制板载的RGB只需对rgb对象操作。
+.. Note:: 导入mpython模块后，会为掌控创建一个NeoPixel对象rgb,控制板载的RGB只需对rgb对象操作。
 
 
 设置每个像素点颜色::
