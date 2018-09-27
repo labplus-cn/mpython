@@ -37,7 +37,7 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
    
 .. toctree::
    :maxdepth: 1
-   :caption: 掌控板快速入门教程
+   :caption: 掌控板入门教程
  
 
    tutorials/repl.rst
