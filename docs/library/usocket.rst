@@ -34,15 +34,27 @@ Socket地址格式
 使用 ``getaddrinfo`` 是处理地址最有效（在内存和处理能力方面皆是如此）且最便捷的方式。
 
 
-
 函数
 ---------
 
 .. function:: socket(af=AF_INET, type=SOCK_STREAM, proto=IPPROTO_TCP)
 
   - ``af`` ：地址
-  - ``type`` ：类型
+
+    - ``socket.AF_INET``:=2 — TCP/IP – IPv4
+    - ``socket.AF_INET6`` :=10 — TCP/IP – IPv6
+
+  - ``type`` ：socket类型
+
+    - ``socket.SOCK_STREAM``:=1 — TCP流
+    - ``socket.SOCK_DGRAM``:=2 — UDP数据报
+    - ``socket.SOCK_RAW`` :=3 — 原始套接字
+    - ``socket.SO_REUSEADDR`` : =4 — socket可重用
+
   - ``proto`` ：协议号
+
+    - ``socket.IPPROTO_TCP`` =16
+    - ``socket.IPPROTO_UDP`` =17 
 
 
 一般不指定proto参数，因为有些MicroPython固件提供默认参数::
@@ -57,7 +69,7 @@ Socket地址格式
 
   (family, type, proto, canonname, sockaddr)
 
-下面显示了怎样连接到一个网址:：
+下面显示了怎样连接到一个网址::
 
   s = usocket.socket()
   s.connect(usocket.getaddrinfo('www.micropython.org', 80)[0][-1])
@@ -65,235 +77,203 @@ Socket地址格式
 .. admonition:: 与CPython区别
   :class: attention
 
-  CPython raises a ``socket.gaierror`` exception (`OSError` subclass) in case
-  of error in this function. MicroPython doesn't have ``socket.gaierror``
-  and raises OSError directly. Note that error numbers of `getaddrinfo()`
-  form a separate namespace and may not match error numbers from
-  `uerrno` module. To distinguish `getaddrinfo()` errors, they are
-  represented by negative numbers, whereas standard system errors are
-  positive numbers (error numbers are accessible using ``e.args[0]`` property
-  from an exception object). The use of negative values is a provisional
-  detail which may change in the future.
-
-  该函数发生错误时，会引发一个 ``socket.gaierror`` 异常（ ``OSError`` 子类）。 
-  MicroPython并不具有 ``socket.gaierror`` ，会直接引发OSError。 
-  注意： ``getaddrinfo()`` 的错误数量组成一个单独的名称空间，
-  可能与 ``uerrno`` 系统错误代码模块中的错误数量不匹配。
-   为区分 ``getaddrinfo()`` 错误，该错误使用负数标记，标准系统错误为正数（错误数可通过使用异常对象的 e.args[0] 特性访问）。
-   暂时使用负数，未来可能改变。
-
-
-常数
----------
-
-地址簇
-++++++
-
-.. data:: AF_INET
-
-等于2,TCP/IP – IPv4
-
-.. data:: AF_INET6
-
-等于10,TCP/IP – IPv6
-
-
-socket类型
-++++++
+    该函数发生错误时，会引发一个 ``socket.gaierror`` 异常（ ``OSError`` 子类）。 
+    MicroPython并不具有 ``socket.gaierror`` ，会直接引发OSError。 
+    注意： ``getaddrinfo()`` 的错误数量组成一个单独的名称空间，
+    可能与 ``uerrno`` 系统错误代码模块中的错误数量不匹配。
+    为区分 ``getaddrinfo()`` 错误，该错误使用负数标记，标准系统错误为正数（错误数可通过使用异常对象的 e.args[0] 特性访问）。
+    暂时使用负数，未来可能改变。
 
 
 
-
-.. data:: SOCK_STREAM 等于1 — TCP流
-
-.. data:: SOCK_DGRAM
-
-等于2 — UDP数据报
-
-.. data:: SOCK_RAW 
-
-等于3 — 原始套接字
-
-.. data:: SO_REUSEADDR  
-
-等于4 — socket可重用
-
-IP协议号
-+++++++
-
-.. data:: IPPROTO_UDP
-
-默认值为16
-
-.. data:: IPPROTO_TCP
-
-默认值为17
-
-socket选项级别
-++++++++++
-
-.. data:: SOL_SOCKET 
-
-默认值为4095
-
-
-class socket
+socket类
 ============
 
-Methods
+方法
 -------
 
 .. method:: socket.close()
 
-   Mark the socket closed and release all resources. Once that happens, all future operations
-   on the socket object will fail. The remote end will receive EOF indication if
-   supported by protocol.
-
-   Sockets are automatically closed when they are garbage-collected, but it is recommended 
-   to `close()` them explicitly as soon you finished working with them.
+关闭socket。一旦关闭后，socket所有的功能都将失效。远端将接收不到任何数据 (清理队列数据后)。
+内存碎片回收时socket会自动关闭，但还是推荐在必要时用 close() 去关闭
 
 .. method:: socket.bind(address)
 
-   Bind the socket to *address*. The socket must not already be bound.
+以列表或元组的方式绑定地址和端口号。
+
+  - ``address`` ：一个包含地址和端口号的列表或元组。
+
+示例::
+
+  addr = ("127.0.0.1",10000)
+  s.bind(addr)
+
+
+
 
 .. method:: socket.listen([backlog])
 
-   Enable a server to accept connections. If *backlog* is specified, it must be at least 0
-   (if it's lower, it will be set to 0); and specifies the number of unaccepted connections
-   that the system will allow before refusing new connections. If not specified, a default
-   reasonable value is chosen.
+监听socket，使服务器能够接收连接。如果指定了 ``backlog`` ，它不能小于0 (如果小于0将自动设置为0)；
+超出后系统将拒绝新的连接。如果没有指定，将使用默认值。
+
+  -  ``backlog`` ：接受套接字的最大个数，至少为0，如果没有指定，则默认一个合理值。
+
+   
 
 .. method:: socket.accept()
 
-   Accept a connection. The socket must be bound to an address and listening for connections.
-   The return value is a pair (conn, address) where conn is a new socket object usable to send
-   and receive data on the connection, and address is the address bound to the socket on the
-   other end of the connection.
+
+接收连接请求。socket需要指定地址并监听连接。返回值是 (conn, address)，
+其中conn是用来接收和发送数据的套接字，address是绑定到另一端的套接字。
+  
+  - ``conn``：新的套接字对象，可以用来收发消息
+  - ``address``：连接到服务器的客户端地址
+
+.. admonition::
+
+  只能在绑定地址端口号和监听后调用，返回conn和address。
+
+
 
 .. method:: socket.connect(address)
 
-   Connect to a remote socket at *address*.
+连接到指定地址的服务器。
+
+  - ``address``：服务器地址和端口号的元组或列表
+
+示例::
+
+  host = "192.168.3.147"
+  port = 100
+  s.connect((host, port))
 
 .. method:: socket.send(bytes)
 
-   Send data to the socket. The socket must be connected to a remote socket.
-   Returns number of bytes sent, which may be smaller than the length of data
-   ("short write").
+发送数据，并返回发送的字节数。
+
+  - ``bytes``：bytes类型数据
 
 .. method:: socket.sendall(bytes)
 
-   Send all data to the socket. The socket must be connected to a remote socket.
-   Unlike `send()`, this method will try to send all of data, by sending data
-   chunk by chunk consecutively.
+与send(）函数类似，区别是sendall()函数通过数据块连续发送数据。
 
-   The behavior of this method on non-blocking sockets is undefined. Due to this,
-   on MicroPython, it's recommended to use `write()` method instead, which
-   has the same "no short writes" policy for blocking sockets, and will return
-   number of bytes sent on non-blocking sockets.
+  - ``bytes``：bytes类型数据
+
+
 
 .. method:: socket.recv(bufsize)
 
-   Receive data from the socket. The return value is a bytes object representing the data
-   received. The maximum amount of data to be received at once is specified by bufsize.
+接收数据，返回接收到的数据对象。
+
+  - ``bufsize``：指定一次接收的最大数据量
+
+示例::
+
+  data = conn.recv(1024)
+
+
 
 .. method:: socket.sendto(bytes, address)
 
-   Send data to the socket. The socket should not be connected to a remote socket, since the
-   destination socket is specified by *address*.
+发送数据，目标由address决定，用于UDP通信，返回发送的数据大小。
+
+  - ``bytes``：bytes类型数据
+  - ``address``：目标地址和端口号的元组
+
 
 .. method:: socket.recvfrom(bufsize)
 
-  Receive data from the socket. The return value is a pair *(bytes, address)* where *bytes* is a
-  bytes object representing the data received and *address* is the address of the socket sending
-  the data.
+接收数据，用于UDP通信，并返回接收到的数据对象和对象的地址。
+
+  - ``bufsize``：指定一次接收的最大数据量
 
 .. method:: socket.setsockopt(level, optname, value)
 
-   Set the value of the given socket option. The needed symbolic constants are defined in the
-   socket module (SO_* etc.). The *value* can be an integer or a bytes-like object representing
-   a buffer.
+根据选项值设置socket。
+
+  - ``level``：套接字选项级别
+  - ``optname``：socket 选项
+  - ``value``：可以是一个整数，也可以是一个表示缓冲区的bytes类对象。
+
+示例::
+
+  s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 .. method:: socket.settimeout(value)
 
-   Set a timeout on blocking socket operations. The value argument can be a nonnegative floating
-   point number expressing seconds, or None. If a non-zero value is given, subsequent socket operations
-   will raise an `OSError` exception if the timeout period value has elapsed before the operation has
-   completed. If zero is given, the socket is put in non-blocking mode. If None is given, the socket
-   is put in blocking mode.
+设置超时时间，单位：秒。 
 
-   .. admonition:: Difference to CPython
-      :class: attention
+示例::
 
-      CPython raises a ``socket.timeout`` exception in case of timeout,
-      which is an `OSError` subclass. MicroPython raises an OSError directly
-      instead. If you use ``except OSError:`` to catch the exception,
-      your code will work both in MicroPython and CPython.
+  s.settimeout(2)
 
 .. method:: socket.setblocking(flag)
 
-   Set blocking or non-blocking mode of the socket: if flag is false, the socket is set to non-blocking,
-   else to blocking mode.
+设置socket的阻塞或非阻塞模式：若标记为false，则将该socket设置为非阻塞模式，而非阻塞模式。
 
-   This method is a shorthand for certain `settimeout()` calls:
+该方法为某些settimeout()调用的简写:
 
    * ``sock.setblocking(True)`` is equivalent to ``sock.settimeout(None)``
    * ``sock.setblocking(False)`` is equivalent to ``sock.settimeout(0)``
 
 .. method:: socket.makefile(mode='rb', buffering=0)
 
-   Return a file object associated with the socket. The exact returned type depends on the arguments
-   given to makefile(). The support is limited to binary modes only ('rb', 'wb', and 'rwb').
-   CPython's arguments: *encoding*, *errors* and *newline* are not supported.
+返回一个与socket相关联的文件对象。具体的返回类型取决于给定makefile()的参数。该支持仅限于二进制模式（‘rb’和‘wb’）.
 
-   .. admonition:: Difference to CPython
-      :class: attention
+CPython的参数为：不支持 encoding 、 errors 、 newline 。
 
-      As MicroPython doesn't support buffered streams, values of *buffering*
-      parameter is ignored and treated as if it was 0 (unbuffered).
+Socket须为阻塞模式；允许超时存在，但若出现超时，文件对象的内部缓冲区可能会以不一致状态结束。
 
-   .. admonition:: Difference to CPython
-      :class: attention
+.. admonition:: 与CPython区别
+  :class: attention
 
-      Closing the file object returned by makefile() WILL close the
-      original socket as well.
+  * 由于MicroPython不支持缓冲流，则将忽略缓冲参数的值，且将按照该值为0（未缓冲）时处理。
+  * 关闭所有由makefile()返回的文件对象，同样将关闭原始socket。
 
 .. method:: socket.read([size])
 
-   Read up to size bytes from the socket. Return a bytes object. If *size* is not given, it
-   reads all data available from the socket until EOF; as such the method will not return until
-   the socket is closed. This function tries to read as much data as
-   requested (no "short reads"). This may be not possible with
-   non-blocking socket though, and then less data will be returned.
+从socket中读取size字节。返回一个字节对象。若未给定 ``size`` ，则按照类似 :meth:`socket.readall()` 的模式运行，见下。
+
 
 .. method:: socket.readinto(buf[, nbytes])
 
-   Read bytes into the *buf*.  If *nbytes* is specified then read at most
-   that many bytes.  Otherwise, read at most *len(buf)* bytes. Just as
-   `read()`, this method follows "no short reads" policy.
 
-   Return value: number of bytes read and stored into *buf*.
+将字节读取入缓冲区。若指定 nbytes ，则最多读取该数量的字节。否则，最多读取 len(buf) 数量的字节。
+正如 ``read()`` ，该方法遵循“no short reads”方法。
+
+返回值：读取并存入缓冲区的字节数量
+
 
 .. method:: socket.readline()
 
-   Read a line, ending in a newline character.
+接收一行数据，遇换行符结束，并返回接收数据的对象 。
 
-   Return value: the line read.
 
 .. method:: socket.write(buf)
 
-   Write the buffer of bytes to the socket. This function will try to
-   write all data to a socket (no "short writes"). This may be not possible
-   with a non-blocking socket though, and returned value will be less than
-   the length of *buf*.
 
-   Return value: number of bytes written.
+向字节缓冲区写入socket，并返回写入数据的大小。
 
-.. exception:: usocket.error
 
-   MicroPython does NOT have this exception.
 
-   .. admonition:: Difference to CPython
-        :class: attention
+常数
+------
 
-        CPython used to have a ``socket.error`` exception which is now deprecated,
-        and is an alias of `OSError`. In MicroPython, use `OSError` directly.
+.. data:: AF_INET
+          AF_INET6
+
+   地址簇
+
+.. data:: SOCK_STREAM
+          SOCK_DGRAM
+
+   套接字类型
+
+.. data:: IPPROTO_UDP
+          IPPROTO_TCP
+
+IP协议号
+
+.. data:: SOL_SOCKET
+
+socket选项级别,默认=4095
