@@ -1,4 +1,4 @@
-display-oled显示
+display-oled屏显示
 ======================================
 
 掌控板板载1.3英寸OLED显示屏，分辨率128x64。采用Google Noto Sans CJK 16x16字体，支持简体中文，繁体中文，日文和韩文语言。
@@ -104,7 +104,7 @@ oled还可绘制一些点、直线、矩形形状。
   * display.fill_rect(x, y, w, h, c)用于绘制填充颜色的矩形，方法与rect()相同。不同于rect()只绘制矩形外框。
 
 
-以下是绘制线条例子::
+绘制线条例子 :download:`drawline.py </../examples/display/drawline.py>` ::
 
   from mpython import *
   import time
@@ -134,6 +134,8 @@ oled还可绘制一些点、直线、矩形形状。
 
   testdrawline()
 
+.. image:: /images/drawline.gif
+   :scale: 100 %
 
 显示图片
 -------
@@ -147,10 +149,11 @@ oled还可绘制一些点、直线、矩形形状。
 * 步骤3.保存数据
 
 .. image:: /images/image2lcd.png
-    :scale: 70 %
-    :align: center
 
-将取模数据赋值给bmp数组中,创建 ``framebuf`` 对象用于存储图片帧数据。然后使用 ``display.blit()`` 绘制图片至oled::
+
+将取模数据赋值给bmp数组中,创建 ``framebuf`` 对象用于存储图片帧数据。然后使用 ``display.blit()`` 绘制图片至oled。
+
+:download:`bmp.py </../examples/display/bmp.py>` ::
 
   from mpython import *
   import framebuf
@@ -247,11 +250,15 @@ oled还可绘制一些点、直线、矩形形状。
   - ``x，y`` - 起始点坐标（x, y）
 
 
+.. image:: /images/earth.png
+   :scale: 50 %
+
+
 
 动态显示
 -------
 
-结合上面精止帧的显示，要做到动态显示。可以将显示图片分割成每帧，送至oled逐帧显示。这样就有动态效果啦！
+结合上面静止帧的显示，要做到动态显示。可以将显示图片分割成每帧，送至oled逐帧显示。这样就有动态效果啦！
 
 与上面使用.bmp格式图片不同。本次使用.pbm(Portable BitMap)格式图片，你可以使用Photoshop转换至pbm格式。
 
@@ -268,17 +275,17 @@ pbm数据格式::
   128 64
   <数据>
 
-首先将预先准备好的每帧的pbm图片上传至掌控板上。
+首先将预先准备好的每帧的 :download:`scatman.x.pbm </../examples/display/素材/scatman.zip>`  图片上传至掌控板上。
 
-使用 ``file.read()`` 逐帧读取图像数据流。注意，前三行不是我们需要的数据，使用 ``readlines()`` 将它舍弃。
-每帧数据流创建FrameBuffer对象，将所有帧缓存储存至images列表。然后逐帧显示至oled屏::
+在程序中使用 ``file.read()`` 逐帧读取图像数据流。注意，前三行不是我们需要的数据，使用 ``readlines()`` 将它舍弃。
+每帧数据流创建FrameBuffer对象，将所有帧缓存储存至images列表。然后逐帧显示至oled屏。
 
+:download:`scatman.py </../examples/display/素材/scatman.zip>` ::
 
   from mpython import *
   import framebuf,time
 
-
-  images = []
+  images = []        #创建数组列表用于存储图片帧
   for n in range(1,7):
       with open('scatman.%s.pbm' % n, 'rb') as f:
           f.readline() # Magic number
@@ -286,9 +293,9 @@ pbm数据格式::
           f.readline() # Dimensions
           data = bytearray(f.read())
       fbuf = framebuf.FrameBuffer(data, 128, 64, framebuf.MONO_HLSB)
-      images.append(fbuf)
+      images.append(fbuf)     #将每帧数据赋值到列表
 
-  display.invert(1)  #bit反向
+  display.invert(1)  #像素点bit反转
   while True:
       for i in images:
           display.blit(i, 0, 0)
@@ -297,7 +304,7 @@ pbm数据格式::
 
 
 
-
+.. image:: /images/scatman.gif
 
 
 
