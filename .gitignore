@@ -31,4 +31,4 @@
 *.out
 *.app
 _build/
-examples/
+examples/temp
