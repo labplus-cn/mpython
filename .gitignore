@@ -32,3 +32,4 @@
 *.app
 _build/
 examples/temp
+.vscode/
