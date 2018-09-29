@@ -136,7 +136,7 @@
 
   
 
-连接到本地WiFi网络::
+WiFi连接实例::
 
   import network
 

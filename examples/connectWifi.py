@@ -1,13 +1,18 @@
 import network
+import time
 
-wlan = network.WLAN(network.STA_IF)
-wlan.active(True)
-if not wlan.isconnected():
-  print('connecting to network...')
-  wlan.connect('SSID', 'PASSWORD')   #连接到AP
-    #'SSID'： WiFi账号名
-    #'PASSWORD'：WiFi密码
-  while not wlan.isconnected():
-    pass
-print('network config:', wlan.ifconfig())
+# wifi参数 
+SSID="fei"            #wifi名称
+PASSWORD="a1234567"   #密码
 
+# 本函数实现wifi连接 
+def connectWifi(ssid,passwd):
+  global wlan
+  wlan=network.WLAN(network.STA_IF)
+  wlan.active(True)
+  wlan.disconnect()
+  wlan.connect(ssid,passwd)
+  while(wlan.ifconfig()[0]=='0.0.0.0'):
+    time.sleep(1)
+  print("wifi connected......")
+  return True
