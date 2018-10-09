@@ -1,7 +1,7 @@
 import network
 import time
 
-# wifi参数 
+# wifi参数 1
 SSID="yourSSID"            #wifi名称
 PASSWORD="yourPSW"         #密码
 
