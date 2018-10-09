@@ -63,7 +63,7 @@ MicroPython 库
 -----------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    library/index.rst
 

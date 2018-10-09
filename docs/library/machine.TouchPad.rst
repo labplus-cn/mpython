@@ -19,7 +19,7 @@
 
     from machine import TouchPad, Pin
 
-    tp = TouchPad(Pin(12))
+    tp = TouchPad(Pin(14))
 
 
 

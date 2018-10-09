@@ -1,6 +1,8 @@
 .. currentmodule:: machine
 .. _machine.Pin:
 
+.. module:: machine.Pin
+
 类 Pin -- 控制 I/O 引脚
 =============================
 
@@ -83,6 +85,7 @@
 
    返回 ``None``.
 
+
 .. method:: Pin.value([x])
 
    此方法允许设置和获取引脚的值，具体取决于是否 ``x`` 提供参数。
@@ -106,7 +109,7 @@
 
    设置此方法返回的值时 ``None``.
 
-
+.. _Pin.irq:
 
 .. method:: Pin.irq(handler=None, trigger=(Pin.IRQ_FALLING | Pin.IRQ_RISING), priority=1, wake=None)
 

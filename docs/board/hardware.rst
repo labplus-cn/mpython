@@ -52,6 +52,8 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
 .. image:: /images/布局-背面.png
 
 
+.. _mpython_pinout:
+
 引脚定义
 --------------
 
