@@ -25,7 +25,7 @@ try:
       print("close socket")
       s.close()
       break
-    data=data.decode('utf-8'))
+    data=data.decode('utf-8')
     print(data)
     display.fill(0)
     display.DispChar(data,0,0)

@@ -50,6 +50,7 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
    tutorials/accelerometer.rst
    tutorials/neopixel.rst
    tutorials/i2c.rst
+   tutorials/network_basics.rst
    tutorials/network.rst
    tutorials/filesystem.rst
   
