@@ -1,5 +1,5 @@
 # servo.py
-# 利用pwv实现舵机控制
+# 利用pwm实现舵机控制
 
 from machine import Pin, PWM
 import time
