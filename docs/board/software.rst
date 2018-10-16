@@ -5,17 +5,19 @@ mPython2 IDE软件
 -----------
 
 目前有两个下载地址（for 64位、32位）：
-http://static.steamaker.cn/files/mPython2_0.2.0_win64.exe
-http://static.steamaker.cn/files/mPython2_0.2.0_win32.exe
+
+http://static.steamaker.cn/files/mPython2_0.2.1_win64.exe
+
+http://static.steamaker.cn/files/mPython2_0.2.1_win32.exe
 
 根据操作系统选择不同的版本下载，暂时只支持Win 7 / 8 / 10，不支持XP系统。
 
 .. Attention:: 
 
   为Python调用路径的原因，程序不可以安装在中文目录下。
-  程序默认会安装在Windows用户目录下，如：C:\Users\{用户名}\AppData\Local\mPython2
+  程序默认会安装在Windows用户目录下，如：C:\\Users\\{用户名}\\AppData\\Local\\mPython2
   有的用户名为中文，使用默认路径会导致安装后的快捷方式无法正确打开
-  请修改路径，如下图，修改为：D:\mPython2
+  请修改路径，如下图，修改为：D:\\mPython2
 
 
 .. image:: /images/software/software_1.png
@@ -72,7 +74,7 @@ http://static.steamaker.cn/files/mPython2_0.2.0_win32.exe
 -----------
 
 界面左下是掌控板文件系统，初次使用掌控板，文件列表可能是空白的。
-界面右下是本地文件系统，对应目录在 C:\Users\{用户名}\mu_code
+界面右下是本地文件系统，对应目录在 C:\\Users\\{用户名}\\mu_code
 
 写入基础库
 ````````
@@ -154,7 +156,7 @@ http://static.steamaker.cn/files/mPython2_0.2.0_win32.exe
 本地文件系统
 -----------
 
-界面右下是本地文件系统，对应目录在 C:\Users\{用户名}\mu_code
+界面右下是本地文件系统，对应目录在 C:\\Users\\{用户名}\\mu_code
 
 
 本地文件区菜单
