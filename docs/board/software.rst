@@ -4,13 +4,13 @@ mPython2 IDE软件
 软件安装
 -----------
 
-目前有两个下载地址（for 64位、32位）：
+目前有三个下载地址（for Windows 64位、Windows 32位、MacOS）：
 
-http://static.steamaker.cn/files/mPython2_0.2.1_win64.exe
+http://static.steamaker.cn/files/mPython2_0.2.2_win64.exe
+http://static.steamaker.cn/files/mPython2_0.2.2_win32.exe
+http://static.steamaker.cn/files/mPython2_0.2.2_macos.zip
 
-http://static.steamaker.cn/files/mPython2_0.2.1_win32.exe
-
-根据操作系统选择不同的版本下载，暂时只支持Win 7 / 8 / 10，不支持XP系统。
+根据操作系统选择不同的版本下载，目前支持Win 7 / 8 / 10、MacOS，不支持XP系统。
 
 .. Attention:: 
 
