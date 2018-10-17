@@ -6,6 +6,8 @@
 
 掌控板固件发布:https://github.com/labplus-cn/mPython/tree/master/firmware
 
+---------
+
 选择 **ESP32 DownloadTool** 
 
 .. image:: /images/flashburn/flashDownload_1.png
