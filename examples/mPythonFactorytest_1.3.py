@@ -111,6 +111,7 @@ pwm_P15=PWM(Pin(21),freq = 20, duty = 512)
 
 
 # touchPad
+touchPad_P = TouchPad(Pin(27))
 touchPad_Y = TouchPad(Pin(14))
 touchPad_T = TouchPad(Pin(12))
 touchPad_H = TouchPad(Pin(13))
@@ -195,7 +196,7 @@ display.show()
 
 while True:
 
-  print('Y:%d, T:%d, H:%d, O:%d, N:%d' % (touchPad_Y.read(),touchPad_T.read(),touchPad_H.read(),touchPad_O.read(),touchPad_N.read()))
+  print('P:%d,Y:%d, T:%d, H:%d, O:%d, N:%d' % (touchPad_P.read(),touchPad_Y.read(),touchPad_T.read(),touchPad_H.read(),touchPad_O.read(),touchPad_N.read()))
   print('P0:%d, P1:%d ,P2:%d, P3/ext:%d' % (P0.read(),P1.read(),P2.read(),ext.read()))
   print('light:%d,Sound:%d' % (light.read(),sound.read()))
   print('x = %.2f, y = %0.2f, z = %.2f ' % (accelerometer.get_x(), accelerometer.get_y(), accelerometer.get_z()))
