@@ -1,7 +1,7 @@
 Buttons
 ======================================
 
-在掌控板上部边沿有按压式A、B两个按键。当按下按键时为低电平，否则高电平。除此外还有5个金手指触摸按键。
+在掌控板上部边沿有按压式A、B两个按键。当按下按键时为低电平，否则高电平。除此外还有6个触摸按键。
 
 
 按键A、B
@@ -41,7 +41,7 @@ Buttons
   Button Pressed
   Button Pressed
 
-.. Note::
+
 
   定义中断处理函数时，函数必须包含任意一个参数，否则无法使用。callback()函数中的参数为 ``_`` 。
   ``trigger`` 可修改触发方式，``handler`` 为中断处理函数。详细使用可查阅  :ref:`Pin.irq<Pin.irq>`。
@@ -50,15 +50,16 @@ Buttons
 
 触摸按键
 -------
+首先导入 mpython模块,尝试用手指触摸P金手指处，使用 ``read()`` 读取值。观察变化::
 
-首先导入TouchPad,Pin模块，构建TouchPad对象。此处我们使用掌控板触摸引脚Y，对应的ESP32的物理引脚为IO14。其他的引脚定义可参见 :ref:`掌控板引脚定义<mpython_pinout>` ::
-
-  >>> from machine import TouchPad,Pin
-  >>> Pad_Y = TouchPad(Pin(14))
-  
-尝试用手指触摸Y金手指处，使用 ``read()`` 读取值。观察变化::
-
-  >>> Pad_Y.read()
+  >>> from mpython import *
+  >>> touchPad_P.read()
   643
-  >>> Pad_Y.read()
+  >>> touchPad_P.read()
   8
+
+.. Note::
+
+  掌控板板载6个触摸焊盘，依次从左到右分别touchPad_P、touchPad_Y、touchPad_T、touchPad_H、touchPad_O、touchPad_N，其他触摸按键使用方法同上。
+
+.. image:: /images/掌控板引脚定义-正面.png
