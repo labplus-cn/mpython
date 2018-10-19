@@ -8,7 +8,7 @@ import socket
 import time
 import json
 from mpython import*
- 
+    
 # wifi参数 
 SSID="fei"
 PASSWORD="a1234567"
@@ -19,16 +19,16 @@ s=None
 
 # 本函数实现wifi连接 
 def connectWifi(ssid,passwd):
-  global wlan
-  wlan=network.WLAN(network.STA_IF)
-  wlan.active(True)
-  wlan.disconnect()
-  wlan.connect(ssid,passwd)
-  print('connecting to network...')
-  while(wlan.ifconfig()[0]=='0.0.0.0'):
-    time.sleep_ms(1000)
-    print('.',end="")
-  print('WiFi Connection Successful,Network Config:%s' %str(wlan.ifconfig()))
+    global wlan
+    wlan=network.WLAN(network.STA_IF)
+    wlan.active(True)
+    wlan.disconnect()
+    wlan.connect(ssid,passwd)
+    print('connecting to network...')
+    while(wlan.ifconfig()[0]=='0.0.0.0'):
+        time.sleep_ms(1000)
+        print('.',end="")
+    print('WiFi Connection Successful,Network Config:%s' %str(wlan.ifconfig()))
 
 
 connectWifi(SSID,PASSWORD)

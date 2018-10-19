@@ -9,9 +9,9 @@ servo = PWM(Pin(16), freq = 50, duty = 0)
 
 # 循环实现舵机0-180转动
 while True:
-  for i in range(25,128): #占空比duty值范围25-128，对应0-180度
-    servo.duty(i)
-    time.sleep_ms(100)
+    for i in range(25,128): #占空比duty值范围25-128，对应0-180度
+        servo.duty(i)
+        time.sleep_ms(100)
 
 
 
