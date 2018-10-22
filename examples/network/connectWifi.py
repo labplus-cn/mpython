@@ -7,7 +7,7 @@ PASSWORD="yourpsw"         #密码
 
 
 # 本函数实现wifi连接 
-def connectWifi(ssid,passwd):
+def connect(ssid,passwd):
     global wlan
     wlan=network.WLAN(network.STA_IF)
     wlan.active(True)
@@ -19,4 +19,7 @@ def connectWifi(ssid,passwd):
         print('Connecting to network...')
     print('WiFi Connection Successful,Network Config:%s' %str(wlan.ifconfig()))
 
-connectWifi(SSID,PASSWORD)
+def disconnect():
+    wlan.disconnect()
+    wlan.active(False)
+    print('disconnect...')
