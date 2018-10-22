@@ -1,10 +1,11 @@
-:mod:`mpython` --- 掌控板
+:mod:`mpython` --- 掌控板库
 =============================================
 
-.. module:: mpython
-   :synopsis: mpython专有库
+.. module:: 
 
-button_a/b类
+基于掌控板封装的专用库
+
+button_a/b对象
 ------
 掌控板上的a,b按键。button_a/button_b 是 ``machine.Pin`` 衍生类，继承Pin的方法。
 
@@ -20,7 +21,7 @@ button_a/b类
 
 配置在引脚的触发源处于活动状态时调用的中断处理程序。
 
-touchPad_[ ]类
+touchPad_[ ]对象
 ------
 掌控板上共有6个触摸引脚分别touchPad_P/Y/T/H/O/N。
 
@@ -28,9 +29,9 @@ touchPad_[ ]类
 
 返回触摸值
 
-rgb类
+rgb对象
 -------
-用于控制掌控板的3颗RGB ws2812灯珠。rgb类为neopixel的衍生类，继承neopixel的方法。更详细的使用方法请查阅 :ref:`neopixel<neopixel>` 。 
+用于控制掌控板的3颗RGB ws2812灯珠。rgb对象为neopixel的衍生类，继承neopixel的方法。更多的使用方法请查阅 :ref:`neopixel<neopixel>` 。 
 
 .. method:: rgb.write()
 
@@ -44,6 +45,109 @@ rgb类
 
 填充所有LED像素。
 
-display类
+display对象
 -------
+display对象为framebuf的衍生类，继承framebuf的方法。更多的使用方法请查阅 :mod:`framebuf<framebuf>` 。 
+
+.. method:: display.DispChar(s, x, y)
+
+oled屏显示文本。
+
+- ``s`` 需要显示的文本
+- ``x`` 、``y`` 文本的左上角作为起点坐标。
+
+.. method:: display.show()
+
+.. method:: display.fill(c)
+
+    用指定的颜色填充整个帧缓存。 ``c`` 为1时,像素点亮；``c`` 为1时,像素点灭。
+
+MPythonPin类
+-------
+
+.. class:: MPythonPin(pin, mode=PinMode)
+
+构建Pin对象
+
+- ``pin`` 掌控板定义引脚号，具体定义看查看 :ref:`掌控板引脚定义<mpython_pinout>` 。
+
+- ``mode`` 引脚模式
+
+    - ``PinMode.IN`` 等于1，数字输入模式
+    - ``PinMode.OUT`` 等于2，数字输出模式
+    - ``PinMode.PWM`` 等于3，模拟输出模式
+    - ``PinMode.ANALOG`` 等于4，模拟输入模式
+
+示例::
+
+    >>> from mpython import MPythonPin       #导入MPython模块
+    >>> P0=MPythonPin(0,PinMode.IN)          #构建引脚0对象，设置数字输入模式
+
+
+
+.. method:: MPythonPin.read_digital()
+
+返回该IO引脚电平值。1代表高电平，0代表低电平
+
+.. method:: MPythonPin.write_digital(value)
+
+IO引脚输出电平控制。``value`` =1时输出高电平， ``value`` =0时输出低电平。
+
+.. method:: MPythonPin.read_analog()
+
+读取ADC并返回读取结果，返回的值将在0到4095之间。
+
+.. method:: MPythonPin.write_analog(duty):
+
+设置输出PWM信号的占空比。
+
+
+板载传感器
+-------
+
+声音、光线
++++++++++
+
+light、sound对象为ADC的衍生类，继承ADC的方法。更多的使用方法请查阅 :ref:`machine.ADC<machine.ADC>` 。
+
+.. method:: light.read()
+
+读取板载光线传感器值，范围0~4095。
+
+
+.. method:: sound.read()
+
+读取板载麦克风，范围0~4095。
+
+加速度计
++++++++++
+
+通过accelerometer对象，您可以获取3轴加速度计值，单位g，范围-1~+1g。
+
+.. method:: accelerometer.get_x()
+
+获取x轴上的加速度测量值，正整数或负整数，具体取决于方向。
+
+.. method:: accelerometer.get_y()
+
+获取y轴上的加速度测量值，正整数或负整数，具体取决于方向。
+
+.. method:: accelerometer.get_z()
+
+获取z轴上的加速度测量值，正整数或负整数，具体取决于方向。
+
+蜂鸣器
+-------
+
+通过buzz对象,驱动板载无源蜂鸣器。buzz对象为PWM的衍生类，继PWM的方法。更多的使用方法请查阅 :ref:`machine.ADC<machine.ADC>` 。
+
+.. method:: buzz.on()
+
+以500Hz频率驱动无源蜂鸣器发出声音
+
+.. method:: buzz.off()
+
+停止驱动无源蜂鸣器
+
+.. method:: buzz.freq()
 

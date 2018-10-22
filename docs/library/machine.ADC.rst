@@ -1,6 +1,8 @@
 .. currentmodule:: machine
 .. _machine.ADC:
 
+.. module:: ADC
+
 类 ADC -- 模数转换
 =========================================
 

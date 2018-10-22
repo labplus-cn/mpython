@@ -100,14 +100,3 @@ MicroPython-ESP32专有库
    random.rst
    dht.rst
 
-
-mPython专有库
-------------------------------
-
-该库中提供了mPython掌控板拓展功能
-
-
-.. toctree::
-   :maxdepth: 1
-
-   mpython.rst
