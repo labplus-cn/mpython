@@ -71,7 +71,7 @@ MPythonPin类
 
 - ``pin`` 掌控板定义引脚号，具体定义看查看 :ref:`掌控板引脚定义<mpython_pinout>` 。
 
-- ``mode`` 引脚模式
+- ``mode`` 引脚模式，未设定时默认mode=PinMode
 
     - ``PinMode.IN`` 等于1，数字输入模式
     - ``PinMode.OUT`` 等于2，数字输出模式
@@ -97,10 +97,12 @@ IO引脚输出电平控制。``value`` =1时输出高电平， ``value`` =0时�
 
 读取ADC并返回读取结果，返回的值将在0到4095之间。
 
-.. method:: MPythonPin.write_analog(duty):
+.. method:: MPythonPin.write_analog(duty, freq=1000):
 
 设置输出PWM信号的占空比。
 
+- ``duty`` 0 ≤ duty ≤ 1023
+- ``freq`` PWM波频率,0 < freq ≤ 0x0001312D（十进制：0 < freq ≤ 78125）
 
 板载传感器
 -------
@@ -122,7 +124,7 @@ light、sound对象为ADC的衍生类，继承ADC的方法。更多的使用方�
 加速度计
 +++++++++
 
-通过accelerometer对象，您可以获取3轴加速度计值，单位g，范围-1~+1g。
+通过accelerometer对象，您可以获取3轴加速度计值，单位g，范围-2~+2g。
 
 .. method:: accelerometer.get_x()
 
@@ -143,7 +145,7 @@ light、sound对象为ADC的衍生类，继承ADC的方法。更多的使用方�
 
 .. method:: buzz.on(freq=500)
 
-以500Hz频率驱动无源蜂鸣器发出声音
+以设定的频率驱动无源蜂鸣器发出声音，默认为500Hz
 
 - ``freq`` 默认500Hz
 
