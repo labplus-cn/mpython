@@ -23,3 +23,6 @@ def disconnect():
     wlan.disconnect()
     wlan.active(False)
     print('disconnect...')
+
+
+connect(SSID,PASSWORD)

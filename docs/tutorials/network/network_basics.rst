@@ -1,6 +1,8 @@
 网络基础
 ==============
 
+.. _network_base:
+
 :mod:`network` 模块用于配置WiFi连接。有两个WiFi接口，STA模式即工作站模式（ESP32连接到路由器），
 AP模式提供接入服务（其他设备连接到ESP32）。有关更多使用，请查阅 :mod:`network` 模块。
 

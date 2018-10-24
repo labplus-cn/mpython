@@ -92,7 +92,7 @@ MicroPython-ESP32专有库
 
    btree.rst
    framebuf.rst
-   machine.rst
+   machine/machine.rst
    network.rst
    uctypes.rst
    micropython.rst
