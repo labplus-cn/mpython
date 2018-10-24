@@ -63,7 +63,8 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 mpython 库
 -----------------
 
-该库中提供了mPython掌控板特有拓展功能
+该库中提供了mPython掌控板特有拓展功能。
+获取最新的 :download:`mpython.py </../library/mpython.py>` 。
 
 .. toctree::
    :maxdepth: 1
@@ -76,7 +77,7 @@ MicroPython 库
 -----------------
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    library/index.rst
 

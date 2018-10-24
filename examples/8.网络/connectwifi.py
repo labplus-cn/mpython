@@ -4,10 +4,10 @@ import time
 # wifi参数 
 SSID="yourssid"            #wifi名称
 PASSWORD="yourpsw"         #密码
-
+wlan=None
 
 # 本函数实现wifi连接 
-def connect(ssid,passwd):
+def ConnectWifi(ssid,passwd):
     global wlan
     wlan=network.WLAN(network.STA_IF)
     wlan.active(True)
@@ -19,10 +19,10 @@ def connect(ssid,passwd):
         print('Connecting to network...')
     print('WiFi Connection Successful,Network Config:%s' %str(wlan.ifconfig()))
 
-def disconnect():
+def disConnectWifi():
     wlan.disconnect()
     wlan.active(False)
     print('disconnect...')
 
 
-connect(SSID,PASSWORD)
+ConnectWifi(SSID,PASSWORD)
