@@ -29,7 +29,7 @@ OneNET平台官网地址：https://open.iot.10086.cn/，登录成功进入开发
 
 .. Attention:: 
 
-    本程序用到micropython-umqtt库，需要将 :download:`simple.py </../library/umqtt/simple.py>` 下载拷至掌控板。
+    本程序用到micropython-umqtt库，需要将 :download:`simple.py </../examples/library/umqtt/simple.py>` 下载拷至掌控板。
 
 程序示例::
 

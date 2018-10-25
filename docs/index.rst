@@ -64,7 +64,7 @@ mpython 库
 -----------------
 
 该库中提供了mPython掌控板特有拓展功能。
-获取最新的 :download:`mpython.py </../library/mpython.py>` 。
+获取最新的 :download:`mpython.py </../examples/library/mpython.py>` 。
 
 .. toctree::
    :maxdepth: 1
