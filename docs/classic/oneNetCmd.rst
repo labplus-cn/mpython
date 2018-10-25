@@ -79,7 +79,7 @@ OneNET平台官网地址：https://open.iot.10086.cn/，登录成功进入开发
 
     def main(server=SERVER):
         #端口号为：6002
-        c = MQTTClient(CLIENT_ID, server,6002,username,password)
+        c = MQTTClient(CLIENT_ID, server,6002,username,password,1)
         c.set_callback(sub_cb)
         c.connect()
         print("Connected to %s" % server)
