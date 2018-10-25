@@ -1,0 +1,43 @@
+build/bootloader//home/zkh/esp-idf/components/bootloader_support/src/efuse.o: \
+ /home/zkh/esp-idf/components/bootloader_support/src/efuse.c \
+ /home/zkh/esp-idf/components/bootloader_support/include/esp_efuse.h \
+ /home/zkh/esp-idf/components/soc/esp32/include/soc/efuse_reg.h \
+ /home/zkh/esp-idf/components/soc/esp32/include/soc/soc.h \
+ /home/zkh/esp-idf/components/newlib/include/stdint.h \
+ /home/zkh/esp-idf/components/newlib/include/machine/_default_types.h \
+ /home/zkh/esp-idf/components/newlib/include/sys/features.h \
+ /home/zkh/esp-idf/components/newlib/include/sys/_intsup.h \
+ /home/zkh/esp-idf/components/esp32/include/esp_assert.h \
+ /home/zkh/esp-idf/components/newlib/include/assert.h \
+ /home/zkh/esp-idf/components/newlib/include/_ansi.h \
+ /home/zkh/esp-idf/components/newlib/include/newlib.h \
+ /home/zkh/esp-idf/components/newlib/include/sys/config.h \
+ /home/zkh/esp-idf/components/newlib/include/machine/ieeefp.h \
+ /home/zkh/esp-idf/components/esp32/include/xtensa/config/core-isa.h \
+ /home/zkh/esp-idf/components/log/include/esp_log.h \
+ /opt/xtensa-esp32-elf/lib/gcc/xtensa-esp32-elf/5.2.0/include/stdarg.h \
+ sdkconfig.h /home/zkh/esp-idf/components/esp32/include/rom/ets_sys.h \
+ /opt/xtensa-esp32-elf/lib/gcc/xtensa-esp32-elf/5.2.0/include/stdbool.h \
+ /home/zkh/esp-idf/components/soc/esp32/include/soc/soc.h \
+ /home/zkh/esp-idf/components/log/include/esp_log_internal.h
+ /home/zkh/esp-idf/components/bootloader_support/src/efuse.c :
+ /home/zkh/esp-idf/components/bootloader_support/include/esp_efuse.h :
+ /home/zkh/esp-idf/components/soc/esp32/include/soc/efuse_reg.h :
+ /home/zkh/esp-idf/components/soc/esp32/include/soc/soc.h :
+ /home/zkh/esp-idf/components/newlib/include/stdint.h :
+ /home/zkh/esp-idf/components/newlib/include/machine/_default_types.h :
+ /home/zkh/esp-idf/components/newlib/include/sys/features.h :
+ /home/zkh/esp-idf/components/newlib/include/sys/_intsup.h :
+ /home/zkh/esp-idf/components/esp32/include/esp_assert.h :
+ /home/zkh/esp-idf/components/newlib/include/assert.h :
+ /home/zkh/esp-idf/components/newlib/include/_ansi.h :
+ /home/zkh/esp-idf/components/newlib/include/newlib.h :
+ /home/zkh/esp-idf/components/newlib/include/sys/config.h :
+ /home/zkh/esp-idf/components/newlib/include/machine/ieeefp.h :
+ /home/zkh/esp-idf/components/esp32/include/xtensa/config/core-isa.h :
+ /home/zkh/esp-idf/components/log/include/esp_log.h :
+ /opt/xtensa-esp32-elf/lib/gcc/xtensa-esp32-elf/5.2.0/include/stdarg.h :
+ sdkconfig.h /home/zkh/esp-idf/components/esp32/include/rom/ets_sys.h :
+ /opt/xtensa-esp32-elf/lib/gcc/xtensa-esp32-elf/5.2.0/include/stdbool.h :
+ /home/zkh/esp-idf/components/soc/esp32/include/soc/soc.h :
+ /home/zkh/esp-idf/components/log/include/esp_log_internal.h :
