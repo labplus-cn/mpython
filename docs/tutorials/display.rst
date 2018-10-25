@@ -135,7 +135,7 @@ oled还可绘制一些点、直线、矩形形状。
 
   testdrawline()
 
-.. image:: /images/drawline.gif
+.. image:: /images/tutorials/drawline.gif
    :scale: 100 %
 
 显示图片
@@ -149,7 +149,7 @@ oled还可绘制一些点、直线、矩形形状。
 * 步骤2.选择参数,输出数据类型[C语言数组]、  扫描模式[水平扫描]、输出灰度[单色]、宽高[128*64]
 * 步骤3.保存数据
 
-.. image:: /images/image2lcd.png
+.. image:: /images/tutorials/image2lcd.png
 
 
 将取模数据赋值给bmp数组中,创建 ``framebuf`` 对象用于存储图片帧数据。然后使用 ``display.blit()`` 绘制图片至oled。
@@ -251,7 +251,7 @@ oled还可绘制一些点、直线、矩形形状。
   - ``x，y`` - 起始点坐标（x, y）
 
 
-.. image:: /images/earth.png
+.. image:: /images/tutorials/earth.png
    :scale: 50 %
 
 
@@ -305,7 +305,7 @@ pbm数据格式::
 
 
 
-.. image:: /images/scatman.gif
+.. image:: /images/tutorials/scatman.gif
 
 
 

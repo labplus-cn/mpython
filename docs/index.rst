@@ -54,9 +54,9 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 
 .. toctree::
     :maxdepth: 1
-    :caption: 经典实例教程
+    :caption: 实例教程
         
-    classic/classic_1.rst
+    classic/oneNetCmd.rst
     
 
 
@@ -77,7 +77,7 @@ MicroPython 库
 -----------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    library/index.rst
 

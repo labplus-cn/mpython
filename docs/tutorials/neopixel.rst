@@ -32,7 +32,7 @@ mPython掌控板载3颗ws2812灯珠，WS2812是一种集成了电流控制芯片
 如果需要使用外部彩带，要先创建一个neopixel对象,定义 ``pin`` 、``bpp`` 、 ``timeing`` 参数，然后才能通过该对象控制彩带上的LED。
 更详细的使用方法，请查阅 :ref:`neopixel<neopixel>` 模块 。
 
-.. image:: /images/glamour.jpg
+.. image:: /images/tutorials/glamour.jpg
   :height: 300
   :width: 400
 
