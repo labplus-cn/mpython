@@ -1,0 +1,48 @@
+build/py/frozenmod.o: ../py/frozenmod.c /usr/include/stdc-predef.h \
+ /usr/include/string.h \
+ /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
+ /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h \
+ /usr/include/x86_64-linux-gnu/bits/long-double.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/stddef.h \
+ /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
+ /usr/include/strings.h \
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/types.h \
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h ../py/lexer.h \
+ ../py/mpconfig.h mpconfigport.h /usr/include/alloca.h ../py/qstr.h \
+ ../py/misc.h /usr/lib/gcc/x86_64-linux-gnu/7/include/stdbool.h \
+ build/genhdr/qstrdefs.generated.h ../py/reader.h ../py/obj.h \
+ ../py/mpprint.h ../py/runtime0.h ../py/frozenmod.h
+../py/frozenmod.c /usr/include/stdc-predef.h :
+ /usr/include/string.h :
+ /usr/include/x86_64-linux-gnu/bits/libc-header-start.h :
+ /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h :
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h :
+ /usr/include/x86_64-linux-gnu/bits/long-double.h :
+ /usr/include/x86_64-linux-gnu/gnu/stubs.h :
+ /usr/include/x86_64-linux-gnu/gnu/stubs-64.h :
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/stddef.h :
+ /usr/include/x86_64-linux-gnu/bits/types/locale_t.h :
+ /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h :
+ /usr/include/strings.h :
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h :
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h :
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/stdint.h /usr/include/stdint.h :
+ /usr/include/x86_64-linux-gnu/bits/types.h :
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h :
+ /usr/include/x86_64-linux-gnu/bits/wchar.h :
+ /usr/include/x86_64-linux-gnu/bits/stdint-intn.h :
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h ../py/lexer.h :
+ ../py/mpconfig.h mpconfigport.h /usr/include/alloca.h ../py/qstr.h :
+ ../py/misc.h /usr/lib/gcc/x86_64-linux-gnu/7/include/stdbool.h :
+ build/genhdr/qstrdefs.generated.h ../py/reader.h ../py/obj.h :
+ ../py/mpprint.h ../py/runtime0.h ../py/frozenmod.h :

@@ -1,0 +1,62 @@
+build/py/modsys.o: ../py/modsys.c /usr/include/stdc-predef.h \
+ ../py/builtin.h ../py/obj.h ../py/mpconfig.h mpconfigport.h \
+ /usr/include/alloca.h /usr/include/features.h \
+ /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h \
+ /usr/include/x86_64-linux-gnu/bits/long-double.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/stddef.h \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
+ /usr/include/x86_64-linux-gnu/bits/types.h \
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h ../py/misc.h \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/stdbool.h ../py/qstr.h \
+ build/genhdr/qstrdefs.generated.h ../py/mpprint.h ../py/runtime0.h \
+ ../py/objlist.h ../py/objtuple.h ../py/objstr.h ../py/objint.h \
+ ../py/mpz.h ../py/objtype.h ../py/stream.h ../py/mperrno.h \
+ /usr/include/errno.h /usr/include/x86_64-linux-gnu/bits/errno.h \
+ /usr/include/linux/errno.h /usr/include/x86_64-linux-gnu/asm/errno.h \
+ /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+ ../py/smallint.h ../py/runtime.h ../py/mpstate.h ../py/mpthread.h \
+ ../py/nlr.h /usr/lib/gcc/x86_64-linux-gnu/7/include-fixed/limits.h \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include-fixed/syslimits.h \
+ /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+ /usr/include/linux/limits.h \
+ /usr/include/x86_64-linux-gnu/bits/posix2_lim.h /usr/include/assert.h \
+ ../py/objexcept.h ../py/pystack.h
+../py/modsys.c /usr/include/stdc-predef.h :
+ ../py/builtin.h ../py/obj.h ../py/mpconfig.h mpconfigport.h :
+ /usr/include/alloca.h /usr/include/features.h :
+ /usr/include/x86_64-linux-gnu/sys/cdefs.h :
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h :
+ /usr/include/x86_64-linux-gnu/bits/long-double.h :
+ /usr/include/x86_64-linux-gnu/gnu/stubs.h :
+ /usr/include/x86_64-linux-gnu/gnu/stubs-64.h :
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/stddef.h :
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/stdint.h /usr/include/stdint.h :
+ /usr/include/x86_64-linux-gnu/bits/libc-header-start.h :
+ /usr/include/x86_64-linux-gnu/bits/types.h :
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h :
+ /usr/include/x86_64-linux-gnu/bits/wchar.h :
+ /usr/include/x86_64-linux-gnu/bits/stdint-intn.h :
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h ../py/misc.h :
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/stdbool.h ../py/qstr.h :
+ build/genhdr/qstrdefs.generated.h ../py/mpprint.h ../py/runtime0.h :
+ ../py/objlist.h ../py/objtuple.h ../py/objstr.h ../py/objint.h :
+ ../py/mpz.h ../py/objtype.h ../py/stream.h ../py/mperrno.h :
+ /usr/include/errno.h /usr/include/x86_64-linux-gnu/bits/errno.h :
+ /usr/include/linux/errno.h /usr/include/x86_64-linux-gnu/asm/errno.h :
+ /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h :
+ ../py/smallint.h ../py/runtime.h ../py/mpstate.h ../py/mpthread.h :
+ ../py/nlr.h /usr/lib/gcc/x86_64-linux-gnu/7/include-fixed/limits.h :
+ /usr/lib/gcc/x86_64-linux-gnu/7/include-fixed/syslimits.h :
+ /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h :
+ /usr/include/x86_64-linux-gnu/bits/local_lim.h :
+ /usr/include/linux/limits.h :
+ /usr/include/x86_64-linux-gnu/bits/posix2_lim.h /usr/include/assert.h :
+ ../py/objexcept.h ../py/pystack.h :
