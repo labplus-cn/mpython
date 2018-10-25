@@ -1,0 +1,29 @@
+build//home/zkh/esp-idf/components/expat/library/xmltok.o: \
+ /home/zkh/esp-idf/components/expat/library/xmltok.c \
+ /opt/xtensa-esp32-elf/lib/gcc/xtensa-esp32-elf/5.2.0/include/stddef.h \
+ /home/zkh/esp-idf/components/expat/include/expat/expat_external.h \
+ /home/zkh/esp-idf/components/expat/include/expat/internal.h \
+ /home/zkh/esp-idf/components/expat/include/expat/xmltok.h \
+ /home/zkh/esp-idf/components/expat/include/expat/nametab.h \
+ /home/zkh/esp-idf/components/expat/include/expat/xmltok_impl.h \
+ /home/zkh/esp-idf/components/expat/include/expat/ascii.h \
+ /home/zkh/esp-idf/components/expat/library/xmltok_impl.c \
+ /home/zkh/esp-idf/components/expat/include/expat/asciitab.h \
+ /home/zkh/esp-idf/components/expat/include/expat/utf8tab.h \
+ /home/zkh/esp-idf/components/expat/include/expat/iasciitab.h \
+ /home/zkh/esp-idf/components/expat/include/expat/latin1tab.h \
+ /home/zkh/esp-idf/components/expat/library/xmltok_ns.c
+ /home/zkh/esp-idf/components/expat/library/xmltok.c :
+ /opt/xtensa-esp32-elf/lib/gcc/xtensa-esp32-elf/5.2.0/include/stddef.h :
+ /home/zkh/esp-idf/components/expat/include/expat/expat_external.h :
+ /home/zkh/esp-idf/components/expat/include/expat/internal.h :
+ /home/zkh/esp-idf/components/expat/include/expat/xmltok.h :
+ /home/zkh/esp-idf/components/expat/include/expat/nametab.h :
+ /home/zkh/esp-idf/components/expat/include/expat/xmltok_impl.h :
+ /home/zkh/esp-idf/components/expat/include/expat/ascii.h :
+ /home/zkh/esp-idf/components/expat/library/xmltok_impl.c :
+ /home/zkh/esp-idf/components/expat/include/expat/asciitab.h :
+ /home/zkh/esp-idf/components/expat/include/expat/utf8tab.h :
+ /home/zkh/esp-idf/components/expat/include/expat/iasciitab.h :
+ /home/zkh/esp-idf/components/expat/include/expat/latin1tab.h :
+ /home/zkh/esp-idf/components/expat/library/xmltok_ns.c :
