@@ -105,7 +105,7 @@ oled还可绘制一些点、直线、矩形形状。
   * display.fill_rect(x, y, w, h, c)用于绘制填充颜色的矩形，方法与rect()相同。不同于rect()只绘制矩形外框。
 
 
-绘制线条例子 :download:`drawline.py </../examples/display/drawline.py>` ::
+绘制线条例子 :download:`drawline.py </../examples/1.显示屏/drawline.py>` ::
 
   from mpython import *
   import time
@@ -143,7 +143,7 @@ oled还可绘制一些点、直线、矩形形状。
 
 首先我们需要将图像处理为大小128*64,bmp格式颜色深度为1或者就是黑白模式。你可以使用Photoshop或者其他的图像处理软件。
 
-接下来是使用取模工具对图片进行取模。网上有PCtoLCD、lcd image converter等取模软件，可根据自己喜好自行选择。以下使用的是Img2Lcd工具。
+接下来是使用取模工具对图片进行取模。网上有PCtoLCD、lcd image converter等取模软件，可根据自己喜好自行选择。以下使用的是 :download:`Img2Lcd工具 </../docs/tools/Image2Lcd.zip>` 。
 
 * 步骤1.导入128x64,bmp格式图片
 * 步骤2.选择参数,输出数据类型[C语言数组]、  扫描模式[水平扫描]、输出灰度[单色]、宽高[128*64]
@@ -154,7 +154,7 @@ oled还可绘制一些点、直线、矩形形状。
 
 将取模数据赋值给bmp数组中,创建 ``framebuf`` 对象用于存储图片帧数据。然后使用 ``display.blit()`` 绘制图片至oled。
 
-:download:`bmp.py </../examples/display/bmp.py>` ::
+:download:`bmp.py </../examples/1.显示屏/bmp.py>` ::
 
   from mpython import *
   import framebuf
@@ -281,7 +281,7 @@ pbm数据格式::
 在程序中使用 ``file.read()`` 逐帧读取图像数据流。注意，前三行不是我们需要的数据，使用 ``readlines()`` 将它舍弃。
 每帧数据流创建FrameBuffer对象，将所有帧缓存储存至images列表。然后逐帧显示至oled屏。
 
-:download:`scatman.py </../examples/display/素材/scatman.zip>` ::
+:download:`scatman.py </../examples/1.显示屏/素材/scatman.zip>` ::
 
   from mpython import *
   import framebuf,time

@@ -2,7 +2,7 @@
 ====================
 
 
-烧录工具使用乐鑫官网提供的下载软件 :download:`ESPFlashDownloadTool </../tools/FLASH_DOWNLOAD_TOOLS_V3.6.4.rar>`
+烧录工具使用乐鑫官网提供的下载软件 :download:`ESPFlashDownloadTool </../docs/tools/FLASH_DOWNLOAD_TOOLS_V3.6.4.rar>`
 
 掌控板固件发布:https://github.com/labplus-cn/mPython/tree/master/firmware
 
