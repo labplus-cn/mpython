@@ -32,3 +32,5 @@
 *.app
 _build/
 .vscode/
+vs/
+.github/
