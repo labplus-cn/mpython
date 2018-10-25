@@ -1,3 +1,0 @@
-build//home/zkh/esp-idf/components/expat/library/xmltok_impl.o: \
- /home/zkh/esp-idf/components/expat/library/xmltok_impl.c
- /home/zkh/esp-idf/components/expat/library/xmltok_impl.c :

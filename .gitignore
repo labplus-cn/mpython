@@ -34,3 +34,4 @@ _build/
 .vscode/
 vs/
 .github/
+ports/sp32/build/
