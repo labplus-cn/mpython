@@ -141,7 +141,7 @@ light、sound对象为ADC的衍生类，继承ADC的方法。更多的使用方�
 蜂鸣器
 -------
 
-通过buzz对象,驱动板载无源蜂鸣器。buzz对象为PWM的衍生类，继PWM的方法。更多的使用方法请查阅 :ref:`machine.ADC<machine.ADC>` 。
+通过buzz对象,驱动板载无源蜂鸣器。
 
 .. method:: buzz.on(freq=500)
 
@@ -153,5 +153,5 @@ light、sound对象为ADC的衍生类，继承ADC的方法。更多的使用方�
 
 停止驱动无源蜂鸣器
 
-.. method:: buzz.freq()
+
 

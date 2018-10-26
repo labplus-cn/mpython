@@ -5,9 +5,9 @@ from mpython import *
 
 # wifi参数 
 SSID="yourSSID"                 #wifi名称
-PASSWORD="yourPSW"         #密码
-host = "192.168.2.101"        #TCP Server IP
-port = 5001                #Port
+PASSWORD="yourPSW"              #密码
+host = "192.168.2.101"          #TCP Server IP
+port = 5001                     #Port
 s=None
 wlan=None
 

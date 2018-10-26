@@ -1,13 +1,17 @@
 HTTP
 =======
 
-HTTP GET request
-----------------
 HTTP是基于客户端/服务端（C/S）的架构模型，通过一个可靠的链接来交换信息，是一个无状态的请求/响应协议。
 
 一个HTTP"客户端"是一个应用程序（Web浏览器或其他任何客户端），通过连接到服务器达到向服务器发送一个或多个HTTP的请求的目的。
 
-下下示例显示了如何下载网页。HTTP使用端口80，您首先需要发送“GET”请求才能下载任何内容。作为请求的一部分，您需要指定要检索的页面。
+HTTP GET request
+----------------
+
+
+
+
+以下示例显示了如何下载网页。HTTP使用端口80，您首先需要发送“GET”请求才能下载任何内容。作为请求的一部分，您需要指定要检索的页面。
 
 让我们定义一个可以下载和打印URL的函数::
 
@@ -42,3 +46,71 @@ HTTP是基于客户端/服务端（C/S）的架构模型，通过一个可靠的
 
 HTTP Server
 ----------------
+
+以下示例，掌控板作为HTTP服务端，使用浏览器访问页面::
+
+    import socket
+    import network,time
+
+    SSID="yourSSID"       #wifi 名称
+    PASSWORD="yourPSW"    #wifi 密码
+    wlan=None
+
+    # 本函数实现wifi连接 
+    def ConnectWifi(ssid=SSID,passwd=PASSWORD):
+        global wlan
+        wlan=network.WLAN(network.STA_IF)
+        wlan.active(True)
+        wlan.disconnect()
+        wlan.disconnect()
+        
+        wlan.connect(ssid,passwd)
+        while(wlan.ifconfig()[0]=='0.0.0.0'):
+            time.sleep(1)
+            print('Connecting to network...')
+        print('WiFi Connection Successful,Network Config:%s' %str(wlan.ifconfig()))
+
+    ConnectWifi()
+
+    CONTENT = b"""\
+    HTTP/1.0 200 OK
+
+    Hello #%d from mPython!
+    """
+
+    def main():
+        s = socket.socket()
+        ai = socket.getaddrinfo(wlan.ifconfig()[0], 80)
+        print("Bind address info:", ai)
+        addr = ai[0][-1]
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.bind(addr)
+        s.listen(5)
+        print("Listening, connect your browser to http://%s:80/" %addr[0])
+        counter = 0
+        while True:
+            res = s.accept()
+            client_s = res[0]
+            client_addr = res[1]
+            print("Client address:", client_addr)
+            print("Client socket:", client_s)
+            req = client_s.recv(4096)
+            print("Request:")
+            print(req)
+            client_s.send(CONTENT % counter)
+            client_s.close()
+            counter += 1
+            print()
+
+在REPL中运行main::
+
+    >>> main()
+
+.. image:: /images/tutorials/http_1.png
+
+
+手机或笔记本电脑连接相同wifi，使其在同个局域网内。按打印提示，使用浏览器访问掌控板主机IP地址。网页显示客户端访问次数。
+
+.. image:: /images/tutorials/http_2.png
+
+
