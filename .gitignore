@@ -32,3 +32,6 @@
 *.app
 _build/
 .vscode/
+vs/
+.github/
+ports/esp32/build/

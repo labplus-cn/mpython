@@ -1,3 +1,0 @@
-build//home/zkh/esp-idf/components/expat/library/xmltok_ns.o: \
- /home/zkh/esp-idf/components/expat/library/xmltok_ns.c
- /home/zkh/esp-idf/components/expat/library/xmltok_ns.c :
