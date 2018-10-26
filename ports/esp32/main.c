@@ -38,6 +38,8 @@
 #include "soc/cpu.h"
 #include "esp_log.h"
 
+#include "esp_timer.h"		// add by zkh
+
 #include "py/stackctrl.h"
 #include "py/nlr.h"
 #include "py/compile.h"
@@ -91,7 +93,7 @@ soft_reset:
 
     // initialise peripherals
     machine_pins_init();
-	
+
     // run boot-up scripts
     pyexec_frozen_module("_boot.py");
     pyexec_file("boot.py");
