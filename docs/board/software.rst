@@ -7,9 +7,7 @@ mPython2 IDE软件
 目前有三个下载地址（for Windows 64位、Windows 32位、MacOS）：
 
 http://static.steamaker.cn/files/mPython2_0.2.3_win64.exe
-
 http://static.steamaker.cn/files/mPython2_0.2.3_win32.exe
-
 http://static.steamaker.cn/files/mPython2_0.2.3_macos.zip
 
 
