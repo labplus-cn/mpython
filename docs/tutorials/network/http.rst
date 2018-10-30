@@ -47,23 +47,24 @@ HTTP GET request
 HTTP Server
 ----------------
 
-以下示例，掌控板作为HTTP服务端，使用浏览器访问页面::
+以下示例，掌控板作为HTTP服务端，使用浏览器可以访问板载光线传感器::
 
     import socket
     import network,time
+    from mpython import *
 
     SSID="yourSSID"       #wifi 名称
     PASSWORD="yourPSW"    #wifi 密码
     wlan=None
 
-    # 本函数实现wifi连接 
+    # 本函数实现wifi连接
     def ConnectWifi(ssid=SSID,passwd=PASSWORD):
         global wlan
         wlan=network.WLAN(network.STA_IF)
         wlan.active(True)
         wlan.disconnect()
         wlan.disconnect()
-        
+
         wlan.connect(ssid,passwd)
         while(wlan.ifconfig()[0]=='0.0.0.0'):
             time.sleep(1)
@@ -75,7 +76,8 @@ HTTP Server
     CONTENT = b"""\
     HTTP/1.0 200 OK
 
-    Hello #%d from mPython!
+    <meta charset="utf-8">
+    欢迎使用mPython！你的光线传感器值是:%d
     """
 
     def main():
@@ -87,7 +89,9 @@ HTTP Server
         s.bind(addr)
         s.listen(5)
         print("Listening, connect your browser to http://%s:80/" %addr[0])
-        counter = 0
+        display.DispChar('Connect your browser',0,0,)                       #oled显示掌控板ip地址
+        display.DispChar('http://%s' %addr[0],0,16)
+        display.show()     
         while True:
             res = s.accept()
             client_s = res[0]
@@ -97,10 +101,11 @@ HTTP Server
             req = client_s.recv(4096)
             print("Request:")
             print(req)
-            client_s.send(CONTENT % counter)
+            client_s.send(CONTENT % light.read())
             client_s.close()
-            counter += 1
-            print()
+
+
+
 
 在REPL中运行main::
 
@@ -109,7 +114,7 @@ HTTP Server
 .. image:: /images/tutorials/http_1.png
 
 
-手机或笔记本电脑连接相同wifi，使其在同个局域网内。按打印提示，使用浏览器访问掌控板主机IP地址。网页显示客户端访问次数。
+手机或笔记本电脑连接相同wifi，使其在同个局域网内。按打印提示或oled屏幕显示ip，使用浏览器访问掌控板主机IP地址。
 
 .. image:: /images/tutorials/http_2.png
 

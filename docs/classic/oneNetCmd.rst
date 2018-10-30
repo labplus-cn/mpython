@@ -70,12 +70,12 @@ OneNET平台官网地址：https://open.iot.10086.cn/，登录成功进入开发
         
         print((topic, msg))
         if msg == b"on":
-        rgb.fill((50,0,0))       #点亮红灯
-        rgb.write()
+            rgb.fill((50,0,0))       #点亮红灯
+            rgb.write()
         elif msg == b"off":        #灭灯
-        rgb.fill((0,0,0))
-        rgb.write()
-        
+            rgb.fill((0,0,0))
+            rgb.write()
+            
 
     def main(server=SERVER):
         #端口号为：6002
