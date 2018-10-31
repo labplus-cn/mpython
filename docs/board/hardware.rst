@@ -67,5 +67,17 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
 相关下载
 --------------
 
+原理图
+++++++
+
 * :download:`mPython掌控板V0.9原理图 </../docs/hardware/labplus_mPython_V0.9.pdf>`
+
+主要数据手册
++++++++
+
+* :download:`USB-to-UART Bridge：cp2104 </../docs/hardware/CP2104-SiliconLaboratories.pdf>`
+* :download:`ESP32-WROOM </../docs/hardware/esp32-wroom-32_datasheet_cn.pdf>`
+* :download:`LDO稳压:AP2112K-3.3 </../docs/hardware/AP2112K-3.3.PDF>`
+* :download:`加速度计:MSA300 </../docs/hardware/MSA300-V1.0-ENG.pdf>`
+* :download:`OLED：128x64 </../docs/hardware/1.30-SPEC QG-2864KSWLG01 VER A.pdf>`
 

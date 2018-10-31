@@ -41,7 +41,7 @@ try:
             s.close()
             break
         print(data)
-        data=data.decode('utf-8')
+        data=data.decode()                                 #以utf-8编码解码字符串    
         display.fill(0)
         display.DispChar(data,0,0)
         display.show()

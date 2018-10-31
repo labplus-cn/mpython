@@ -45,12 +45,10 @@ MicroPython将运行您输入的代码并打印结果（如果有的话）。如
     >>> display.show()
     >>> 
 
+.. Note::
 
-.. method:: display.DispChar(str,x,y)
-
-``str`` 为要显示的字符串， ``x`` 、``y`` 为显示起点的xy坐标。
-
-然后用 ``display.show()`` 刷新屏幕后，字符串即可显示在oled上。现在你可以尝试下在其他位置显示任意字符串。
+    ``display.DispChar(str,x,y)``   ``str`` 为要显示的字符串， ``x`` 、``y`` 为显示起点的xy坐标。
+    然后用 ``display.show()`` 刷新屏幕后，字符串即可显示在oled上。现在你可以尝试下在其他位置显示任意字符串。
 
 
 

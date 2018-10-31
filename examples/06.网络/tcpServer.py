@@ -3,9 +3,9 @@ import socket
 import time
 from mpython import *
 
-SSID="yourSSID"
-PASSWORD="yourPASSWORD"
-port=5001
+SSID="youSSID"
+PASSWORD="yourPSW"
+port=5001               # TCP Sever port,range0~65535
 wlan=None
 listenSocket=None
 
@@ -48,8 +48,12 @@ try:
                 print("close socket")
                 conn.close()                        #if there is no data,close
                 break
-            print(data)
-            ret = conn.send(data)                 #return data to client
+            data_utf=data.decode()                  #以utf8编码解码字符串
+            print(data_utf)
+            display.DispChar(data_utf,0,48)         #将接收到文本显示出来
+            display.show()
+            display.fill_rect(0,48,128,16,0)        #局部清屏
+            ret = conn.send(data)                    #return data to client
 except:
     if(listenSocket):
         listenSocket.close()

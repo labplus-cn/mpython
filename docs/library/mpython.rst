@@ -21,6 +21,26 @@ button_a/b对象
 
 配置在引脚的触发源处于活动状态时调用的中断处理程序。
 
+参数:
+
+     - ``handler`` 是一个可选的函数，在中断触发时调用。
+
+     - ``trigger`` 配置可以触发中断的事件。可能的值是：
+
+       - ``Pin.IRQ_FALLING`` 下降沿中断
+       - ``Pin.IRQ_RISING`` 上升沿中断
+       - ``Pin.IRQ_LOW_LEVEL`` 低电平中断
+       - ``Pin.IRQ_HIGH_LEVEL`` 高电平中断
+
+       这些值可以一起进行 ``OR`` 运算以触发多个事件。
+
+     - ``priority`` 设置中断的优先级。它可以采用的值是特定于端口的，但是更高的值总是代表更高的优先级。
+
+     - ``wake`` 选择此中断可唤醒系统的电源模式。它可以是 ``machine.IDLE`` ， ``machine.SLEEP`` 或 ``machine.DEEPSLEEP`` 。
+     这些值也可以进行 ``OR`` 运算，使引脚在多种功耗模式下产生中断。
+
+此方法返回一个回调对象。
+
 touchPad_[ ]对象
 ------
 掌控板上共有6个触摸引脚分别touchPad_P/Y/T/H/O/N。
