@@ -57,6 +57,7 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
     :caption: 实例教程
         
     classic/oneNetCmd.rst
+    classic/oneNetDatastreams.rst
     
 
 
