@@ -167,7 +167,13 @@ light、sound对象为ADC的衍生类，继承ADC的方法。更多的使用方�
 
 以设定的频率驱动无源蜂鸣器发出声音，默认为500Hz
 
-- ``freq`` 默认500Hz
+- ``freq`` 默认500Hz，0 < freq ≤ 78125
+
+.. method:: buzz.freq(freq)
+
+切换蜂鸣器频率
+
+- ``freq`` 0 < freq ≤ 78125
 
 .. method:: buzz.off()
 
