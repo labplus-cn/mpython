@@ -21,5 +21,5 @@ class Servo:
         if angle < 0 or angle > self.actuation_range:
             raise ValueError("Angle out of range")
         us_range = self.max_us - self.min_us
-        us = self.min_us + round(angle * us_range / self.actuation_range)
+        us = self.min_us + angle * us_range / self.actuation_range
         self.write_us(us)
