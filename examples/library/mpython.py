@@ -165,6 +165,9 @@ class Buzz(object):
             self.io.value(1)
             self.isOn = False
 
+    def freq(self,freq):
+        self.pwm.freq(freq)
+
 
 class PinMode(object):
     IN = 1
