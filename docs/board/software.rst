@@ -194,22 +194,32 @@ http://static.steamaker.cn/files/mPython2_0.2.4_macos.zip
 
 先关闭文件窗口，此时菜单栏原来灰掉的“交互”按钮变为可用，此时可以进入交互模式。
 
+.. image:: /images/software/software_14.png
+
 停止默认运行程序
 ````````
 
 进入交互模式后，掌控板会软重启，默认会运行main.py，此时，先点击REPL区，并按下Ctrl+C，来打断main.py的运行。
+
+.. image:: /images/software/software_15.png
 
 准备粘贴代码
 ````````
 
 鼠标焦点在REPL区的时候，按下Ctrl+E，进入代码粘贴模式。
 
+.. image:: /images/software/software_16.png
+
 粘贴代码
 ````````
 
 用鼠标右键粘贴已有的代码，代码中若含有中文，将自动转换为Unicode格式。
 
+.. image:: /images/software/software_17.png
+
 退出粘贴模式，并调试代码
 ````````
 
 按下Ctrl+D，退出粘贴模式，同时运行代码，此时可以同时查看调试信息。
+
+.. image:: /images/software/software_18.png
