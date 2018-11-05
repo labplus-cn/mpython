@@ -54,6 +54,7 @@
 #include "modnetwork.h"
 #include "mpthreadport.h"
 
+
 // MicroPython runs as a task under FreeRTOS
 #define MP_TASK_PRIORITY        (ESP_TASK_PRIO_MIN + 1)
 #define MP_TASK_STACK_SIZE      (16 * 1024)
@@ -67,12 +68,20 @@ int vprintf_null(const char *format, va_list ap) {
     return 0;
 }
 
+volatile uint32_t ticker_ticks_ms = 0;
+extern void mpython_music_tick(void);
+static void timer_1ms_ticker(void *args)
+{
+    ticker_ticks_ms += 1;
+    mpython_music_tick();
+}
 
 void mp_task(void *pvParameter) {
     volatile uint32_t sp = (uint32_t)get_sp();
     #if MICROPY_PY_THREAD
     mp_thread_init(&mp_task_stack[0], MP_TASK_STACK_LEN);
     #endif
+    esp_log_level_set("*", ESP_LOG_ERROR);    // only error msg for mpython
     uart_init();
 
     // Allocate the uPy heap using malloc and get the largest available region
@@ -93,6 +102,16 @@ soft_reset:
 
     // initialise peripherals
     machine_pins_init();
+
+	// add by zhang kaihua
+	// for music function
+	const esp_timer_create_args_t periodic_timer_args = {
+		.callback = &timer_1ms_ticker,
+		.name = "music tick timer"
+	};
+	esp_timer_handle_t periodic_timer;
+	ESP_ERROR_CHECK(esp_timer_create(&periodic_timer_args, &periodic_timer));
+	ESP_ERROR_CHECK(esp_timer_start_periodic(periodic_timer, 1000));
 
     // run boot-up scripts
     pyexec_frozen_module("_boot.py");
@@ -121,11 +140,14 @@ soft_reset:
 
     gc_sweep_all();
 
-    mp_hal_stdout_tx_str("PYB: soft reboot\r\n");
+    mp_hal_stdout_tx_str("mpython soft reboot\r\n");
 
     // deinitialise peripherals
     machine_pins_deinit();
     usocket_events_deinit();
+
+    esp_timer_delete(periodic_timer);
+    MP_STATE_PORT(music_data) = NULL;
 
     mp_deinit();
     fflush(stdout);
