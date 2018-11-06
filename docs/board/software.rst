@@ -223,3 +223,46 @@ http://static.steamaker.cn/files/mPython2_0.2.4_macos.zip
 按下Ctrl+D，退出粘贴模式，同时运行代码，此时可以同时查看调试信息。
 
 .. image:: /images/software/software_18.png
+
+
+恢复固件及写入基础库
+-----------
+
+固件异常表现
+````````
+
+接入固件异常的掌控板会有弹窗提示，此时需要恢复固件。
+
+.. image:: /images/software/software_19.png
+
+恢复固件
+````````
+
+在掌控板文件区域的空白处右键，选择恢复固件，按照左下角提示信息操作。
+
+.. image:: /images/software/software_20.png
+
+.. image:: /images/software/software_21.png
+
+.. image:: /images/software/software_22.png
+
+.. image:: /images/software/software_23.png
+
+.. image:: /images/software/software_24.png
+
+文件系统出现boot.py及mpython.py即恢复固件成功。
+
+.. image:: /images/software/software_25.png
+
+写入基础库
+````````
+
+恢复固件成功后建议写入基础库，在掌控板文件区域的空白处右键，选择写入基础库。
+
+.. image:: /images/software/software_26.png
+
+.. image:: /images/software/software_27.png
+
+写入成功即可见掌控板文件增加了mpython.py。
+
+.. image:: /images/software/software_28.png
