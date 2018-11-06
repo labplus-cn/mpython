@@ -17,7 +17,7 @@ http://static.steamaker.cn/files/mPython2_0.2.4_macos.zip
 
 .. Attention:: 
 
-  为Python调用路径的原因，程序不可以安装在中文目录下。
+  因为Python调用路径的原因，程序不可以安装在中文目录下。
   程序默认会安装在Windows用户目录下，如：C:\\Users\\{用户名}\\AppData\\Local\\mPython2
   有的用户名为中文，使用默认路径会导致安装后的快捷方式无法正确打开
   请修改路径，如下图，修改为：D:\\mPython2
