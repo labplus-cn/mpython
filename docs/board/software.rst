@@ -194,22 +194,75 @@ http://static.steamaker.cn/files/mPython2_0.2.4_macos.zip
 
 先关闭文件窗口，此时菜单栏原来灰掉的“交互”按钮变为可用，此时可以进入交互模式。
 
+.. image:: /images/software/software_14.png
+
 停止默认运行程序
 ````````
 
 进入交互模式后，掌控板会软重启，默认会运行main.py，此时，先点击REPL区，并按下Ctrl+C，来打断main.py的运行。
+
+.. image:: /images/software/software_15.png
 
 准备粘贴代码
 ````````
 
 鼠标焦点在REPL区的时候，按下Ctrl+E，进入代码粘贴模式。
 
+.. image:: /images/software/software_16.png
+
 粘贴代码
 ````````
 
 用鼠标右键粘贴已有的代码，代码中若含有中文，将自动转换为Unicode格式。
 
+.. image:: /images/software/software_17.png
+
 退出粘贴模式，并调试代码
 ````````
 
 按下Ctrl+D，退出粘贴模式，同时运行代码，此时可以同时查看调试信息。
+
+.. image:: /images/software/software_18.png
+
+
+恢复固件及写入基础库
+-----------
+
+固件异常表现
+````````
+
+接入固件异常的掌控板会有弹窗提示，此时需要恢复固件。
+
+.. image:: /images/software/software_19.png
+
+恢复固件
+````````
+
+在掌控板文件区域的空白处右键，选择恢复固件，按照左下角提示信息操作。
+
+.. image:: /images/software/software_20.png
+
+.. image:: /images/software/software_21.png
+
+.. image:: /images/software/software_22.png
+
+.. image:: /images/software/software_23.png
+
+.. image:: /images/software/software_24.png
+
+文件系统出现boot.py及mpython.py即恢复固件成功。
+
+.. image:: /images/software/software_25.png
+
+写入基础库
+````````
+
+恢复固件成功后建议写入基础库，在掌控板文件区域的空白处右键，选择写入基础库。
+
+.. image:: /images/software/software_26.png
+
+.. image:: /images/software/software_27.png
+
+写入成功即可见掌控板文件增加了mpython.py。
+
+.. image:: /images/software/software_28.png
