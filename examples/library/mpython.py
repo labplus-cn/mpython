@@ -57,13 +57,13 @@ class Accelerometer():
         self.i2c = i2c
         self.i2c.writeto(self.addr, b'\x0F\x08')    # set resolution = 10bit
         self.i2c.writeto(self.addr, b'\x11\x00')    # set power mode = normal
-    
+
     def get_x(self):
         self.i2c.writeto(self.addr, b'\x02', False)
         buf = self.i2c.readfrom(self.addr, 2)
         x = ustruct.unpack('h', buf)[0]
         return x / 4 / 4096
-        
+
     def get_y(self):
         self.i2c.writeto(self.addr, b'\x04', False)
         buf = self.i2c.readfrom(self.addr, 2)
@@ -145,8 +145,7 @@ class OLED(SSD1106_I2C):
             x = x + width + 1
 
 
-class Buzz(object):
-    
+class Buzz(object):   
     def __init__(self, pin=6):
         self.id = pins_remap_esp32[pin]
         self.io = Pin(self.id) 
@@ -165,7 +164,7 @@ class Buzz(object):
             self.io.value(1)
             self.isOn = False
 
-    def freq(self,freq):
+    def freq(self, freq):
         self.pwm.freq(freq)
 
 
@@ -203,22 +202,22 @@ class MPythonPin(Pin):
             self.adc = ADC(Pin(self.id))
             self.adc.atten(ADC.ATTN_11DB)
         self.mode = mode
-        
+
     def read_digital(self):
         if not self.mode == PinMode.IN:
             raise TypeError('the pin is not in IN mode')
         return super().value()
-        
+
     def write_digital(self, value):
         if not self.mode == PinMode.OUT:
             raise TypeError('the pin is not in OUT mode')
         super().value(value)
-        
+
     def read_analog(self):
         if not self.mode == PinMode.ANALOG:
             raise TypeError('the pin is not in ANALOG mode')
         return self.adc.read()
-        
+
     def write_analog(self, duty, freq=1000):
         if not self.mode == PinMode.PWM:
             raise TypeError('the pin is not in PWM mode')        
