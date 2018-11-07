@@ -231,9 +231,17 @@ http://static.steamaker.cn/files/mPython2_0.2.4_macos.zip
 固件异常表现
 ````````
 
-接入固件异常的掌控板会有弹窗提示，此时需要恢复固件。
+接入掌控板若有下图弹窗提示，先尝试重新插拔或更换接口、数据线。
 
 .. image:: /images/software/software_19.png
+
+固件异常时，掌控板上的文件处显示为空或...
+
+固件异常时，交互模式显示为以下两种情况之一
+
+.. image:: /images/software/software_30.png
+
+.. image:: /images/software/software_31.png
 
 恢复固件
 ````````
