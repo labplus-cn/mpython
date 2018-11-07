@@ -231,7 +231,7 @@ http://static.steamaker.cn/files/mPython2_0.2.4_macos.zip
 固件异常表现
 ````````
 
-接入掌控板若有下图弹窗提示，先尝试重新插拔或更换接口、数据线。
+接入掌控板时若有下图弹窗提示，先尝试重新插拔或更换接口、数据线。
 
 .. image:: /images/software/software_19.png
 
