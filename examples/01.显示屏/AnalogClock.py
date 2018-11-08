@@ -1,6 +1,8 @@
-import time,ntptime,network
+import ntptime,network,time
 from mpython import*
 from machine import Timer
+import analogClock
+
 
 # wifi参数 
 SSID="yourSSID"            #wifi名称
@@ -15,29 +17,23 @@ def connectWifi(ssid,passwd):
     wlan.connect(ssid,passwd)
     print('connecting to network...')
     while(wlan.ifconfig()[0]=='0.0.0.0'):
-        time.sleep(1)
-        print('Connecting to network...')
+        pass
     print('WiFi Connection Successful,Network Config:%s' %str(wlan.ifconfig()))
 
 connectWifi(SSID,PASSWORD)
 
 ntptime.settime()
-def get_time():
-    t = time.localtime()
-    print("%d年%d月%d日 %d:%d:%d"%(t[0],t[1],t[2],t[3]+8,t[4],t[5]))   #北京时区东八区加8小时
-    display.DispChar("{}年{}月{}日" .format(t[0],t[1],t[2]),20,8)
-    display.DispChar("{}:{}:{}" .format(t[3]+8,t[4],t[5]),38,25)
-    display.show()
-    display.fill(0)
 
+clock=analogClock.Clock(64,32,30)
+
+def Refresh():
+    clock.settime()
+    clock.drawClock()
+    display.show()
+    clock.clear()
+  
 tim1 = Timer(1)
 
-tim1.init(period=1000, mode=Timer.PERIODIC, callback=lambda _:get_time()) 
-
-
-
-
-
-
+tim1.init(period=1000, mode=Timer.PERIODIC, callback=lambda _:Refresh()) 
 
 
