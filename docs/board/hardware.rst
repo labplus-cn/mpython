@@ -1,4 +1,4 @@
-硬件说明
+硬件概述
 ====================
 
 mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Python软件上功能。
