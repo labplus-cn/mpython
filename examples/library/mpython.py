@@ -285,7 +285,7 @@ class OLED(SSD1106_I2C):
                     super().pixel(x+i, y+j, c)
 
 
-    def CircleHelper(self, x0, y0, r, cornername, c):
+    def drawCircleHelper(self, x0, y0, r, cornername, c):
             f = 1 - r
             ddF_x = 1
             ddF_y = -2 * r 
