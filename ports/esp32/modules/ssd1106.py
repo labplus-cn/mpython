@@ -68,10 +68,10 @@ class SSD1106(framebuf.FrameBuffer):
         self.show()
 
     def poweroff(self):
-        self.write_cmd(SET_DISP | 0x00)
+        self.write_cmd(SET_DISP_OFF)
 
     def poweron(self):
-        self.write_cmd(SET_DISP | 0x01)
+        self.write_cmd(SET_DISP_ON)
 
     def contrast(self, contrast):
         self.write_cmd(SET_CONTRAST)
