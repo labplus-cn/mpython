@@ -9,7 +9,7 @@ except:
 
 # (date(2000, 1, 1) - date(1900, 1, 1)).days * 24*60*60
 NTP_DELTA = 3155673600
-
+# modified china Server
 host = "cn.pool.ntp.org"
 
 def time():
@@ -26,10 +26,12 @@ def time():
 
 # There's currently no timezone support in MicroPython, so
 # utime.localtime() will return UTC time (as if it was .gmtime())
-def settime():
+# add timezone org,default 8
+def settime(timezone=8):       
     t = time()
     import machine
     import utime
     tm = utime.localtime(t)
-    tm = tm[0:3] + (0,) + tm[3:6] + (0,)
+    hour=(tm[3]+timezone)%24
+    tm = tm[0:3] + (0,) + (hour,)+tm[4:7]
     machine.RTC().datetime(tm)
