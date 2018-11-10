@@ -12,9 +12,9 @@ class Clock:
         self.yc=y
         self.r=radius
 
-    def settime(self,timezone=8):          #设定时间
+    def settime(self):          #设定时间
         t = time.localtime()
-        self.hour=t[3]+timezone
+        self.hour=t[3]
         self.min=t[4]
         self.sec=t[5]
 

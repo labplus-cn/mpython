@@ -24,9 +24,9 @@ connectWifi(SSID,PASSWORD)
 ntptime.settime()
 def get_time():
     t = time.localtime()
-    print("%d年%d月%d日 %d:%d:%d"%(t[0],t[1],t[2],t[3]+8,t[4],t[5]))   #北京时区东八区加8小时
+    print("%d年%d月%d日 %d:%d:%d"%(t[0],t[1],t[2],t[3],t[4],t[5]))   
     display.DispChar("{}年{}月{}日" .format(t[0],t[1],t[2]),20,8)
-    display.DispChar("{}:{}:{}" .format(t[3]+8,t[4],t[5]),38,25)
+    display.DispChar("{}:{}:{}" .format(t[3],t[4],t[5]),38,25)
     display.show()
     display.fill(0)
 
