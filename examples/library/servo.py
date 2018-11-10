@@ -2,20 +2,20 @@
 # MIT license; Copyright (c) 2018 labplus
 # V1.0 Tangliufeng
 
-import math
-
+from mpython import MPythonPin,PinMode
 class Servo:
     def __init__(self, pin, min_us=750, max_us=2250, actuation_range=180):
         self.min_us = min_us
         self.max_us = max_us
         self.actuation_range = actuation_range
-        self.pin=pin
+        self.servoPin=MPythonPin(pin,PinMode.PWM)
+        
 
     def write_us(self, us):
         if us < self.min_us or us > self.max_us:
             raise ValueError("us out of range")
         duty = round(us / 20000 * 1023)
-        self.pin.write_analog(duty, 50)
+        self.servoPin.write_analog(duty, 50)
 
     def write_angle(self, angle):
         if angle < 0 or angle > self.actuation_range:
