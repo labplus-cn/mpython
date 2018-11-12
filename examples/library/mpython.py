@@ -14,6 +14,7 @@ from ssd1106 import SSD1106_I2C
 import esp
 import ustruct
 from neopixel import NeoPixel
+from esp import dht_readinto
 from time import sleep_ms, sleep_us
 
 pins_remap_esp32 = [33, 32, 35, 34, 39, 0, 16, 17, 26, 25, 
@@ -481,6 +482,38 @@ class UI():
         else:
             Progress=int(progress/100 *height)
             oled.fill_rect(x,y+(height-Progress),width,Progress,1)
+
+
+class DHTBase:
+    def __init__(self, pin):
+        self.id = pins_remap_esp32[pin]
+        self.io = Pin(self.id) 
+        self.buf = bytearray(5)
+
+    def measure(self):
+        buf = self.buf
+        dht_readinto(self.io, buf)
+        if (buf[0] + buf[1] + buf[2] + buf[3]) & 0xff != buf[4]:
+            raise Exception("checksum error")
+
+class DHT11(DHTBase):
+    def humidity(self):
+        return self.buf[0]
+
+    def temperature(self):
+        return self.buf[2]
+
+class DHT22(DHTBase):
+    def humidity(self):
+        return (self.buf[0] << 8 | self.buf[1]) * 0.1
+
+    def temperature(self):
+        t = ((self.buf[2] & 0x7f) << 8 | self.buf[3]) * 0.1
+        if self.buf[2] & 0x80:
+            t = -t
+        return t
+
+
 
 # buzz
 buzz = Buzz()
