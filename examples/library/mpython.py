@@ -6,6 +6,7 @@
 
 # history:
 # V1.1 add oled draw function,add buzz.freq().  by tangliufeng
+# V1.2 add servo/ui class,by tangliufeng
 
 
 from machine import I2C, PWM, Pin, ADC, TouchPad
@@ -432,6 +433,54 @@ def numberMap(inputNum,bMin,bMax,cMin,cMax):
     outputNum = 0
     outputNum =((cMax - cMin) / (bMax - bMin))*(inputNum - bMin)+cMin
     return outputNum
+
+class Servo:
+    def __init__(self, pin, min_us=750, max_us=2250, actuation_range=180):
+        self.min_us = min_us
+        self.max_us = max_us
+        self.actuation_range = actuation_range
+        self.servoPin=MPythonPin(pin,PinMode.PWM)
+        
+
+    def write_us(self, us):
+        if us < self.min_us or us > self.max_us:
+            raise ValueError("us out of range")
+        duty = round(us / 20000 * 1023)
+        self.servoPin.write_analog(duty, 50)
+
+    def write_angle(self, angle):
+        if angle < 0 or angle > self.actuation_range:
+            raise ValueError("Angle out of range")
+        us_range = self.max_us - self.min_us
+        us = self.min_us + round(angle * us_range / self.actuation_range)
+        self.write_us(us)
+
+
+class UI():
+
+    def ProgressBar(self, x, y, width, height, progress):
+
+        radius = int(height / 2)
+        xRadius = x + radius
+        yRadius = y + radius
+        doubleRadius = 2 * radius
+        innerRadius = radius - 2
+
+        oled.RoundRect(x,y,width,height,radius,1)
+        maxProgressWidth = int((width - doubleRadius + 1) * progress / 100)
+        oled.fill_circle(xRadius, yRadius, innerRadius,1)
+        oled.fill_rect(xRadius + 1, y + 2, maxProgressWidth, height - 3,1)
+        oled.fill_circle(xRadius + maxProgressWidth, yRadius, innerRadius,1)
+
+    def stripBar(self, x, y, width, height, progress,dir=1,frame=1):
+
+        oled.rect(x,y,width,height,frame)
+        if  dir:
+            Progress=int(progress/100 *width)
+            oled.fill_rect(x,y,Progress,height,1)
+        else:
+            Progress=int(progress/100 *height)
+            oled.fill_rect(x,y+(height-Progress),width,Progress,1)
 
 # buzz
 buzz = Buzz()
