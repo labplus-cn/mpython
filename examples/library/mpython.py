@@ -428,6 +428,11 @@ class LightSensor(ADC):
     
 '''
 
+def numberMap(inputNum,bMin,bMax,cMin,cMax):
+    outputNum = 0
+    outputNum =((cMax - cMin) / (bMax - bMin))*(inputNum - bMin)+cMin
+    return outputNum
+
 # buzz
 buzz = Buzz()
 
