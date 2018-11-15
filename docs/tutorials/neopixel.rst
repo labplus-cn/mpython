@@ -8,20 +8,20 @@ mPython掌控板载3颗ws2812灯珠，WS2812是一种集成了电流控制芯片
 
 控制mPython掌控上的3颗RGB， 首先导入mpython模块::
 
-    >>> from mpython import *
+        >>> from mpython import *
     
 .. Note:: 导入mpython模块后，会为掌控创建一个NeoPixel对象rgb,控制板载的RGB只需对rgb对象操作。
 
 
 设置每个像素点颜色::
 
-    >>> rgb[0] = (255, 0, 0)  # 设置为红色，全亮度
-    >>> rgb[1] = (0, 128, 0)  # 设定为绿色，半亮度
-    >>> rgb[2] = (0, 0, 64)   # 设置为蓝色，四分之一亮度
+        >>> rgb[0] = (255, 0, 0)  # 设置为红色，全亮度
+        >>> rgb[1] = (0, 128, 0)  # 设定为绿色，半亮度
+        >>> rgb[2] = (0, 0, 64)   # 设置为蓝色，四分之一亮度
 
 然后使用 ``write()`` 将颜色输出到RGB灯::
 
-    >>> rgb.write()
+        >>> rgb.write()
 
     
 外部彩带
@@ -33,55 +33,55 @@ mPython掌控板载3颗ws2812灯珠，WS2812是一种集成了电流控制芯片
 更详细的使用方法，请查阅 :ref:`neopixel<neopixel>` 模块 。
 
 .. image:: /images/tutorials/glamour.jpg
-  :height: 300
-  :width: 400
+    :height: 300
+    :width: 400
 
 示例::
 
-  import time
-  import machine, neopixel
-  np = neopixel.NeoPixel(machine.Pin(33), n=10,bpp=3,timing=1)
+    import time
+    import machine, neopixel
+    np = neopixel.NeoPixel(machine.Pin(18), n=10,bpp=3,timing=1)
 
-  def demo(np):
-    n = np.n
+    def demo(np):
+        n = np.n
 
-    # cycle
-    for i in range(4 * n):
-      for j in range(n):
-        np[j] = (0, 0, 0)
-      np[i % n] = (255, 255, 255)
-      np.write()
-      time.sleep_ms(25)
+        # cycle
+        for i in range(4 * n):
+            for j in range(n):
+                np[j] = (0, 0, 0)
+            np[i % n] = (255, 255, 255)
+            np.write()
+            time.sleep_ms(25)
 
-    # bounce
-    for i in range(4 * n):
-      for j in range(n):
-        np[j] = (0, 0, 128)
-      if (i // n) % 2 == 0:
-        np[i % n] = (0, 0, 0)
-      else:
-        np[n - 1 - (i % n)] = (0, 0, 0)
-      np.write()
-      time.sleep_ms(50)
+        # bounce
+        for i in range(4 * n):
+            for j in range(n):
+                np[j] = (0, 0, 128)
+            if (i // n) % 2 == 0:
+                np[i % n] = (0, 0, 0)
+            else:
+                np[n - 1 - (i % n)] = (0, 0, 0)
+            np.write()
+            time.sleep_ms(50)
 
-    # fade in/out
-    for i in range(0, 4 * 256, 8):
-      for j in range(n):
-        if (i // 256) % 2 == 0:
-          val = i & 0xff
-        else:
-          val = 255 - (i & 0xff)
-        np[j] = (val, 0, 0)
-      np.write()
+        # fade in/out
+        for i in range(0, 4 * 256, 8):
+            for j in range(n):
+                if (i // 256) % 2 == 0:
+                    val = i & 0xff
+                else:
+                    val = 255 - (i & 0xff)
+                np[j] = (val, 0, 0)
+            np.write()
 
-    # clear
-    for i in range(n):
-      np[i] = (0, 0, 0)
-    np.write()
+        # clear
+        for i in range(n):
+            np[i] = (0, 0, 0)
+        np.write()
     
-  while True:
+    while True:
     
-    demo(np)
+        demo(np)
     
     
 

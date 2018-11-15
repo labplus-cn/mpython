@@ -26,7 +26,8 @@ NeoPixels也被称为WS2812 LED彩带，是连接在一起的全彩色led灯串�
   import neopixel
 
   pin = Pin(17, Pin.OUT)
-  np = neopixel.NeoPixel(pin, bpp=3,timing=1)   #800khz
+  np = neopixel.NeoPixel(pin, n=3,bpp=3,timing=1)   #800khz
+
 
 方法
 -------
