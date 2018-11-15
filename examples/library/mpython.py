@@ -546,6 +546,35 @@ class UI():
 
             oled.fill_circle(self.xc, self.yc, self.r, 0)
 
+class wifi:
+
+    def __init__(self):
+        self.sta=WLAN(network.STA_IF)
+        self.ap=WLAN(network.AP_IF)
+
+
+    def connectWiFi(self,ssid,passwd):
+        self.sta.active(True)
+        self.sta.connect(ssid,passwd)
+        while(self.sta.ifconfig()[0]=='0.0.0.0'):
+            sleep_ms(200)
+            print('Connecting to network...')
+        print('WiFi Connection Successful,Network Config:%s' %str(self.sta.ifconfig()))
+
+    def disconnectWiFi(self):
+        self.sta.disconnect()
+        self.sta.active(False)
+        print('disconnect WiFi...')
+    
+    def enable_APWiFi(self,essid,channel):
+        self.ap.active(True)                      
+        self.ap.config(essid,channel) 
+
+     def disable_APWiFi(self):
+        self.ap.disconnect()
+        self.ap.active(False)
+        print('disable AP WiFi...')
+
 class DHTBase:
     def __init__(self, pin):
         self.id = pins_remap_esp32[pin]
