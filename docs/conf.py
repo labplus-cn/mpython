@@ -41,7 +41,7 @@ extensions = [
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ['templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -113,6 +113,10 @@ pygments_style = 'sphinx'
 todo_include_todos = True
 
 
+# rst_epilog = """
+# .. include:: /templates/replace.inc
+# """
+
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -146,7 +150,7 @@ html_favicon = 'favicon.ico'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ['static']
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -166,8 +170,8 @@ html_static_path = ['_static']
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
-#html_additional_pages = {}
-
+html_additional_pages = {}
+#html_additional_pages = {"index": "topindex.html"}
 # If false, no module index is generated.
 #html_domain_indices = True
 
