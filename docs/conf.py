@@ -378,7 +378,7 @@ texinfo_documents = [
 html_theme_options = {
     # 'typekit_id': 'hiw1hhg',
     # 'analytics_id': '',
-     'sticky_navigation': True,  # Set to False to disable the sticky nav while scrolling.
+    'sticky_navigation': True,  # Set to False to disable the sticky nav while scrolling.
     #'titles_only': True,
     'style_external_links': True,
     'logo_only': True,  # if we have a html_logo below, this shows /only/ the logo with no title text

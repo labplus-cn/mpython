@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-mPython掌控板帮助文档
+mPython帮助文档
 ======================================
 
 欢迎您，使用掌控板！
@@ -27,6 +27,7 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 
 ---------
 
+
 .. toctree::
    :maxdepth: 1
    :caption: mPython掌控板
@@ -41,6 +42,7 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
    :maxdepth: 1
    :caption: 入门教程
    :numbered:
+   
 
    tutorials/repl.rst
    tutorials/oled.rst
@@ -78,8 +80,18 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
     :caption: 经典案例
     :numbered:
 
-    classic/oneNetCmd.rst
-    classic/oneNetDatastreams.rst
+    classic/musicbox.rst
+    classic/lux&sound_Cal.rst
+    classic/dht11.rst
+    classic/gradienter.rst
+    classic/piano.rst
+    classic/servo.rst
+    classic/clock.rst
+    classic/weather.rst
+    classic/uartArduino.rst
+    classic/oneNET/index.rst
+    classic/Picoboard.rst
+ 
 
 ---------
 
