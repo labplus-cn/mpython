@@ -35,3 +35,4 @@ _build/
 vs/
 .github/
 ports/esp32/build/
+mpy-cross/build/
