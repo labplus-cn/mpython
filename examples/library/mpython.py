@@ -11,7 +11,7 @@
 
 from machine import I2C, PWM, Pin, ADC, TouchPad
 from ssd1106 import SSD1106_I2C
-import esp,math,time
+import esp,math,time,network
 import ustruct
 from neopixel import NeoPixel
 from esp import dht_readinto
@@ -549,8 +549,8 @@ class UI():
 class wifi:
 
     def __init__(self):
-        self.sta=WLAN(network.STA_IF)
-        self.ap=WLAN(network.AP_IF)
+        self.sta=network.WLAN(network.STA_IF)
+        self.ap=network.WLAN(network.AP_IF)
 
 
     def connectWiFi(self,ssid,passwd):
