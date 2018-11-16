@@ -15,7 +15,7 @@ import esp,math,time,network
 import ustruct
 from neopixel import NeoPixel
 from esp import dht_readinto
-from time import sleep_ms, sleep_us
+from time import sleep_ms, sleep_us,sleep
 
 pins_remap_esp32 = [33, 32, 35, 34, 39, 0, 16, 17, 26, 25, 
                     36,  2, -1, 18, 19, 21, 5, -1, -1, 22,
