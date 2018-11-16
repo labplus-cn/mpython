@@ -7,3 +7,4 @@
     network_basics.rst
     socket.rst
     http.rst
+    json.rst

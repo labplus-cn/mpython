@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-mPython掌控板文档
+mPython掌控板帮助文档
 ======================================
 
 欢迎您，使用掌控板！
@@ -25,8 +25,10 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 
      该项目正在积极开发中。由于ESP32仍然面向开发人员。并非所有外围设备都能完美使用，可能仍然存在一些bug，我们将会不断及时更新并修复。
 
+---------
+
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: mPython掌控板
 
    board/introduction.rst
@@ -37,50 +39,70 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
    
 .. toctree::
    :maxdepth: 1
-   :caption: 掌控板入门教程
+   :caption: 入门教程
    :numbered:
 
    tutorials/repl.rst
-   tutorials/filesystem.rst
-   tutorials/display.rst
+   tutorials/oled.rst
    tutorials/buttons.rst
-   tutorials/digital_io.rst
-   tutorials/analog_io.rst
-   tutorials/neopixel.rst
-   tutorials/buzz.rst
+   tutorials/touchpad.rst
    tutorials/sound&light.rst
+   tutorials/buzz.rst
+   tutorials/neopixel.rst
    tutorials/accelerometer.rst
-   tutorials/random.rst
-   tutorials/i2c.rst
+   tutorials/uart.rst
    tutorials/network/index.rst
+   tutorials/io/index.rst
+
+   
+   
 
 .. toctree::
     :maxdepth: 1
     :caption: 进阶教程
-        
+    :numbered:
+
+    tutorials/random.rst
+    tutorials/filesystem.rst
+    tutorials/timer.rst
+    tutorials/thread.rst
+    tutorials/i2c.rst
+    tutorials/spi.rst
+    tutorials/mqtt.rst
+    tutorials/weatherIC.rst
+
+---------
+
+.. toctree::
+    :maxdepth: 1
+    :caption: 经典案例
+    :numbered:
+
     classic/oneNetCmd.rst
     classic/oneNetDatastreams.rst
-    
 
+---------
 
-mpython 库
+mPython类库
 -----------------
 
-该库中提供了mPython掌控板特有拓展功能。
+该库中提供了mPython掌控板特有拓展类。
 获取最新的 :download:`mpython.py </../examples/library/mpython.py>` 。
 
 .. toctree::
    :maxdepth: 1
+   
 
    library/mpython.rst
    
   
 
-MicroPython 库
+MicroPython类库
 -----------------
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
+   
 
    library/index.rst
 
@@ -95,7 +117,7 @@ MicroPython 库
 * 特定于特定 :term:`MicroPython port` 的模块，因此不可移植。 
 
 
-
+---------
 
 .. toctree::
    :maxdepth: 1
@@ -105,6 +127,7 @@ MicroPython 库
  
 有关MicroPython特定语言功能的语言参考信息
 
+---------
 
 索引
 ==================
