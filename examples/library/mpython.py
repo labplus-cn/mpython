@@ -625,6 +625,9 @@ light = ADC(Pin(39))
 # sound sensor
 sound = ADC(Pin(36))
 
+#ext
+ext   = ADC(Pin(34))
+
 # buttons
 button_a = Pin(0, Pin.IN, Pin.PULL_UP)
 button_b = Pin(2, Pin.IN, Pin.PULL_UP)
