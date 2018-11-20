@@ -68,12 +68,12 @@ mPython类库
    :caption: mPython类库
    :hidden:
    
-   library/mpython.rst
-   library/music.rst  
+   library/mPython/mpython.rst
+   library/mPython/music.rst  
 
 =================================   ====================================================================  
  :ref:`mpython模块<mpython.py>`     提供了mPython掌控板特有拓展类。获取最新的 :download:`mpython.py </../examples/library/mpython.py>` 。
- :ref:`music模块<music.py>`         micro:bit music 模块
+ :ref:`music模块<music.py>`         兼容micro:bit music 模块
 =================================   ====================================================================
 
 ---------
