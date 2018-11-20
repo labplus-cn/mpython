@@ -483,7 +483,39 @@ class UI():
             Progress=int(progress/100 *height)
             oled.fill_rect(x,y+(height-Progress),width,Progress,1)
 
+    class multiScreen:
+
+        def __init__(self,framelist,w,h):
+            self.framelist=framelist
+            self.width=w
+            self.hight=h
+            self.frameCount=len(framelist)
+            self.activeSymbol =bytearray([0x00, 0x18, 0x3c, 0x7e, 0x7e, 0x3c, 0x18, 0x00])
+            self.inactiveSymbol =bytearray([0x00, 0x0, 0x0, 0x18, 0x18, 0x0, 0x0, 0x00])
+            self.SymbolInterval=1
+            
+
+        def drawScreen(self,index):
+            self.index=index
+            oled.fill(0)
+            oled.Bitmap(int(64-self.width/2),int(0.3*self.hight),self.framelist[self.index], self.width,self.hight,1)
+            SymbolWidth=self.frameCount*8+(self.frameCount-1)*self.SymbolInterval
+            SymbolCenter=int(SymbolWidth/2)
+            starX=64-SymbolCenter
+            for i in range(self.frameCount):
+                x=starX+i*8+i*self.SymbolInterval
+                y=int(1.1*self.hight)+8
+                if i==self.index:
+                    oled.Bitmap(x,y,self.activeSymbol,8,8,1)
+                else:
+                    oled.Bitmap(x,y,self.inactiveSymbol,8,8,1)
+    
+        def nextScreen(self):
+            self.index=(self.index+1)%self.frameCount
+            self.drawScreen(self.index)
+
     class Clock:
+
         def __init__(self,x,y,radius):          #定义时钟中心点和半径
             self.xc=x
             self.yc=y
