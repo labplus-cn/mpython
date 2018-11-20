@@ -27,7 +27,6 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 
 ---------
 
-
 .. toctree::
    :maxdepth: 1
    :caption: mPython掌控板
@@ -37,96 +36,77 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
    board/hardware.rst
    board/flashburn.rst
 
-   
-.. toctree::
-   :maxdepth: 1
-   :caption: 入门教程
-   :numbered:
-   
-
-   tutorials/repl.rst
-   tutorials/oled.rst
-   tutorials/buttons.rst
-   tutorials/touchpad.rst
-   tutorials/sound&light.rst
-   tutorials/buzz.rst
-   tutorials/neopixel.rst
-   tutorials/accelerometer.rst
-   tutorials/uart.rst
-   tutorials/network/index.rst
-   tutorials/io/index.rst
-
-   
-   
-
-.. toctree::
-    :maxdepth: 1
-    :caption: 进阶教程
-    :numbered:
-
-    tutorials/random.rst
-    tutorials/filesystem.rst
-    tutorials/timer.rst
-    tutorials/thread.rst
-    tutorials/i2c.rst
-    tutorials/spi.rst
-    tutorials/mqtt.rst
-    tutorials/weatherIC.rst
-
 ---------
 
 .. toctree::
-    :maxdepth: 1
-    :caption: 经典案例
-    :numbered:
+   :maxdepth: 2
+   :numbered:
+   :caption: 掌控板教程
 
-    classic/musicbox.rst
-    classic/lux&sound_Cal.rst
-    classic/dht11.rst
-    classic/gradienter.rst
-    classic/piano.rst
-    classic/servo.rst
-    classic/clock.rst
-    classic/weather.rst
-    classic/uartArduino.rst
-    classic/oneNET/index.rst
-    classic/Picoboard.rst
+   tutorials/basics/index.rst
+   tutorials/advance/index.rst
+
+---------
+
+经典案例
+++++++
+
+.. toctree::
+    :maxdepth: 2
+
+    classic/index.rst
+
  
 
 ---------
 
 mPython类库
------------------
-
-该库中提供了mPython掌控板特有拓展类。
-获取最新的 :download:`mpython.py </../examples/library/mpython.py>` 。
+++++++
 
 .. toctree::
    :maxdepth: 1
+   :caption: mPython类库
+   :hidden:
    
-
    library/mpython.rst
-   
-  
+   library/music.rst  
+
+=================================   ====================================================================  
+ :ref:`mpython模块<mpython.py>`     提供了mPython掌控板特有拓展类。获取最新的 :download:`mpython.py </../examples/library/mpython.py>` 。
+ :ref:`music模块<music.py>`         micro:bit music 模块
+=================================   ====================================================================
+
+---------
 
 MicroPython类库
------------------
+++++++
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+   :caption: MicroPython类库
+   :hidden:
    
-
-   library/index.rst
-
- 
+   library/pythonStd.rst
+   library/microPythonModu.rst
 
 
-本章介绍了MicroPython中内置的模块（函数和类库）。这类模块有几类：
+=========================================   ======================================================
+ :ref:`Python标准库<pythonStd>`               兼容CPython,内含Python内建函数、常用module
+ :ref:`MicroPython类库<microPythonModu>`      MicroPython的ESP32硬件控制层的模块     
+=========================================   ======================================================
 
-* 实现标准Python功能子集的模块，不应由用户扩展。
-* 实现Python功能子集的模块，由用户提供扩展（通过Python代码）。
-* 实现Python标准库的MicroPython扩展的模块。
-* 特定于特定 :term:`MicroPython port` 的模块，因此不可移植。 
+.. Attention::
+
+   * MicroPython为每个模块实现了Python功能的子集。
+   * 为了简化可扩展性，MicroPython版本的标准Python模块通常具有``u``（“micro”）前缀。
+
+
+您可以通过 ``help()`` 发现可用的内置库，在REPL中输入以下内容来导入::
+
+    >>> help('modules')
+
+
+除了本文档中描述的内置库之外，在 :term:`micropython-lib`  中还可以找到来自Python标准库的更多模块以及对它的进一步微Python扩展。
 
 
 ---------
