@@ -56,26 +56,6 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 
     classic/index.rst
 
- 
-
----------
-
-mPython类库
-++++++
-
-.. toctree::
-   :maxdepth: 1
-   :caption: mPython类库
-   :hidden:
-   
-   library/mPython/mpython.rst
-   library/mPython/music.rst  
-
-=================================   ====================================================================  
- :ref:`mpython模块<mpython.py>`     提供了mPython掌控板特有拓展类。获取最新的 :download:`mpython.py </../examples/library/mpython.py>` 。
- :ref:`music模块<music.py>`         兼容micro:bit music 模块
-=================================   ====================================================================
-
 ---------
 
 MicroPython类库
@@ -86,8 +66,8 @@ MicroPython类库
    :caption: MicroPython类库
    :hidden:
    
-   library/pythonStd.rst
-   library/microPythonModu.rst
+   library/pythonStd/index.rst
+   library/micropython/index.rst
 
 
 =========================================   ======================================================
@@ -108,6 +88,23 @@ MicroPython类库
 
 除了本文档中描述的内置库之外，在 :term:`micropython-lib`  中还可以找到来自Python标准库的更多模块以及对它的进一步微Python扩展。
 
+---------
+
+mPython类库
+++++++
+
+.. toctree::
+   :maxdepth: 1
+   :caption: mPython类库
+   :hidden:
+   
+   library/mPython/mpython.rst
+   library/mPython/music.rst  
+
+=================================   ====================================================================  
+ :ref:`mpython模块<mpython.py>`     提供了mPython掌控板特有拓展类。获取最新的 :download:`mpython.py </../examples/library/mpython.py>` 。
+ :ref:`music模块<music.py>`         兼容micro:bit music 模块
+=================================   ====================================================================
 
 ---------
 
