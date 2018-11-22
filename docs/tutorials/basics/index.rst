@@ -6,13 +6,14 @@
 
    repl.rst
    oled.rst
+   neopixel.rst
+   buzz.rst
    buttons.rst
    touchpad.rst
-   sound&light.rst
-   buzz.rst
-   neopixel.rst
+   sound.rst
+   light.rst
    accelerometer.rst
-   uart.rst
    network/index.rst
+   uart.rst
    io/index.rst
 

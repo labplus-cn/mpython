@@ -1,4 +1,4 @@
-oled显示
+显示
 ======================================
 
 掌控板板载1.3英寸OLED显示屏，分辨率128x64。采用Google Noto Sans CJK 16x16字体，支持简体中文，繁体中文，日文和韩文语言。
@@ -7,13 +7,28 @@ oled显示
 
 .. Hint::
 
-  display为 ``machine.framebuf`` 衍生类，所以继承framebuf的方法，详细使用可查阅  :meth:`framebuf`。
+  oled为 ``machine.framebuf`` 衍生类，所以继承framebuf的方法，详细使用可查阅  :meth:`framebuf`。
 
 
 文本显示
 -------
+例：在OLED显示屏上显示hello word的中文或其他语言文本。
+::
 
-使用前，导入mpython模块::
+  from mpython import *
+
+  #oled
+  oled.DispChar('你好世界', 38, 0)
+  oled.DispChar('hello,world', 32, 16)
+  oled.DispChar('안녕하세요', 35, 32)
+  oled.DispChar('こんにちは世界', 24, 48)
+  oled.show()
+
+.. image:: /images/掌控-正面.png
+
+**解析：** 
+
+使用前，须导入mpython模块::
 
   >>> from mpython import *
   >>> 
@@ -27,41 +42,65 @@ oled显示
 
 .. Note::
 
-  DispChar(str,x,y)函数可以将左上角为坐标的文本将写入FrameBuffer。``str`` 为显示文本内容，支持简体中文，繁体中文，日文和韩文语言。``x`` ``y`` 为oled
-  显示起始xy坐标。oled.show()为将FrameBuffer送至oled刷新并显示屏幕。
+  DispChar(str,x,y) 函数可以将左上角为坐标的文本将写入FrameBuffer。``str`` 为显示文本内容，支持简体中文，繁体中文，日文和韩文语言。``x``、 ``y`` 为OLED
+  显示起始x、y坐标。oled.show()为将FrameBuffer送至OLED显示屏刷新并显示。
 
-清屏::
+满屏::
 
    >>> oled.fill(1)  
    >>> oled.show()
+
+清屏::
+
    >>> oled.fill(0)
    >>> oled.show()
 
 .. Note::
 
-  fill()为填充整个FrameBuffer区域。可以使用fill(0)来清空显示屏。同理,fill(1)可以将整屏像素点亮。
+  fill() 为填充整个FrameBuffer区域。可以使用 fill(0) 来清空显示屏。同理， fill(1) 可以将整屏像素点亮。
 
 
-接下来,你可以尝试下在oled屏其他位置上显示中文或其他语言文本。
 
-hello word多种字体显示示例::
-
-  from mpython import *
-
-  #oled
-  oled.DispChar('你好世界', 38, 0)
-  oled.DispChar('hello,world', 32, 16)
-  oled.DispChar('안녕하세요', 35, 32)
-  oled.DispChar('こんにちは世界', 24, 48)
-  oled.show()
-
-.. image:: /images/掌控-正面.png
 
 
 绘制线条
 -------
+例：绘制线条例子。
+::
+  from mpython import *
+  import time
 
-oled还可绘制一些点、直线、矩形形状。
+  def testdrawline():
+    for i in range(0,64):
+      oled.line(0,0,i*2,63,1)
+      oled.show()
+    for i in range(0,32):
+      oled.line(0,0,127,i*2,1)
+      oled.show()
+    sleep_ms(250)
+    oled.fill(0)
+    oled.show()
+    for i in range(0,32):
+      oled.line(0,63,i*4,0,1)
+      oled.show()
+    for i in range(0,16):
+      oled.line(0,63,127,(64-4*i)-1,1)
+      oled.show()
+    sleep_ms(250)
+    oled.fill(0)
+    oled.show()
+    for i in range(1,32):
+      oled.rect(2*i,2*i,(128-4*i)-1,(64-2*i)-1,1)
+      oled.show()
+
+  testdrawline()
+
+.. image:: /images/tutorials/drawline.gif
+   :scale: 100 %
+
+**解析：** 
+
+OLED可绘制一些点、直线、矩形形状。
 
 像素点显示::
 
@@ -72,7 +111,7 @@ oled还可绘制一些点、直线、矩形形状。
 
 .. Note::
 
-  oled.pixel(x, y [,c ] )  ``x`` , ``y`` 为点坐标(x,y)。当如果未给出c，则获取指定像素的颜色值。
+  oled.pixel(x, y, [c] ) 可以显示像素点， ``x`` , ``y`` 为点坐标(x,y)。``c`` 为颜色值，当为1时，点亮像素点，为0则否。当如果未给出c，则获取指定像素的颜色值。
   如果给出c，则将指定的像素设置为给定的颜色。
 
 
@@ -87,7 +126,7 @@ oled还可绘制一些点、直线、矩形形状。
 
 .. Note::
 
-  * oled.hline(x, y, w, c ) 可以绘制水平线  ``x`` , ``y`` 为点坐标(x,y), ``w`` 为线宽。``c`` 为颜色值。当为1时，像素点点亮，为0则否。
+  * oled.hline(x, y, w, c ) 可以绘制水平线，``x`` , ``y`` 为点坐标(x,y), ``w`` 为线宽，``c`` 为颜色值。
   * oled.vline(x, y, l, c ) 可以绘制垂直线，方法同上。
   * oled.line(x1, y1, x2, y2, c) 可以绘制任意方向的线，起始坐标(x1, y1),终点坐标(x2, y2), ``c`` 为颜色值。
 
@@ -105,56 +144,24 @@ oled还可绘制一些点、直线、矩形形状。
   * oled.fill_rect(x, y, w, h, c)用于绘制填充颜色的矩形，方法与rect()相同。不同于rect()只绘制矩形外框。
 
 
-绘制线条例子 :download:`drawline.py </../examples/1.显示屏/drawline.py>` ::
 
-  from mpython import *
-  import time
-
-  def testdrawline():
-    for i in range(0,64):
-      oled.line(0,0,i*2,63,1)
-      oled.show()
-    for i in range(0,32):
-      oled.line(0,0,127,i*2,1)
-      oled.show()
-    time.sleep_ms(250)
-    oled.fill(0)
-    oled.show()
-    for i in range(0,32):
-      oled.line(0,63,i*4,0,1)
-      oled.show()
-    for i in range(0,16):
-      oled.line(0,63,127,(64-4*i)-1,1)
-      oled.show()
-    time.sleep_ms(250)
-    oled.fill(0)
-    oled.show()
-    for i in range(1,32):
-      oled.rect(2*i,2*i,(128-4*i)-1,(64-2*i)-1,1)
-      oled.show()
-
-  testdrawline()
-
-.. image:: /images/tutorials/drawline.gif
-   :scale: 100 %
 
 显示图片
 -------
 
-首先我们需要将图像处理为大小128*64,bmp格式颜色深度为1或者就是黑白模式。你可以使用Photoshop或者其他的图像处理软件。
+首先我们需要将图像处理为大小128*64，颜色深度为1或者就是黑白模式的bmp格式。您可以使用Photoshop或者其他的图像处理软件。
 
 接下来是使用取模工具对图片进行取模。网上有PCtoLCD、lcd image converter等取模软件，可根据自己喜好自行选择。以下使用的是 :download:`Img2Lcd工具 </../docs/tools/Image2Lcd.zip>` 。
 
-* 步骤1.导入128x64,bmp格式图片
-* 步骤2.选择参数,输出数据类型[C语言数组]、  扫描模式[水平扫描]、输出灰度[单色]、宽高[128*64]
-* 步骤3.保存数据
+* 步骤1.导入128x64，bmp格式图片
+* 步骤2.选择参数，输出数据类型[C语言数组]、  扫描模式[水平扫描]、输出灰度[单色]、宽高[128*64]
+* 步骤3.点击保存，自动生成取模数据。
 
 .. image:: /images/tutorials/image2lcd.png
 
 
-将取模数据赋值给bmp数组中,创建 ``framebuf`` 对象用于存储图片帧数据。然后使用 ``oled.blit()`` 绘制图片至oled。
-
-:download:`bmp.py </../examples/1.显示屏/bmp.py>` ::
+将取模数据赋值给bmp数组中,创建 ``framebuf`` 对象用于存储图片帧数据，然后使用 ``oled.blit()`` 绘制图片至OLED显示屏上。
+::
 
   from mpython import *
   import framebuf
@@ -259,16 +266,12 @@ oled还可绘制一些点、直线、矩形形状。
 动态显示
 -------
 
-结合上面静止帧的显示，要做到动态显示。可以将显示图片分割成每帧，送至oled逐帧显示。这样就有动态效果啦！
+结合上面静止帧的显示，可以将要显示的动态图片分割成每帧，送至OLED显示屏上逐帧显示，这样就有动态效果啦！
 
-与上面使用.bmp格式图片不同。本次使用.pbm(Portable BitMap)格式图片，你可以使用Photoshop转换至pbm格式。
+与上面使用bmp格式图片不同。本次使用pbm(Portable BitMap)格式图片，你可以使用Photoshop转换至pbm格式。
 
 Portable Bitmap 格式
 ````````
-
-pbm数据格式的前三行定于为图像标注。然后才是图像数据。第一行表示图像格式，第二行是注释，通常是用于创建它的程序。第三行是图像尺寸。
-后面的才是我们需要的图像数据。数据存储每像素bit流，``1`` 表示像素点打开，``0`` 表示像素点关闭。
-
 pbm数据格式::
 
   P4
@@ -276,12 +279,13 @@ pbm数据格式::
   128 64
   <数据>
 
-首先将预先准备好的每帧的 :download:`scatman.x.pbm </../examples/display/素材/scatman.zip>`  图片上传至掌控板上。
+pbm数据格式的前三行定于为图像标注。然后才是图像数据。第一行表示图像格式，第二行是注释，通常是用于创建它的程序。第三行是图像尺寸。
+后面的才是我们需要的图像数据。数据存储每像素bit流，``1`` 表示像素点打开，``0`` 表示像素点关闭。
 
-在程序中使用 ``file.read()`` 逐帧读取图像数据流。注意，前三行不是我们需要的数据，使用 ``readlines()`` 将它舍弃。
-每帧数据流创建FrameBuffer对象，将所有帧缓存储存至images列表。然后逐帧显示至oled屏。
 
-:download:`scatman.py </../examples/1.显示屏/素材/scatman.zip>` ::
+首先将预先准备好的每帧的pbm图片上传至掌控板上。
+
+代码::
 
   from mpython import *
   import framebuf,time
@@ -289,9 +293,9 @@ pbm数据格式::
   images = []        #创建数组列表用于存储图片帧
   for n in range(1,7):
       with open('scatman.%s.pbm' % n, 'rb') as f:
-          f.readline() # Magic number
-          f.readline() # Creator comment
-          f.readline() # Dimensions
+          f.readline()   # 图像格式
+          f.readline()   # 注释
+          f.readline()   # 图像尺寸
           data = bytearray(f.read())
       fbuf = framebuf.FrameBuffer(data, 128, 64, framebuf.MONO_HLSB)
       images.append(fbuf)     #将每帧数据赋值到列表
@@ -304,8 +308,10 @@ pbm数据格式::
           time.sleep(0.1)
 
 
-
 .. image:: /images/tutorials/scatman.gif
+
+在程序中使用 ``file.read()`` 逐帧读取图像数据流。注意，前三行不是我们需要的数据，使用 ``readlines()`` 将它舍弃。
+每帧数据流创建FrameBuffer对象，将所有帧缓存储存至images列表，然后逐帧显示至OLED显示屏。
 
 
 
