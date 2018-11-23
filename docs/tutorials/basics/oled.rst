@@ -4,7 +4,6 @@
 掌控板板载1.3英寸OLED显示屏，分辨率128x64。采用Google Noto Sans CJK 16x16字体，支持简体中文，繁体中文，日文和韩文语言。
 
 
-
 .. Hint::
 
   oled为 ``machine.framebuf`` 衍生类，所以继承framebuf的方法，详细使用可查阅  :meth:`framebuf`。
@@ -17,7 +16,6 @@
 
   from mpython import *
 
-  #oled
   oled.DispChar('你好世界', 38, 0)
   oled.DispChar('hello,world', 32, 16)
   oled.DispChar('안녕하세요', 35, 32)
@@ -26,124 +24,130 @@
 
 .. image:: /images/掌控-正面.png
 
-**解析：** 
-
 使用前，须导入mpython模块::
 
-  >>> from mpython import *
-  >>> 
-
+  from mpython import *
 
 文本显示::
 
-  >>> oled.DispChar('hello,world!',0,0)
-  >>> oled.show()
-  >>>
+  oled.DispChar('hello,world!',0,0)
+  oled.show()
 
 .. Note::
 
   DispChar(str,x,y) 函数可以将左上角为坐标的文本将写入FrameBuffer。``str`` 为显示文本内容，支持简体中文，繁体中文，日文和韩文语言。``x``、 ``y`` 为OLED
   显示起始x、y坐标。oled.show()为将FrameBuffer送至OLED显示屏刷新并显示。
 
-满屏::
+如果要更改显示屏内容，您需在更改的内容前加上清空显示屏的语句，确保显示内容不会出现重叠的情况::
 
-   >>> oled.fill(1)  
-   >>> oled.show()
+  oled.fill(0)
+  oled.show()
 
-清屏::
+除了可以清空显示屏，还可以将整屏像素点亮::
 
-   >>> oled.fill(0)
-   >>> oled.show()
+  oled.fill(1)  
+  oled.show()
 
 .. Note::
 
-  fill() 为填充整个FrameBuffer区域。可以使用 fill(0) 来清空显示屏。同理， fill(1) 可以将整屏像素点亮。
+  fill() 为填充整个FrameBuffer区域。
+
+OLED显示屏还支持设置屏幕的亮度::
+
+  oled.contrast(brightness)
+
+.. Note::
+
+  brightness 表示亮度，取值范围为0~255。
 
 
-
-
-
-绘制线条
+基本形状绘制
 -------
-例：绘制线条例子。
+例：绘制线条。
 ::
+
   from mpython import *
-  import time
 
   def testdrawline():
-    for i in range(0,64):
-      oled.line(0,0,i*2,63,1)
+      for i in range(0,64):
+          oled.line(0,0,i*2,63,1)
+          oled.show()
+      for i in range(0,32):
+          oled.line(0,0,127,i*2,1)
+          oled.show()
+      sleep_ms(250)
+      oled.fill(0)
       oled.show()
-    for i in range(0,32):
-      oled.line(0,0,127,i*2,1)
+      for i in range(0,32):
+          oled.line(0,63,i*4,0,1)
+          oled.show()
+      for i in range(0,16):
+          oled.line(0,63,127,(64-4*i)-1,1)
+          oled.show()
+      sleep_ms(250)
+      oled.fill(0)
       oled.show()
-    sleep_ms(250)
-    oled.fill(0)
-    oled.show()
-    for i in range(0,32):
-      oled.line(0,63,i*4,0,1)
-      oled.show()
-    for i in range(0,16):
-      oled.line(0,63,127,(64-4*i)-1,1)
-      oled.show()
-    sleep_ms(250)
-    oled.fill(0)
-    oled.show()
-    for i in range(1,32):
-      oled.rect(2*i,2*i,(128-4*i)-1,(64-2*i)-1,1)
-      oled.show()
+      for i in range(1,32):
+          oled.rect(2*i,2*i,(128-4*i)-1,(64-2*i)-1,1)
+          oled.show()
 
   testdrawline()
 
 .. image:: /images/tutorials/drawline.gif
    :scale: 100 %
 
-**解析：** 
 
-OLED可绘制一些点、直线、矩形形状。
+OLED可绘制一些点、直线、矩形等形状。
 
 像素点显示::
-
-  >>> oled.pixel(50,0)     #返回(50,0)像素点的值
-  0                          
-  >>> oled.pixel(50,0,1)   #将(50,0)像素点置为1，点亮
-  >>> oled.show()          #刷新显示屏
+                       
+  oled.pixel(50,0,1)   #将(50,0)像素点置为1，点亮
+  oled.show()          #刷新显示屏
 
 .. Note::
 
-  oled.pixel(x, y, [c] ) 可以显示像素点， ``x`` , ``y`` 为点坐标(x,y)。``c`` 为颜色值，当为1时，点亮像素点，为0则否。当如果未给出c，则获取指定像素的颜色值。
+  oled.pixel(x, y, [c] ) 可以显示像素点， ``x`` ， ``y`` 为点坐标(x,y)。``c`` 为颜色值，当为1时，点亮像素点，为0则否。当如果未给出c，则获取指定像素的颜色值。
   如果给出c，则将指定的像素设置为给定的颜色。
 
 
-画线::
+绘制线::
 
-  >>> oled.hline(0,1,20,1)  #画水平线,起始点坐标(0,1),线长20
-  >>> oled.show()
-  >>> oled.vline(10,10,20,1)  #画垂直线,起始点坐标(10,10),线长20
-  >>> oled.show()
-  >>> oled.line(15,15,80,20,1)  #画起始坐标(15,15),终点坐标(80,20)方向的线
-  >>> oled.show()
+  oled.hline(0,1,20,1)  #画水平线,起始点坐标(0,1),线长20
+  oled.show()
+  oled.vline(10,10,20,1)  #画垂直线,起始点坐标(10,10),线长20
+  oled.show()
+  oled.line(15,15,80,20,1)  #画起始坐标(15,15),终点坐标(80,20)方向的线
+  oled.show()
 
 .. Note::
 
-  * oled.hline(x, y, w, c ) 可以绘制水平线，``x`` , ``y`` 为点坐标(x,y), ``w`` 为线宽，``c`` 为颜色值。
+  * oled.hline(x, y, w, c ) 可以绘制水平线，``x`` ， ``y`` 为点坐标(x,y)， ``w`` 为线宽，``c`` 为颜色值。
   * oled.vline(x, y, l, c ) 可以绘制垂直线，方法同上。
-  * oled.line(x1, y1, x2, y2, c) 可以绘制任意方向的线，起始坐标(x1, y1),终点坐标(x2, y2), ``c`` 为颜色值。
+  * oled.line(x1, y1, x2, y2, c) 可以绘制任意方向的线，起始坐标(x1, y1)，终点坐标(x2, y2)， ``c`` 为颜色值。
 
 
-画矩形::
+绘制空心/实心矩形::
 
-  >>> oled.rect(60,25,30,25,1)   #绘制起始坐标(60, 25),宽30，高25的矩形  
-  >>> oled.show()
-  >>> oled.fill_rect(100,25,20,25,1)   #绘制起始坐标(100, 25),宽20,高25填充满颜色的矩形  
-  >>> oled.show()
+  oled.rect(60,25,30,25,1)   #绘制起始坐标(60, 25)，宽30，高25的矩形  
+  oled.show()
+  oled.fill_rect(100,25,20,25,1)   #绘制起始坐标(100, 25)，宽20，高25填充满颜色的矩形  
+  oled.show()
 
 .. Note::
 
-  * oled.rect(x, y, w, h, c)用于绘制矩形外框。起始坐标为(x, y),宽度 ``w`` , 高度 ``h`` 的矩形外框。``c`` 为颜色值。
+  * oled.rect(x, y, w, h, c)用于绘制矩形外框。起始坐标为(x, y),宽度 ``w`` , 高度 ``h`` 的矩形外框，``c`` 为颜色值。
   * oled.fill_rect(x, y, w, h, c)用于绘制填充颜色的矩形，方法与rect()相同。不同于rect()只绘制矩形外框。
 
+绘制弧角矩形::
 
+  oled.RoundRect(40, 20, 50, 30, 5, 1)   #绘制起始坐标(40, 25),宽50,高30,圆弧角半径为5的弧角矩形
+  oled.show()
+
+.. Note::
+
+  oled.RoundRect(x, y, w, h, r, c)用于绘制弧角矩形。起始坐标为(x, y)，宽度 ``w`` ， 高度 ``h`` ，圆弧角半径 ``r`` 的矩形外框，``c`` 为颜色值。
+ 
+更多OLED显示屏操作及形状绘制请查阅 :ref:`oled对象<oled>` 。
 
 
 显示图片
