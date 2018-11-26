@@ -4,9 +4,7 @@ from mpython import*
 from math import acos,degrees
 
 while True:
-    x=accelerometer.get_x()
     y=accelerometer.get_y()
-    z=accelerometer.get_z()
     if y<=1 and y>=-1:
         rad_y=acos(y)
         deg_y=90-degrees(rad_y)
