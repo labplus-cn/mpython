@@ -166,6 +166,8 @@ rgb对象
 
 填充所有LED像素。
 
+.. _oled:
+
 oled对象
 -------
 oled对象为framebuf的衍生类，继承framebuf的方法。更多的使用方法请查阅 :mod:`framebuf<framebuf>` 。 
