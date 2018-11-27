@@ -52,7 +52,7 @@ MicroPython附带了几个有用的随机数方法。这是如何制作一个简
   random.randrange(start, end, step)。``start`` 为随机数开始值，``end`` 为随机数结束值，step为递增基数。
   以上例子是随机显示(0,10)范围的偶数。
 
-有时您需要带小数点的数字。你可以使用 ``random.random`` 方法生成0.0到1.0的随机浮点数。如果你需要较大的随机浮点数加的结果``random.uniform`` ::
+有时您需要带小数点的数字。你可以使用 ``random.random`` 方法生成0.0到1.0的随机浮点数。如果你需要较大的随机浮点数加的结果 ``random.uniform`` ::
 
   from mpython import *
   import random
@@ -89,3 +89,49 @@ MicroPython中的随机数其实是一个稳定算法得出的稳定结果序列
   oled.fill(0)
 
 
+
+飘雪效果
+-------
+
+结合上面学到的生成随机数，我们可以用掌控板oled屏制作出雪花飘落效果。
+::
+
+
+  # 使用random随机生成飘雪效果
+
+  from mpython import *
+  from random import randint
+
+  class snow():
+      def __init__(self):                
+          self.x = randint(0,127)         #随机生成雪花的起始坐标点
+          self.y = randint(0,10)
+          self.r = randint(1,2)           #随机生成雪花的半径大小
+          self.vx = randint(-2,2)         #随机生成雪花的x,y移动路径
+          self.vy = randint(1,3)         
+  
+      def refresh(self):                 
+          self.x += self.vx               #下移坐标，雪花落下
+          self.y += self.vy
+          if self.x > 128 or self.x < 0:
+              self.x = randint(0,127)
+          if self.y > 63 or self.y < 0:
+              self.y = 0
+              
+      def run(self):
+              self.refresh()
+              oled.fill_circle(self.x,self.y,self.r,1)     #画雪花
+        
+  balls = []
+  for x in range(20):              #生成20个雪花点
+      balls.append(snow())        
+
+  while True:
+      sleep_ms(50)                 #刷新时间
+      oled.fill(0)                 #清屏
+      for b in balls:              #雪花落下
+          b.run()
+      oled.show()                  #显示oled
+
+
+.. image:: /images/tutorials/snowing.gif
