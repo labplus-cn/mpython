@@ -1,4 +1,4 @@
-REPL-交互式解析
+REPL
 =================================
 
 使用MicroPython的一个主要的优点是交互式的REPL，REPL（read-evaluate-print loop）代表读取﹣求值﹣输出循环。
