@@ -19,17 +19,17 @@ MicroPython的Timer类定义了在给定时间段内（或在一段延迟后执�
 
 .. class:: Timer(id, ...)
 
- 构造给定id的新计时器对象。Id为-1构造虚拟计时器（如果board支持）。
+构造给定id的新计时器对象。Id为-1构造虚拟计时器。
 
 方法
 -------
 
 .. method:: Timer.init(\*, mode=Timer.PERIODIC, period=-1, callback=None)
 
-    初始化计时器，示例::
+初始化计时器，示例::
 
-       tim.init(period=100)                         # periodic with 100ms period
-       tim.init(mode=Timer.ONE_SHOT, period=1000)   # one shot firing after 1000ms
+    tim.init(period=100)                         # periodic with 100ms period
+    tim.init(mode=Timer.ONE_SHOT, period=1000)   # one shot firing after 1000ms
 
     关键参数:
     
@@ -38,9 +38,19 @@ MicroPython的Timer类定义了在给定时间段内（或在一段延迟后执�
       - ``Timer.ONE_SHOT`` - 计时器运行一次，直到配置完毕通道的期限到期。
       - ``Timer.PERIODIC`` - 定时器以通道的配置频率定期运行。
 
+.. method:: Timer..value()
+
+获取并返回计时器当前计数值。 
+
+::
+
+    value = tim.value()
+    print(value)
+
 .. method:: Timer.deinit()
 
-   取消定时器的初始化。停止计时器，并禁用计时器外围设备。
+
+取消定时器的初始化。停止计时器，并禁用计时器外围设备。
 
 
 常数
@@ -49,4 +59,3 @@ MicroPython的Timer类定义了在给定时间段内（或在一段延迟后执�
 .. data:: Timer.ONE_SHOT
 .. data:: Timer.PERIODIC
 
-   定时器的操作模式
