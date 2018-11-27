@@ -28,7 +28,6 @@ DHT11数字温湿度传感器和掌控板连接需要借助掌控扩展版，在
         oled.text("%d" % (dht.temperature()), 48, 14)
         oled.DispChar("湿度:",0,35)
         oled.text("%d" % (dht.humidity()), 48, 40)
-
         oled.show()
         sleep_ms(100)
 
@@ -36,16 +35,16 @@ DHT11数字温湿度传感器和掌控板连接需要借助掌控扩展版，在
     :scale: 60 %
     :align: center
 
-使用前，须导入mpython模块::
+
+使用前，导入mpython模块::
 
   from mpython import *
 
-
-设置DHT11的引脚0::
+实例化DHT11类，并设置引脚P0::
 
   dht=DHT11(0)
 
-DHT11温湿度的读取::
+DHT11测量并返回温湿度数据::
 
   dht.measure()
   dht.temperature()
@@ -53,4 +52,4 @@ DHT11温湿度的读取::
 
 .. Note::
 
-  ``dht.measure()`` 可以读取温湿度，``dht.temperature()`` 为返回温度值，``dht.humidity()`` 为返回湿度值。
+  ``dht.measure()`` 为DHT11测量温湿度数据指令，测量后使用 ``dht.temperature()`` 、 ``dht.humidity()`` 获取测量的温湿度值。
