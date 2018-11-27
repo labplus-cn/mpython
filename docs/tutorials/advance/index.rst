@@ -3,6 +3,7 @@
 
 .. toctree::
     :maxdepth: 1
+    :numbered:
 
     random.rst
     filesystem.rst

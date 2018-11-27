@@ -40,7 +40,6 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 
 .. toctree::
    :maxdepth: 2
-   :numbered:
    :caption: 掌控板教程
 
    tutorials/basics/index.rst
@@ -53,6 +52,7 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 
 .. toctree::
     :maxdepth: 2
+
 
     classic/index.rst
 

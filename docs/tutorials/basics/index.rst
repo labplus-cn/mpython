@@ -3,6 +3,7 @@
 
 .. toctree::
    :maxdepth: 1
+   :numbered:
 
    repl.rst
    oled.rst
