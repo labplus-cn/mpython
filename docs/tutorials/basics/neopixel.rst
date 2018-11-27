@@ -28,18 +28,22 @@ mPython掌控板载3颗WS2812灯珠，WS2812是一种集成了电流控制芯片
     rgb[2] = (0, 0, 64)   # 设置为蓝色，四分之一亮度
 
 
-.. Note:: rgb[n] = (r, g, b) 可以设置每个像素点颜色，``n`` 为板载RGB灯的个数，第一个灯为0。 ``r``、``g``、``b`` 为颜色亮度值，范围值为0~255。
+.. Note:: 
+    * rgb[n] = (r, g, b) 可以设置每个像素点颜色，``n`` 为板载RGB灯的个数，第一个灯为0。 ``r``、``g``、``b`` 为颜色亮度值，范围值为0~255。
+    * rgb.fill(rgb_buf) 可以填充所有像素点的颜色，如：rgb.fill((255,0,0))，所有RGB灯设置为红色，全亮度。
 
 将颜色输出到RGB灯::
 
     rgb.write()
 
+
+
     
 外部彩带
 ----------
 
-例：点亮外部彩带::
-
+例：点亮外部彩带
+::
     from mpython import *
     import machine, neopixel
     np = neopixel.NeoPixel(machine.Pin(18), n=10,bpp=3,timing=1)
