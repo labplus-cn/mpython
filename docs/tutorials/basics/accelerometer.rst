@@ -12,7 +12,8 @@
 .. image:: /images/tutorials/xyz.png
     :align: center
 
-例：掌控体感灯（显示板载加速度传感器的值）
+
+例：通过OLED显示屏来观察3个轴加速度值的变化
 ::
     from mpython import *
     
@@ -28,29 +29,11 @@
         oled.DispChar("加速度z:", 0, 32)
         oled.DispChar(str(z1), 48, 32)
         oled.show()
-        if x1 > 0.5:                 # 掌控板向后倾斜
-            rgb.fill((255, 0, 0))    # 设置红色灯 
-            rgb.write()
-        elif x1 < -0.5:              # 掌控板向前倾斜
-            rgb.fill((0, 255, 0))    # 设置绿色灯 
-            rgb.write()
-        elif y1 > 0.5:               # 掌控板向左倾斜
-            rgb.fill((0, 0, 255))    # 设置蓝色灯 
-            rgb.write()
-        elif y1 < -0.5:              # 掌控板向右倾斜
-            rgb.fill((255, 255, 0))  # 设置黄色灯   
-            rgb.write()
-        elif z1 > 0.5:               # 掌控板向下翻转
-            rgb.fill((0, 0, 0))      # 关闭灯     
-            rgb.write()
-        elif z1 < -0.5:              # 掌控板向上翻转
-            rgb.fill((255, 0, 255))  # 设置紫红色灯     
-            rgb.write()     
 
 
 使用前，导入mpython模块::
 
-  from mpython import *
+    from mpython import *
 
 获取X、Y、Z三轴的加速度::
 
@@ -73,39 +56,128 @@
 .. Note::
 
     发现什么规律没有？当重力加速度与加速度轴方向一致时，即等于1g的地球重力加速度。正方向为+1g，反方向为-1g。
-    假如您猛烈地摇动掌控板，你会看到加速度达到±2g。那是因为这个加速度计的最大测量值为±2g。
+    假如您猛烈地摇动掌控板，您会看到加速度达到±2g，那是因为这个加速度计的最大测量值为±2g。
 
 
-通过测量由于重力引起的加速度，您还可以计算出设备相对于水平面的倾斜角度。
 
-例：通过y轴加速度求y轴与水平面倾斜角度
-::
+水平球
++++++++
+
+我们用加速度计制作一个上下左右各滚动的水平球::
+
+    from mpython import *    #导入mpython模块
+
+    Center_x=63           #设定中心点（原点）x的坐标
+    Center_y=31           #设定中心点（原点）y的坐标
+
+    while True:
+        
+        x=accelerometer.get_x()         #获取X轴的加速度
+        y=accelerometer.get_y()         #获取Y轴的加速度
+
+        if y<=1 and y>=-1:
+            offsetX=int(numberMap(y,1,-1,-64,64))   #映射Y轴偏移值
+        if x<=1 and x>=-1:
+            offsetY=int(numberMap(x,1,-1,32,-32))   #映射X轴偏移值
+        move_x=Center_x+offsetX                 #水平球在X坐标上的移动
+        move_y=Center_y+offsetY                 #水平球在Y坐标上的移动
+
+        oled.circle(Center_x,Center_y,6,1)      #画中心固定圆：空心
+        oled.fill_circle(move_x,move_y,4,1)     #画移动的水平球：实心
+        oled.DispChar("%0.1f,%0.1f" %(x,y),85,0)    #显示水平球在X、Y轴的加速度值
+
+        if offsetX==0 and offsetY==0:
+            rgb.fill((0,10,0))          #水平球在中心位置亮绿灯，亮度为10
+            rgb.write()
+        else:
+            rgb.fill((0,0,0))           #水平球不在中心位置灭灯
+            rgb.write()
+        oled.show()
+        oled.fill(0)
+
+.. image:: /images/tutorials/gravity.gif
+    :align: center
+    :scale: 100 %
+   
+
+当检测到掌控板在X轴和Y轴方向倾斜时（范围-1g 至+1g），将X轴、Y轴的偏移值也就是加速度值（范围-1至1）分别映射在以设定的中心点为原点的X坐标上的Y坐标（范围32至-32）、X坐标（范围-64至64）上::
+
+    if y<=1 and y>=-1:
+        offsetX=int(numberMap(y,1,-1,-64,64))
+    if x<=1 and x>=-1:
+        offsetY=int(numberMap(x,1,-1,32,-32))
+
+.. Note::
+
+    numberMap(inputNum, bMin, bMax, cMin, cMax) 是映射函数，``inputNum`` 为需要映射的变量，``bMin`` 为需要映射的最小值，``bMax`` 为需要映射的最大值，``cMin`` 为映射的最小值，``cMax`` 为映射的最大值。
+
+水平球在X、Y坐标上的移动：水平球在坐标上的移动 = 中心点位置 + 加速度的偏移值::
+
+    move_x=Center_x+offsetX
+    move_y=Center_y+offsetY 
+
+如果水平球移动到中心位置，则亮绿灯，否则不亮灯::
+
+    if offsetX==0 and offsetY==0:
+        rgb.fill((0,10,0))          #水平球在中心位置亮绿灯，亮度为10
+        rgb.write()
+    else:
+        rgb.fill((0,0,0))           #水平球不在中心位置灭灯
+        rgb.write()
+
+
+
+计算掌控板倾斜的角度
++++++++
+
+通过测量由于重力引起的加速度，可以计算出设备相对于水平面的倾斜角度::
+
     from mpython import*
     from math import acos,degrees
 
     while True:
         x=accelerometer.get_x()
         if x<=1 and x>=-1:
-            rad_x=acos(x)
-            deg_x=90-degrees(rad_x)
-            oled.DispChar('%.2f°' %deg_x,50,25)
+            rad_x=acos(x)                              #计算x的反余弦弧度值
+            deg_x=90-degrees(rad_x)                    #计算夹角的角度
+            oled.DispChar('%.2f°' %deg_x,50,25)        #OLED显示屏显示
             oled.show()
             oled.fill(0)
 
 
-使用前，导入mpython模块::
+使用前，导入mpython模块和math模块中acos函数、degrees函数::
 
-  from mpython import *
-
-导入数学运算math模块中acos函数和degrees函数::
-
-  from math import acos,degrees
+    from mpython import *
+    from math import acos,degrees
   
+获取X轴的加速度::
+
+    x = accelerometer.get_x()
+
+假设掌控板参考水平面为桌面，掌控板倾斜过程中，Y轴与桌面是平行，其夹角不变（一直是0度），发生变化的是X轴与桌面的夹角以及Z轴与桌面的夹角，而且桌面与X轴Z轴夹角变化度数是一样的。为了方便分析，我们从Y轴的方向俯看下去，那么这个问题就会简化成只有X轴和Z轴的二维关系。假设某一时刻掌控板处于如下状态：
+
+.. image:: /images/tutorials/xgraph.png
+    :align: center
 
 
+在这个图中，Y轴已经简化和坐标系的原点O重合在了一起。我们来看看如何计算出掌控板的倾斜角，也就是与桌面的夹角a。g是重力加速度，gx、gz分别是g在X轴和Z轴的分量。
 
+|   由于重力加速度是垂直于水平面的，得到：
+|   角a+角b=90度
+|   X轴与Y轴是垂直关系，得到：
+|   角c+角b=90度
+|   因此：
+|   角a=角c
+
+根据反余弦定理，计算角b的弧度值::
+
+    rad_x=acos(x)
+
+计算夹角的角度，即角a=角c=90度-角b::
+
+    deg_x=90-degrees(rad_x)
 
 .. Note::
 
-    * acos() 返回x的反余弦弧度值。
-    * degrees() 将弧度转换为角度。
+    * acos() 函数为返回反余弦弧度值。
+    * degrees() 函数为将弧度转换为角度。

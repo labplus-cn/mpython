@@ -28,6 +28,13 @@ mpython是基于掌控板封装的专用库
 
   - ``us`` -单位微秒。
 
+
+映射
+-------
+
+.. method:: numberMap(inputNum,bMin,bMax,cMin,cMax)
+
+
 板载传感器
 -------
 
@@ -262,7 +269,7 @@ oled屏显示文本。
   - ``bitmap`` -图案bitmap数组
   - ``w`` -图案宽度
   - ``h`` -图案高度
-  - ``c`` -为1时,像素点亮；``c`` 为1时,像素点灭。
+  - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
 
 
 .. method:: oled.RoundRect( x, y, w, h, r, c)
@@ -325,10 +332,15 @@ Servo类
 
 构建Servo对象,默认使用SG90舵机。不同舵机脉冲宽度参数和角度范围会有所不一样,根据舵机型号自行设置。
 
-  - ``pin`` 舵机PWM控制信号引脚
-  - ``min_us`` 舵机PWM信号脉宽最小宽度,单位微秒。默认min_us=750
-  - ``max_us`` 舵机PWM信号脉宽最小宽度,单位微秒。默认max_us=2250
-  - ``actuation_range`` 舵机转动最大角度
+.. Attention:: 
+
+  * 你可以设置 ``acturi_range`` 来对应用给定的 ``min_pulse`` 和 ``max_pulse`` 观察到的实际运动范围值。
+  * 您也可以将脉冲宽度扩展到这些限制之上和之下伺服机构可能会停止，嗡嗡声，并在停止时吸收额外的电流。仔细测试，找出安全的最小值和最大值。
+
+- ``pin`` -舵机PWM控制信号引脚
+- ``min_us`` -舵机PWM信号脉宽最小宽度,单位微秒。默认min_us=750
+- ``max_us`` -舵机PWM信号脉宽最小宽度,单位微秒。默认max_us=2250
+- ``actuation_range`` -舵机转动最大角度
 
 
 .. method:: Servo.write_us(width)
