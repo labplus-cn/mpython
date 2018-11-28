@@ -13,12 +13,12 @@
     from machine import Timer  # 导入计时模块
 
     mywifi=wifi()
-    mywifi.connectWiFi("ssid","password")  # ssid 指WiFi网络名称，password指WiFi密码
+    mywifi.connectWiFi("ssid","password")  # WiFi设置
 
     try:
         ntptime.settime()
     except OSError :
-        oled.DispChar("ntp链接超时,请重启!",0,20)    #当服务器获取时间超时，在坐标（0,20）位置显示相关内容予以提醒
+        oled.DispChar("ntp链接超时,请重启!",0,20)    
         oled.show()
     else:
 
@@ -28,7 +28,7 @@
             oled.DispChar("{}年{}月{}日" .format(t[0],t[1],t[2]),20,8)
             oled.DispChar("{}:{}:{}" .format(t[3],t[4],t[5]),38,25)
             oled.show()
-            oled.fill(0)  #清除时钟，否则时间会重叠显示在OLED显示屏上
+            oled.fill(0)  
 
         tim1 = Timer(1) 
 
@@ -48,11 +48,11 @@
 ::
 
     except OSError :
-        oled.DispChar("ntp链接超时,请重启!",0,20)    #当服务器获取时间超时，在坐标（0,20）位置显示提示语予以提醒
+        oled.DispChar("ntp链接超时,请重启!",0,20)    
         oled.show()
 
 
-设置时间显示格式：
+**时间函数：** 
 ::
     time.localtime([secs])
 
@@ -67,16 +67,19 @@
 * 周中某日为 0-6 （对应周一到周日） 
 * 年中某日为 1-366 
 
-时间显示：
+**时间显示：** 
 ::
     oled.DispChar("{}年{}月{}日" .format(t[0],t[1],t[2]),20,8)
     oled.DispChar("{}:{}:{}" .format(t[3],t[4],t[5]),38,25)
+    oled.show()
+    oled.fill(0)  
 在坐标（20,8）位置显示年、月、日：t[0]对应年、t[1]对应月，t[2]对应日；在坐标（38,25）位置显示时、分、秒：t[3]对应时，t[4]对应分，t[5]对应秒。
 
-计时模式：
+**计时模式：** 
 ::
     tim1.init(period=1000, mode=Timer.PERIODIC, callback=get_time)  
-将时间初始化为以1000毫秒为单位的计时模式，并返回所获取的时间。
+初始化计时器，将时间初始化为以1000毫秒为单位的计时模式，获取并返回计时器当前计数值。
+关于时间参数，可参见 :mod:`machine.Timer` 模块了解更多使用方法。
 
 模拟时钟
 +++++++
@@ -96,20 +99,38 @@
         oled.DispChar("ntp链接超时,请重启!",0,20)
         oled.show()
     else:
-        clock=UI.Clock(64,32,30)      # UI 中的clock类 x、y、r
+        clock=UI.Clock(64,32,30)      
 
         def Refresh(_):
             clock.settime()
             clock.drawClock()
-            display.show()
+            oled.show()
             clock.clear()
         
         tim1 = Timer(1)
 
         tim1.init(period=1000, mode=Timer.PERIODIC, callback=Refresh) 
 
-.. Hint:: 维护中,敬请期待！
+**构建Clock对象：**
+::
 
-.. admonition:: 编辑备忘
+    clock=UI.Clock(64,32,30) 
+    
+UI.Clock(x, y, radius)用于构建钟表对象，x、y为OLED显示屏上的起点坐标，radius为所画钟表的半径。
 
-    案例大致说明：分数字时钟和模拟钟表时钟两部分。结合结构,可将掌控板拓展为智能手表。
+**设置钟表：**
+::
+    clock.settime()
+
+获取本地时间并设置模拟钟表时间。
+
+**绘制钟表：**
+::
+    clock.drawClock()
+
+**清除钟表：**
+::
+    clock.clear()   
+
+清除时钟，也就是将显示在OLED显示屏上的时间清除以显示所获取的新时间，否则会导致各个时间值重叠显示在OLED上。
+
