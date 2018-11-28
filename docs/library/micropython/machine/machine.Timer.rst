@@ -33,12 +33,12 @@ MicroPython的Timer类定义了在给定时间段内（或在一段延迟后执�
 
     关键参数:
     
-    - ``mode`` 可以是以下之一:
+- ``mode`` 可以是以下之一:
 
-      - ``Timer.ONE_SHOT`` - 计时器运行一次，直到配置完毕通道的期限到期。
-      - ``Timer.PERIODIC`` - 定时器以通道的配置频率定期运行。
+    - ``Timer.ONE_SHOT`` - 计时器运行一次，直到配置完毕通道的期限到期。
+    - ``Timer.PERIODIC`` - 定时器以通道的配置频率定期运行。
 
-.. method:: Timer..value()
+.. method:: Timer.value()
 
 获取并返回计时器当前计数值。 
 
