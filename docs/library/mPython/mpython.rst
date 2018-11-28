@@ -28,6 +28,13 @@ mpython是基于掌控板封装的专用库
 
   - ``us`` -单位微秒。
 
+
+映射
+-------
+
+.. method:: numberMap(inputNum,bMin,bMax,cMin,cMax)
+
+
 板载传感器
 -------
 
