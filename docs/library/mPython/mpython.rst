@@ -86,6 +86,7 @@ button_[a,b]对象
 掌控板上的a,b按键。button_a/button_b 是 ``machine.Pin`` 衍生类，继承Pin的方法。更详细的使用方法请查阅 :ref:`machine.Pin<machine.Pin>`  。
 
 
+
 .. method:: button_[a,b].value()
 
 获取button_[a,b]按键引脚状态。引脚IO以上，当按键为未按下状态时value==1,按下状态时value==0。
@@ -96,6 +97,8 @@ button_[a,b]对象
   >>> 1
   >>> button_a.value()
   >>> 0
+
+.. _button.irq:
 
 .. method:: button_[a,b].irq(handler=None, trigger=(Pin.IRQ_FALLING | Pin.IRQ_RISING), priority=1, wake=None)
 
