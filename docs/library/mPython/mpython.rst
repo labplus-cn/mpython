@@ -337,10 +337,10 @@ Servo类
   * 你可以设置 ``acturi_range`` 来对应用给定的 ``min_pulse`` 和 ``max_pulse`` 观察到的实际运动范围值。
   * 您也可以将脉冲宽度扩展到这些限制之上和之下伺服机构可能会停止，嗡嗡声，并在停止时吸收额外的电流。仔细测试，找出安全的最小值和最大值。
 
-- ``pin`` 舵机PWM控制信号引脚
-- ``min_us`` 舵机PWM信号脉宽最小宽度,单位微秒。默认min_us=750
-- ``max_us`` 舵机PWM信号脉宽最小宽度,单位微秒。默认max_us=2250
-- ``actuation_range`` 舵机转动最大角度
+- ``pin`` -舵机PWM控制信号引脚
+- ``min_us`` -舵机PWM信号脉宽最小宽度,单位微秒。默认min_us=750
+- ``max_us`` -舵机PWM信号脉宽最小宽度,单位微秒。默认max_us=2250
+- ``actuation_range`` -舵机转动最大角度
 
 
 .. method:: Servo.write_us(width)
