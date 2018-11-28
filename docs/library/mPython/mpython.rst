@@ -443,6 +443,7 @@ Clock类
 
   tim1.init(period=1000, mode=Timer.PERIODIC, callback=lambda _:Refresh()) 
 
+.. _mpython.wifi:
 
 wifi类
 ------
