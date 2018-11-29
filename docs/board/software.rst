@@ -35,6 +35,14 @@ http://static.steamaker.cn/files/mPython2_0.2.5_macos.zip
 .. image:: /images/software/software_2.png
 
 
+驱动下载
+-----------
+
+如果没有自动安装CP210x的驱动，可手动下载并安装（for Windows、MacOS）：
+https://www.silabs.com/documents/public/software/CP210x_Windows_Drivers.zip
+https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
+
+
 接入硬件
 -----------
 
