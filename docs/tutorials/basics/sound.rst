@@ -19,12 +19,11 @@
 
   from mpython import *
 
-我们使用 ``sound`` 对象来获取麦克风的数据。
+我们使用 ``sound.read()`` 获取麦克风的数据。
 ::
 
-    >>> from mpython import *
-    >>> sound.read()
-    >>> 893
+    sound.read()
+
 
 
 .. Note::
