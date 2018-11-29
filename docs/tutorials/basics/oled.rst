@@ -35,8 +35,8 @@
 
 .. Note::
 
-  DispChar(str,x,y) 函数可以将左上角为坐标的文本将写入FrameBuffer。``str`` 为显示文本内容，支持简体中文，繁体中文，日文和韩文语言。``x``、 ``y`` 为OLED
-  显示起始x、y坐标。oled.show()为将FrameBuffer送至OLED显示屏刷新并显示。
+  * DispChar(str,x,y) 函数可以将左上角为坐标的文本将写入FrameBuffer。``str`` 为显示文本内容，支持简体中文，繁体中文，日文和韩文语言。``x``、 ``y`` 为OLED显示起始x、y坐标。
+  * oled.show()为将FrameBuffer送至OLED显示屏刷新并显示。
 
 如果要更改显示屏内容，您需在更改的内容前加上清空显示屏的语句，确保显示内容不会出现重叠的情况::
 
