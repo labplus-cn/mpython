@@ -11,8 +11,8 @@
 
 文本显示
 -------
-例：在OLED显示屏上显示hello word的中文或其他语言文本。
-::
+
+在OLED显示屏上显示hello word的中文或其他语言文本::
 
   from mpython import *
 
@@ -35,8 +35,8 @@
 
 .. Note::
 
-  DispChar(str,x,y) 函数可以将左上角为坐标的文本将写入FrameBuffer。``str`` 为显示文本内容，支持简体中文，繁体中文，日文和韩文语言。``x``、 ``y`` 为OLED
-  显示起始x、y坐标。oled.show()为将FrameBuffer送至OLED显示屏刷新并显示。
+  * DispChar(str,x,y) 函数可以将左上角为坐标的文本将写入FrameBuffer。``str`` 为显示文本内容，支持简体中文，繁体中文，日文和韩文语言。``x``、 ``y`` 为OLED显示起始x、y坐标。
+  * oled.show()为将FrameBuffer送至OLED显示屏刷新并显示。
 
 如果要更改显示屏内容，您需在更改的内容前加上清空显示屏的语句，确保显示内容不会出现重叠的情况::
 
@@ -95,6 +95,7 @@ OLED显示屏还支持设置屏幕的亮度::
 
 .. image:: /images/tutorials/drawline.gif
    :scale: 100 %
+   :align: center
 
 
 OLED可绘制一些点、直线、矩形等形状。
@@ -164,11 +165,10 @@ OLED可绘制一些点、直线、矩形等形状。
 .. image:: /images/tutorials/image2lcd.png
 
 
-将取模数据赋值给bmp数组中,创建 ``framebuf`` 对象用于存储图片帧数据，然后使用 ``oled.blit()`` 绘制图片至OLED显示屏上。
+将取模数据赋值给bmp数组中，然后显示在OLED显示屏上。
 ::
 
   from mpython import *
-  import framebuf
 
   #图片bitmap数组
   bmp = bytearray([\
@@ -238,33 +238,21 @@ OLED可绘制一些点、直线、矩形等形状。
   0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,
   ])
 
-  fb1 = framebuf.FrameBuffer(bmp,128,64, framebuf.MONO_HLSB)   #创建128x64大小帧缓存区储存图片帧，水平扫描
-  #oled.invert(1)     #bit反向
-  oled.blit(fb1,0,0)  #将fb1帧缓存送至oled显示，起始位(0,0)
+  oled.Bitmap(0, 0, bmp, 128, 64, 1)
   oled.show()         #刷新显示屏
 
-
-.. admonition:: 构建帧缓存对象 framebuf.FrameBuffer(buffer, width, height, format, stride=width) 
-
-    - ``buffer`` - 为缓存区数据
-    - ``width`` - 宽度
-    - ``height`` - 高度
-    - ``format`` - FrameBuffer的格式
-
-      -  ``framebuf.MONO_HLSB`` - 定义1字节的bit位对应 **水平方向** 的像素点
-      -  ``framebuf.MONO_VLSB`` - 定义1字节的bit位对应 **垂直方向** 的像素点
-
-    - ``stride`` - 水平线的像素数, 默认为width
-
-.. admonition:: oled显示图片帧 oled.blit(fbuf, x, y)
-
-  - ``fbuf`` - FrameBuffer对象
-  - ``x，y`` - 起始点坐标（x, y）
-
-
 .. image:: /images/tutorials/earth.png
-   :scale: 50 %
+  :scale: 50 %
+  :align: center
 
+将取模数据赋值给bmp数组后，绘制图片至OLED显示屏上::
+
+  oled.Bitmap(0, 0, bmp, 128, 64, 1)
+  oled.show()
+
+.. Note::
+
+  oled.Bitmap(x, y, bitmap, w, h, c) 可以绘制bitmap图案，``x`` 、``y`` 为左上角起点的坐标x、y，``bitmap`` 为图案bitmap数组名称，``w`` 为图案宽度，``h`` 为图案高度，``c`` 为颜色值，``1`` 时像素点亮，``0`` 时像素点灭。
 
 
 动态显示
@@ -274,8 +262,6 @@ OLED可绘制一些点、直线、矩形等形状。
 
 与上面使用bmp格式图片不同。本次使用pbm(Portable BitMap)格式图片，你可以使用Photoshop转换至pbm格式。
 
-Portable Bitmap 格式
-````````
 pbm数据格式::
 
   P4
@@ -286,20 +272,21 @@ pbm数据格式::
 pbm数据格式的前三行定于为图像标注。然后才是图像数据。第一行表示图像格式，第二行是注释，通常是用于创建它的程序。第三行是图像尺寸。
 后面的才是我们需要的图像数据。数据存储每像素bit流，``1`` 表示像素点打开，``0`` 表示像素点关闭。
 
+:download:`动态显示素材下载 </../examples/01.显示屏/素材/scatman.zip>`
 
-首先将预先准备好的每帧的pbm图片上传至掌控板上。
+首先将预先准备好的每帧的pbm图片上传至掌控板的文件系统的根目录下。
 
-代码::
+逐帧读取图像数据流并在OLED显示屏上显示出来::
 
   from mpython import *
-  import framebuf,time
+  import framebuf
 
   images = []        #创建数组列表用于存储图片帧
   for n in range(1,7):
       with open('scatman.%s.pbm' % n, 'rb') as f:
-          f.readline()   # 图像格式
-          f.readline()   # 注释
-          f.readline()   # 图像尺寸
+          f.readline()       # 图像格式
+          f.readline()       # 注释
+          f.readline()       # 图像尺寸
           data = bytearray(f.read())
       fbuf = framebuf.FrameBuffer(data, 128, 64, framebuf.MONO_HLSB)
       images.append(fbuf)     #将每帧数据赋值到列表
@@ -309,15 +296,46 @@ pbm数据格式的前三行定于为图像标注。然后才是图像数据。�
       for i in images:
           oled.blit(i, 0, 0)
           oled.show()
-          time.sleep(0.1)
-
+          sleep(0.1)
 
 .. image:: /images/tutorials/scatman.gif
-
-在程序中使用 ``file.read()`` 逐帧读取图像数据流。注意，前三行不是我们需要的数据，使用 ``readlines()`` 将它舍弃。
-每帧数据流创建FrameBuffer对象，将所有帧缓存储存至images列表，然后逐帧显示至OLED显示屏。
+  :align: center
 
 
+导入mpython和framebuf模块::
+
+  from mpython import *
+  import framebuf
+
+用二进制只读格式打开每一帧图片::
+
+  with open('scatman.%s.pbm' % n, 'rb') as f:
+      f.readline()       # 图像格式
+      f.readline()       # 注释
+      f.readline()       # 图像尺寸
+      data = bytearray(f.read())
+  fbuf = framebuf.FrameBuffer(data, 128, 64, framebuf.MONO_HLSB)
+  images.append(fbuf)     #将每帧数据赋值到列表
+
+
+在程序中使用 ``file.read()`` 逐帧读取图像数据流。注意，前三行不是我们需要的数据，使用 ``readlines()`` 将它舍弃。每帧数据流创建FrameBuffer对象，将所有帧缓存储存至images列表。
+
+.. Note::
+
+  open(file, mode) 用于打开一个文件，并返回文件对象。``file`` 为文件名，``mode`` 为文件打开模式，``rb`` 以二进制格式打开一个文件用于只读，一般用于非文本文件如图片等。
+
+.. Note::
+ 
+  framebuf.FrameBuffer(buffer, width, height, format) 可以构建帧缓存对象， ``buffer`` 为缓存区数据，``width`` 为图片宽度，``height`` 为图片高度，``format`` 为FrameBuffer的格式，即对应图片取模时数据输出的扫描模式：``framebuf.MONO_HLSB`` 为水平方向；``framebuf.MONO_VLSB`` 为垂直方向。
+
+对存储好的帧缓存逐帧显示至OLED显示屏::
+
+  oled.blit(i, 0, 0)
+  oled.show()
+
+.. Note::
+
+ oled.blit(fbuf, x, y) 使用OLED显示图片帧，``fbuf`` 为FrameBuffer对象，``x`` 、``y`` 为起始点的坐标x、y。
 
 
 
