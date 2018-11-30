@@ -1,7 +1,7 @@
 import json
 from mpython import*
 import urequests
-import seniverse
+from seniverse import *
 from machine import Timer
 
 API_KEY = '4w06fmyn1gxuvy88'
