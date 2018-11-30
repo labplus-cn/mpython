@@ -26,7 +26,7 @@ http协议采用的是请求/响应模型，浏览器或客户端发出请求，
     import urequests           # urequests模块是一个用于网络访问的模块
 
     mywifi=wifi()
-    mywifi.connectWiFi('LabPlus','labplus123456')      #连接 WiFi 网络
+    mywifi.connectWiFi('yourESSID', 'yourpassword')    #连接 WiFi 网络
 
     url_ip ="http://ip-api.com/json/"                  #添加请求地址
 
