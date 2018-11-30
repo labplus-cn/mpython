@@ -72,7 +72,7 @@ tcpClient示例::
 TCP Server IP选择手机在该网内的IP地址 ，端口号可设范围0~65535。然后，点击Listen，开始监听端口。
 在程序中设置上文选择的TCP服务端IP地址 ``host`` 和端口号 ``port`` ，重启运行程序。
 
-当连接Server成功后，TCP Server会接收到Client发送的文本 ``hello mPython,I am TCP Client`` 。此时你在TCP Server发送文本给Client，掌控板会
+当连接Server成功后，TCP Server会接收到Client发送的文本 ``hello mPython,I am TCP Client`` 。此时您在TCP Server发送文本给Client，掌控板会
 接收到文本并将文本显示至oled屏上。
 
 
@@ -148,7 +148,7 @@ tcpServer示例::
 
 
 首先掌控板和手机须连接至同个局域网内。掌控板重启运行程序，TCP Server端等待Client端连接请求。打开Network Test Utility，进入“TCP Client”界面，填写Remote host和port,即 ``socket.blind(ip,port)``
-的IP地址和端口。Connect连接成功后，发送文本，掌控板接收到文本显示至oled屏并将返回至TCP Client端。你可在手机接收界面看到文本从Client->Server，Server->Client的过程。
+的IP地址和端口。Connect连接成功后，发送文本，掌控板接收到文本显示至oled屏并将返回至TCP Client端。您可在手机接收界面看到文本从Client->Server，Server->Client的过程。
 
 
 .. image:: /images/tutorials/socket_2.gif
