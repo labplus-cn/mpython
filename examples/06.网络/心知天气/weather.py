@@ -14,7 +14,7 @@ oled.DispChar('联网中...',40,25)
 oled.show()
 
 mywifi=wifi()
-mywifi.connectWiFi('LabPlus','labplus123456')
+mywifi.connectWiFi('ssid','password')
 
 def nowWeather(apikey,location='ip',language='zh-Hans',unit='c'):
     nowResult = urequests.get(url_now, params={
