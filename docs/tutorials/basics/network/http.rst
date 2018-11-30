@@ -35,7 +35,7 @@ HTTP GET request
 
     在使用socket模块时，请先连接wifi，并且确保可以访问互联网。有关如何wifi连接，请查看上章节 :ref:`配置wifi<network_base>` 。
 
-然后你可以尝试：
+然后您可以尝试：
 
     >>> http_get('http://micropython.org/ks/test.html')
 

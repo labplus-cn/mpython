@@ -73,7 +73,7 @@
 
 .. Note::
 
-    mpyhton.Servo(pin, min_us=750, max_us=2250, actuation_range=180) 用来构建Servo对象，默认使用SG90舵机。不同舵机脉冲宽度参数和角度范围会有所不一样,根据舵机型号自行设置。``pin`` 设置舵机PWM控制信号引脚，``min_us`` 设置舵机PWM信号脉宽最小宽度,单位微秒，默认min_us=750，``max_us`` 设置舵机PWM信号脉宽最小宽度,单位微秒，默认max_us=2250，``actuation_range`` 设置舵机转动最大角度。
+    mpyhton.Servo(pin, min_us=750, max_us=2250, actuation_range=180) 用来构建Servo对象，默认使用SG90舵机。不同舵机脉冲宽度参数和角度范围会有所不一样,根据舵机型号自行设置。``pin`` 设置舵机PWM控制信号引脚，``min_us`` 设置舵机PWM信号脉宽最小宽度，单位微秒，默认min_us=750，``max_us`` 设置舵机PWM信号脉宽最小宽度，单位微秒，默认max_us=2250，``actuation_range`` 设置舵机转动最大角度。
 
 .. Attention:: 
 

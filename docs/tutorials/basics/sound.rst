@@ -10,7 +10,7 @@
     while True:
         oled.fill(0) 
         oled.DispChar('声音：',0,16)
-        oled.text("%d" % (sound.read()),40,20)
+        oled.DispChar("%d" % (sound.read()),40,20)
         oled.show()
 
 

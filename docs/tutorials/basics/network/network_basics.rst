@@ -35,7 +35,7 @@ AP模式提供接入服务（其他设备连接到ESP32）。有关更多使用�
 
     >>> sta_if.active(True)
 
-连接你的 WiFi 网络，需要设置你的WiFi名称和密码::
+连接您的 WiFi 网络，需要设置您的WiFi名称和密码::
 
     >>> sta_if.connect('<your ESSID>', '<your password>')
 
@@ -52,7 +52,7 @@ AP模式提供接入服务（其他设备连接到ESP32）。有关更多使用�
 
     >>> sta_if.active(False)
 
-下面是一个连接WiFi的函数你可以执行它，或者放在boot.py文件。这样就可以实现启动自动连接到您的WiFi网络::
+下面是一个连接WiFi的函数您可以执行它，或者放在boot.py文件。这样就可以实现启动自动连接到您的WiFi网络::
 
     def do_connect():
         import network
