@@ -8,7 +8,6 @@
     musicbox.rst
     lux&sound_Cal.rst
     dht11.rst
-    gradienter.rst
     piano.rst
     servo.rst
     clock.rst

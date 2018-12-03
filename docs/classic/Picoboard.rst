@@ -1,7 +1,7 @@
-Picoboard-Scratch图形化
+Picoboard-Scratch
 ==========
 
-
+通过掌控板模拟PicoBoard与Scratch通讯方式，达到与Scratch软件通讯，实现Scratch编程！
 
 刷入程序
 +++++++
@@ -146,8 +146,8 @@ Picoboard-Scratch图形化
 掌控板与Scratch连接
 +++++++
 
-* 将上面的程序刷入掌控板，设为默认运行；
-* 打开Scratch软件（这里使用2.0版本），单击脚本栏的“更多积木”中的“添加扩展”，添加“PicoBroad”硬件；
+* 将上面的程序烧录至掌控板。
+* 打开Scratch软件（这里使用2.0版本），单击脚本栏的“更多积木”中的“添加扩展”，添加“PicoBroad”硬件。
 * 添加“PicoBroad”后，Scratch界面上会出现“PicoBoard”指令模块。当“PicoBoard”右边的黄色圆点变成绿色，同时掌控板上的三个RGB灯闪烁，此时表示掌控板与Scratch连接成功；
 * 连接成功后，就可以在Scratch中做一些互动程序了。
 
@@ -160,8 +160,3 @@ Scratch软件编辑图形化程序
     :scale: 50%
     :align: center
 
-.. Hint:: 维护中,敬请期待！
-
-.. admonition:: 编辑备忘
-
-    案例说明：通过掌控板模拟Picoboard,结合图形化Scratch做些互动程序。

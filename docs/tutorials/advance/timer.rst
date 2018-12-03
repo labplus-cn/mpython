@@ -51,7 +51,7 @@
 
 .. Note::
 
-    Timer.value() 函数为获取并返回当前计数值。
+    timer.value() 函数为获取并返回当前计数值。
 
 .. Attention:: 
 

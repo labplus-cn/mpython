@@ -10,6 +10,5 @@
     timer.rst
     thread.rst
     i2c.rst
-    spi.rst
     mqtt.rst
     weatherIC.rst
