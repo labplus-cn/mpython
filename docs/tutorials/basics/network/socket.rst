@@ -16,37 +16,22 @@ tcpClient示例::
     import socket
     from mpython import *
 
-    # wifi参数 
-    SSID="yourSSID"                 #wifi名称
-    PASSWORD="yourPSW"              #密码
     host = "172.25.1.63"          #TCP Server IP
     port = 5001                     #Port
     s=None
-    wlan=None
 
-    # 本函数实现wifi连接 
-    def ConnectWifi(ssid,passwd):
-        global wlan
-        wlan=network.WLAN(network.STA_IF)
-        wlan.active(True)
-        wlan.disconnect()
-        wlan.connect(ssid,passwd)
-    
-        while(wlan.ifconfig()[0]=='0.0.0.0'):
-            time.sleep(1)
-            print('Connecting to network...')
-        print('WiFi Connection Successful,Network Config:%s' %str(wlan.ifconfig()))
+    mywifi=wifi()     #实例化wifi类
 
 
     #Catch exceptions,stop program if interrupted accidentally in the 'try'
     try:
-        ConnectWifi(SSID,PASSWORD)
-        ip=wlan.ifconfig()[0]                                 #get ip addr
+        mywifi.connectWiFi("ssid","password")                  # WiFi连接，设置ssid 和password
+        ip=mywifi.sta.ifconfig()[0]                                #get ip addr
         s = socket.socket()                                   #create socket
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)#Set the value of the given socket option
         s.connect((host,port))                                #send require for connect
         s.send("hello mPython,I am TCP Client")               #send data
-    
+
         while True:
             data = s.recv(1024)                               #Receive 1024 byte of data from the socket
             if(len(data) == 0):                               #if there is no data,close
@@ -55,16 +40,16 @@ tcpClient示例::
                 break
             print(data)
             data=data.decode()                                #以utf-8编码解码字符串
-            display.fill(0)
-            display.DispChar(data,0,0)
-            display.show()
+            oled.fill(0)
+            oled.DispChar(data,0,0)
+            oled.show()
             ret = s.send(data)
-        
+
     except:
         if (s):
             s.close()
-        wlan.disconnect()
-        wlan.active(False)
+        mywifi.disconnectWiFi()
+
 
 
 
@@ -89,38 +74,24 @@ tcpServer示例::
     import time
     from mpython import *
 
-    SSID="youSSID"
-    PASSWORD="yourPSW"
     port=5001               # TCP Sever port,range0~65535
-    wlan=None
     listenSocket=None
 
-    # 本函数实现wifi连接 
-    def ConnectWifi(ssid,passwd):
-            global wlan
-            wlan=network.WLAN(network.STA_IF)
-            wlan.active(True)
-            wlan.disconnect()
-            wlan.connect(ssid,passwd)
-    
-            while(wlan.ifconfig()[0]=='0.0.0.0'):
-                    time.sleep(1)
-                    print('Connecting to network...')
-            print('WiFi Connection Successful,Network Config:%s' %str(wlan.ifconfig()))
+    mywifi=wifi()     #实例化wifi类
 
     #Catch exceptions,stop program if interrupted accidentally in the 'try'
     try:
-        ConnectWifi(SSID,PASSWORD)
-        ip=wlan.ifconfig()[0]                     #get ip addr
+        mywifi.connectWiFi("ssid","password")                  # WiFi连接，设置ssid 和password
+        ip= mywifi.sta.ifconfig()[0]                     #get ip addr
         listenSocket = socket.socket()            #create socket
         listenSocket.bind((ip,port))              #bind ip and port
         listenSocket.listen(1)                    #listen message
         listenSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)    #Set the value of the given socket option
         print ('tcp waiting...')
-        display.DispChar("%s:%s" %(ip,port),0,0)
-        display.DispChar('accepting.....',0,16)
-        display.show()
-    
+        oled.DispChar("%s:%s" %(ip,port),0,0)
+        oled.DispChar('accepting.....',0,16)
+        oled.show()
+
         while True:
             print("accepting.....")
         
@@ -136,15 +107,14 @@ tcpServer示例::
                     break
                 data_utf=data.decode()                  #以utf8编码解码字符串
                 print(data_utf)
-                display.DispChar(data_utf,0,48)         #将接收到文本显示出来
-                display.show()
-                display.fill_rect(0,48,128,16,0)        #局部清屏
+                oled.DispChar(data_utf,0,48)         #将接收到文本显示出来
+                oled.show()
+                oled.fill_rect(0,48,128,16,0)        #局部清屏
                 ret = conn.send(data)                    #return data to client
     except:
         if(listenSocket):
             listenSocket.close()
-        wlan.disconnect()
-        wlan.active(False)
+        mywifi.disconnectWiFi()
 
 
 首先掌控板和手机须连接至同个局域网内。掌控板重启运行程序，TCP Server端等待Client端连接请求。打开Network Test Utility，进入“TCP Client”界面，填写Remote host和port,即 ``socket.blind(ip,port)``
