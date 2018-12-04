@@ -366,43 +366,45 @@ class PinMode(object):
     ANALOG = 4
 
 
-class MPythonPin(Pin):
-    def __init__(self, pin, mode=PinMode.IN):
+class MPythonPin():
+    def __init__(self, pin, mode=PinMode.IN,pull=None):
         if mode not in [PinMode.IN, PinMode.OUT, PinMode.PWM, PinMode.ANALOG]:
             raise TypeError("mode must be 'IN, OUT, PWM, ANALOG'")
         if pin == 3:
-            raise TypeError("pin3 is used for resistance sensor")
+            raise TypeError("P3 is used for resistance sensor")
         if pin == 4:
-            raise TypeError("pin4 is used for light sensor")
+            raise TypeError("P4 is used for light sensor")
         if pin == 10:
-            raise TypeError("pin10 is used for sound sensor")
+            raise TypeError("P10 is used for sound sensor")
         self.id = pins_remap_esp32[pin]
+        print("mode:%d,Pin:%d,id:%d" %(mode,pin,self.id))
         if mode == PinMode.IN:
-            super().__init__(self.id, Pin.IN, Pin.PULL_UP)
+            self.Pin=Pin(self.id, Pin.IN, pull)
         if mode == PinMode.OUT:
-            if pin == 2:
-                raise TypeError('pin2 only can be set "IN, ANALOG"')
-            super().__init__(self.id, Pin.OUT)
+            if pin in [2,3]:
+                raise TypeError('P%d only can be set "IN, ANALOG" mode' %pin)
+            self.Pin=Pin(self.id, Pin.OUT,pull)
         if mode == PinMode.PWM:
-            if pin == 2:
-                raise TypeError('pin2 only can be set "IN, ANALOG"')
+            if pin not in [0,1,5,6,7,8,9,11,13,14,15,16,19,20]:
+                raise TypeError('PWM not supported on P%d' %pin)
             self.pwm = PWM(Pin(self.id), duty=0)
         if mode == PinMode.ANALOG:
             if pin not in [0, 1, 2, 3, 4, 10]:
-                raise TypeError('the pin can~t be set as analog')
-            self.adc = ADC(Pin(self.id))
+                raise TypeError('ANALOG not supported on P%d' %pin)
+            self.adc= ADC(Pin(self.id))
             self.adc.atten(ADC.ATTN_11DB)
         self.mode = mode
+
 
     def read_digital(self):
         if not self.mode == PinMode.IN:
             raise TypeError('the pin is not in IN mode')
-        return super().value()
+        return self.Pin.value()
 
     def write_digital(self, value):
         if not self.mode == PinMode.OUT:
             raise TypeError('the pin is not in OUT mode')
-        super().value(value)
+        self.Pin.value(value)
 
     def read_analog(self):
         if not self.mode == PinMode.ANALOG:
