@@ -1,13 +1,16 @@
 JSON解析
 =======
 
-JSON(JavaScript Object Notation, JS 对象简谱) 是一种轻量级的数据交换格式。采用完全独立于编程语言的文本格式来存储和表示数据，易于人阅读和编写，同时也易于机器解析和生成，并有效地提升网络传输效率。
+JSON(JavaScript Object Notation, JS 对象简谱) 是一种轻量级的数据交换格式。采用完全独立于编程语言的文本格式来存储和表示数据，易于人阅读和编写，同时也易于机器解析和生成，所以在互联网应用非常广泛。
 
-在python中，json和dict非常类似，都是key-value的形式，而且json、dict也可以非常方便的通过dumps、loads互转。
+在python中，json和dict非常类似，都是key-value的形式，而且json、dict也可以非常方便的通过 :mod:`json` 模块互转。
 
 * json：是一种数据格式，是纯字符串，本质是一种文件组织方式，比如您熟悉的txt、csv、doc、docx、xls、xlsx文件等。
 
 * dict：是一种数据结构，比如列表list、集合set、字符串str、数组array。
+
+网络获取JSON解析
+---------------
 
 http协议采用的是请求/响应模型，浏览器或客户端发出请求，服务器给与响应。
 
