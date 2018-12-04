@@ -50,3 +50,6 @@
             p0Status=0
         elif p0.read()>=100:
             p0Status=1
+
+    
+.. image:: /images/classic/piano.gif

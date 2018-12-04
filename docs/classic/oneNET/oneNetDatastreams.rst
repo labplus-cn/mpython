@@ -65,10 +65,10 @@ OneNET数据点上报格式
 
 完整程序示例::
 
-    from simple import MQTTClient
+    from umqtt.simple import MQTTClient
     from mpython import *
     from machine import Timer
-    import time,network,json
+    import json
 
     # MQTT服务器地址域名为：183.230.40.39,不变
     SERVER = "183.230.40.39"
@@ -79,10 +79,7 @@ OneNET数据点上报格式
     #产品APIKey:
     password='APIKey'
 
-    # wifi参数 
-    SSID="yourSSID"            #wifi名称
-    PASSWORD="yourPWD"         #密码
-    wlan=None
+    mywifi=wifi() 
 
     message = {'datastreams':[
     {
@@ -93,22 +90,9 @@ OneNET数据点上报格式
     'id':'light',
     'datapoints':[{'value':0}]
     }
-    ]} 
-    
-    tim1 = Timer(1)       # 创建定时器
+    ]}
 
-    # 本函数实现wifi连接 
-    def ConnectWifi(ssid=SSID,passwd=PASSWORD):
-        global wlan
-        wlan=network.WLAN(network.STA_IF)
-        wlan.active(True)
-        wlan.disconnect()
-        wlan.connect(ssid,passwd)
-    
-        while(wlan.ifconfig()[0]=='0.0.0.0'):
-            time.sleep(1)
-            print('Connecting to network...')
-        print('WiFi Connection Successful,Network Config:%s' %str(wlan.ifconfig()))
+    tim1 = Timer(1)       # 创建定时器
 
     def pubdata(data):
         j_d = json.dumps(data)
@@ -125,9 +109,9 @@ OneNET数据点上报格式
     message['datastreams'][1]['datapoints'][0]['value']=light.read()
     c.publish('$dp',pubdata(message))                   #publish报文上传数据点
     print('publish message:',message)
-    
-    
-    ConnectWifi()
+
+
+    mywifi.connectWiFi("ssid","password")
 
     c = MQTTClient(CLIENT_ID, SERVER,6002,username,password)
     c.connect()
