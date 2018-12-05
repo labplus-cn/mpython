@@ -10,22 +10,21 @@ I2C是用于设备之间通信的双线协议。在物理层面，它由2条线�
 
 示例::
 
-    from machine import I2C
+        from machine import I2C,Pin
 
-    i2c = I2C(freq=400000)          # create I2C peripheral at frequency of 400kHz
-                                    # depending on the port, extra parameters may be required
-                                    # to select the peripheral and/or pins to use
+        i2c = I2C(scl=Pin(22), sda=Pin(23), freq=400000)          # create I2C peripheral at frequency of 400kHz
+                                                                                                                                                                                                                                                # depending on the port, extra parameters may be required
+                                                                                                                                                                                                                                                # to select the peripheral and/or pins to use
 
-    i2c.scan()                      # scan for slaves, returning a list of 7-bit addresses
+        i2c.scan()                      # scan for slaves, returning a list of 7-bit addresses
 
-    i2c.writeto(42, b'123')         # write 3 bytes to slave with 7-bit address 42
-    i2c.readfrom(42, 4)             # read 4 bytes from slave with 7-bit address 42
+        i2c.writeto(42, b'123')         # write 3 bytes to slave with 7-bit address 42
+        i2c.readfrom(42, 4)             # read 4 bytes from slave with 7-bit address 42
 
-    i2c.readfrom_mem(42, 8, 3)      # read 3 bytes from memory of slave 42,
-                                    #   starting at memory-address 8 in the slave
-    i2c.writeto_mem(42, 2, b'\x10') # write 1 byte to memory of slave 42
-                                    #   starting at address 2 in the slave
-
+        i2c.readfrom_mem(42, 8, 3)      # read 3 bytes from memory of slave 42,
+                                                                                                                                        #   starting at memory-address 8 in the slave
+        i2c.writeto_mem(42, 2, b'\x10') # write 1 byte to memory of slave 42
+                                                                                                                                        #   starting at address 2 in the slave
 构建对象
 ------------
 
@@ -34,17 +33,17 @@ I2C是用于设备之间通信的双线协议。在物理层面，它由2条线�
    使用以下参数构造并返回新的I2C对象：
 
 
-      - ``id`` 标识特定的I2C外设。默认值-1选择I2C的软件实现，它可以（在大多数情况下）使用 SCL 和 SDA 的任意引脚。 如果id为-1，则必须指定 ``scl`` 和 ``sda`` 。 ``id`` 的其他允许值取决于特定的端口/板，并且在这种情况下可以指定或不指定scl和sda。
-      - ``scl`` 应该是一个pin对象，指定用于SCL的引脚
-      - ``sda`` 应该是一个pin对象，指定用于SDA的引脚
-      - ``freq`` 应该是一个整数，它设置SCL的最大频率
+                        - ``id`` 标识特定的I2C外设。默认值-1选择I2C的软件实现，它可以（在大多数情况下）使用 SCL 和 SDA 的任意引脚。 如果id为-1，则必须指定 ``scl`` 和 ``sda`` 。 ``id`` 的其他允许值取决于特定的端口/板，并且在这种情况下可以指定或不指定scl和sda。
+                        - ``scl`` 应该是一个pin对象，指定用于SCL的引脚
+                        - ``sda`` 应该是一个pin对象，指定用于SDA的引脚
+                        - ``freq`` 应该是一个整数，它设置SCL的最大频率
 
 General Methods
 ---------------
 
 .. method:: I2C.init(scl, sda, \*, freq=400000)
 
-  Initialise the I2C bus with the given arguments:
+        Initialise the I2C bus with the given arguments:
 
      - ``scl`` 是SCL线的pin对象
      - ``sda`` 是SDA线的pin对象
@@ -70,7 +69,7 @@ Primitive I2C operations
 
 .. method:: I2C.stop()
 
-  在总线上生成STOP条件（SDA在SCL为高电平时转换为高电平）。
+        在总线上生成STOP条件（SDA在SCL为高电平时转换为高电平）。
 
 .. method:: I2C.readinto(buf, nack=True)
 
@@ -117,7 +116,7 @@ Standard bus operations
 返回读取数据的 ``bytes`` 对象。
 
 .. method:: I2C.readfrom_mem_into(addr, memaddr, buf, \*, addrsize=8)
- 
+    
 从 ``memaddr`` 指定的内存地址开始，从 ``addr`` 指定的slave中读入 ``buf`` 。读取的字节数是 ``buf`` 的长度。
 参数 ``addrsize`` 以位为单位指定地址大小。
 
