@@ -377,7 +377,6 @@ class MPythonPin():
         if pin == 10:
             raise TypeError("P10 is used for sound sensor")
         self.id = pins_remap_esp32[pin]
-        print("mode:%d,Pin:%d,id:%d" %(mode,pin,self.id))
         if mode == PinMode.IN:
             self.Pin=Pin(self.id, Pin.IN, pull)
         if mode == PinMode.OUT:
@@ -395,6 +394,10 @@ class MPythonPin():
             self.adc.atten(ADC.ATTN_11DB)
         self.mode = mode
 
+    def irq(self,handler=None, trigger=Pin.IRQ_RISING):
+        if not self.mode == PinMode.IN:
+            raise TypeError('the pin is not in IN mode')
+        return self.Pin.irq(handler,trigger)
 
     def read_digital(self):
         if not self.mode == PinMode.IN:

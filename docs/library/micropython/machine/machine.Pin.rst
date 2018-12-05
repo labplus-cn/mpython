@@ -111,7 +111,7 @@
 
 .. _Pin.irq:
 
-.. method:: Pin.irq(handler=None, trigger=(Pin.IRQ_FALLING | Pin.IRQ_RISING), priority=1, wake=None)
+.. method:: Pin.irq(handler=None, trigger=(Pin.IRQ_FALLING | Pin.IRQ_RISING))
 
    配置在引脚的触发源处于活动状态时调用的中断处理程序。如果引脚模式是， ``Pin.IN`` 则触发源是引脚上的外部值。
    如果引脚模式是， ``Pin.OUT`` 则触发源是引脚的输出缓冲器。
@@ -130,10 +130,6 @@
 
        这些值可以一起进行 ``OR`` 运算以触发多个事件。
 
-     - ``priority`` 设置中断的优先级。它可以采用的值是特定于端口的，但是更高的值总是代表更高的优先级。
-
-     - ``wake`` 选择此中断可唤醒系统的电源模式。它可以是 ``machine.IDLE`` ， ``machine.SLEEP`` 或 ``machine.DEEPSLEEP`` 。
-     这些值也可以进行 ``OR`` 运算，使引脚在多种功耗模式下产生中断。
 
   此方法返回一个回调对象。
 

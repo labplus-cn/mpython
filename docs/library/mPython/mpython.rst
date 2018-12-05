@@ -63,6 +63,10 @@ mpython是基于掌控板封装的专用库
 
 读取板载麦克风，范围0~4095。
 
+.. method:: ext.read()
+
+读取P3引脚模拟量，范围0~4095。
+
 加速度计
 +++++++++
 
@@ -298,7 +302,7 @@ oled屏显示文本。
 MPythonPin类
 -------
 
-.. class:: MPythonPin(pin, mode=PinMode)
+.. class:: MPythonPin(pin, mode=PinMode.IN,pull=None)
 
 构建Pin对象
 
@@ -310,6 +314,13 @@ MPythonPin类
     - ``PinMode.OUT`` 等于2，数字输出模式
     - ``PinMode.PWM`` 等于3，模拟输出模式
     - ``PinMode.ANALOG`` 等于4，模拟输入模式
+
+- ``pull`` 指定引脚是否连接了电阻，可以是以下之一：
+
+       - ``None`` - 无上拉或下拉电阻
+       - ``Pin.PULL_UP`` - 上拉电阻使能
+       - ``Pin.PULL_DOWN`` - 下拉电阻使能
+
 
 示例::
 
@@ -336,6 +347,26 @@ IO引脚输出电平控制。``value`` =1时输出高电平， ``value`` =0时�
 
 - ``duty`` 0 ≤ duty ≤ 1023
 - ``freq`` PWM波频率,0 < freq ≤ 0x0001312D（十进制：0 < freq ≤ 78125）
+
+
+.. _MPythonPin.irq:
+
+.. method:: irq(handler=None, trigger=Pin.IRQ_RISING):
+
+如果引脚模式配置为 ``IN`` ,可配置该引脚的触发源处于活动状态时调用的中断处理程序。
+
+参数:
+
+     - ``handler`` 是一个可选的函数，在中断触发时调用。
+
+     - ``trigger`` 配置可以触发中断的事件。可能的值是：
+
+       - ``Pin.IRQ_FALLING`` 下降沿中断
+       - ``Pin.IRQ_RISING`` 上升沿中断
+       - ``Pin.IRQ_LOW_LEVEL`` 低电平中断
+       - ``Pin.IRQ_HIGH_LEVEL`` 高电平中断
+
+       这些值可以一起进行 ``OR`` 运算以触发多个事件。
 
 
 Servo类
