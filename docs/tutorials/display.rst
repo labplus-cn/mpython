@@ -7,7 +7,7 @@ oled显示
 
 .. Hint::
 
-  display为 ``machine.framebuf`` 衍生类，所以继承framebuf的方法，详细使用可查阅  :meth:`framebuf`。
+  oled为 ``machine.framebuf`` 衍生类，所以继承framebuf的方法，详细使用可查阅  :meth:`framebuf`。
 
 
 文本显示
@@ -21,21 +21,21 @@ oled显示
 
 文本显示::
 
-  >>> display.DispChar('hello,world!',0,0)
-  >>> display.show()
+  >>> oled.DispChar('hello,world!',0,0)
+  >>> oled.show()
   >>>
 
 .. Note::
 
   DispChar(str,x,y)函数可以将左上角为坐标的文本将写入FrameBuffer。``str`` 为显示文本内容，支持简体中文，繁体中文，日文和韩文语言。``x`` ``y`` 为oled
-  显示起始xy坐标。display.show()为将FrameBuffer送至oled刷新并显示屏幕。
+  显示起始xy坐标。oled.show()为将FrameBuffer送至oled刷新并显示屏幕。
 
 清屏::
 
-   >>> display.fill(1)  
-   >>> display.show()
-   >>> display.fill(0)
-   >>> display.show()
+   >>> oled.fill(1)  
+   >>> oled.show()
+   >>> oled.fill(0)
+   >>> oled.show()
 
 .. Note::
 
@@ -49,11 +49,11 @@ hello word多种字体显示示例::
   from mpython import *
 
   #oled
-  display.DispChar('你好世界', 38, 0)
-  display.DispChar('hello,world', 32, 16)
-  display.DispChar('안녕하세요', 35, 32)
-  display.DispChar('こんにちは世界', 24, 48)
-  display.show()
+  oled.DispChar('你好世界', 38, 0)
+  oled.DispChar('hello,world', 32, 16)
+  oled.DispChar('안녕하세요', 35, 32)
+  oled.DispChar('こんにちは世界', 24, 48)
+  oled.show()
 
 .. image:: /images/掌控-正面.png
 
@@ -65,44 +65,44 @@ oled还可绘制一些点、直线、矩形形状。
 
 像素点显示::
 
-  >>> display.pixel(50,0)     #返回(50,0)像素点的值
+  >>> oled.pixel(50,0)     #返回(50,0)像素点的值
   0                          
-  >>> display.pixel(50,0,1)   #将(50,0)像素点置为1，点亮
-  >>> display.show()          #刷新显示屏
+  >>> oled.pixel(50,0,1)   #将(50,0)像素点置为1，点亮
+  >>> oled.show()          #刷新显示屏
 
 .. Note::
 
-  display.pixel(x, y [,c ] )  ``x`` , ``y`` 为点坐标(x,y)。当如果未给出c，则获取指定像素的颜色值。
+  oled.pixel(x, y [,c ] )  ``x`` , ``y`` 为点坐标(x,y)。当如果未给出c，则获取指定像素的颜色值。
   如果给出c，则将指定的像素设置为给定的颜色。
 
 
 画线::
 
-  >>> display.hline(0,1,20,1)  #画水平线,起始点坐标(0,1),线长20
-  >>> display.show()
-  >>> display.vline(10,10,20,1)  #画垂直线,起始点坐标(10,10),线长20
-  >>> display.show()
-  >>> display.line(15,15,80,20,1)  #画起始坐标(15,15),终点坐标(80,20)方向的线
-  >>> display.show()
+  >>> oled.hline(0,1,20,1)  #画水平线,起始点坐标(0,1),线长20
+  >>> oled.show()
+  >>> oled.vline(10,10,20,1)  #画垂直线,起始点坐标(10,10),线长20
+  >>> oled.show()
+  >>> oled.line(15,15,80,20,1)  #画起始坐标(15,15),终点坐标(80,20)方向的线
+  >>> oled.show()
 
 .. Note::
 
-  * display.hline(x, y, w, c ) 可以绘制水平线  ``x`` , ``y`` 为点坐标(x,y), ``w`` 为线宽。``c`` 为颜色值。当为1时，像素点点亮，为0则否。
-  * display.vline(x, y, l, c ) 可以绘制垂直线，方法同上。
-  * display.line(x1, y1, x2, y2, c) 可以绘制任意方向的线，起始坐标(x1, y1),终点坐标(x2, y2), ``c`` 为颜色值。
+  * oled.hline(x, y, w, c ) 可以绘制水平线  ``x`` , ``y`` 为点坐标(x,y), ``w`` 为线宽。``c`` 为颜色值。当为1时，像素点点亮，为0则否。
+  * oled.vline(x, y, l, c ) 可以绘制垂直线，方法同上。
+  * oled.line(x1, y1, x2, y2, c) 可以绘制任意方向的线，起始坐标(x1, y1),终点坐标(x2, y2), ``c`` 为颜色值。
 
 
 画矩形::
 
-  >>> display.rect(60,25,30,25,1)   #绘制起始坐标(60, 25),宽30，高25的矩形  
-  >>> display.show()
-  >>> display.fill_rect(100,25,20,25,1)   #绘制起始坐标(100, 25),宽20,高25填充满颜色的矩形  
-  >>> display.show()
+  >>> oled.rect(60,25,30,25,1)   #绘制起始坐标(60, 25),宽30，高25的矩形  
+  >>> oled.show()
+  >>> oled.fill_rect(100,25,20,25,1)   #绘制起始坐标(100, 25),宽20,高25填充满颜色的矩形  
+  >>> oled.show()
 
 .. Note::
 
-  * display.rect(x, y, w, h, c)用于绘制矩形外框。起始坐标为(x, y),宽度 ``w`` , 高度 ``h`` 的矩形外框。``c`` 为颜色值。
-  * display.fill_rect(x, y, w, h, c)用于绘制填充颜色的矩形，方法与rect()相同。不同于rect()只绘制矩形外框。
+  * oled.rect(x, y, w, h, c)用于绘制矩形外框。起始坐标为(x, y),宽度 ``w`` , 高度 ``h`` 的矩形外框。``c`` 为颜色值。
+  * oled.fill_rect(x, y, w, h, c)用于绘制填充颜色的矩形，方法与rect()相同。不同于rect()只绘制矩形外框。
 
 
 绘制线条例子 :download:`drawline.py </../examples/1.显示屏/drawline.py>` ::
@@ -112,26 +112,26 @@ oled还可绘制一些点、直线、矩形形状。
 
   def testdrawline():
     for i in range(0,64):
-      display.line(0,0,i*2,63,1)
-      display.show()
+      oled.line(0,0,i*2,63,1)
+      oled.show()
     for i in range(0,32):
-      display.line(0,0,127,i*2,1)
-      display.show()
+      oled.line(0,0,127,i*2,1)
+      oled.show()
     time.sleep_ms(250)
-    display.fill(0)
-    display.show()
+    oled.fill(0)
+    oled.show()
     for i in range(0,32):
-      display.line(0,63,i*4,0,1)
-      display.show()
+      oled.line(0,63,i*4,0,1)
+      oled.show()
     for i in range(0,16):
-      display.line(0,63,127,(64-4*i)-1,1)
-      display.show()
+      oled.line(0,63,127,(64-4*i)-1,1)
+      oled.show()
     time.sleep_ms(250)
-    display.fill(0)
-    display.show()
+    oled.fill(0)
+    oled.show()
     for i in range(1,32):
-      display.rect(2*i,2*i,(128-4*i)-1,(64-2*i)-1,1)
-      display.show()
+      oled.rect(2*i,2*i,(128-4*i)-1,(64-2*i)-1,1)
+      oled.show()
 
   testdrawline()
 
@@ -152,7 +152,7 @@ oled还可绘制一些点、直线、矩形形状。
 .. image:: /images/tutorials/image2lcd.png
 
 
-将取模数据赋值给bmp数组中,创建 ``framebuf`` 对象用于存储图片帧数据。然后使用 ``display.blit()`` 绘制图片至oled。
+将取模数据赋值给bmp数组中,创建 ``framebuf`` 对象用于存储图片帧数据。然后使用 ``oled.blit()`` 绘制图片至oled。
 
 :download:`bmp.py </../examples/1.显示屏/bmp.py>` ::
 
@@ -228,9 +228,9 @@ oled还可绘制一些点、直线、矩形形状。
   ])
 
   fb1 = framebuf.FrameBuffer(bmp,128,64, framebuf.MONO_HLSB)   #创建128x64大小帧缓存区储存图片帧，水平扫描
-  #display.invert(1)     #bit反向
-  display.blit(fb1,0,0)  #将fb1帧缓存送至oled显示，起始位(0,0)
-  display.show()         #刷新显示屏
+  #oled.invert(1)     #bit反向
+  oled.blit(fb1,0,0)  #将fb1帧缓存送至oled显示，起始位(0,0)
+  oled.show()         #刷新显示屏
 
 
 .. admonition:: 构建帧缓存对象 framebuf.FrameBuffer(buffer, width, height, format, stride=width) 
@@ -245,7 +245,7 @@ oled还可绘制一些点、直线、矩形形状。
 
     - ``stride`` - 水平线的像素数, 默认为width
 
-.. admonition:: oled显示图片帧 display.blit(fbuf, x, y)
+.. admonition:: oled显示图片帧 oled.blit(fbuf, x, y)
 
   - ``fbuf`` - FrameBuffer对象
   - ``x，y`` - 起始点坐标（x, y）
@@ -296,11 +296,11 @@ pbm数据格式::
       fbuf = framebuf.FrameBuffer(data, 128, 64, framebuf.MONO_HLSB)
       images.append(fbuf)     #将每帧数据赋值到列表
 
-  display.invert(1)  #像素点bit反转
+  oled.invert(1)  #像素点bit反转
   while True:
       for i in images:
-          display.blit(i, 0, 0)
-          display.show()
+          oled.blit(i, 0, 0)
+          oled.show()
           time.sleep(0.1)
 
 
