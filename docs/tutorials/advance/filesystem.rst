@@ -113,7 +113,7 @@ Python中通过一个名为的模块提供了这样的功能os。
 boot.py和main.py，这两个文件在启动时由MicroPython专门处理。 首先执行boot.py脚本（如果存在），然后在完成后执行main.py脚本。
 
 此外，如果您将其他Python文件复制到文件系统上，那么 import就像其他任何Python模块一样。
-例如，如果您有一个 ``hello.py`` 包含以下简单代码的文件：
+例如，如果您有一个 ``hello.py`` 包含以下简单代码的文件::
 
     def say_hello(name="World"):
         return "Hello, {}!".format(name)
