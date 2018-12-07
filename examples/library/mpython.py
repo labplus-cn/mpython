@@ -9,7 +9,7 @@
 # V1.2 add servo/ui class,by tangliufeng
 
 
-from machine import I2C, PWM, Pin, ADC, TouchPad
+from machine import I2C, PWM, Pin, ADC, TouchPad,UART
 from ssd1106 import SSD1106_I2C
 import esp,math,time,network
 import ustruct
@@ -23,7 +23,6 @@ pins_remap_esp32 = [33, 32, 35, 34, 39, 0, 16, 17, 26, 25,
                     27, 14, 12, 13, 15, 4]
 
 i2c = I2C(scl=Pin(22), sda=Pin(23), freq=400000)
-
 
 class Font(object):
     def __init__(self, font_address=0x300000):
@@ -422,6 +421,8 @@ class MPythonPin():
             raise TypeError('the pin is not in PWM mode')        
         self.pwm.freq(freq)
         self.pwm.duty(duty)
+
+
 '''
 # to be test
 class LightSensor(ADC):
@@ -644,7 +645,6 @@ class DHT22(DHTBase):
             t = -t
         return t
 
-
 # buzz
 buzz = Buzz()
 
@@ -677,3 +677,25 @@ touchPad_T = TouchPad(Pin(12))
 touchPad_H = TouchPad(Pin(13))
 touchPad_O = TouchPad(Pin(15))
 touchPad_N = TouchPad(Pin(4))
+
+
+
+
+# class uart(UART):
+#     def __init__(self,id,*args,**kw):
+#         super().__init__(id)
+
+#         if 'tx' in kw:
+#             if kw['tx'] not in [5,6,7,8,9,11,13,14,15,16,19,20,24,25,26,27,28]:
+#                 raise TypeError('I2C not supported on P%d' %kw['tx'])
+#         if 'rx' in kw:
+#             if kw['rx'] not in [5,6,7,8,9,11,13,14,15,16,19,20,24,25,26,27,28]:
+#                 raise TypeError('I2C not supported on P%d' %kw['rx'])
+#         try:
+#             if 'tx' in kw or 'rx' in kw:
+#                 kw['tx']=pins_remap_esp32[kw['tx']]
+#                 kw['rx']=pins_remap_esp32[kw['rx']]
+#         except KeyError:
+#             raise TypeError("Set the rx,tx at the same time")
+#         super().init(*args,**kw)
+

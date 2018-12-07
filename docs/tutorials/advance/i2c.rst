@@ -19,3 +19,24 @@ I2C 对象关联到总线，它可以在创建时初始化，也可以稍后初�
 
 
 有关I2C更详细的使用方法请查阅 :ref:`machine.I2C<machine.I2C>` 。
+
+
+::
+
+
+    from mpython import *
+
+    i2c = I2C(scl=Pin(22), sda=Pin(23),freq=100000)      
+                                                                                            
+    def temperature():
+        i2c.writeto(0x40,b'\xf3',False)
+        sleep_ms(70)
+        t=i2c.readfrom(0x40, 2)
+        return -46.86+175.72*(t[0]*256+t[1])/65535
+
+    def humidity():
+        i2c.writeto(0x40,b'\xf5',False)
+        sleep_ms(25)
+        t=i2c.readfrom(0x40, 2)
+        return -6+125*(t[0]*256+t[1])/65535
+
