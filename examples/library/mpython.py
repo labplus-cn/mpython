@@ -370,21 +370,24 @@ class MPythonPin():
     def __init__(self, pin, mode=PinMode.IN,pull=None):
         if mode not in [PinMode.IN, PinMode.OUT, PinMode.PWM, PinMode.ANALOG]:
             raise TypeError("mode must be 'IN, OUT, PWM, ANALOG'")
-        if pin == 3:
-            raise TypeError("P3 is used for resistance sensor")
         if pin == 4:
             raise TypeError("P4 is used for light sensor")
         if pin == 10:
             raise TypeError("P10 is used for sound sensor")
-        self.id = pins_remap_esp32[pin]
+        try:
+            self.id = pins_remap_esp32[pin]
+        except IndexError:
+            raise IndexError("Out of Pin range")
         if mode == PinMode.IN:
+            if pin in [3]:
+                raise TypeError('IN not supported on P%d' %pin)
             self.Pin=Pin(self.id, Pin.IN, pull)
         if mode == PinMode.OUT:
             if pin in [2,3]:
-                raise TypeError('P%d only can be set "IN, ANALOG" mode' %pin)
+                raise TypeError('OUT not supported on P%d' %pin)
             self.Pin=Pin(self.id, Pin.OUT,pull)
         if mode == PinMode.PWM:
-            if pin not in [0,1,5,6,7,8,9,11,13,14,15,16,19,20]:
+            if pin not in [0,1,5,6,7,8,9,11,13,14,15,16,19,20,23,24,25,26,27,28]:
                 raise TypeError('PWM not supported on P%d' %pin)
             self.pwm = PWM(Pin(self.id), duty=0)
         if mode == PinMode.ANALOG:
@@ -662,8 +665,6 @@ light = ADC(Pin(39))
 # sound sensor
 sound = ADC(Pin(36))
 
-#ext
-ext   = ADC(Pin(34))
 
 # buttons
 button_a = Pin(0, Pin.IN, Pin.PULL_UP)
