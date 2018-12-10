@@ -348,7 +348,7 @@ IO引脚输出电平控制。``value`` =1时输出高电平， ``value`` =0时�
 
 .. _MPythonPin.irq:
 
-.. method:: irq(handler=None, trigger=Pin.IRQ_RISING):
+.. method:: MPythonPin.irq(handler=None, trigger=Pin.IRQ_RISING):
 
 如果引脚模式配置为 ``IN`` ,可配置该引脚的触发源处于活动状态时调用的中断处理程序。
 
