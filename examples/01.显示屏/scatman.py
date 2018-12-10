@@ -12,9 +12,9 @@ for n in range(1,7):
     fbuf = framebuf.FrameBuffer(data, 128, 64, framebuf.MONO_HLSB)
     images.append(fbuf)
 
-display.invert(1)
+oled.invert(1)
 while True:
     for i in images:
-        display.blit(i, 0, 0)
-        display.show()
+        oled.blit(i, 0, 0)
+        oled.show()
         time.sleep(0.1)

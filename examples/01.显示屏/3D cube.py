@@ -35,21 +35,21 @@ while True:
             f[i][0] = x3  # store new values
             f[i][1] = y3
             f[i][2] = z3
-        display.fill(0)  # clear
-        display.line(int(f[0][0]), int(f[0][1]), int(f[1][0]), int(f[1][1]), 1)
-        display.line(int(f[1][0]), int(f[1][1]), int(f[2][0]), int(f[2][1]), 1)
-        display.line(int(f[2][0]), int(f[2][1]), int(f[3][0]), int(f[3][1]), 1)
-        display.line(int(f[3][0]), int(f[3][1]), int(f[0][0]), int(f[0][1]), 1)
-        display.line(int(f[4][0]), int(f[4][1]), int(f[5][0]), int(f[5][1]), 1)
-        display.line(int(f[5][0]), int(f[5][1]), int(f[6][0]), int(f[6][1]), 1)
-        display.line(int(f[6][0]), int(f[6][1]), int(f[7][0]), int(f[7][1]), 1)
-        display.line(int(f[7][0]), int(f[7][1]), int(f[4][0]), int(f[4][1]), 1)
-        display.line(int(f[0][0]), int(f[0][1]), int(f[4][0]), int(f[4][1]), 1)
-        display.line(int(f[1][0]), int(f[1][1]), int(f[5][0]), int(f[5][1]), 1)
-        display.line(int(f[2][0]), int(f[2][1]), int(f[6][0]), int(f[6][1]), 1)
-        display.line(int(f[3][0]), int(f[3][1]), int(f[7][0]), int(f[7][1]), 1)
-        display.line(int(f[1][0]), int(f[1][1]), int(f[3][0]), int(f[3][1]), 1)  # cross
-        display.line(int(f[0][0]), int(f[0][1]), int(f[2][0]), int(f[2][1]), 1)  # cross
-        display.DispChar('3D CUBE', 0, 0)
-        display.show()  # display
+        oled.fill(0)  # clear
+        oled.line(int(f[0][0]), int(f[0][1]), int(f[1][0]), int(f[1][1]), 1)
+        oled.line(int(f[1][0]), int(f[1][1]), int(f[2][0]), int(f[2][1]), 1)
+        oled.line(int(f[2][0]), int(f[2][1]), int(f[3][0]), int(f[3][1]), 1)
+        oled.line(int(f[3][0]), int(f[3][1]), int(f[0][0]), int(f[0][1]), 1)
+        oled.line(int(f[4][0]), int(f[4][1]), int(f[5][0]), int(f[5][1]), 1)
+        oled.line(int(f[5][0]), int(f[5][1]), int(f[6][0]), int(f[6][1]), 1)
+        oled.line(int(f[6][0]), int(f[6][1]), int(f[7][0]), int(f[7][1]), 1)
+        oled.line(int(f[7][0]), int(f[7][1]), int(f[4][0]), int(f[4][1]), 1)
+        oled.line(int(f[0][0]), int(f[0][1]), int(f[4][0]), int(f[4][1]), 1)
+        oled.line(int(f[1][0]), int(f[1][1]), int(f[5][0]), int(f[5][1]), 1)
+        oled.line(int(f[2][0]), int(f[2][1]), int(f[6][0]), int(f[6][1]), 1)
+        oled.line(int(f[3][0]), int(f[3][1]), int(f[7][0]), int(f[7][1]), 1)
+        oled.line(int(f[1][0]), int(f[1][1]), int(f[3][0]), int(f[3][1]), 1)  # cross
+        oled.line(int(f[0][0]), int(f[0][1]), int(f[2][0]), int(f[2][1]), 1)  # cross
+        oled.DispChar('3D CUBE', 0, 0)
+        oled.show()  # display
         sleep_ms(1)

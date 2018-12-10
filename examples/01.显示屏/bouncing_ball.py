@@ -10,12 +10,12 @@ y_inc = 1
 radius = 8
 
 # start with a blank screen
-display.fill(0)
+oled.fill(0)
 # we just blanked the framebuffer. to push the framebuffer onto the display, we call show()
-display.show()
+oled.show()
 while True:
     # undraw the previous circle
-    display.fill_circle(center_x, center_y, radius, 0)
+    oled.fill_circle(center_x, center_y, radius, 0)
     # if bouncing off right
     if center_x + radius >= 128:
         # start moving to the left
@@ -39,6 +39,6 @@ while True:
     center_y += y_inc
 
     # draw the new circle
-    display.fill_circle(center_x, center_y, radius,1)
+    oled.fill_circle(center_x, center_y, radius,1)
     # show all the changes we just made
-    display.show()
+    oled.show()
