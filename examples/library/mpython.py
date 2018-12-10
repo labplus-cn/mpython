@@ -650,7 +650,6 @@ buzz = Buzz()
 
 # display
 oled = OLED()
-display = oled
 
 # 3 axis accelerometer
 accelerometer = Accelerometer()
