@@ -8,7 +8,3 @@
     random.rst
     filesystem.rst
     timer.rst
-    thread.rst
-    i2c.rst
-    mqtt.rst
-    weatherIC.rst

@@ -677,25 +677,3 @@ touchPad_T = TouchPad(Pin(12))
 touchPad_H = TouchPad(Pin(13))
 touchPad_O = TouchPad(Pin(15))
 touchPad_N = TouchPad(Pin(4))
-
-
-
-
-# class uart(UART):
-#     def __init__(self,id,*args,**kw):
-#         super().__init__(id)
-
-#         if 'tx' in kw:
-#             if kw['tx'] not in [5,6,7,8,9,11,13,14,15,16,19,20,24,25,26,27,28]:
-#                 raise TypeError('I2C not supported on P%d' %kw['tx'])
-#         if 'rx' in kw:
-#             if kw['rx'] not in [5,6,7,8,9,11,13,14,15,16,19,20,24,25,26,27,28]:
-#                 raise TypeError('I2C not supported on P%d' %kw['rx'])
-#         try:
-#             if 'tx' in kw or 'rx' in kw:
-#                 kw['tx']=pins_remap_esp32[kw['tx']]
-#                 kw['rx']=pins_remap_esp32[kw['rx']]
-#         except KeyError:
-#             raise TypeError("Set the rx,tx at the same time")
-#         super().init(*args,**kw)
-

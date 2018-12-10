@@ -10,7 +10,6 @@
     dht11.rst
     piano.rst
     servo.rst
-    uartArduino.rst
     Picoboard.rst
     clock.rst
     weather.rst
