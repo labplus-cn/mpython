@@ -71,6 +71,6 @@ bmp = bytearray([\
 
 
 fb1 = framebuf.FrameBuffer(bmp,128,64, framebuf.MONO_HLSB)
-#display.invert(1)
-display.blit(fb1,0,0)
-display.show()
+#oled.invert(1)
+oled.blit(fb1,0,0)
+oled.show()

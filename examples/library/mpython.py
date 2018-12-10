@@ -9,7 +9,7 @@
 # V1.2 add servo/ui class,by tangliufeng
 
 
-from machine import I2C, PWM, Pin, ADC, TouchPad
+from machine import I2C, PWM, Pin, ADC, TouchPad,UART
 from ssd1106 import SSD1106_I2C
 import esp,math,time,network
 import ustruct
@@ -23,7 +23,6 @@ pins_remap_esp32 = [33, 32, 35, 34, 39, 0, 16, 17, 26, 25,
                     27, 14, 12, 13, 15, 4]
 
 i2c = I2C(scl=Pin(22), sda=Pin(23), freq=400000)
-
 
 class Font(object):
     def __init__(self, font_address=0x300000):
@@ -366,43 +365,51 @@ class PinMode(object):
     ANALOG = 4
 
 
-class MPythonPin(Pin):
-    def __init__(self, pin, mode=PinMode.IN):
+class MPythonPin():
+    def __init__(self, pin, mode=PinMode.IN,pull=None):
         if mode not in [PinMode.IN, PinMode.OUT, PinMode.PWM, PinMode.ANALOG]:
             raise TypeError("mode must be 'IN, OUT, PWM, ANALOG'")
-        if pin == 3:
-            raise TypeError("pin3 is used for resistance sensor")
         if pin == 4:
-            raise TypeError("pin4 is used for light sensor")
+            raise TypeError("P4 is used for light sensor")
         if pin == 10:
-            raise TypeError("pin10 is used for sound sensor")
-        self.id = pins_remap_esp32[pin]
+            raise TypeError("P10 is used for sound sensor")
+        try:
+            self.id = pins_remap_esp32[pin]
+        except IndexError:
+            raise IndexError("Out of Pin range")
         if mode == PinMode.IN:
-            super().__init__(self.id, Pin.IN, Pin.PULL_UP)
+            if pin in [3]:
+                raise TypeError('IN not supported on P%d' %pin)
+            self.Pin=Pin(self.id, Pin.IN, pull)
         if mode == PinMode.OUT:
-            if pin == 2:
-                raise TypeError('pin2 only can be set "IN, ANALOG"')
-            super().__init__(self.id, Pin.OUT)
+            if pin in [2,3]:
+                raise TypeError('OUT not supported on P%d' %pin)
+            self.Pin=Pin(self.id, Pin.OUT,pull)
         if mode == PinMode.PWM:
-            if pin == 2:
-                raise TypeError('pin2 only can be set "IN, ANALOG"')
+            if pin not in [0,1,5,6,7,8,9,11,13,14,15,16,19,20,23,24,25,26,27,28]:
+                raise TypeError('PWM not supported on P%d' %pin)
             self.pwm = PWM(Pin(self.id), duty=0)
         if mode == PinMode.ANALOG:
             if pin not in [0, 1, 2, 3, 4, 10]:
-                raise TypeError('the pin can~t be set as analog')
-            self.adc = ADC(Pin(self.id))
+                raise TypeError('ANALOG not supported on P%d' %pin)
+            self.adc= ADC(Pin(self.id))
             self.adc.atten(ADC.ATTN_11DB)
         self.mode = mode
+
+    def irq(self,handler=None, trigger=Pin.IRQ_RISING):
+        if not self.mode == PinMode.IN:
+            raise TypeError('the pin is not in IN mode')
+        return self.Pin.irq(handler,trigger)
 
     def read_digital(self):
         if not self.mode == PinMode.IN:
             raise TypeError('the pin is not in IN mode')
-        return super().value()
+        return self.Pin.value()
 
     def write_digital(self, value):
         if not self.mode == PinMode.OUT:
             raise TypeError('the pin is not in OUT mode')
-        super().value(value)
+        self.Pin.value(value)
 
     def read_analog(self):
         if not self.mode == PinMode.ANALOG:
@@ -414,6 +421,8 @@ class MPythonPin(Pin):
             raise TypeError('the pin is not in PWM mode')        
         self.pwm.freq(freq)
         self.pwm.duty(duty)
+
+
 '''
 # to be test
 class LightSensor(ADC):
@@ -636,7 +645,6 @@ class DHT22(DHTBase):
             t = -t
         return t
 
-
 # buzz
 buzz = Buzz()
 
@@ -657,8 +665,11 @@ light = ADC(Pin(39))
 # sound sensor
 sound = ADC(Pin(36))
 
+<<<<<<< HEAD
 #ext
 ext   = ADC(Pin(34))
+=======
+>>>>>>> doc-1.0
 
 # buttons
 button_a = Pin(0, Pin.IN, Pin.PULL_UP)

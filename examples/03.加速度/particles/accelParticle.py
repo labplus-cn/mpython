@@ -38,7 +38,7 @@ class Ball():
             return False
 
     def display(self):
-        display.pixel(self.x, self.y, 1)
+        oled.pixel(self.x, self.y, 1)
 
 
 class ParticleSystem():
@@ -68,7 +68,7 @@ while True:
 
     sleep_ms(20)
 
-    display.fill(0)
+    oled.fill(0)
 
     x = accelerometer.get_y()
     y = accelerometer.get_x()
@@ -77,4 +77,4 @@ while True:
     ps.run()
     # 把加速度计的读数
 
-    display.show()
+    oled.show()
