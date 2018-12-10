@@ -39,8 +39,10 @@
   DispChar(str,x,y)函数可以将左上角为坐标的文本将写入FrameBuffer。``str`` 为显示文本内容，支持简体中文，繁体中文，日文和韩文语言。``x`` ``y`` 为oled
   显示起始xy坐标。oled.show()为将FrameBuffer送至oled刷新并显示屏幕。
 
-oled.fill(0)
-oled.show()
+::
+
+  oled.fill(0)
+  oled.show()
 
 除了可以清空显示屏，还可以将整屏像素点亮::
 
