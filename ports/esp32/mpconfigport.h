@@ -190,7 +190,7 @@ extern const struct _mp_obj_module_t mp_music_module;
     { MP_OBJ_NEW_QSTR(MP_QSTR_network), (mp_obj_t)&mp_module_network }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR__onewire), (mp_obj_t)&mp_module_onewire }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_uhashlib), (mp_obj_t)&mp_module_uhashlib }, \
-    { MP_OBJ_NEW_QSTR(MP_QSTR_music), (mp_obj_t)&mp_music_module }, \
+    { MP_OBJ_NEW_QSTR(MP_QSTR_music), (mp_obj_t)&mp_music_module }, \    
 
 #define MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS \
     { MP_OBJ_NEW_QSTR(MP_QSTR_binascii), (mp_obj_t)&mp_module_ubinascii }, \
@@ -216,7 +216,7 @@ extern const struct _mp_obj_module_t mp_music_module;
     const char *readline_hist[8]; \
     mp_obj_t machine_pin_irq_handler[40]; \
     struct _music_data_t * music_data;\
-    
+
 
 // type definitions for the specific machine
 

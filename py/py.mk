@@ -25,8 +25,24 @@ CFLAGS_MOD += -DFFCONF_H=\"lib/oofatfs/ffconf.h\"
 ifeq ($(MICROPY_PY_USSL),1)
 CFLAGS_MOD += -DMICROPY_PY_USSL=1
 ifeq ($(MICROPY_SSL_AXTLS),1)
-CFLAGS_MOD += -DMICROPY_SSL_AXTLS=1 -I$(TOP)/lib/axtls/ssl -I$(TOP)/lib/axtls/crypto -I$(TOP)/lib/axtls/config
-LDFLAGS_MOD += -Lbuild -laxtls
+CFLAGS_MOD += -DMICROPY_SSL_AXTLS=1 -I$(TOP)/lib/axtls/ssl -I$(TOP)/lib/axtls/crypto -I$(TOP)/extmod/axtls-include
+AXTLS_DIR = lib/axtls
+$(BUILD)/$(AXTLS_DIR)/%.o: CFLAGS += -Wno-all -Wno-unused-parameter -Wno-uninitialized -Wno-sign-compare -Wno-old-style-definition $(AXTLS_DEFS_EXTRA)
+SRC_MOD += $(addprefix $(AXTLS_DIR)/,\
+	ssl/asn1.c \
+	ssl/loader.c \
+	ssl/tls1.c \
+	ssl/tls1_svr.c \
+	ssl/tls1_clnt.c \
+	ssl/x509.c \
+	crypto/aes.c \
+	crypto/bigint.c \
+	crypto/crypto_misc.c \
+	crypto/hmac.c \
+	crypto/md5.c \
+	crypto/rsa.c \
+	crypto/sha1.c \
+	)
 else ifeq ($(MICROPY_SSL_MBEDTLS),1)
 # Can be overridden by ports which have "builtin" mbedTLS
 MICROPY_SSL_MBEDTLS_INCLUDE ?= $(TOP)/lib/mbedtls/include
@@ -77,7 +93,7 @@ endif
 
 ifeq ($(MICROPY_PY_BTREE),1)
 BTREE_DIR = lib/berkeley-db-1.xx
-BTREE_DEFS = -D__DBINTERFACE_PRIVATE=1 -Dmpool_error=printf -Dabort=abort_ -Dvirt_fd_t=mp_obj_t "-DVIRT_FD_T_HEADER=<py/obj.h>" $(BTREE_DEFS_EXTRA)
+BTREE_DEFS = -D__DBINTERFACE_PRIVATE=1 -Dmpool_error=printf -Dabort=abort_ "-Dvirt_fd_t=void*" $(BTREE_DEFS_EXTRA)
 INC += -I$(TOP)/$(BTREE_DIR)/PORT/include
 SRC_MOD += extmod/modbtree.c
 SRC_MOD += $(addprefix $(BTREE_DIR)/,\
@@ -310,7 +326,7 @@ $(PY_BUILD)/vm.o: CFLAGS += $(CSUPEROPT)
 # may require disabling tail jump optimization. This will make sure that
 # each opcode has its own dispatching jump which will improve branch
 # branch predictor efficiency.
-# http://article.gmane.org/gmane.comp.lang.lua.general/75426
+# https://marc.info/?l=lua-l&m=129778596120851
 # http://hg.python.org/cpython/file/b127046831e2/Python/ceval.c#l828
 # http://www.emulators.com/docs/nx25_nostradamus.htm
 #-fno-crossjumping
