@@ -172,11 +172,18 @@ STATIC mp_obj_t machine_pin_obj_init_helper(const machine_pin_obj_t *self, size_
 }
 
 // constructor(id, ...)
+const int pins_remap_esp32[] = {33, 32, 35, 34, 39, 0, 16, 17, 26, 25, 
+                    36,  2, -1, 18, 19, 21, 5, -1, -1, 22,
+                    23,  -1, -1,
+                    27, 14, 12, 13, 15, 4};
 mp_obj_t mp_pin_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
     mp_arg_check_num(n_args, n_kw, 1, MP_OBJ_FUN_ARGS_MAX, true);
 
-    // get the wanted pin object
-    int wanted_pin = mp_obj_get_int(args[0]);
+    // get the wanted pin object,remap by mpython
+    int wanted_pin = pins_remap_esp32[mp_obj_get_int(args[0])];
+    if(wanted_pin == -1) 
+        mp_raise_ValueError("invalid pin");
+
     const machine_pin_obj_t *self = NULL;
     if (0 <= wanted_pin && wanted_pin < MP_ARRAY_SIZE(machine_pin_obj)) {
         self = (machine_pin_obj_t*)&machine_pin_obj[wanted_pin];
@@ -217,6 +224,7 @@ MP_DEFINE_CONST_FUN_OBJ_KW(machine_pin_init_obj, 1, machine_pin_obj_init);
 
 // pin.value([value])
 STATIC mp_obj_t machine_pin_value(size_t n_args, const mp_obj_t *args) {
+    // 123
     return machine_pin_call(args[0], n_args - 1, 0, args + 1);
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(machine_pin_value_obj, 1, 2, machine_pin_value);
