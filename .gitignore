@@ -36,3 +36,6 @@ vs/
 .github/
 ports/esp32/build/
 mpy-cross/build/
+mpy-cross/mpy-cross.map
+py/makeqstrdata.pyc
+
