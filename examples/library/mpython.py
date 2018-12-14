@@ -12,7 +12,7 @@
 from machine import I2C, PWM, Pin, ADC, TouchPad,UART
 from ssd1106 import SSD1106_I2C
 import esp,math,time,network
-import ustruct
+import ustruct,array
 from neopixel import NeoPixel
 from esp import dht_readinto
 from time import sleep_ms, sleep_us,sleep
@@ -80,6 +80,87 @@ class Accelerometer():
         buf = self.i2c.readfrom(self.addr, 2)
         z = ustruct.unpack('h', buf)[0]
         return z / 4 / 4096
+
+class BME280(object):
+  def __init__(self):
+    self.addr = 119
+    # The “ctrl_hum” register sets the humidity data acquisition options of the device
+    # 0x01 = [2:0]oversampling ×1
+    i2c.writeto(self.addr, b'\xF2\x01') 
+    # The “ctrl_meas” register sets the pressure and temperature data acquisition options of the device. 
+    # The register needs to be written after changing “ctrl_hum” for the changes to become effective.
+    # 0x27 = [7:5]Pressure oversampling ×1 | [4:2]Temperature oversampling ×4 | [1:0]Normal mode
+    i2c.writeto(self.addr, b'\xF4\x27')
+    # The “config” register sets the rate, filter and interface options of the device. Writes to the “config”
+    # register in normal mode may be ignored. In sleep mode writes are not ignored.
+    i2c.writeto(self.addr, b'\xF5\x00')
+    
+    i2c.writeto(self.addr, b'\x88', False)
+    bytes = i2c.readfrom(self.addr, 6)
+    self.dig_T = ustruct.unpack('Hhh', bytes)
+    
+    i2c.writeto(self.addr, b'\x8E', False)
+    bytes = i2c.readfrom(self.addr, 18)
+    self.dig_P = ustruct.unpack('Hhhhhhhhh', bytes)
+    
+    i2c.writeto(self.addr, b'\xA1', False)
+    self.dig_H = array.array('h', [0, 0, 0, 0, 0, 0])
+    self.dig_H[0] = i2c.readfrom(self.addr, 1)[0]
+    i2c.writeto(self.addr, b'\xE1', False)
+    buff = i2c.readfrom(self.addr, 7)
+    self.dig_H[1] = ustruct.unpack('h', buff[0:2])[0]
+    self.dig_H[2] = buff[2]
+    self.dig_H[3] = (buff[3] << 4) | (buff[4] & 0x0F)
+    self.dig_H[4] = (buff[5] << 4) | (buff[4] >> 4 & 0x0F)
+    self.dig_H[5] = buff[6]
+   
+  def temperature(self):
+    i2c.writeto(self.addr, b'\xFA', False)
+    buff = i2c.readfrom(self.addr, 3)
+    T = (((buff[0] << 8) | buff[1]) << 4) | (buff[2] >> 4 & 0x0F)
+    c1 = (T / 16384.0 - self.dig_T[0] / 1024.0) * self.dig_T[1]
+    c2 = ((T / 131072.0 - self.dig_T[0] / 8192.0) * (T / 131072.0 - self.dig_T[0] / 8192.0)) * self.dig_T[2]    
+    self.tFine = c1 + c2
+    return self.tFine / 5120.0
+    
+  def pressure(self):
+    self.temperature()
+    
+    i2c.writeto(self.addr, b'\xF7', False)
+    buff = i2c.readfrom(self.addr, 3)  
+    P = (((buff[0] << 8) | buff[1]) << 4) | (buff[2] >> 4 & 0x0F)
+    c1 = self.tFine / 2.0 - 64000.0
+    c2 = c1 * c1 * self.dig_P[5] / 32768.0
+    c2 = c2 + c1 * self.dig_P[4] * 2.0
+    c2 = c2 / 4.0 + self.dig_P[3] * 65536.0
+    c1 = (self.dig_P[2] * c1 * c1 / 524288.0 + self.dig_P[1] * c1) / 524288.0
+    c1 = (1.0 + c1 / 32768.0) * self.dig_P[0]
+    if c1 == 0.0:
+      return 0;
+    p = 1048576.0 - P;
+    p = (p - c2 / 4096.0) * 6250.0 / c1
+    c1 = self.dig_P[8] * p * p / 2147483648.0
+    c2 = p * self.dig_P[7] / 32768.0
+    p = p + (c1 + c2 + self.dig_P[6]) / 16.0
+    return p
+    
+  def humidity(self):
+    self.temperature()
+    
+    i2c.writeto(self.addr, b'\xFD', False)
+    buff = i2c.readfrom(self.addr, 2)
+    H = buff[0] << 8 | buff[1]
+    h = self.tFine - 76800.0
+    h = (H - (self.dig_H[3] * 64.0 + self.dig_H[4] / 16384.0 * h)) * \
+        (self.dig_H[1] / 65536.0 * (1.0 + self.dig_H[5] / 67108864.0 * h * \
+        (1.0 + self.dig_H[2] / 67108864.0 * h)))
+    h = h * (1.0 - self.dig_H[0] * h / 524288.0)
+    if h > 100.0:
+      return 100.0
+    elif h < 0.0:
+      return 0.0
+    else:
+      return h
 
 
 class TextMode():
