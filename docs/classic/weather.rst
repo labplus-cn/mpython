@@ -27,8 +27,10 @@
             'location': location,
             'language': language,
             'unit': unit
-        }) 
-        return nowResult.json()
+        })
+        json=nowResult.json()
+        nowResult.close()
+        return json
 
     def dailyWeather(apikey,location='ip',language='zh-Hans',unit='c',start='0',days='5'):        #设置多日天气，只返回今日的数据
         dailyResult = urequests.get(url_daily, params={
@@ -38,7 +40,9 @@
             'start': start,
             'days': days
         })
-        return  dailyResult.json()
+        json=dailyResult.json()
+        dailyResult.close()
+        return  json
 
 
     def refresh():
@@ -64,7 +68,7 @@
 
     refresh()          #数据更新
 
-    tim1 = Timer(1)               
+    tim1 = Timer(1)
     tim1.init(period=1800000, mode=Timer.PERIODIC,callback=lambda _:refresh())      #定时，每半个钟刷新一次
 
 
