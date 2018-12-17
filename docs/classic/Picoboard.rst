@@ -58,8 +58,8 @@ Picoboard-Scratch
     if button_b.value()==0:               #启动检测 button b 按下进入repl
         scratchMode=False
         #print('replMode')
-        display.DispChar('replMode',30,20)
-        display.show()
+        oled.DispChar('replMode',30,20)
+        oled.show()
 
     # 触摸按键扫描
     # 6个触摸按键按下，scratch依次分别反馈10、20、30、40、50、60
@@ -82,8 +82,8 @@ Picoboard-Scratch
 
 
     while scratchMode:
-        display.Bitmap(40,10,scratchlogo,48,48,1)
-        display.show()
+        oled.Bitmap(40,10,scratchlogo,48,48,1)
+        oled.show()
 
         uart = UART(1, 38400, rx=3, tx=1)                 
     
