@@ -124,8 +124,6 @@ class BME280(object):
     return self.tFine / 5120.0
     
   def pressure(self):
-    self.temperature()
-    
     i2c.writeto(self.addr, b'\xF7', False)
     buff = i2c.readfrom(self.addr, 3)  
     P = (((buff[0] << 8) | buff[1]) << 4) | (buff[2] >> 4 & 0x0F)
@@ -735,6 +733,12 @@ display=OLED()
 
 # 3 axis accelerometer
 accelerometer = Accelerometer()
+
+# bm280
+try:
+    bme280=BME280()
+except:
+    pass
 
 # 3 rgb leds
 rgb = NeoPixel(Pin(17, Pin.OUT), 3, 3, 1)

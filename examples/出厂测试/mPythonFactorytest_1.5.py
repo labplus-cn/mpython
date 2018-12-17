@@ -170,11 +170,7 @@ testoled()
 sleep_ms(1000)
 oled.fill(0)
 oled.show()
-try:
-    bme280=BME280()
-except Exception as er:
-    print("Your mPython have not BME280!")
-    
+
 while True:
     print("----------------------------")
     print('P:%d,Y:%d, T:%d, H:%d, O:%d, N:%d' % (touchPad_P.read(),touchPad_Y.read(),touchPad_T.read(),touchPad_H.read(),touchPad_O.read(),touchPad_N.read()))
@@ -183,8 +179,8 @@ while True:
     print('加速度,x = %.2f, y = %0.2f, z = %.2f ' % (accelerometer.get_x(), accelerometer.get_y(), accelerometer.get_z()))
     try:
         print("BME280,温度:{:.1f}C,大气压：{:.1f}Pa,湿度:{:.1f}%" .format(bme280.temperature(),bme280.pressure(),bme280.humidity()))
-    except:
-        pass
+    except Exception as er:
+        print("Your mPython have not BME280!")
     print("\n\r")
     oled.rect(0,0,128,64,1)
     oled.DispChar('声音:%d,光线:%d' % (sound.read(),light.read()), 3, 3)

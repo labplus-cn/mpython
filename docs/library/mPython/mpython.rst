@@ -14,19 +14,19 @@ mpython是基于掌控板封装的专用库
 
 秒级延时
 
-  - ``s`` -单位秒。
+    - ``s`` -单位秒。
 
 .. method:: sleep_ms(ms)
 
 毫秒级延时
 
-  - ``ms`` -单位毫秒。
+    - ``ms`` -单位毫秒。
 
 .. method:: sleep_us(us)
 
 级延时
 
-  - ``us`` -单位微秒。
+    - ``us`` -单位微秒。
 
 
 映射
@@ -81,6 +81,33 @@ mpython是基于掌控板封装的专用库
 
 获取z轴上的加速度测量值，正整数或负整数，具体取决于方向。
 
+bme280
+-------
+
+BME280是一款集成温度、湿度、气压，三位一体的环境传感器。具有高精度，多功能，小尺寸等特点。
+
+* 温度检测范围：-40℃~+85℃，分辨率0.1℃，误差±0.5℃
+* 湿度检测范围：0~100%RH，分辨率0.1%RH，误差±2%RH
+* 压力检测范围：300~1100hPa
+* 湿度测量响应时间：1s
+
+.. Attention:: 
+
+    掌控板预留BME280芯片位置未贴片,默认配置的掌控板是不带BME280环境传感器,需留意!
+
+.. method:: bme280.temperature()
+
+返回温度值,单位摄氏度。
+
+.. method:: bme280.pressure()
+
+返回大气压值,单位Pa。
+
+.. method:: bme280.humidity()
+
+返回环境湿度,单位%。
+
+
 蜂鸣器
 -------
 
@@ -102,6 +129,7 @@ mpython是基于掌控板封装的专用库
 
 停止驱动无源蜂鸣器
 
+
 button_[a,b]对象
 ------
 掌控板上的a,b按键。button_a/button_b 是 ``machine.Pin`` 衍生类，继承Pin的方法。更详细的使用方法请查阅 :ref:`machine.Pin<machine.Pin>`  。
@@ -114,10 +142,10 @@ button_[a,b]对象
 
 ::
 
-  >>> button_a.value()
-  >>> 1
-  >>> button_a.value()
-  >>> 0
+    >>> button_a.value()
+    >>> 1
+    >>> button_a.value()
+    >>> 0
 
 .. _button.irq:
 
@@ -147,8 +175,8 @@ button_[a,b]对象
 
 ::
 
-  >>> from mpython import *
-  >>> button_a.irq(trigger=Pin.IRQ_FALLING, handler=lambda p:print("button-a press！")) 
+    >>> from mpython import *
+    >>> button_a.irq(trigger=Pin.IRQ_FALLING, handler=lambda p:print("button-a press！")) 
 
 
 touchPad_[ ]对象
@@ -161,8 +189,8 @@ touchPad_[ ]对象
 
 ::
 
-  >>> touchPad_P.read()
-  >>> 523
+    >>> touchPad_P.read()
+    >>> 523
 
 rgb对象
 -------
@@ -174,17 +202,17 @@ rgb对象
 
 .. Hint::
 
-  通过给rgb[n]列表赋值来写入RGB颜色值。如，rgb[0]=(50,0,0)
+    通过给rgb[n]列表赋值来写入RGB颜色值。如，rgb[0]=(50,0,0)
 
 ::
 
-  from mpython import *
+    from mpython import *
 
-  rgb[0] = (255, 0, 0)  # 设置为红色，全亮度
-  rgb[1] = (0, 128, 0)  # 设定为绿色，半亮度
-  rgb[2] = (0, 0, 64)   # 设置为蓝色，四分之一亮度
+    rgb[0] = (255, 0, 0)  # 设置为红色，全亮度
+    rgb[1] = (0, 128, 0)  # 设定为绿色，半亮度
+    rgb[2] = (0, 0, 64)   # 设置为蓝色，四分之一亮度
 
-  rgb.write()
+    rgb.write()
 
 .. method:: rgb.fill(rgb_buf)
 
@@ -208,7 +236,7 @@ oled对象为framebuf的衍生类，继承framebuf的方法。更多的使用方
 
 设置显示屏亮度。
 
-  - ``brightness`` 亮度,范围0~255
+    - ``brightness`` 亮度,范围0~255
 
 
 .. method:: oled.invert()
@@ -219,8 +247,8 @@ oled对象为framebuf的衍生类，继承framebuf的方法。更多的使用方
 
 oled屏显示文本。
 
-  - ``s`` -需要显示的文本。
-  - ``x`` 、``y`` -文本的左上角作为起点坐标。
+    - ``s`` -需要显示的文本。
+    - ``x`` 、``y`` -文本的左上角作为起点坐标。
 
 .. method:: oled.show()
 
@@ -228,73 +256,73 @@ oled屏显示文本。
 
 ::
 
-  from mpython import *
+    from mpython import *
 
-  oled.DispChar('你好世界', 38, 0)
-  oled.DispChar('hello,world', 32, 16)
-  oled.DispChar('안녕하세요', 35, 32)
-  oled.DispChar('こんにちは世界', 24, 48)
-  oled.show()
+    oled.DispChar('你好世界', 38, 0)
+    oled.DispChar('hello,world', 32, 16)
+    oled.DispChar('안녕하세요', 35, 32)
+    oled.DispChar('こんにちは世界', 24, 48)
+    oled.show()
 
 .. method:: oled.fill(c)
 
-    用指定的颜色填充整个帧缓存。 ``c`` 为1时,像素点亮；``c`` 为0时,像素点灭。
+        用指定的颜色填充整个帧缓存。 ``c`` 为1时,像素点亮；``c`` 为0时,像素点灭。
 
 .. method:: oled.circle(x, y, radius , c)
 
 绘制圆
 
-  - ``x`` 、``y`` -左上角作为起点坐标。
-  - ``radius`` -圆半径大小
-  - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
+    - ``x`` 、``y`` -左上角作为起点坐标。
+    - ``radius`` -圆半径大小
+    - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
 
 .. method:: oled.fill_circle(x, y, radius , c)
 
 绘制实心圆
 
-  - ``x`` 、``y`` -左上角作为起点坐标。
-  - ``radius`` -圆半径大小
-  - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
+    - ``x`` 、``y`` -左上角作为起点坐标。
+    - ``radius`` -圆半径大小
+    - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
 
 .. method:: oled.triangle(x0, y0, x1, y1, x2, y2, c)
 
 绘制三角形
 
-  - ``x0`` 、``y0`` -三角形上顶点坐标 。
-  - ``x1`` 、``y1`` -三角形左顶点坐标 。
-  - ``x2`` 、``y2`` -三角形左顶点坐标 。
-  - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
+    - ``x0`` 、``y0`` -三角形上顶点坐标 。
+    - ``x1`` 、``y1`` -三角形左顶点坐标 。
+    - ``x2`` 、``y2`` -三角形左顶点坐标 。
+    - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
 
 .. method:: oled.fill_triangle(x0, y0, x1, y1, x2, y2, c)
 
 绘制实心三角形
 
-  - ``x0`` 、``y0`` -三角形上顶点坐标 。
-  - ``x1`` 、``y1`` -三角形左顶点坐标 。
-  - ``x2`` 、``y2`` -三角形左顶点坐标 。
-  - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
+    - ``x0`` 、``y0`` -三角形上顶点坐标 。
+    - ``x1`` 、``y1`` -三角形左顶点坐标 。
+    - ``x2`` 、``y2`` -三角形左顶点坐标 。
+    - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
 
 
 .. method:: oled.Bitmap(x, y, bitmap, w, h,c)
 
 绘制bitmap图案
 
-  - ``x`` 、``y`` -左上角作为起点坐标
-  - ``bitmap`` -图案bitmap数组
-  - ``w`` -图案宽度
-  - ``h`` -图案高度
-  - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
+    - ``x`` 、``y`` -左上角作为起点坐标
+    - ``bitmap`` -图案bitmap数组
+    - ``w`` -图案宽度
+    - ``h`` -图案高度
+    - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
 
 
 .. method:: oled.RoundRect( x, y, w, h, r, c)
 
 绘制弧角矩形
 
-  - ``x`` 、``y`` -左上角作为起点坐标
-  - ``w`` -图案宽度
-  - ``h`` -图案高度
-  - ``r`` -圆弧角半径
-  - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
+    - ``x`` 、``y`` -左上角作为起点坐标
+    - ``w`` -图案宽度
+    - ``h`` -图案高度
+    - ``r`` -圆弧角半径
+    - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
 
 MPythonPin类
 -------
@@ -307,10 +335,10 @@ MPythonPin类
 
 - ``mode`` 引脚模式，未设定时默认mode=PinMode
 
-    - ``PinMode.IN`` 等于1，数字输入模式
-    - ``PinMode.OUT`` 等于2，数字输出模式
-    - ``PinMode.PWM`` 等于3，模拟输出模式
-    - ``PinMode.ANALOG`` 等于4，模拟输入模式
+        - ``PinMode.IN`` 等于1，数字输入模式
+        - ``PinMode.OUT`` 等于2，数字输出模式
+        - ``PinMode.PWM`` 等于3，模拟输出模式
+        - ``PinMode.ANALOG`` 等于4，模拟输入模式
 
 - ``pull`` 指定引脚是否连接了电阻，可以是以下之一：
 
@@ -321,8 +349,8 @@ MPythonPin类
 
 示例::
 
-    >>> from mpython import MPythonPin       #导入MPython模块
-    >>> P0=MPythonPin(0,PinMode.IN)          #构建引脚0对象，设置数字输入模式
+        >>> from mpython import MPythonPin       #导入MPython模块
+        >>> P0=MPythonPin(0,PinMode.IN)          #构建引脚0对象，设置数字输入模式
 
 
 
@@ -373,10 +401,14 @@ Servo类
 
 构建Servo对象,默认使用SG90舵机。不同舵机脉冲宽度参数和角度范围会有所不一样,根据舵机型号自行设置。
 
+.. Hint:: 
+
+    作为Servo控制引脚须为支持PWM(模拟输出)的引脚。掌控板支持PWM的引脚,详情可查阅 :ref:`掌控板接口引脚说明<mPythonPindesc>` 。
+
 .. Attention:: 
 
-  * 你可以设置 ``actuation_range`` 来对应用给定的 ``min_us`` 和 ``max_us`` 观察到的实际运动范围值。
-  * 您也可以将脉冲宽度扩展到这些限制之上和之下伺服机构可能会停止，嗡嗡声，并在停止时吸收额外的电流。仔细测试，找出安全的最小值和最大值。
+    * 你可以设置 ``actuation_range`` 来对应用给定的 ``min_us`` 和 ``max_us`` 观察到的实际运动范围值。
+    * 您也可以将脉冲宽度扩展到这些限制之上和之下伺服机构可能会停止，嗡嗡声，并在停止时吸收额外的电流。仔细测试，找出安全的最小值和最大值。
 
 - ``pin`` -舵机PWM控制信号引脚
 - ``min_us`` -舵机PWM信号脉宽最小宽度,单位微秒。默认min_us=750
@@ -388,28 +420,28 @@ Servo类
 
 发送设置脉冲宽度的PWM信号。
 
-  - ``width`` -脉冲宽度,单位微秒。
+    - ``width`` -脉冲宽度,单位微秒。
 
 .. method:: Servo.write_angle(angle)
 
 写舵机角度
 
-  - ``angle`` -舵机角度。
+    - ``angle`` -舵机角度。
 
 
 ::
 
-  from mpython import *
+    from mpython import *
 
-  s=Servo(0)
+    s=Servo(0)
 
-  while True:
-      for i in range(0,180,1):
-          s.write_angle(i)
-          sleep_ms(50)
-      for i in range(180,0,-1):
-          s.write_angle(i)
-          sleep_ms(50)
+    while True:
+            for i in range(0,180,1):
+                    s.write_angle(i)
+                    sleep_ms(50)
+            for i in range(180,0,-1):
+                    s.write_angle(i)
+                    sleep_ms(50)
 
 
 .. class:: UI
@@ -427,29 +459,29 @@ UI类
 
 绘制进度条。
 
-  - ``x`` 、 ``y`` -左上角作为起点坐标
-  - ``width`` -进度条宽度
-  - ``height`` -进度条高度
-  - ``progress`` -进度条百分比
+    - ``x`` 、 ``y`` -左上角作为起点坐标
+    - ``width`` -进度条宽度
+    - ``height`` -进度条高度
+    - ``progress`` -进度条百分比
 
 ::
 
-  from mpython import *
+    from mpython import *
 
-  myUI=UI()
-  myUI.ProgressBar(30,30,70,8,60)
-  oled.show()
+    myUI=UI()
+    myUI.ProgressBar(30,30,70,8,60)
+    oled.show()
 
 .. method:: UI.stripBar(x, y, width, height, progress,dir=1,frame=1)
 
 绘制垂直或水平的柱状条
 
-  - ``x`` 、 ``y`` -左上角作为起点坐标
-  - ``width`` -柱状条宽度
-  - ``height`` -柱状条高度
-  - ``progress`` -柱状条百分比
-  - ``dir`` -柱状条方向。dir=1时水平方向,dir=0时,垂直方向。
-  - ``frame`` -当frame=1时,显示外框；当frame=0时,不显示外框。
+    - ``x`` 、 ``y`` -左上角作为起点坐标
+    - ``width`` -柱状条宽度
+    - ``height`` -柱状条高度
+    - ``progress`` -柱状条百分比
+    - ``dir`` -柱状条方向。dir=1时水平方向,dir=0时,垂直方向。
+    - ``frame`` -当frame=1时,显示外框；当frame=0时,不显示外框。
 
 Clock类
 +++++
@@ -460,8 +492,8 @@ Clock类
 
 构建Clock对象。
 
-  - ``x`` 、``y`` -左上角作为起点坐标
-  - ``radius`` -钟表半径
+    - ``x`` 、``y`` -左上角作为起点坐标
+    - ``radius`` -钟表半径
 
 
 .. method:: UI.settime()
@@ -479,22 +511,22 @@ Clock类
 
 ::
 
-  from mpython import*
-  from machine import Timer
-  import time
+    from mpython import*
+    from machine import Timer
+    import time
 
 
-  clock=UI.Clock(64,32,30)
+    clock=UI.Clock(64,32,30)
 
-  def Refresh():
-      clock.settime()
-      clock.drawClock()
-      oled.show()
-      clock.clear()
+    def Refresh():
+            clock.settime()
+            clock.drawClock()
+            oled.show()
+            clock.clear()
     
-  tim1 = Timer(1)
+    tim1 = Timer(1)
 
-  tim1.init(period=1000, mode=Timer.PERIODIC, callback=lambda _:Refresh()) 
+    tim1.init(period=1000, mode=Timer.PERIODIC, callback=lambda _:Refresh()) 
 
 .. _mpython.wifi:
 
@@ -507,15 +539,15 @@ wifi类
 
 构建wifi对象并会创建 ``sta`` 对象和 ``ap`` 对象。可参见 :mod:`network` 模块了解更多使用方法。
 
-  - sta用于客户端连接路由器来连接网络。
-  - ap用于掌控板作为热点接入方式。
+    - sta用于客户端连接路由器来连接网络。
+    - ap用于掌控板作为热点接入方式。
 
 .. method:: wifi.connectWiFi(ssid,password)
 
 连接wifi网络
 
-  - ``ssid`` -WiFi网络名称
-  - ``password`` -WiFi密码
+    - ``ssid`` -WiFi网络名称
+    - ``password`` -WiFi密码
 
 .. method:: wifi.disconnectWiFi()
 
