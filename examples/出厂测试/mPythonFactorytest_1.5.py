@@ -101,31 +101,31 @@ machine_id = ubinascii.hexlify(machine.unique_id()).decode().upper()
 
 # a,b按键中断处理函数：蜂鸣器响
 def btn_A_irq(_):
-  if button_a.value() == 0:
-    buzz.on()
-  else:
-    buzz.pwm.freq(20)
-    buzz.off()
+    if button_a.value() == 0:
+        buzz.on()
+    else:
+        buzz.pwm.freq(20)
+        buzz.off()
 
 def btn_B_irq(_):
-  if button_b.value() == 0:
-    buzz.on()
-  else:
-    buzz.pwm.freq(20)
-    buzz.off()
+    if button_b.value() == 0:
+        buzz.on()
+    else:
+        buzz.pwm.freq(20)
+        buzz.off()
     
-	
+    
 def testoled():
   
-  logo_ = framebuf.FrameBuffer(logo,128,64, framebuf.MONO_HLSB)
-  #display.invert(1)
-  oled.blit(logo_,0,0)
-  oled.show()
-  sleep_ms(1000)
-  oled.fill(0)
-  sleep_ms(200)
-  oled.fill(1)
-  oled.show()
+    logo_ = framebuf.FrameBuffer(logo,128,64, framebuf.MONO_HLSB)
+    #display.invert(1)
+    oled.blit(logo_,0,0)
+    oled.show()
+    sleep_ms(1000)
+    oled.fill(0)
+    sleep_ms(200)
+    oled.fill(1)
+    oled.show()
 
 # a,b 按键中断处理
 button_a.irq(btn_A_irq)     
@@ -139,29 +139,29 @@ color_index = 0
 color = ((32, 0, 0), (0, 32, 0), (0, 0, 32))
 
 def Rgb_Neopixel():
-  global color_index,color
-  for i in range(0, 3):
-    rgb[i] = color[color_index]
-  rgb.write()
-  color_index = color_index + 1
-  color_index = color_index % 3
+    global color_index,color
+    for i in range(0, 3):
+        rgb[i] = color[color_index]
+    rgb.write()
+    color_index = color_index + 1
+    color_index = color_index % 3
   
 # 镭射雕刻机通讯
 def Print_Serial_num():
-  u = UART(2, baudrate=115200, bits=8, parity=None, stop=1, rx=26, tx=25,timeout=200)
-  display.fill(1)
-  display.show()
-  while True:
+    u = UART(2, baudrate=115200, bits=8, parity=None, stop=1, rx=26, tx=25,timeout=200)
+    display.fill(1)
+    display.show()
+    while True:
     
-    if u.readline()=='COM:Give me string'.encode():
+        if u.readline()=='COM:Give me string'.encode():
       
-      sleep_ms(10)
-      u.write(machine_id[:6]+'\n')
-      u.write(machine_id[6:]+'\n\r')
-      u.write(machine_id[:6]+'\n')
-      u.write(machine_id[6:]+'\n\r')
+            sleep_ms(10)
+            u.write(machine_id[:6]+'\n')
+            u.write(machine_id[6:]+'\n\r')
+            u.write(machine_id[:6]+'\n')
+            u.write(machine_id[6:]+'\n\r')
       
- 
+    
  # pixles timer
 tim1.init(period=1000, mode=Timer.PERIODIC, callback=lambda t:Rgb_Neopixel()) 
 
@@ -170,22 +170,30 @@ testoled()
 sleep_ms(1000)
 oled.fill(0)
 oled.show()
-
-
+try:
+    bme280=BME280()
+except Exception as er:
+    print("Your mPython have not BME280!")
+    
 while True:
-
-  print('P:%d,Y:%d, T:%d, H:%d, O:%d, N:%d' % (touchPad_P.read(),touchPad_Y.read(),touchPad_T.read(),touchPad_H.read(),touchPad_O.read(),touchPad_N.read()))
-  print('P0:%d, P1:%d ,P2:%d, P3/ext:%d' % (P0.read_analog(),P1.read_analog(),P2.read_analog(),ext.read_analog()))
-  print('light:%d,Sound:%d' % (light.read(),sound.read()))
-  print('x = %.2f, y = %0.2f, z = %.2f ' % (accelerometer.get_x(), accelerometer.get_y(), accelerometer.get_z()))
-  oled.rect(0,0,128,64,1)
-  oled.DispChar('声音:%d,光线:%d' % (sound.read(),light.read()), 3, 3)
-  oled.DispChar('加速度:%.1f,%.1f,%.1f' %(accelerometer.get_x(), accelerometer.get_y(), accelerometer.get_z()),3,16)
-  oled.DispChar('id:%s' %machine_id,3,42)
-  oled.show()
-  oled.fill(0) 
-  if ext.read_analog()==0 and P2.read_analog()==4095:
-    Print_Serial_num()
+    print("----------------------------")
+    print('P:%d,Y:%d, T:%d, H:%d, O:%d, N:%d' % (touchPad_P.read(),touchPad_Y.read(),touchPad_T.read(),touchPad_H.read(),touchPad_O.read(),touchPad_N.read()))
+    print('P0:%d, P1:%d ,P2:%d, P3/ext:%d' % (P0.read_analog(),P1.read_analog(),P2.read_analog(),ext.read_analog()))
+    print('light:%d,Sound:%d' % (light.read(),sound.read()))
+    print('加速度,x = %.2f, y = %0.2f, z = %.2f ' % (accelerometer.get_x(), accelerometer.get_y(), accelerometer.get_z()))
+    try:
+        print("BME280,温度:{:.1f}C,大气压：{:.1f}Pa,湿度:{:.1f}%" .format(bme280.temperature(),bme280.pressure(),bme280.humidity()))
+    except:
+        pass
+    print("\n\r")
+    oled.rect(0,0,128,64,1)
+    oled.DispChar('声音:%d,光线:%d' % (sound.read(),light.read()), 3, 3)
+    oled.DispChar('加速度:%.1f,%.1f,%.1f' %(accelerometer.get_x(), accelerometer.get_y(), accelerometer.get_z()),3,16)
+    oled.DispChar('id:%s' %machine_id,3,42)
+    oled.show()
+    oled.fill(0) 
+    if ext.read_analog()==0 and P2.read_analog()==4095:
+        Print_Serial_num()
     
 
 
