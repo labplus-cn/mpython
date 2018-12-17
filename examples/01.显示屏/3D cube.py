@@ -1,8 +1,5 @@
 # 3D CUBE MicroPython version with ESP32 and ssd1306 OLED 
 
-from machine import Pin, I2C
-from micropython import const
-from time import sleep_ms
 from math import sin, cos
 from mpython import *
 
@@ -18,7 +15,7 @@ cube = ((-20,-20, 20), (20,-20, 20), (20,20, 20), (-20,20, 20),
 
 
 while True:
-
+    for angle in range(0, 361, 3):  # 0 to 360 deg 3step
         for i in range(8):
             r  = angle * 0.0174532  # 1 degree
             x1 = cube[i][2] * sin(r) + cube[i][0] * cos(r)  # rotate Y
