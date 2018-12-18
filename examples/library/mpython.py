@@ -688,10 +688,9 @@ class wifi:
 
     def enable_APWiFi(self,essid,channel):
         self.ap.active(True)
-        self.ap.config(essid,channel)
+        self.ap.config(essid=essid,channel=channel)
 
     def disable_APWiFi(self):
-        self.ap.disconnect()
         self.ap.active(False)
         print('disable AP WiFi...')
 
