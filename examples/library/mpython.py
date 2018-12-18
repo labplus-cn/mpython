@@ -685,10 +685,10 @@ class wifi:
         self.sta.disconnect()
         self.sta.active(False)
         print('disconnect WiFi...')
-    
+
     def enable_APWiFi(self,essid,channel):
-        self.ap.active(True)                      
-        self.ap.config(essid,channel) 
+        self.ap.active(True)
+        self.ap.config(essid,channel)
 
     def disable_APWiFi(self):
         self.ap.disconnect()
