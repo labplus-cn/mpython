@@ -685,13 +685,12 @@ class wifi:
         self.sta.disconnect()
         self.sta.active(False)
         print('disconnect WiFi...')
-    
+
     def enable_APWiFi(self,essid,channel):
-        self.ap.active(True)                      
-        self.ap.config(essid,channel) 
+        self.ap.active(True)
+        self.ap.config(essid=essid,channel=channel)
 
     def disable_APWiFi(self):
-        self.ap.disconnect()
         self.ap.active(False)
         print('disable AP WiFi...')
 
@@ -729,7 +728,7 @@ buzz = Buzz()
 
 # display
 oled = OLED()
-display=OLED()
+display = oled
 
 # 3 axis accelerometer
 accelerometer = Accelerometer()
