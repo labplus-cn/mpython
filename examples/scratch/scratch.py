@@ -1,4 +1,3 @@
-
 # mPython掌控板模拟Scratch PicoBoard
 
 #------------------------------------------------------
@@ -19,11 +18,10 @@
 
 from mpython import *
 from machine import UART
-import time
 from machine import Pin,ADC
 
 scratchMode=True
-ext = ADC(Pin(34))
+ext = MPythonPin(3,PinMode.ANALOG)
 
 #48*48
 scratchlogo= bytearray([
@@ -50,8 +48,8 @@ scratchlogo= bytearray([
 if button_b.value()==0:               #启动检测 button b 按下进入repl
     scratchMode=False
     #print('replMode')
-    display.DispChar('replMode',30,20)
-    display.show()
+    oled.DispChar('replMode',30,20)
+    oled.show()
 
 # 触摸按键扫描
 # 6个触摸按键按下，scratch依次分别反馈10、20、30、40、50、60
@@ -74,11 +72,11 @@ def ScanTouchpad():
 
 
 while scratchMode:
-    display.Bitmap(40,10,scratchlogo,48,48,1)
-    display.show()
+    oled.Bitmap(40,10,scratchlogo,48,48,1)
+    oled.show()
 
-    uart = UART(1, 38400, rx=3, tx=1)                 
-   
+    uart = UART(1, 38400, rx=3, tx=1)
+
     # Create and send Scratch data packet
     def convert(a, b):
         sensor = bytearray(2)
@@ -94,43 +92,42 @@ while scratchMode:
         if uart.readinto(request) == 1 and request[0] == 0x01:       #当接收到scratch发来的0x01字节
             rgb.fill((0,20,0))
             rgb.write()
-            convert(15, 0x04)  
-            time.sleep_us(10)
-            extValue=int(ext.read()/4)                              # Get ext
-            convert(0,extValue)                               
-            reading = accelerometer.get_y()*1000                    # Get accelerometer's y 
+            convert(15, 0x04)
+            sleep_us(10)
+            extValue=int(ext.read_analog()/4)                              # Get ext
+            convert(0,extValue)
+            reading = accelerometer.get_y()*1000                    # Get accelerometer's y
             if reading >= 0:
                 reading = int(reading / 2) + 512
                 convert(1, reading)
             else:
                 reading = 512 - abs(int(reading / 2))
-                convert(1, reading)    
+                convert(1, reading)
 
-            reading = accelerometer.get_x()*1000                    # Get accelerometer's x 
+            reading = accelerometer.get_x()*1000                    # Get accelerometer's x
             if reading >= 0:
                 reading = int(reading / 2) + 512
-                convert(2, reading)                                 
+                convert(2, reading)
             else:
                 reading = 512 - abs(int(reading / 2))
                 convert(2, reading)
 
-            if button_b.value()==0:                                 # Get button B state 
+            if button_b.value()==0:                                 # Get button B state
                 convert(3, 0)
             else:
                 convert(3, 1023)
 
-            if button_a.value()==0:                                 #  Get button A state 
+            if button_a.value()==0:                                 #  Get button A state
                 convert(4, 1023)
             else:
                 convert(4, 0)
 
-            convert(5, 1023-light.read())                            #  Get light senser 
+            convert(5, 1023-light.read())                            #  Get light senser
 
-            convert(6, sound.read())                                 #  Get Sound senser 
+            convert(6, sound.read())                                 #  Get Sound senser
 
-            convert(7, ScanTouchpad())                               #  Get TouchPad value 
-        
+            convert(7, ScanTouchpad())                               #  Get TouchPad value
+
         else:
             rgb.fill((0,0,0))
             rgb.write()
-
