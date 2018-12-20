@@ -1,5 +1,6 @@
 from umqtt.simple import MQTTClient
 from mpython import *
+from machine import Timer
 
 # MQTT服务器地址域名为：183.230.40.39,不变
 SERVER = "183.230.40.39"
@@ -25,9 +26,11 @@ def sub_cb(topic, msg):
 
 def main(server=SERVER):
     #端口号为：6002
-    c = MQTTClient(CLIENT_ID, server,6002,username,password)
+    c = MQTTClient(CLIENT_ID, server,6002,username,password,keepalive=10)    # 保持连接时间间隔设置10秒
     c.set_callback(sub_cb)
     c.connect()
+    tim1 = Timer(1)           #创建定时器1
+    tim1.init(period=2000, mode=Timer.PERIODIC,callback=lambda n:c.ping())   #  发送心跳包 ,保持连接  
     print("Connected to %s" % server)
     try:
         while 1:
