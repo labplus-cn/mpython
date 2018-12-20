@@ -216,7 +216,7 @@ extern const struct _mp_obj_module_t mp_music_module;
     const char *readline_hist[8]; \
     mp_obj_t machine_pin_irq_handler[40]; \
     struct _music_data_t * music_data;\
-    
+
 
 // type definitions for the specific machine
 

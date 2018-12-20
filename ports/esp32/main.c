@@ -79,7 +79,7 @@ static void timer_1ms_ticker(void *args)
 void mp_task(void *pvParameter) {
     volatile uint32_t sp = (uint32_t)get_sp();
     #if MICROPY_PY_THREAD
-    mp_thread_init(&mp_task_stack[0], MP_TASK_STACK_LEN);
+    mp_thread_init(pxTaskGetStackStart(NULL), MP_TASK_STACK_LEN);
     #endif
     esp_log_level_set("*", ESP_LOG_ERROR);    // only error msg for mpython
     uart_init();
@@ -141,7 +141,7 @@ soft_reset:
     gc_sweep_all();
 
     mp_hal_stdout_tx_str("mpython soft reboot\r\n");
-
+ 
     // deinitialise peripherals
     machine_pins_deinit();
     usocket_events_deinit();
@@ -156,8 +156,7 @@ soft_reset:
 
 void app_main(void) {
     nvs_flash_init();
-    mp_main_task_handle = xTaskCreateStaticPinnedToCore(mp_task, "mp_task", MP_TASK_STACK_LEN, NULL, MP_TASK_PRIORITY,
-                                                        &mp_task_stack[0], &mp_task_tcb, 0);
+    xTaskCreate(mp_task, "mp_task", MP_TASK_STACK_LEN, NULL, MP_TASK_PRIORITY, &mp_main_task_handle);
 }
 
 void nlr_jump_fail(void *val) {

@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Damien P. George
+ * Copyright (c) 2013, 2014 Damien P. George
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,22 +23,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef MICROPY_INCLUDED_ESP8266_GCCOLLECT_H
-#define MICROPY_INCLUDED_ESP8266_GCCOLLECT_H
 
-extern uint32_t _text_start;
-extern uint32_t _text_end;
-extern uint32_t _irom0_text_start;
-extern uint32_t _irom0_text_end;
-extern uint32_t _data_start;
-extern uint32_t _data_end;
-extern uint32_t _rodata_start;
-extern uint32_t _rodata_end;
-extern uint32_t _bss_start;
-extern uint32_t _bss_end;
-extern uint32_t _heap_start;
-extern uint32_t _heap_end;
+#include "libm.h"
 
-void gc_collect(void);
+#ifndef NDEBUG
+typedef union {
+    double d;
+    struct {
+        uint64_t m : 52;
+        uint64_t e : 11;
+        uint64_t s : 1;
+    };
+} double_s_t;
 
-#endif // MICROPY_INCLUDED_ESP8266_GCCOLLECT_H
+double copysign(double x, double y) {
+    double_s_t dx={.d = x};
+    double_s_t dy={.d = y};
+
+    // copy sign bit;
+    dx.s = dy.s;
+
+    return dx.d;
+}
+#endif

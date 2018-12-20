@@ -106,6 +106,15 @@
 #define MICROPY_ALLOC_GC_STACK_SIZE (64)
 #endif
 
+// The C-type to use for entries in the GC stack.  By default it allows the
+// heap to be as large as the address space, but the bit-width of this type can
+// be reduced to save memory when the heap is small enough.  The type must be
+// big enough to index all blocks in the heap, which is set by
+// heap-size-in-bytes / MICROPY_BYTES_PER_GC_BLOCK.
+#ifndef MICROPY_GC_STACK_ENTRY_TYPE
+#define MICROPY_GC_STACK_ENTRY_TYPE size_t
+#endif
+
 // Be conservative and always clear to zero newly (re)allocated memory in the GC.
 // This helps eliminate stray pointers that hold on to memory that's no longer
 // used.  It decreases performance due to unnecessary memory clearing.
@@ -407,6 +416,12 @@
 #define MICROPY_OPT_MPZ_BITWISE (0)
 #endif
 
+
+// Whether math.factorial is large, fast and recursive (1) or small and slow (0).
+#ifndef MICROPY_OPT_MATH_FACTORIAL
+#define MICROPY_OPT_MATH_FACTORIAL (0)
+#endif
+
 /*****************************************************************************/
 /* Python internal features                                                  */
 
@@ -627,6 +642,11 @@ typedef double mp_float_t;
 #define MICROPY_MODULE_BUILTIN_INIT (0)
 #endif
 
+// Whether to support module-level __getattr__ (see PEP 562)
+#ifndef MICROPY_MODULE_GETATTR
+#define MICROPY_MODULE_GETATTR (0)
+#endif
+
 // Whether module weak links are supported
 #ifndef MICROPY_MODULE_WEAK_LINKS
 #define MICROPY_MODULE_WEAK_LINKS (0)
@@ -759,6 +779,16 @@ typedef double mp_float_t;
 #define MICROPY_PY_BUILTINS_STR_CENTER (0)
 #endif
 
+// Whether str.count() method provided
+#ifndef MICROPY_PY_BUILTINS_STR_COUNT
+#define MICROPY_PY_BUILTINS_STR_COUNT (1)
+#endif
+
+// Whether str % (...) formatting operator provided
+#ifndef MICROPY_PY_BUILTINS_STR_OP_MODULO
+#define MICROPY_PY_BUILTINS_STR_OP_MODULO (1)
+#endif
+
 // Whether str.partition()/str.rpartition() method provided
 #ifndef MICROPY_PY_BUILTINS_STR_PARTITION
 #define MICROPY_PY_BUILTINS_STR_PARTITION (0)
@@ -772,6 +802,11 @@ typedef double mp_float_t;
 // Whether to support bytearray object
 #ifndef MICROPY_PY_BUILTINS_BYTEARRAY
 #define MICROPY_PY_BUILTINS_BYTEARRAY (1)
+#endif
+
+// Whether to support dict.fromkeys() class method
+#ifndef MICROPY_PY_BUILTINS_DICT_FROMKEYS
+#define MICROPY_PY_BUILTINS_DICT_FROMKEYS (1)
 #endif
 
 // Whether to support memoryview object
@@ -983,6 +1018,11 @@ typedef double mp_float_t;
 #define MICROPY_PY_MATH_SPECIAL_FUNCTIONS (0)
 #endif
 
+// Whether to provide math.factorial function
+#ifndef MICROPY_PY_MATH_FACTORIAL
+#define MICROPY_PY_MATH_FACTORIAL (0)
+#endif
+
 // Whether to provide "cmath" module
 #ifndef MICROPY_PY_CMATH
 #define MICROPY_PY_CMATH (0)
@@ -1135,6 +1175,12 @@ typedef double mp_float_t;
 #define MICROPY_PY_UCTYPES (0)
 #endif
 
+// Whether to provide SHORT, INT, LONG, etc. types in addition to
+// exact-bitness types like INT16, INT32, etc.
+#ifndef MICROPY_PY_UCTYPES_NATIVE_C_TYPES
+#define MICROPY_PY_UCTYPES_NATIVE_C_TYPES (1)
+#endif
+
 #ifndef MICROPY_PY_UZLIB
 #define MICROPY_PY_UZLIB (0)
 #endif
@@ -1170,6 +1216,10 @@ typedef double mp_float_t;
 
 #ifndef MICROPY_PY_UHASHLIB
 #define MICROPY_PY_UHASHLIB (0)
+#endif
+
+#ifndef MICROPY_PY_UHASHLIB_MD5
+#define MICROPY_PY_UHASHLIB_MD5 (0)
 #endif
 
 #ifndef MICROPY_PY_UHASHLIB_SHA1
