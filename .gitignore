@@ -39,3 +39,4 @@ mpy-cross/build/
 mpy-cross/mpy-cross.map
 py/makeqstrdata.pyc
 
+ports/esp32/machine_pad.c
