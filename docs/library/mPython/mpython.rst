@@ -563,3 +563,35 @@ wifi类
 .. method:: wifi.disable_APWiFi()
 
 关闭wifi网络热点
+
+DHT11类
+------
+
+提供了dht11温湿度传感器读取相关的函数。
+
+构建对象
+~~~~~~~
+.. class:: DHT11(pin)
+
+创建一个与引脚pin相连的DHT22传感器对象。
+
+- ``pin``:引脚
+
+
+
+方法
+~~~~~~~
+
+.. method:: DHT11.humidity()
+
+读取并返回传感器的湿度值。 
+
+.. method:: DHT11.temperature()
+
+读取并返回传感器的温度值。  
+
+
+DHT22类
+------
+
+同DHT11类,此处不再重复。
