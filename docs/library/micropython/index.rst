@@ -17,5 +17,6 @@ MicroPython类库
    micropython.rst
    neopixel.rst
    random.rst
-   dht.rst
+   _thread.rst
+
 

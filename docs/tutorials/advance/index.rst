@@ -8,3 +8,4 @@
     random.rst
     filesystem.rst
     timer.rst
+    thread.rst
