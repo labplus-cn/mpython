@@ -9,3 +9,4 @@
     filesystem.rst
     timer.rst
     thread.rst
+    bme280.rst
