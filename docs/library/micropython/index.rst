@@ -17,6 +17,7 @@ MicroPython类库
    micropython.rst
    neopixel.rst
    random.rst
+   ntptime.rst
    _thread.rst
 
 
