@@ -8,6 +8,6 @@
     random.rst
     filesystem.rst
     timer.rst
-    thread.rst
     i2c.rst
+    thread.rst
     bme280.rst

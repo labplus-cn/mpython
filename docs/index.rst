@@ -100,12 +100,15 @@ mPython类库
    :hidden:
    
    library/mPython/mpython.rst
-   library/mPython/music.rst  
+   library/mPython/music.rst 
+   library/mPython/urequests.rst   
+   library/mPython/umqtt.simple.rst   
 
 =================================   ====================================================================  
  :ref:`mpython模块<mpython.py>`     提供了mPython掌控板特有拓展类。获取最新的 :download:`mpython.py </../examples/library/mpython.py>` 。
  :ref:`music模块<music.py>`         兼容micro:bit music 模块
  :ref:`urequests模块<urequests>`    从CPython移植过来的HTTP客户端的第三方库,提供各种HTTP请求方式
+ :ref:`umqtt.simple模块<umqtt.simple>`   提供简单MQTT客户端功能 
 =================================   ====================================================================
 
 ---------
