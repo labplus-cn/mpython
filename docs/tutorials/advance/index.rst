@@ -9,4 +9,5 @@
     filesystem.rst
     timer.rst
     thread.rst
+    i2c.rst
     bme280.rst
