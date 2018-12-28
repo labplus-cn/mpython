@@ -1,6 +1,8 @@
 
 .. _mpython.py:
-:mod:`mpython` --- 掌控板库
+:mod:`mpython`
+
+mpython 模块
 ==========================
 
 mpython是基于掌控板封装的专用库

@@ -25,7 +25,7 @@ I2C 对象关联到总线，它可以在创建时初始化，也可以稍后初�
 有关I2C更详细的使用方法请查阅 :ref:`machine.I2C<machine.I2C>` 。
 
 
-::
+sht20温湿度模块的示例::
 
 
     from mpython import *
