@@ -14,8 +14,8 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 
 
 
-| GitHub: https://github.com/labplus-cn/mPython
-| mPython掌控板在线文档: https://mPython.readthedocs.io
+| GitHub开源: https://github.com/labplus-cn/mPython
+| mPython掌控板文档在线托管: https://mPython.readthedocs.io
 
 .. Hint::
 
