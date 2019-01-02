@@ -40,6 +40,9 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 图形编辑区
 -----------
 
+保存
+````````
+
 “保存代码”只保存程序对应的代码，后缀为py：
 
 .. image:: /images/software/software_35.png
@@ -62,6 +65,22 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 
 .. image:: /images/software/software_41.png
 
+模块提示
+````````
+鼠标停留在模块上会有提示：
+
+.. image:: /images/software/software_45.png
+
+帮助文档
+````````
+在模块上，点击鼠标右键：
+
+.. image:: /images/software/software_46.png
+
+点击帮助，即可跳转至帮助文档：
+
+.. image:: /images/software/software_47.png
+
 
 切换图形和代码
 -----------
@@ -75,5 +94,12 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 
 代码编辑区
 -----------
+
+代码联想：
+
+.. image:: /images/software/software_44.png
+
+
+
 
 
