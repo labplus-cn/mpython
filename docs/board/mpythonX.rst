@@ -90,6 +90,13 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 
 .. image:: /images/software/software_43.png
 
+改变图形区/代码区大小
+````````
+
+鼠标停留在圈红的灰色三角上，按住左键左右拖动即可：
+
+.. image:: /images/software/software_52.png
+
 
 代码编辑区
 -----------
