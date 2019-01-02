@@ -102,6 +102,28 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 运行/刷入
 -----------
 
+运行/刷入
+````````
+
+运行/刷入两种模式皆可实现程序效果。
+
+点击“连接串口”，按钮字样变成“断开连接”，即可开始运行/刷入：
+
+.. image:: /images/software/software_48.png
+
+代码查错
+````````
+
+圈红处是反馈的信息，包括硬件信息、代码报错信息等：
+
+.. image:: /images/software/software_49.png
+
+比如，红字为代码报错信息：
+
+.. image:: /images/software/software_50.png
+
+读出上一次代码
+````````
 
 
 
