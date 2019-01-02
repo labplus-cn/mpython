@@ -81,7 +81,7 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 
 .. image:: /images/software/software_47.png
 
-切换模式
+切换图形/代码模式
 ````````
 
 点击“代码模式”/“图形模式”，即可实现对应切换：
@@ -97,6 +97,11 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 代码联想：
 
 .. image:: /images/software/software_44.png
+
+
+运行/刷入
+-----------
+
 
 
 
