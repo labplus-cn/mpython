@@ -26,7 +26,7 @@
 
 .. image:: /images/software/software_53.png
 
-点击下载图形化代码
+点击下载图形化代码 :download:`OLED </../docs/mPythonX_code_examples/OLED.xml>` 。
 
 显示效果：
 
