@@ -1,4 +1,4 @@
-mPython2 IDE软件
+mPython2 IDE
 ====================
 
 软件安装
