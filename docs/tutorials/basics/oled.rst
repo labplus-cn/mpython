@@ -21,6 +21,14 @@
   oled.DispChar('안녕하세요', 35, 32)
   oled.DispChar('こんにちは世界', 24, 48)
   oled.show()
+  
+图形化代码参考（基于mPythonX）
+
+.. image:: /images/software/software_53.png
+
+点击下载图形化代码
+
+显示效果：
 
 .. image:: /images/掌控-正面.png
 
@@ -33,6 +41,10 @@
   >>> oled.DispChar('hello,world!',0,0)
   >>> oled.show()
   >>>
+  
+对应的图形化模块为：
+
+.. image:: /images/software/software_54.png
 
 .. Note::
 
@@ -43,11 +55,19 @@
 
   oled.fill(0)
   oled.show()
+  
+对应的图形化模块为：
+
+.. image:: /images/software/software_55.png  
 
 除了可以清空显示屏，还可以将整屏像素点亮::
 
   oled.fill(1)  
   oled.show()
+  
+对应的图形化模块为：
+
+.. image:: /images/software/software_56.png
 
 .. Note::
 
