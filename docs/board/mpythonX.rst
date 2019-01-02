@@ -111,7 +111,7 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 
 .. image:: /images/software/software_48.png
 
-.. Hint::
+.. Note::
 
 “运行”的代码脱机后即失效，“刷入”的代码脱机后再次连接电源仍有效。
 
@@ -131,6 +131,13 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 
 点击“从掌控读出”即可读出上一次刷入的代码。
 
+
+恢复固件
+-----------
+
+点击“恢复固件”，按照提示操作：
+
+.. image:: /images/software/software_51.png
 
 
 
