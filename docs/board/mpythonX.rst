@@ -28,13 +28,12 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 
 点击桌面快捷方式mPythonX，打开软件主界面。
 
-
+.. image:: /images/software/software_33.png
 
 用USB线接入掌控板。如果是初次接入，Windows可能要花费比较多的时间才能识别出掌控板，正确识别后，
 “连接串口”处会出现COM口，如下图：
 
-
-
+.. image:: /images/software/software_34.png
 
 上述顺序可以颠倒，即：可以先接入掌控，再打开软件，一样会弹出提示。
 
