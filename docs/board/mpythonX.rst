@@ -63,3 +63,17 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 .. image:: /images/software/software_41.png
 
 
+切换图形和代码
+-----------
+
+点击“代码模式”/“图形模式”，即可实现对应切换：
+
+.. image:: /images/software/software_42.png
+
+.. image:: /images/software/software_43.png
+
+
+代码编辑区
+-----------
+
+
