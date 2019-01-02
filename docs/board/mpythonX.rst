@@ -46,7 +46,11 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 
 .. image:: /images/software/software_36.png
 
-点击“本机读取”，读取效果如图：
+点击“本机读取”，加载保存的py文件：
+
+.. image:: /images/software/software_38.png
+
+读取效果如图：
 
 .. image:: /images/software/software_37.png
 
