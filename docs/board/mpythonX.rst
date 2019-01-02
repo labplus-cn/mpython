@@ -56,8 +56,10 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 
 “保存模块”保存程序对应的代码及图形化模块，后缀为xml：
 
+.. image:: /images/software/software_39.png
 
+点击“本机读取”，加载保存的xml文件，读取效果如图：
 
-读取效果如图：
+.. image:: /images/software/software_41.png
 
 
