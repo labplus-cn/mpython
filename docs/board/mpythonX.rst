@@ -15,6 +15,9 @@ http://static.steamaker.cn/files/mPythonXSetup0.1.0.exe
 http://static.steamaker.cn/files/mPythonX_0.1.0_mac.zip
 (Mac OS)
 
+附：掌控板的Mac驱动
+
+https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
 
 .. Hint::
   
