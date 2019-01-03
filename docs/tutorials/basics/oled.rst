@@ -24,9 +24,10 @@
   
 图形化代码参考（基于mPythonX）
 
-.. image:: /images/software/software_53.png
+.. image:: /images/tutorials/block/oled/oled_1.png
+      :width: 450px 
 
-点击下载图形化代码 :download:`OLED </../docs/mPythonX_code_examples/OLED.xml>` 。
+点击下载图形化代码 :download:`OLED</../docs/mPythonX/examples/OLED.xml>` 。
 
 显示效果：
 
@@ -44,7 +45,8 @@
   
 对应的图形化模块为：
 
-.. image:: /images/software/software_54.png
+.. image:: /images/tutorials/block/oled/oled_2.png
+    :width: 450px 
 
 .. Note::
 
@@ -58,7 +60,8 @@
   
 对应的图形化模块为：
 
-.. image:: /images/software/software_55.png  
+.. image:: /images/tutorials/block/oled/oled_3.png
+    :width: 200px 
 
 除了可以清空显示屏，还可以将整屏像素点亮::
 
@@ -67,7 +70,8 @@
   
 对应的图形化模块为：
 
-.. image:: /images/software/software_56.png
+.. image:: /images/tutorials/block/oled/oled_4.png
+    :width: 200px 
 
 .. Note::
 
