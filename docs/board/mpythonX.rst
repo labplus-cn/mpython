@@ -27,7 +27,6 @@ https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
 安装软件的最后一步，会自动安装CP210x的驱动，如果先前安装过则可以忽略。
 
 .. image:: /images/software/software_2.png
-    :scale: 60 %
 
 
 
@@ -127,7 +126,6 @@ https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
 点击“连接串口”，按钮字样变成“断开连接”，即可开始运行/刷入：
 
 .. image:: /images/software/mPythonX/mPythonX_15.png
-    :scale: 80 %
 
 .. Note::
 
@@ -156,6 +154,10 @@ https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
 点击“恢复固件”，按照提示操作：
 
 .. image:: /images/software/mPythonX/mPythonX_18.png
+
+.. Hint::
+  
+  如果恢复固件失败（或超过30秒仍然一直在恢复），请先尝试关闭杀毒软件，或者选择信任esptool。
 
 
 
