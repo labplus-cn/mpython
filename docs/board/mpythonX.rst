@@ -41,7 +41,6 @@ https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
 用USB线接入掌控板。正确识别后，“连接串口”处会出现COM口，如下图：
 
 .. image:: /images/software/mPythonX/mPythonX_2.png
-    :scale: 60 %
 
 
 
