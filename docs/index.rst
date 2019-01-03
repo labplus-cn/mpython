@@ -14,8 +14,8 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 
 
 
-| GitHub: https://github.com/labplus-cn/mPython
-| mPython掌控板在线文档: https://mPython.readthedocs.io
+| GitHub开源: https://github.com/labplus-cn/mPython
+| mPython掌控板文档在线托管: https://mPython.readthedocs.io
 
 .. Hint::
 
@@ -76,11 +76,6 @@ MicroPython类库
  :ref:`MicroPython类库<microPythonModu>`      MicroPython的ESP32硬件控制层的模块     
 =========================================   ======================================================
 
-.. Attention::
-
-   * MicroPython为每个模块实现了Python功能的子集。
-   * 为了简化可扩展性，MicroPython版本的标准Python模块通常具有``u``（“micro”）前缀。
-
 
 您可以通过 ``help()`` 发现可用的内置库，在REPL中输入以下内容来导入::
 
@@ -100,12 +95,16 @@ mPython类库
    :hidden:
    
    library/mPython/mpython.rst
-   library/mPython/music.rst  
+   library/mPython/music.rst 
+   library/mPython/urequests.rst   
+   library/mPython/umqtt.simple.rst   
 
-=================================   ====================================================================  
- :ref:`mpython模块<mpython.py>`     提供了mPython掌控板特有拓展类。获取最新的 :download:`mpython.py </../examples/library/mpython.py>` 。
- :ref:`music模块<music.py>`         兼容micro:bit music 模块
-=================================   ====================================================================
+======================================   ====================================================================  
+ :ref:`mpython模块<mpython.py>`           提供了mPython掌控板特有拓展类。获取最新的 :download:`mpython.py </../examples/library/mpython.py>` 。
+ :ref:`music模块<music.py>`               兼容micro:bit music 模块
+ :ref:`urequests模块<urequests>`          从CPython移植过来的HTTP客户端的第三方库,提供各种HTTP请求方式
+ :ref:`umqtt.simple模块<umqtt.simple>`    提供简单MQTT客户端功能 
+======================================   ====================================================================
 
 ---------
 

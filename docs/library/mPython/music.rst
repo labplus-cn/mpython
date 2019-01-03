@@ -2,7 +2,7 @@
 
 .. module:: music
 
-music模块
+music 模块
 =======
 
 music模块与microbit的music使用方法相同。
@@ -42,66 +42,62 @@ page about scientific pitch notation`_.  例如，middle "C"是 ``c4`` 和concer
 
 .. function:: set_tempo(ticks=4, bpm=120)
 
-    Sets the approximate tempo for playback.
+    设置播放节拍
 
-    A number of ticks (expressed as an integer) constitute a beat. Each beat is to be played at a certain frequency per minute (expressed as the more familiar BPM - beats per minute - also as an integer).
+    一定数量的ticks(整数)构成单个节拍。每个节拍以每分钟特定频率播放（每分钟节拍 - 也是整数）。
 
-    Suggested default values allow the following useful behaviour:
+    可参考以下设置播放节拍:
 
-    * ``music.set_tempo()`` - reset the tempo to default of ticks = 4, bpm = 120
-    * ``music.set_tempo(ticks=8)`` - change the "definition" of a beat
-    * ``music.set_tempo(bpm=180)`` - just change the tempo
+    * ``music.set_tempo()`` - 将节拍设置恢复为 ticks = 4, bpm = 120
+    * ``music.set_tempo(ticks=8)`` - 只改变单节拍速度
+    * ``music.set_tempo(bpm=180)`` - 只改变节拍频率
 
-    To work out the length of a tick in milliseconds is very simple arithmetic: ``60000/bpm/ticks_per_beat`` . For the default values that's ``60000/120/4 = 125 milliseconds`` or ``1 beat = 500 milliseconds``.
+    计算滴答的长度（以毫秒为单位）是非常简单的算术： ``60000/bpm/ticks_per_beat`` 。
+    对于那些是默认的值或。 ``60000/120/4 = 125 milliseconds`` or ``1 beat = 500 milliseconds``。
 
 .. function:: get_tempo()
 
-    Gets the current tempo as a tuple of integers: ``(ticks, bpm)``.
+    获取当前速度作为整数元组: ``(ticks, bpm)``.
 
-.. function:: play(music, pin=microbit.pin0, wait=True, loop=False)
+.. function:: play(music, pin=6, wait=True, loop=False)
 
-    Plays ``music`` containing the musical DSL defined above.
+    - ``music`` 
 
-    If ``music`` is a string it is expected to be a single note such as,
-    ``'c1:4'``.
+        - 播放 ``music`` 包含上面定义的音乐DSL。
 
-    If ``music`` is specified as a list of notes (as defined in the section on
-    the musical DSL, above) then they are played one after the other to perform
-    a melody.
+        - 如果 ``music`` 是一个字符串，则应该是单个音符，例如 ``'c1:4'``。
 
-    In both cases, the ``duration`` and ``octave`` values are reset to
-    their defaults before the music (whatever it may be) is played.
+        - 如果 ``music`` 被指定为音符列表（如上面音乐DSL部分中所定义），则它们一个接一个地播放以执行旋律。
 
-    An optional argument to specify the output pin can be used to override the
-    default of ``microbit.pin0``.
+    - ``pin`` 默认是掌控板的P6引脚
 
-    If ``wait`` is set to ``True``, this function is blocking.
+    - ``wait`` 阻塞：如果 ``wait`` 设置为 ``True``, 为阻塞,否则未不。
 
-    If ``loop`` is set to ``True``, the tune repeats until ``stop`` is called
-    (see below) or the blocking call is interrupted.
+    - ``loop`` ：如果 ``loop`` 设置为 ``True`` ，则重复调整直到stop被调用（见下文）或阻塞调用被中断。
+   
 
-.. function:: pitch(frequency, duration=-1, pin=microbit.pin0, wait=True)
+.. function:: pitch(frequency, duration=-1, pin=6, wait=True)
 
-    Plays a pitch at the integer frequency given for the specified number of
-    milliseconds. For example, if the frequency is set to 440 and the length to
-    1000 then we hear a standard concert A for one second.
+    - ``frequency``, ``duration``:以给定指定毫秒数的整数频率播放频率。例如，如果频率设置为440并且长度设置为1000，那么我们会听到标准A调一秒钟。
 
-    Note that you can only play one pitch on one pin at any one time.
+        如果 ``duration`` 为负，则连续播放频率，直到阻塞或者被中断，或者在后台呼叫的情况下，设置或调用新频率stop（见下文）。
 
-    If ``wait`` is set to ``True``, this function is blocking.
+    - ``pin`` 默认是掌控板的P6引脚。
 
-    If ``duration`` is negative the pitch is played continuously until either the
-    blocking call is interrupted or, in the case of a background call, a new
-    frequency is set or ``stop`` is called (see below).
+        请注意，您一次只能在一个引脚上播放频率。
 
-.. function:: stop(pin=microbit.pin0)
+    - ``wait`` 阻塞：如果 ``wait`` 设置为 ``True``, 为阻塞,否则未不。
+
+
+.. function:: stop(pin=6)
     
-    Stops all music playback on a given pin, eg. ``music.stop(pin1)``. 
-    If no pin is given, eg. ``music.stop()`` pin0 is assumed.
+   停止给定引脚上的所有音乐播放。
+
+    - ``pin`` 默认是掌控板的P6引脚。
 
 .. function:: reset()
 
-    Resets the state of the following attributes in the following way:
+    以下列方式重置以下属性的状态
 
         * ``ticks = 4``
         * ``bpm = 120``
@@ -111,39 +107,36 @@ page about scientific pitch notation`_.  例如，middle "C"是 ``c4`` 和concer
 内置旋律
 ++++++++
 
-For the purposes of education and entertainment, the module contains several
-example tunes that are expressed as Python lists. They can be used like this::
+出于教育和娱乐的目的，该模块包含几个以Python列表表示的示例曲调。它们可以像这样使用：
 
     >>> import music
     >>> music.play(music.NYAN)
 
-All the tunes are either out of copyright, composed by Nicholas H.Tollervey and
-released to the public domain or have an unknown composer and are covered by a
-fair (educational) use provision.
+所有音乐都不受版权保护，由Nicholas H.Tollervey撰写并发布到公共领域或者有一位不知名的作曲家，并受到公平（教育）使用条款的保护。
 
-They are:
+它们是:
 
-    * ``DADADADUM`` - the opening to Beethoven's 5th Symphony in C minor.
-    * ``ENTERTAINER`` - the opening fragment of Scott Joplin's Ragtime classic "The Entertainer".
-    * ``PRELUDE`` - the opening of the first Prelude in C Major of J.S.Bach's 48 Preludes and Fugues.
-    * ``ODE`` - the "Ode to Joy" theme from Beethoven's 9th Symphony in D minor.
-    * ``NYAN`` - the Nyan Cat theme (http://www.nyan.cat/). The composer is unknown. This is fair use for educational porpoises (as they say in New York).
-    * ``RINGTONE`` - something that sounds like a mobile phone ringtone. To be used to indicate an incoming message.
-    * ``FUNK`` - a funky bass line for secret agents and criminal masterminds.
-    * ``BLUES`` - a boogie-woogie 12-bar blues walking bass.
-    * ``BIRTHDAY`` - "Happy Birthday to You..." for copyright status see: http://www.bbc.co.uk/news/world-us-canada-34332853
-    * ``WEDDING`` - the bridal chorus from Wagner's opera "Lohengrin".
-    * ``FUNERAL`` - the "funeral march" otherwise known as Frédéric Chopin's Piano Sonata No. 2 in B♭ minor, Op. 35.
-    * ``PUNCHLINE`` - a fun fragment that signifies a joke has been made.
-    * ``PYTHON`` - John Philip Sousa's march "Liberty Bell" aka, the theme for "Monty Python's Flying Circus" (after which the Python programming language is named).
-    * ``BADDY`` - silent movie era entrance of a baddy.
-    * ``CHASE`` - silent movie era chase scene.
-    * ``BA_DING`` - a short signal to indicate something has happened.
-    * ``WAWAWAWAA`` - a very sad trombone.
-    * ``JUMP_UP`` - for use in a game, indicating upward movement.
-    * ``JUMP_DOWN`` - for use in a game, indicating downward movement.
-    * ``POWER_UP`` - a fanfare to indicate an achievement unlocked.
-    * ``POWER_DOWN`` - a sad fanfare to indicate an achievement lost.
+    * ``DADADADUM`` - 贝多芬第五交响曲C小调开幕式。
+    * ``ENTERTAINER`` - 斯科特乔普林的Ragtime经典作品“The Entertainer”的开场片段。
+    * ``PRELUDE`` - JSBach的48首前奏曲和赋格曲的第一首C大调前奏曲的开篇。
+    * ``ODE`` - 贝多芬第七交响曲D小调的“欢乐颂”主题。
+    * ``NYAN`` - Nyan Cat主题 (http://www.nyan.cat/). 作曲家不详。
+    * ``RINGTONE`` - 听起来像手机铃声的东西。用于指示传入消息。
+    * ``FUNK`` - 为秘密特工和犯罪主谋提供的时髦低音系列。
+    * ``BLUES`` - 一个boogie-woogie 12杆蓝调步行低音。
+    * ``BIRTHDAY`` - “生日快乐" 版权状态见: http://www.bbc.co.uk/news/world-us-canada-34332853
+    * ``WEDDING`` - 来自瓦格纳歌剧“Lohengrin”的新娘合唱。.
+    * ``FUNERAL`` -  “葬礼进行曲”，也被称为FrédéricChopin的钢琴奏鸣曲第2号B-minor,Op 35。
+    * ``PUNCHLINE`` -一个有趣的片段表明一个笑话已经被创造出来了。
+    * ``PYTHON`` - John Philip Sousa的游行“Liberty Bell”又名“Monty Python's Flying Circus”的主题（之后以Python编程语言命名）。
+    * ``BADDY`` - 沉默的电影时代入口的一个坏人。
+    * ``CHASE`` - 无声电影时代的追逐场景。
+    * ``BA_DING`` - 表示发生了某些事情的短信号
+    * ``WAWAWAWAA`` - 一个非常悲伤的长号。
+    * ``JUMP_UP`` - 用于游戏，表示向上移动。
+    * ``JUMP_DOWN`` - 用于游戏，表示向下移动。
+    * ``POWER_UP`` - 一种炫耀，表明一项成就被释放。
+    * ``POWER_DOWN`` - 一种悲伤，表示一项成就已经失去。
 
 示例::
 
