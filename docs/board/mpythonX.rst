@@ -155,7 +155,6 @@ https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
 
 点击“恢复固件”，按照提示操作：
 
-.. image:: /images/software/software_51.png
 .. image:: /images/software/mPythonX/mPythonX_18.png
 
 
