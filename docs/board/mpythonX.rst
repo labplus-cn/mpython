@@ -21,6 +21,8 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 安装软件的最后一步，会自动安装CP210x的驱动，如果先前安装过则可以忽略。
 
 .. image:: /images/software/software_2.png
+    :scale: 60 %
+
 
 
 接入硬件
@@ -30,9 +32,13 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 
 .. image:: /images/software/software_33.png
 
+
 用USB线接入掌控板。正确识别后，“连接串口”处会出现COM口，如下图：
 
 .. image:: /images/software/software_34.png
+    :scale: 60 %
+
+
 
 上述顺序可以颠倒，即：可以先接入掌控，再打开软件。
 
@@ -117,6 +123,7 @@ http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
 点击“连接串口”，按钮字样变成“断开连接”，即可开始运行/刷入：
 
 .. image:: /images/software/software_48.png
+    :scale: 80 %
 
 .. Note::
 
