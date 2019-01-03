@@ -4,13 +4,16 @@ mPythonX IDE
 软件安装
 -----------
 
-目前有两个下载地址：
+目前有三个下载地址：
 
-http://static.steamaker.cn/files/mPythonXSetup0.0.9.exe
-(Win 7 / 8 / 10、MacOS)
+http://static.steamaker.cn/files/mPythonXSetup0.1.0.exe
+(Win 7 / 8 / 10)
 
-http://static.steamaker.cn/files/mPythonXSetup0.0.9_XP.exe
+http://static.steamaker.cn/files/mPythonXSetup0.1.0.exe
 (Win XP)
+
+http://static.steamaker.cn/files/mPythonX_0.1.0_mac.zip
+(Mac OS)
 
 
 .. Hint::
