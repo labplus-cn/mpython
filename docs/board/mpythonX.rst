@@ -27,7 +27,6 @@ https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
 安装软件的最后一步，会自动安装CP210x的驱动，如果先前安装过则可以忽略。
 
 .. image:: /images/software/software_2.png
-    :scale: 60 %
 
 
 
@@ -36,13 +35,12 @@ https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
 
 点击桌面快捷方式mPythonX，打开软件主界面。
 
-.. image:: /images/software/software_33.png
+.. image:: /images/software/mPythonX/mPythonX_1.png
 
 
 用USB线接入掌控板。正确识别后，“连接串口”处会出现COM口，如下图：
 
-.. image:: /images/software/software_34.png
-    :scale: 60 %
+.. image:: /images/software/mPythonX/mPythonX_2.png
 
 
 
@@ -57,57 +55,55 @@ https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
 
 “保存代码”只保存程序对应的代码，后缀为py：
 
-.. image:: /images/software/software_35.png
-
-.. image:: /images/software/software_36.png
+.. image:: /images/software/mPythonX/mPythonX_3.png
 
 点击“本机读取”，加载保存的py文件：
 
-.. image:: /images/software/software_38.png
+.. image:: /images/software/mPythonX/mPythonX_5.png
 
 读取效果如图：
 
-.. image:: /images/software/software_37.png
+.. image:: /images/software/mPythonX/mPythonX_4.png
 
 “保存模块”保存程序对应的代码及图形化模块，后缀为xml：
 
-.. image:: /images/software/software_39.png
+.. image:: /images/software/mPythonX/mPythonX_6.png
 
 点击“本机读取”，加载保存的xml文件，读取效果如图：
 
-.. image:: /images/software/software_41.png
+.. image:: /images/software/mPythonX/mPythonX_7.png
 
 模块提示
 ````````
 鼠标停留在模块上会有提示：
 
-.. image:: /images/software/software_45.png
+.. image:: /images/software/mPythonX/mPythonX_8.png
 
 帮助文档
 ````````
 在模块上，点击鼠标右键：
 
-.. image:: /images/software/software_46.png
+.. image:: /images/software/mPythonX/mPythonX_9.png
 
 点击帮助，即可跳转至帮助文档：
 
-.. image:: /images/software/software_47.png
+.. image:: /images/software/mPythonX/mPythonX_10.png
 
 切换图形/代码模式
 ````````
 
 点击“代码模式”/“图形模式”，即可实现对应切换：
 
-.. image:: /images/software/software_42.png
+.. image:: /images/software/mPythonX/mPythonX_11.png
 
-.. image:: /images/software/software_43.png
+.. image:: /images/software/mPythonX/mPythonX_12.png
 
 改变图形区/代码区大小
 ````````
 
 鼠标停留在圈红的灰色三角上，按住左键左右拖动即可：
 
-.. image:: /images/software/software_52.png
+.. image:: /images/software/mPythonX/mPythonX_13.png
 
 
 代码编辑区
@@ -115,7 +111,7 @@ https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
 
 代码联想：
 
-.. image:: /images/software/software_44.png
+.. image:: /images/software/mPythonX/mPythonX_14.png
 
 
 运行/刷入
@@ -128,8 +124,7 @@ https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
 
 点击“连接串口”，按钮字样变成“断开连接”，即可开始运行/刷入：
 
-.. image:: /images/software/software_48.png
-    :scale: 80 %
+.. image:: /images/software/mPythonX/mPythonX_15.png
 
 .. Note::
 
@@ -140,11 +135,11 @@ https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
 
 圈红处是反馈的信息，包括硬件信息、代码报错信息等：
 
-.. image:: /images/software/software_49.png
+.. image:: /images/software/mPythonX/mPythonX_16.png
 
 比如，红字为代码报错信息：
 
-.. image:: /images/software/software_50.png
+.. image:: /images/software/mPythonX/mPythonX_17.png
 
 读出上一次刷入的代码
 ````````
@@ -157,7 +152,11 @@ https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
 
 点击“恢复固件”，按照提示操作：
 
-.. image:: /images/software/software_51.png
+.. image:: /images/software/mPythonX/mPythonX_18.png
+
+.. Hint::
+  
+  如果恢复固件失败（或超过30秒仍然一直在恢复），请先尝试关闭杀毒软件，或者选择信任esptool。
 
 
 
