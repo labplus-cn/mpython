@@ -239,7 +239,7 @@ oled对象为framebuf的衍生类，继承framebuf的方法。更多的使用方
     - ``brightness`` 亮度,范围0~255
 
 
-.. method:: oled.invert()
+.. method:: oled.invert(n)
 
 翻转像素点。当n=1时,未填充像素点点亮,填充像素点灭。当n=0时,则反。默认启动是填充像素点点亮。
 
