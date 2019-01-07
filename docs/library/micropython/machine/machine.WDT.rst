@@ -10,16 +10,16 @@
 示例::
 
     from machine import WDT
-    wdt = WDT(timeout=2000)  # enable it with a timeout of 2s
+    wdt = WDT()        # enable it with a wdt
     wdt.feed()
 
 
 构建对象
 ------------
 
-.. class:: WDT(id=0, timeout=5000)
+.. class:: WDT()
 
-  创建一个WDT对象并启动它。超时必须以秒为单位，并且接受的最小值为1秒。一旦运行，就无法更改超时，也无法停止WDT。
+  创建一个WDT对象并启动它。
 
 方法
 -------

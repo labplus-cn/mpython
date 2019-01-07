@@ -78,7 +78,7 @@ IP地址； ``port`` 参数为mqtt的服务器访问的端口号,一般为1883,�
 
     ``publish(topic, msg)`` , ``topic`` 参数为发布的主题,在Easy IoT的管理界面上,是通过topic来区分设备的,且不能修改,这点需要注意；``msg`` 参数为该主题的消息；
 
-publish后,你可以在Easy IoT工作间的该设备“查看详情”中,查询到刚才发布的消息,如下::
+publish后,你可以在Easy IoT工作间的该设备“查看详情”中,查询到刚才发布的消息,如下:
 
 .. image:: /images/tutorials/mqtt_2.png
 
@@ -87,17 +87,29 @@ publish后,你可以在Easy IoT工作间的该设备“查看详情”中,查询
 订阅主题
 -------
 
-订阅topic::
+设置当接收消息后,打印输出::
 
+    def sub_cb(topic, msg):             
+            print((topic, msg))  
+
+    c.set_callback(sub_cb) 
+
+在订阅主题前,需要先设置回调函数 ``set_callback(sub_cb)``, ``sub_cb`` 为当接收的消息后,处理的函数,须包含两个参数。
+
+订阅主题, ``topic`` 参数为需要订阅的主题::
+
+        
     c.subscribe(topic)
 
-.. Note:: 
 
-    ``topic`` 参数为需要订阅的主题
+最后使用 ``wait_msg()`` 等待接收消息::
+
+    while True:         
+            c.wait_msg()  
 
 
-综合示例
--------
+远程开关灯
+^^^^^^^
 
 以下示例用到mqtt订阅主题功能做的远程控制开关灯::
 
