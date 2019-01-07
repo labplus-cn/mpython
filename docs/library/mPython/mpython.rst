@@ -533,14 +533,14 @@ Clock类
 wifi类
 ------
 
-提供便捷的wifi连接网络方式或热点wifi功能
+提供便捷的wifi连接网络方式或无线AP功能
 
 .. class:: wifi()
 
 构建wifi对象并会创建 ``sta`` 对象和 ``ap`` 对象。可参见 :mod:`network` 模块了解更多使用方法。
 
     - sta用于客户端连接路由器来连接网络。
-    - ap用于掌控板作为热点接入方式。
+    - ap用于掌控板作为无线AP接入方式。
 
 .. method:: wifi.connectWiFi(ssid,password)
 
@@ -555,14 +555,14 @@ wifi类
 
 .. method:: wifi.enable_APWiFi(essid,channel)
 
-开启wifi网络热点
+开启wifi的无线AP模式
 
- - ``essid`` - 创建热点的WiFi网络名称
+ - ``essid`` - 创建WiFi网络名称
  - ``channel`` -设置wifi使用信道,channel 1~13
 
 .. method:: wifi.disable_APWiFi()
 
-关闭wifi网络热点
+关闭无线AP
 
 DHT11类
 ------
