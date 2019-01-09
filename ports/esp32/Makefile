@@ -179,6 +179,13 @@ SRC_C = \
 	modmusictunes.c \
 	$(SRC_MOD)
 
+Labplus_SRC_C = $(addprefix labplus/, \
+	oled.c \
+	i2c_master.c \
+	panic.c \
+	startup.c \
+	)
+
 EXTMOD_SRC_C = $(addprefix extmod/,\
 	modonewire.c \
 	)
@@ -224,6 +231,7 @@ DRIVERS_SRC_C = $(addprefix drivers/,\
 OBJ_MP =
 OBJ_MP += $(PY_O)
 OBJ_MP += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
+OBJ_MP += $(addprefix $(BUILD)/, $(Labplus_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(EXTMOD_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(LIB_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(DRIVERS_SRC_C:.c=.o))
@@ -246,6 +254,7 @@ ESPIDF_DRIVER_O = $(addprefix $(ESPCOMP)/driver/,\
 	spi_common.o \
 	rtc_module.o \
 	mcpwm.o \
+	i2c.o \
 	)
 
 $(BUILD)/$(ESPCOMP)/esp32/dport_access.o: CFLAGS += -Wno-array-bounds
