@@ -105,7 +105,7 @@
     def BuzzOn(_):                    # 定义中断的回调函数  
         music.play(music.BA_DING,wait=False)
 
-    p5.irq(trigger=Pin.IRQ_FALLIN,handler=BuzzOn)            # 设置P5引脚中断的回调函数
+    p5.irq(trigger=Pin.IRQ_FALLING,handler=BuzzOn)            # 设置P5引脚中断的回调函数
 
 .. Hint:: 
 
@@ -128,7 +128,7 @@
 
 最后我们需要告诉引脚何时触发，以及在检测到事件时调用的函数::
 
-    p5.irq(trigger=Pin.IRQ_FALLIN,handler=BuzzOn)
+    p5.irq(trigger=Pin.IRQ_FALLING,handler=BuzzOn)
 
 .. Note::
 
