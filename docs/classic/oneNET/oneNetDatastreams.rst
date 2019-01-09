@@ -105,10 +105,10 @@ OneNET数据点上报格式
         return arr
 
     def publishSenser():
-    message['datastreams'][0]['datapoints'][0]['value']=sound.read()
-    message['datastreams'][1]['datapoints'][0]['value']=light.read()
-    c.publish('$dp',pubdata(message))                   #publish报文上传数据点
-    print('publish message:',message)
+        message['datastreams'][0]['datapoints'][0]['value']=sound.read()
+        message['datastreams'][1]['datapoints'][0]['value']=light.read()
+        c.publish('$dp',pubdata(message))                   #publish报文上传数据点
+        print('publish message:',message)
 
 
     mywifi.connectWiFi("ssid","password")

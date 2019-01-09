@@ -39,6 +39,7 @@
 #include "esp_log.h"
 
 #include "esp_timer.h"		// add by zkh
+#include "labplus/oled.h"
 
 #include "py/stackctrl.h"
 #include "py/nlr.h"
@@ -81,7 +82,7 @@ void mp_task(void *pvParameter) {
     #if MICROPY_PY_THREAD
     mp_thread_init(pxTaskGetStackStart(NULL), MP_TASK_STACK_LEN);
     #endif
-    esp_log_level_set("*", ESP_LOG_ERROR);    // only error msg for mpython
+    //esp_log_level_set("*", ESP_LOG_ERROR);    // only error msg for mpython
     uart_init();
 
     // Allocate the uPy heap using malloc and get the largest available region
@@ -89,6 +90,13 @@ void mp_task(void *pvParameter) {
     void *mp_task_heap = malloc(mp_task_heap_size);
 
 soft_reset:
+    // startup
+    oled_init();
+    oled_drawAnimation(ani_startup, 25, 50);
+    oled_clear();
+    oled_show();
+    oled_deinit();
+    
     // initialise the stack pointer for the main thread
     mp_stack_set_top((void *)sp);
     mp_stack_set_limit(MP_TASK_STACK_SIZE - 1024);
@@ -115,9 +123,15 @@ soft_reset:
 
     // run boot-up scripts
     pyexec_frozen_module("_boot.py");
-    pyexec_file("boot.py");
+    int exit_code = pyexec_file("boot.py");
     if (pyexec_mode_kind == PYEXEC_MODE_FRIENDLY_REPL) {
-        pyexec_file("main.py");
+        exit_code = pyexec_file("main.py");
+    }
+    if (exit_code != 1) {
+        oled_init();
+        oled_drawImg(img_panic);
+        oled_show();
+        oled_deinit();
     }
 
     for (;;) {
