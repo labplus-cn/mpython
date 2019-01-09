@@ -1,9 +1,9 @@
+
 .. _mpython.py:
+:mod:`mpython`
 
-掌控板库
-=========
-
-.. module:: mpyhton
+mpython 模块
+==========================
 
 mpython是基于掌控板封装的专用库
 
@@ -239,7 +239,7 @@ oled对象为framebuf的衍生类，继承framebuf的方法。更多的使用方
     - ``brightness`` 亮度,范围0~255
 
 
-.. method:: oled.invert()
+.. method:: oled.invert(n)
 
 翻转像素点。当n=1时,未填充像素点点亮,填充像素点灭。当n=0时,则反。默认启动是填充像素点点亮。
 
@@ -533,14 +533,14 @@ Clock类
 wifi类
 ------
 
-提供便捷的wifi连接网络方式或热点wifi功能
+提供便捷的wifi连接网络方式或无线AP功能
 
 .. class:: wifi()
 
 构建wifi对象并会创建 ``sta`` 对象和 ``ap`` 对象。可参见 :mod:`network` 模块了解更多使用方法。
 
     - sta用于客户端连接路由器来连接网络。
-    - ap用于掌控板作为热点接入方式。
+    - ap用于掌控板作为无线AP接入方式。
 
 .. method:: wifi.connectWiFi(ssid,password)
 
@@ -555,11 +555,43 @@ wifi类
 
 .. method:: wifi.enable_APWiFi(essid,channel)
 
-开启wifi网络热点
+开启wifi的无线AP模式
 
- - ``essid`` - 创建热点的WiFi网络名称
+ - ``essid`` - 创建WiFi网络名称
  - ``channel`` -设置wifi使用信道,channel 1~13
 
 .. method:: wifi.disable_APWiFi()
 
-关闭wifi网络热点
+关闭无线AP
+
+DHT11类
+------
+
+提供了dht11温湿度传感器读取相关的函数。
+
+构建对象
+~~~~~~~
+.. class:: DHT11(pin)
+
+创建一个与引脚pin相连的DHT22传感器对象。
+
+- ``pin``:引脚
+
+
+
+方法
+~~~~~~~
+
+.. method:: DHT11.humidity()
+
+读取并返回传感器的湿度值。 
+
+.. method:: DHT11.temperature()
+
+读取并返回传感器的温度值。  
+
+
+DHT22类
+------
+
+同DHT11类,此处不再重复。

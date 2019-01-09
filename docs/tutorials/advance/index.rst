@@ -8,3 +8,7 @@
     random.rst
     filesystem.rst
     timer.rst
+    i2c.rst
+    thread.rst
+    bme280.rst
+    mqtt.rst

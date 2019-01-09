@@ -1,4 +1,4 @@
-mPython2 IDE软件
+mPython2 IDE
 ====================
 
 软件安装
@@ -24,6 +24,7 @@ http://static.steamaker.cn/files/mPython2_0.2.5_macos.zip
 
 
 .. image:: /images/software/software_1.png
+      :scale: 80 %
 
 .. Hint::
   
@@ -33,6 +34,7 @@ http://static.steamaker.cn/files/mPython2_0.2.5_macos.zip
 安装软件的最后一步，会自动安装CP210x的驱动，如果先前安装过则可以忽略。
 
 .. image:: /images/software/software_2.png
+    :scale: 70 %
 
 
 接入硬件

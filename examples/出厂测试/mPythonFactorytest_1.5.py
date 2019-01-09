@@ -176,9 +176,9 @@ while True:
     print('P:%d,Y:%d, T:%d, H:%d, O:%d, N:%d' % (touchPad_P.read(),touchPad_Y.read(),touchPad_T.read(),touchPad_H.read(),touchPad_O.read(),touchPad_N.read()))
     print('P0:%d, P1:%d ,P2:%d, P3/ext:%d' % (P0.read_analog(),P1.read_analog(),P2.read_analog(),ext.read_analog()))
     print('light:%d,Sound:%d' % (light.read(),sound.read()))
-    print('加速度,x = %.2f, y = %0.2f, z = %.2f ' % (accelerometer.get_x(), accelerometer.get_y(), accelerometer.get_z()))
+    print('Accel,x = %.2f, y = %0.2f, z = %.2f ' % (accelerometer.get_x(), accelerometer.get_y(), accelerometer.get_z()))
     try:
-        print("BME280,温度:{:.1f}C,大气压：{:.1f}Pa,湿度:{:.1f}%" .format(bme280.temperature(),bme280.pressure(),bme280.humidity()))
+        print("BME280,Temp:{:.1f}C,Pressure:{:.1f}Pa,Humi:{:.1f}%" .format(bme280.temperature(),bme280.pressure(),bme280.humidity()))
     except Exception as er:
         print("Your mPython have not BME280!")
     print("\n\r")

@@ -21,6 +21,9 @@
   oled.DispChar('안녕하세요', 35, 32)
   oled.DispChar('こんにちは世界', 24, 48)
   oled.show()
+  
+
+显示效果：
 
 .. image:: /images/掌控-正面.png
 
