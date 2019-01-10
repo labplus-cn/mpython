@@ -133,9 +133,9 @@ publish后,你可以在Easy IoT工作间的该设备“查看详情”中,查询
     
             if topic == TOPIC.encode():     # 如果topic为我们设备的topic时,由于收到为字节类型。这里需要将 TOPIC 转换为字节类型。
  
-            if msg == b"on":                # 如果消息为“on”,亮灯  
-                    rgb.fill((0,20,0))
-                    rgb.write()
+                if msg == b"on":                # 如果消息为“on”,亮灯  
+                        rgb.fill((0,20,0))
+                        rgb.write()
 
                 elif msg == b"off":         # 如果消息为“off”,灭灯  
                     rgb.fill((0,0,0))

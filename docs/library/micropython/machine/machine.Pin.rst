@@ -1,7 +1,7 @@
 .. currentmodule:: machine
 .. _machine.Pin:
 
-.. module:: machine.Pin
+.. module:: Pin
 
 类 Pin -- 控制 I/O 引脚
 =============================
