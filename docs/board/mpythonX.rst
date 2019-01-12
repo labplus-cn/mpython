@@ -4,15 +4,15 @@ mPythonX IDE
 软件安装
 -----------
 
-目前有三个下载地址：
+目前最新版本为0.1.2，支持Windows 7/8/10、Windows XP、与 Macos：
 
-http://static.steamaker.cn/files/mPythonXSetup0.1.1.exe
+http://static.steamaker.cn/files/mPythonXSetup0.1.2.exe
 (Win 7 / 8 / 10)
 
-http://static.steamaker.cn/files/mPythonXSetup0.1.1_XP.exe
+http://static.steamaker.cn/files/mPythonXSetup0.1.2_XP.exe
 (Win XP)
 
-http://static.steamaker.cn/files/mPythonX_0.1.1_mac.zip
+http://static.steamaker.cn/files/mPythonX_0.1.2_mac.zip
 (Mac OS)
 
 附：掌控板的Mac驱动
