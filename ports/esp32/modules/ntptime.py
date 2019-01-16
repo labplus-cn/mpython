@@ -10,9 +10,13 @@ except:
 # (date(2000, 1, 1) - date(1900, 1, 1)).days * 24*60*60
 NTP_DELTA = 3155673600
 # modified china Server
+host = "ntp.ntsc.ac.cn"
 
+def sethost(server):
+    global host
+    host=server
 
-def time(host = "ntp.ntsc.ac.cn"):
+def time():
     NTP_QUERY = bytearray(48)
     NTP_QUERY[0] = 0x1b
     addr = socket.getaddrinfo(host, 123)[0][-1]
