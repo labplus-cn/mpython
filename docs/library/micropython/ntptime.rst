@@ -12,6 +12,10 @@
 方法
 ------
 
+.. method:: sethost(server)
+
+可自行指定授时服务器,server为字符串类型。默认授时服务器为"ntp.ntsc.ac.cn"。
+
 .. method:: settime(timezone=8)
 
 同步本地时间
