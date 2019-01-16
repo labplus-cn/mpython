@@ -300,11 +300,11 @@ STATIC mp_obj_t mpython_music_stop(mp_uint_t n_args, const mp_obj_t *args) {
     }
     // Raise exception if the pin we are trying to stop is not in a compatible mode.
     if(music_data->async_pin == pin) {
-        music_set_duty(0);
         music_free_pin(pin);
         music_data->async_pin = -1;
         music_data->async_state = ASYNC_MUSIC_STATE_IDLE;
     }
+    music_set_duty(0);
     return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mpython_music_stop_obj, 0, 1, mpython_music_stop);
@@ -379,7 +379,7 @@ STATIC mp_obj_t mpython_music_pitch(mp_uint_t n_args, const mp_obj_t *pos_args, 
     static const mp_arg_t allowed_args[] = {
         { MP_QSTR_frequency, MP_ARG_REQUIRED | MP_ARG_INT, {.u_int = 0} },
         { MP_QSTR_duration, MP_ARG_INT, {.u_int = -1} },
-        { MP_QSTR_pin,    MP_ARG_OBJ, {.u_int = 16} },
+        { MP_QSTR_pin,    MP_ARG_INT, {.u_int = 16} },
         { MP_QSTR_wait,   MP_ARG_BOOL, {.u_bool = true} },
     };
 
@@ -390,7 +390,7 @@ STATIC mp_obj_t mpython_music_pitch(mp_uint_t n_args, const mp_obj_t *pos_args, 
     // get the parameters
     mp_uint_t frequency = args[0].u_int;
     mp_int_t duration = args[1].u_int;
-    mp_int_t pin = args[2].u_int;
+    int pin = args[2].u_int;
     
     // Update pin modes
     if(music_data->async_pin != -1) {
