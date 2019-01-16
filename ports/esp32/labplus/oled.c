@@ -105,11 +105,11 @@ void oled_drawAnimation(const uint8_t **pImgs, int len, int frameRate)
         oled_show();
         vTaskDelay(1000/frameRate /portTICK_RATE_MS);
     } 
-    for (i = len -1; i >= 0; i--) {
-        oled_drawImg(pImgs[i]);
-        oled_show();
-        vTaskDelay(1000/frameRate /portTICK_RATE_MS);
-    } 
+    // for (i = len -1; i >= 0; i--) {
+    //     oled_drawImg(pImgs[i]);
+    //     oled_show();
+    //     vTaskDelay(1000/frameRate /portTICK_RATE_MS);
+    // } 
 }
 
 void oled_print(const char * str, int x0, int y0)
