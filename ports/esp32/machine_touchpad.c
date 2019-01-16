@@ -89,6 +89,7 @@ STATIC mp_obj_t mtp_read(mp_obj_t self_in) {
     mtp_obj_t *self = self_in;
     uint16_t value;
     esp_err_t err = touch_pad_read(self->touchpad_id, &value);
+    if (err == ESP_ERR_INVALID_STATE) return MP_OBJ_NEW_SMALL_INT(0);   // when touchpad has been short-circuited, do not raise error
     if (err == ESP_OK) return MP_OBJ_NEW_SMALL_INT(value);
     mp_raise_ValueError("Touch pad error");
 }
