@@ -406,7 +406,7 @@ STATIC mp_obj_t mpython_music_pitch(mp_uint_t n_args, const mp_obj_t *pos_args, 
     music_set_duty(50);
     if (frequency == 0) {
         music_free_pin(pin);
-    } else if (music_set_frequecty(1000000/frequency)) {
+    } else if (music_set_frequecty(frequency)) {
         music_free_pin(pin);
         mp_raise_ValueError("invalid pitch");
     }
