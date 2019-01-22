@@ -5,6 +5,8 @@
     :maxdepth: 1
 
     network_basics.rst
-    socket.rst
+    tcpip.rst
+    tcp.rst
+    udp.rst
     http.rst
     json.rst
