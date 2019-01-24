@@ -66,9 +66,9 @@ UDP客户端的示例:
 
     # 当捕获异常,关闭套接字、网络
     except:
-    if (s):
-        s.close()
-    mywifi.disconnectWiFi()
+        if (s):
+            s.close()
+        mywifi.disconnectWiFi()
 
 .. image:: /images/tutorials/udpclient.gif
     :align: center
@@ -115,9 +115,9 @@ UDP服务端的示例:
 
     # 当捕获异常,关闭套接字、网络
     except:
-    if (s):
-        s.close()
-    mywifi.disconnectWiFi()
+        if (s):
+            s.close()
+        mywifi.disconnectWiFi()
 
 .. Note:: 
 

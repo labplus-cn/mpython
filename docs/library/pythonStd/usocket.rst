@@ -53,7 +53,7 @@ Socket地址格式
 
   - ``proto`` ：协议号
 
-    - ``socket.IPPROTO_TCP`` =16
+    - ``socket.IPPROTO_TCP`` =6
     - ``socket.IPPROTO_UDP`` =17 
 
 
