@@ -24,7 +24,7 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
 
   - 供电方式：Micro USB供电
   - 工作电压：3.3V
-  - 工作电流:100mA
+  - 最大工作电流:200mA
   - 掌控板载
 
     - 三轴加速度计MSA300,测量范围:±2G
@@ -38,8 +38,8 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
 
   - 拓展接口
 
-    - 20通道数字I/O， (其中支持18路PWM，6路触摸输入)
-    - 5通道12bit模拟输入ADC，A0~A4  
+    - 20通道数字I/O， (其中支持12路PWM，6路触摸输入)
+    - 5通道12bit模拟输入ADC，P0~P4  
     - 1路的外部输入鳄鱼夹接口:EXT/GND
     - 支持I2C、UART、SPI通讯协议
 
@@ -95,12 +95,12 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
  P19           数字输入,模拟/数字输出，I2C总线SCL,与内部的OLED和加速度传感器共享I2C总线
  P20           数字输入,模拟/数字输出，I2C总线SDA,与内部的OLED和加速度传感器共享I2C总线
  GND           电源GND
- Touch_P(P23)  TouchPad,数字输入,模拟/数字输出       
- Touch_Y(P24)  TouchPad,数字输入,模拟/数字输出       
- Touch_T(P25)  TouchPad,数字输入,模拟/数字输出       
- Touch_H(P26)  TouchPad,数字输入,模拟/数字输出       
- Touch_O(P27)  TouchPad,数字输入,模拟/数字输出       
- Touch_N(P28)  TouchPad,数字输入,模拟/数字输出       
+ Touch_P(P23)  TouchPad
+ Touch_Y(P24)  TouchPad      
+ Touch_T(P25)  TouchPad
+ Touch_H(P26)  TouchPad
+ Touch_O(P27)  TouchPad  
+ Touch_N(P28)  TouchPad      
 =============  ====================================  
 
 
