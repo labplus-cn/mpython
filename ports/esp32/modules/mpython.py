@@ -17,7 +17,7 @@ from neopixel import NeoPixel
 from esp import dht_readinto
 from time import sleep_ms, sleep_us,sleep
 
-i2c = I2C(scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
+i2c = I2C(scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=200000)
 
 class Font(object):
     def __init__(self, font_address=0x300000):
@@ -588,3 +588,8 @@ touchPad_O = TouchPad(Pin(15))
 touchPad_N = TouchPad(Pin(4))
 
 from gui import *
+
+def numberMap(inputNum,bMin,bMax,cMin,cMax):
+    outputNum = 0
+    outputNum =((cMax - cMin) / (bMax - bMin))*(inputNum - bMin)+cMin
+    return outputNum
