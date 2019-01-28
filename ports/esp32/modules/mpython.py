@@ -101,7 +101,7 @@ class OLED(SSD1106_I2C):
                                     c = 0
                                 else:
                                     c = 1
-                                print("px = %d, py = %d, c = %d" % (px, py, c))
+                                # print("px = %d, py = %d, c = %d" % (px, py, c))
                             super().pixel(px, py, c)
                         else:
                             if mode == TextMode.normal:
