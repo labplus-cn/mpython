@@ -12,4 +12,4 @@
     thread.rst
     bme280.rst
     mqtt.rst
-    smarthome/index.rst
+    
