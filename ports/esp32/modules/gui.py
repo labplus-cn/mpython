@@ -3,8 +3,8 @@
 import time, math
 
 class UI():
-    def __init__(self, display):
-        self.display = display
+    def __init__(self, oled):
+        self.display = oled
 
     def ProgressBar(self, x, y, width, height, progress):
         radius = int(height / 2)
