@@ -41,7 +41,8 @@
 
 我们结合加速度计制作一个通过左右倾斜掌控板来控制舵机的角度::
 
-    from mpython import *    
+    from mpython import * 
+    from servo import Servo   
 
     myServo=Servo(0,min_us=500, max_us=2500)      #构建Servo对象
 
@@ -63,9 +64,10 @@
     :scale: 60 %
     :align: center
 
-使用前，导入mpython模块::
+使用前，导入mpython、servo模块::
 
   from mpython import *
+  from servo import Servo
 
 构建Servo对象，设置舵机脉冲宽度参数::
 
@@ -73,7 +75,7 @@
 
 .. Note::
 
-    mpyhton.Servo(pin, min_us=750, max_us=2250, actuation_range=180) 用来构建Servo对象，默认使用SG90舵机。不同舵机脉冲宽度参数和角度范围会有所不一样,根据舵机型号自行设置。``pin`` 设置舵机PWM控制信号引脚，``min_us`` 设置舵机PWM信号脉宽最小宽度，单位微秒，默认min_us=750，``max_us`` 设置舵机PWM信号脉宽最小宽度，单位微秒，默认max_us=2250，``actuation_range`` 设置舵机转动最大角度。
+    Servo(pin, min_us=750, max_us=2250, actuation_range=180) 用来构建Servo对象，默认使用SG90舵机。不同舵机脉冲宽度参数和角度范围会有所不一样,根据舵机型号自行设置。``pin`` 设置舵机PWM控制信号引脚，``min_us`` 设置舵机PWM信号脉宽最小宽度，单位微秒，默认min_us=750，``max_us`` 设置舵机PWM信号脉宽最小宽度，单位微秒，默认max_us=2250，``actuation_range`` 设置舵机转动最大角度。
 
 .. Attention:: 
 

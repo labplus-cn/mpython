@@ -106,7 +106,7 @@
         oled.DispChar("ntp链接超时,请重启!",0,20)
         oled.show()
     else:
-        clock=UI.Clock(64,32,30)      
+        clock=Clock(oled,64,32,30)      
 
         def Refresh(_):
             clock.settime()

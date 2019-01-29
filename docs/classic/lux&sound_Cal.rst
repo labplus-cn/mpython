@@ -7,7 +7,7 @@
 
     from mpython import *
 
-    u=UI()
+    u=UI(oled)
     while True:
         oled.fill(0)
         lightValue=numberMap(light.read(),0,4093,0,100)

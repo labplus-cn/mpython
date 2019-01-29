@@ -27,16 +27,14 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 
 ---------
 
-.. toctree::
-   :maxdepth: 1
-   :caption: mPython掌控板
+mPython掌控板资料
+---------
 
-   board/introduction.rst
-   board/hardware.rst
-   board/drive.rst
-   board/mpython2.rst
-   board/mpythonX.rst
-   board/flashburn.rst
+.. toctree::
+   :maxdepth: 2
+   
+   board/index.rst
+
 
 ---------
 
@@ -99,12 +97,15 @@ mPython类库
    library/mPython/music.rst 
    library/mPython/urequests.rst   
    library/mPython/umqtt.simple.rst   
+   library/mPython/servo.rst   
 
 ======================================   ====================================================================  
  :ref:`mpython模块<mpython.py>`           提供了mPython掌控板特有拓展类。获取最新的 :download:`mpython.py </../examples/library/mpython.py>` 。
  :ref:`music模块<music.py>`               兼容micro:bit music 模块
  :ref:`urequests模块<urequests>`          从CPython移植过来的HTTP客户端的第三方库,提供各种HTTP请求方式
  :ref:`umqtt.simple模块<umqtt.simple>`    提供简单MQTT客户端功能 
+ :ref:`servo模块<servo>`                  舵机驱动 
+ :ref:`gui模块<gui>`                      提供GUI类的绘制元素 
 ======================================   ====================================================================
 
 ---------
