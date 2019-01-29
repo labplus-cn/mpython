@@ -30,8 +30,8 @@ class UI():
             self.display.fill_rect(x,y+(height-Progress),width,Progress,1)
 
 class multiScreen():
-    def __init__(self,display, framelist, w, h):
-        self.display = display
+    def __init__(self,oled, framelist, w, h):
+        self.display = oled
         self.framelist=framelist
         self.width=w
         self.hight=h
@@ -61,8 +61,8 @@ class multiScreen():
         self.drawScreen(self.index)
 
 class Clock:
-    def __init__(self,display, x, y, radius):          #定义时钟中心点和半径
-        self.display = display
+    def __init__(self,oled, x, y, radius):          #定义时钟中心点和半径
+        self.display = oled
         self.xc=x
         self.yc=y
         self.r=radius
