@@ -36,6 +36,7 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
    board/drive.rst
    board/mpython2.rst
    board/mpythonX.rst
+   board/flashburn.rst
 
 ---------
 

@@ -5,7 +5,7 @@
    :maxdepth: 1
    :numbered:
 
-   prepare/index.rst
+   repl.rst
    oled.rst
    neopixel.rst
    buzz.rst
