@@ -44,9 +44,10 @@ mPython掌控板载3颗WS2812灯珠，WS2812是一种集成了电流控制芯片
 
 例：点亮外部彩带
 ::
+
     from mpython import *
-    import machine, neopixel
-    np = neopixel.NeoPixel(machine.Pin(18), n=10,bpp=3,timing=1)
+    import neopixel
+    np = neopixel.NeoPixel(Pin(Pin.P13), n=10,bpp=3,timing=1)
 
     def demo(np):
         n = np.n
@@ -84,9 +85,9 @@ mPython掌控板载3颗WS2812灯珠，WS2812是一种集成了电流控制芯片
         for i in range(n):
             np[i] = (0, 0, 0)
         np.write()
-    
+
     while True:
-    
+
         demo(np)
     
     

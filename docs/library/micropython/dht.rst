@@ -19,14 +19,14 @@ dht模块中提供了dht系列温湿度传感器读取相关的函数。
   .. admonition:: ESP32支持引脚
       :class: attention
 
-      GPIO0/2/4/5/16/17/18/19/21/22/23/25/26/27
+      * GPIO0/2/4/5/16/17/18/19/21/22/23/25/26/27
 
 示例::
 
   from machine import Pin
   import dht
 
-  d = dht.DHT22(Pin(25))
+  d = dht.DHT22(Pin(Pin.P0))
 
 方法
 ~~~~~~~

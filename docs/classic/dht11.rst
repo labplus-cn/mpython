@@ -17,9 +17,11 @@ DHT11数字温湿度传感器和掌控板连接需要借助掌控扩展版，在
 
 例：显示DHT11读取的温湿度
 ::
-    from mpython import *
 
-    dht=DHT11(0)
+    from mpython import *
+    from dht import DHT11
+    
+    dht=DHT11(Pin(Pin.P0))
 
     while True:
         dht.measure()
@@ -36,13 +38,14 @@ DHT11数字温湿度传感器和掌控板连接需要借助掌控扩展版，在
     :align: center
 
 
-使用前，导入mpython模块::
+使用前，导入mpython模块和DHT11类::
 
   from mpython import *
+  from dht import DHT11
 
-实例化DHT11类，并设置引脚P0::
+实例化DHT11类，并设置mPython引脚P0::
 
-  dht=DHT11(0)
+  dht=DHT11(Pin(Pin.P0))
 
 DHT11测量并返回温湿度数据::
 

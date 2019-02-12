@@ -4,16 +4,13 @@ I2C
 I2C是设备之间的两线通信协议。在物理层它只需要两个信号线：SCL 和 SDA，分别是时钟和数据线。
 I2C 对象关联到总线，它可以在创建时初始化，也可以稍后初始化。
 
-.. Caution::
-
-    目前掌控板的I2C功能还不支持mPython定义的引脚！如要使用I2C,请参考micropython有关 :ref:`machine.I2C<machine.I2C>` 的写法,引脚为esp32的IO引脚。
 
 示例::
 
-    from machine import Pin, I2C
+    from mpython import *
 
     # construct an I2C bus
-    i2c = I2C(scl=Pin(5), sda=Pin(4), freq=100000)
+    i2c = I2C(scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=100000)
 
     i2c.readfrom(0x3a, 4)   # read 4 bytes from slave device with address 0x3a
     i2c.writeto(0x3a, '12') # write '12' to slave device with address 0x3a
@@ -30,7 +27,7 @@ sht20温湿度模块的示例::
 
     from mpython import *
 
-    i2c = I2C(scl=Pin(22), sda=Pin(23),freq=100000)      
+    i2c = I2C(scl=Pin(Pin.P19), sda=Pin(Pin.P20),freq=100000)      
                                                                                             
     def temperature():
         i2c.writeto(0x40,b'\xf3',False)
