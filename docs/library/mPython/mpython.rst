@@ -227,12 +227,18 @@ oled对象为framebuf的衍生类，继承framebuf的方法。更多的使用方
 
 翻转像素点。当n=1时,未填充像素点点亮,填充像素点灭。当n=0时,则反。默认启动是填充像素点点亮。
 
-.. method:: oled.DispChar(s, x, y)
+.. method:: oled.DispChar(s, x, y,mode=TextMode.normal)
 
 oled屏显示文本。
 
     - ``s`` -需要显示的文本。
     - ``x`` 、``y`` -文本的左上角作为起点坐标。
+    - ``mode`` - 设置文本模式,默认为TextMode.normal
+
+        - ``TextMode.normal`` - 等于1 。普通模式,文本显示白色,背景为黑色。
+        - ``TextMode.rev`` - 等于2 。反转模式,文本显示黑色,背景为白色。
+        - ``TextMode.trans`` - 等于3 。透明模式,透明文本意味着文本被写在显示中已经可见的内容之上。不同之处在于，以前屏幕上的内容仍然可以看到，而对于normal，背景将被当前选择的背景颜色所替代。
+        - ``TextMode.xor`` - 等于4 。XOR模式,如果背景是黑色的，效果与默认模式(normal模式)相同。如果背景为白色，则反转文本。
 
 .. method:: oled.show()
 
