@@ -1,19 +1,19 @@
-Archive member included to satisfy reference by file (symbol)
+由于文件 (符号) 而包含了归档成员
 
 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
                               /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o (__libc_csu_init)
 
-As-needed library included to satisfy reference by file (symbol)
+按需库被包含以满足文件 (符号) 引用
 
 libm.so.6                     build/py/objfloat.o (fmod@@GLIBC_2.2.5)
 libc.so.6                     build/main.o (__printf_chk@@GLIBC_2.3.4)
 
-Allocating common symbols
-Common symbol       size              file
+分配公共符号
+公共符号            大小              文件
 
 mp_state_ctx        0x340             build/py/mpstate.o
 
-Discarded input sections
+舍弃的输入节
 
  .rodata.cst4   0x0000000000000000        0x4 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o
  .data          0x0000000000000000        0x4 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o
@@ -1585,12 +1585,12 @@ Discarded input sections
  .note.GNU-stack
                 0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
 
-Memory Configuration
+内存配置
 
-Name             Origin             Length             Attributes
+名称           来源             长度             属性
 *default*        0x0000000000000000 0xffffffffffffffff
 
-Linker script and memory map
+链结器命令稿和内存映射
 
 LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o
 LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o
@@ -3730,7 +3730,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
  *fill*         0x000000000001dadb        0x5 
  .rodata.gc_free.part.0.str1.8
                 0x000000000001dae0       0x20 build/py/gc.o
-                                         0x1f (size before relaxing)
+                                         0x1f (松开之前的大小)
  .rodata.gc_realloc.str1.1
                 0x000000000001db00       0x1c build/py/gc.o
  *fill*         0x000000000001db1c        0x4 
@@ -3753,7 +3753,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000001e698        0xe build/py/vstr.o
  .rodata.mp_print_mp_int.str1.1
                 0x000000000001e6a6       0x43 build/py/mpprint.o
-                                         0x44 (size before relaxing)
+                                         0x44 (松开之前的大小)
  .rodata.mp_vprintf.str1.1
                 0x000000000001e6e9       0x39 build/py/mpprint.o
  *fill*         0x000000000001e722        0x6 
@@ -3804,7 +3804,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000001e920       0x56 build/py/lexer.o
  .rodata.str1.1
                 0x000000000001e976       0x94 build/py/lexer.o
-                                         0xc8 (size before relaxing)
+                                         0xc8 (松开之前的大小)
  *fill*         0x000000000001ea0a       0x16 
  .rodata.tok_enc_kind
                 0x000000000001ea20       0x2a build/py/lexer.o
@@ -3862,14 +3862,14 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000001f27a        0x7 build/py/scope.o
  .rodata.compile_scope_func_lambda_param.str1.1
                 0x000000000001f281       0x8a build/py/compile.o
-                                         0xb5 (size before relaxing)
+                                         0xb5 (松开之前的大小)
  .rodata.compile_star_expr.str1.1
                 0x000000000001f30b       0x1d build/py/compile.o
  .rodata.compile_node.str1.1
                 0x000000000001f328       0x32 build/py/compile.o
  .rodata.c_assign.str1.1
                 0x000000000001f35a       0xc6 build/py/compile.o
-                                         0xea (size before relaxing)
+                                         0xea (松开之前的大小)
  .rodata.c_assign_tuple.str1.1
                 0x000000000001f420       0x1a build/py/compile.o
  .rodata.compile_subscript.str1.1
@@ -4042,7 +4042,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x0000000000020150       0x15 build/py/compile.o
  .rodata.mp_emit_common_id_op.str1.1
                 0x0000000000020165       0x52 build/py/emitcommon.o
-                                         0x5d (size before relaxing)
+                                         0x5d (松开之前的大小)
  *fill*         0x00000000000201b7        0x9 
  .rodata.__PRETTY_FUNCTION__.3923
                 0x00000000000201c0       0x15 build/py/emitcommon.o
@@ -4108,14 +4108,14 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
  .rodata.cst8   0x0000000000020608       0x30 build/py/formatfloat.o
  *fill*         0x0000000000020638        0x8 
  .rodata.cst16  0x0000000000020640       0x10 build/py/formatfloat.o
-                                         0x20 (size before relaxing)
+                                         0x20 (松开之前的大小)
  .rodata.mp_parse_num_integer.str1.1
                 0x0000000000020650       0x4d build/py/parsenum.o
  .rodata.mp_parse_num_decimal.str1.1
                 0x000000000002069d       0x1a build/py/parsenum.o
  *fill*         0x00000000000206b7        0x1 
  .rodata.cst8   0x00000000000206b8       0x20 build/py/parsenum.o
-                                         0x28 (size before relaxing)
+                                         0x28 (松开之前的大小)
  .rodata.cst16  0x00000000000206d8       0x10 build/py/parsenum.o
  .rodata.save_raw_code.str1.1
                 0x00000000000206d8       0x41 build/py/persistentcode.o
@@ -4140,7 +4140,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x0000000000020858       0x57 build/py/runtime.o
  .rodata.mp_binary_op.str1.1
                 0x00000000000208af       0x3a build/py/runtime.o
-                                         0x49 (size before relaxing)
+                                         0x49 (松开之前的大小)
  *fill*         0x00000000000208e9        0x3 
  .rodata.mp_binary_op
                 0x00000000000208ec       0x88 build/py/runtime.o
@@ -4174,7 +4174,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x0000000000020c04        0xb build/py/obj.o
  .rodata.mp_obj_print_exception.str1.1
                 0x0000000000020c0f       0x59 build/py/obj.o
-                                         0x5b (size before relaxing)
+                                         0x5b (松开之前的大小)
  .rodata.mp_obj_get_float.str1.1
                 0x0000000000020c68       0x1a build/py/obj.o
  .rodata.mp_obj_get_complex.str1.1
@@ -4212,10 +4212,10 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
  .rodata.cst8   0x0000000000020f13        0x8 build/py/objcomplex.o
  .rodata.dict_view_print.str1.1
                 0x0000000000020f13        0x6 build/py/objdict.o
-                                          0x9 (size before relaxing)
+                                          0x9 (松开之前的大小)
  .rodata.dict_print.str1.1
                 0x0000000000020f19        0x2 build/py/objdict.o
-                                          0x7 (size before relaxing)
+                                          0x7 (松开之前的大小)
  .rodata.dict_update.str1.1
                 0x0000000000020f1b       0x26 build/py/objdict.o
  .rodata.dict_popitem.str1.1
@@ -4261,7 +4261,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
  .rodata.cst16  0x0000000000021181       0x20 build/py/objfloat.o
  *fill*         0x0000000000021181        0x7 
  .rodata.cst8   0x0000000000021188        0x8 build/py/objfloat.o
-                                         0x18 (size before relaxing)
+                                         0x18 (松开之前的大小)
  .rodata.fun_bc_call.str1.1
                 0x0000000000021190       0x38 build/py/objfun.o
  .rodata.fun_builtin_0_call.str1.1
@@ -4306,7 +4306,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x0000000000021420       0x10 build/py/objint.o
  .rodata.mp_obj_int_formatted_impl.str1.1
                 0x0000000000021430       0x13 build/py/objint_mpz.o
-                                         0x39 (size before relaxing)
+                                         0x39 (松开之前的大小)
  *fill*         0x0000000000021443        0x1 
  .rodata.mp_obj_int_unary_op
                 0x0000000000021444       0x20 build/py/objint_mpz.o
@@ -4314,7 +4314,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x0000000000021464       0x2d build/py/objint_mpz.o
  .rodata.mp_obj_int_binary_op.str1.1
                 0x0000000000021491       0x3f build/py/objint_mpz.o
-                                         0x63 (size before relaxing)
+                                         0x63 (松开之前的大小)
  .rodata.mp_obj_int_binary_op
                 0x00000000000214d0       0x74 build/py/objint_mpz.o
  *fill*         0x0000000000021544        0xc 
@@ -4333,7 +4333,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x00000000000215ca       0x14 build/py/objlist.o
  .rodata.list_print.str1.1
                 0x00000000000215de        0x2 build/py/objlist.o
-                                          0x7 (size before relaxing)
+                                          0x7 (松开之前的大小)
  .rodata.list_subscr.str1.1
                 0x00000000000215e0       0x1d build/py/objlist.o
  *fill*         0x00000000000215fd        0x3 
@@ -4347,7 +4347,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000002162c        0x3 build/py/objsingleton.o
  .rodata.slice_print.str1.1
                 0x000000000002162f        0x7 build/py/objslice.o
-                                          0xc (size before relaxing)
+                                          0xc (松开之前的大小)
  .rodata.mp_obj_slice_get.str1.1
                 0x0000000000021636       0x39 build/py/objslice.o
  *fill*         0x000000000002166f        0x1 
@@ -4357,7 +4357,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x0000000000021681       0x2b build/py/objstr.o
  .rodata.mp_str_print_quoted.str1.1
                 0x00000000000216ac       0x17 build/py/objstr.o
-                                         0x1a (size before relaxing)
+                                         0x1a (松开之前的大小)
  .rodata.str_print.str1.1
                 0x00000000000216c3        0x7 build/py/objstr.o
  .rodata.str_finder.str1.1
@@ -4399,18 +4399,18 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
  .rodata.cst8   0x0000000000021bd8        0x8 build/py/objstr.o
  .rodata.uni_print.str1.1
                 0x0000000000021be0        0xe build/py/objstrunicode.o
-                                         0x2d (size before relaxing)
+                                         0x2d (松开之前的大小)
  .rodata.str_index_to_ptr.str1.1
                 0x0000000000021bee       0x42 build/py/objstrunicode.o
  .rodata.str_subscr.str1.1
                 0x0000000000021c30       0x2b build/py/objstrunicode.o
-                                         0x5c (size before relaxing)
+                                         0x5c (松开之前的大小)
  *fill*         0x0000000000021c5b        0x5 
  .rodata.__PRETTY_FUNCTION__.3894
                 0x0000000000021c60        0xb build/py/objstrunicode.o
  .rodata.mp_obj_tuple_print.str1.1
                 0x0000000000021c6b        0x2 build/py/objtuple.o
-                                          0x9 (size before relaxing)
+                                          0x9 (松开之前的大小)
  .rodata.mp_obj_tuple_subscr.str1.1
                 0x0000000000021c6d       0x31 build/py/objtuple.o
  .rodata.mp_obj_tuple_get.str1.1
@@ -4426,7 +4426,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x0000000000021d03       0x1d build/py/objtype.o
  .rodata.mp_obj_class_lookup.str1.1
                 0x0000000000021d20       0x3e build/py/objtype.o
-                                         0x6c (size before relaxing)
+                                         0x6c (松开之前的大小)
  .rodata.mp_obj_instance_attr.str1.1
                 0x0000000000021d5e       0x47 build/py/objtype.o
  .rodata.instance_print.str1.1
@@ -4500,13 +4500,13 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
 .eh_frame       0x00000000000224a0       0xe8
  *(.eh_frame)
  .eh_frame      0x00000000000224a0       0x30 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o
-                                         0x2c (size before relaxing)
+                                         0x2c (松开之前的大小)
  *fill*         0x00000000000224d0        0x0 
  .eh_frame      0x00000000000224d0       0x40 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o
  .eh_frame      0x0000000000022510       0x18 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o
-                                         0x30 (size before relaxing)
+                                         0x30 (松开之前的大小)
  .eh_frame      0x0000000000022528       0x5c /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
-                                         0x78 (size before relaxing)
+                                         0x78 (松开之前的大小)
  .eh_frame      0x0000000000022584        0x4 /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o
  *(.eh_frame.*)
 
@@ -5127,7 +5127,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
 .comment        0x0000000000000000       0x2a
  *(.comment)
  .comment       0x0000000000000000       0x2a /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o
-                                         0x2b (size before relaxing)
+                                         0x2b (松开之前的大小)
  .comment       0x000000000000002a       0x2b build/py/mpstate.o
  .comment       0x000000000000002a       0x2b build/py/nlr.o
  .comment       0x000000000000002a       0x2b build/py/nlrx64.o
@@ -5258,9 +5258,9 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
  *(.gnu.lto_*)
 OUTPUT(mpy-cross elf64-x86-64)
 
-Cross Reference Table
+交叉引用表
 
-Symbol                                            File
+符号                                            文件
 GLIBC_2.10                                        /lib/x86_64-linux-gnu/libc.so.6
 GLIBC_2.11                                        /lib/x86_64-linux-gnu/libc.so.6
 GLIBC_2.12                                        /lib/x86_64-linux-gnu/libc.so.6

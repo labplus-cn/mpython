@@ -57,6 +57,7 @@ INC += -I$(TOP)/lib/mp-readline
 INC += -I$(TOP)/lib/netutils
 INC += -I$(TOP)/lib/timeutils
 INC += -I$(BUILD)
+INC += -I$(TOP)/ports/esp32/codec/helix/include
 
 INC_ESPCOMP += -I$(ESPCOMP)/bootloader_support/include
 INC_ESPCOMP += -I$(ESPCOMP)/bootloader_support/include_bootloader
@@ -107,6 +108,8 @@ CFLAGS_BASE = -std=gnu99 $(CFLAGS_COMMON) -DMBEDTLS_CONFIG_FILE='"mbedtls/esp_co
 CFLAGS = $(CFLAGS_BASE) $(INC) $(INC_ESPCOMP)
 CFLAGS += -DIDF_VER=\"$(IDF_VER)\"
 CFLAGS += $(CFLAGS_MOD)
+CFLAGS += -DARM -DCONFIG_AUDIO_HELIX    # 避免编译音频库出错
+CFLAGS += -Wno-unused-but-set-variable
 
 # this is what ESPIDF uses for c++ compilation
 CXXFLAGS = -std=gnu++11 $(CFLAGS_COMMON) $(INC) $(INC_ESPCOMP)
@@ -228,6 +231,25 @@ DRIVERS_SRC_C = $(addprefix drivers/,\
 	dht/dht.c \
 	)
 
+CODEC_SRC_C = $(addprefix codec/,\
+	modcodec.c \
+	helix/src/bitstream.c \
+	helix/src/buffers.c \
+	helix/src/dct32.c \
+	helix/src/dequant.c \
+	helix/src/dqchan.c \
+	helix/src/huffman.c \
+	helix/src/hufftabs.c \
+	helix/src/imdct.c \
+	helix/src/mp3dec.c \
+	helix/src/mp3tabs.c \
+	helix/src/polyphase.c \
+	helix/src/scalfact.c \
+	helix/src/stproc.c \
+	helix/src/subband.c \
+	helix/src/trigtabs.c \
+	)
+
 OBJ_MP =
 OBJ_MP += $(PY_O)
 OBJ_MP += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
@@ -235,9 +257,10 @@ OBJ_MP += $(addprefix $(BUILD)/, $(Labplus_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(EXTMOD_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(LIB_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(DRIVERS_SRC_C:.c=.o))
+OBJ_MP += $(addprefix $(BUILD)/, $(CODEC_SRC_C:.c=.o))
 
 # List of sources for qstr extraction
-SRC_QSTR += $(SRC_C) $(EXTMOD_SRC_C) $(LIB_SRC_C) $(DRIVERS_SRC_C)
+SRC_QSTR += $(SRC_C) $(EXTMOD_SRC_C) $(LIB_SRC_C) $(DRIVERS_SRC_C) $(CODEC_SRC_C)
 # Append any auto-generated sources that are needed by sources listed in SRC_QSTR
 SRC_QSTR_AUTO_DEPS +=
 
@@ -255,6 +278,7 @@ ESPIDF_DRIVER_O = $(addprefix $(ESPCOMP)/driver/,\
 	rtc_module.o \
 	mcpwm.o \
 	i2c.o \
+	i2s.o \
 	)
 
 $(BUILD)/$(ESPCOMP)/esp32/dport_access.o: CFLAGS += -Wno-array-bounds
