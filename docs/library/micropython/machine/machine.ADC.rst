@@ -20,7 +20,7 @@
 
       from machine import ADC, Pin
 
-      adc = ADC(Pin(34))      # create an ADC object
+      adc = ADC(Pin(33))      # create an ADC object
 
 
 方法
@@ -30,18 +30,12 @@
 
    读取ADC并返回读取结果，返回的值将在0到4095之间。
 
-示例::
 
-      from machine import ADC, Pin
-
-      adc = ADC(Pin(34))      # create an ADC object
-      x = adc.read()
-      print(x)
 
 
 .. method:: ADC.atten(db)
 
-      设置衰减比（即满量程的电压，比如11db满量程时电压为3.3V）。
+      设置衰减比（即满量程的电压，比如11db满量程时电压为3.3V）,默认为``ADC.ATTIN_0DB``。
 
        - ``db``：衰减比, ``ADC.ATTIN_0DB`` 、``ADC.ATTN_2_5_DB``、``ADC.ATTN_6DB``、``ADC.ATTN_11DB``
 
@@ -52,6 +46,16 @@
 
        - ``bit``： ``ADC.WIDTH_9BIT`` 、 ``ADC.WIDTH_10BIT`` 、 ``ADC.WIDTH_11BIT`` 、 ``ADC.WIDTH_12BIT``
 
+
+
+示例::
+
+      from machine import ADC, Pin
+
+      adc = ADC(Pin(34))      # create an ADC object
+      adc.atten(adc.ATTN_11DB)   # set 3.3V Range
+      x = adc.read()
+      print(x)
 
 常量
 ---------
