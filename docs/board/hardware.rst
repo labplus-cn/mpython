@@ -44,13 +44,19 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
     - 支持I2C、UART、SPI通讯协议
 
 
+外观规格
+--------------
+
+.. image:: /images/掌控-规格图-20190218.png
+  :width: 800px
+
 元件布局
 --------------
 
 .. image:: /images/布局-正面.png
-
+  :width: 800px
 .. image:: /images/布局-背面.png
-
+  :width: 800px
 
 .. _mpython_pinout:
 
@@ -58,11 +64,13 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
 --------------
 
 .. image:: /images/掌控板引脚定义-正面.png
+  :width: 800px
 
 .. image:: /images/掌控板引脚定义-背面.png
+  :width: 800px
 
 .. image:: /images/掌控板-pinout_wroom.png
-
+  :width: 800px
 
 .. _mPythonPindesc:
 
@@ -121,3 +129,7 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
 * :download:`加速度计:MSA300 </../docs/hardware/MSA300-V1.0-ENG.pdf>`
 * :download:`OLED：128x64 </../docs/hardware/1.30-SPEC QG-2864KSWLG01 VER A.pdf>`
 
+外观规格图
++++++++
+
+* :download:`mPython掌控板外观规格图 </../docs/hardware/掌控-外观规格图20190218..rar>`
