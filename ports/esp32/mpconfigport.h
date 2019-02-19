@@ -150,6 +150,7 @@
 #define MICROPY_PY_WEBREPL                  (1)
 #define MICROPY_PY_FRAMEBUF                 (1)
 #define MICROPY_PY_USOCKET_EVENTS           (MICROPY_PY_WEBREPL)
+#define MICROPY_PY_UHASHLIB_MD5             (1)
 
 // fatfs configuration
 #define MICROPY_FATFS_ENABLE_LFN            (1)
