@@ -117,7 +117,18 @@ void oled_print(const char * str, int x0, int y0)
     while(*str) {
         char c = *str++;
         if ( c < 32 || c > 127) {
-            c = 127;
+            if (c == '\n') {
+                y0 += 8;
+                x0 = 0;
+                continue;
+            } else {
+                c = 32;
+            }
+        }
+        // auto new line,when reach the right sidle
+        if (x0 >= OLED_WIDTH) {
+            y0 += 8;
+            x0 = 0;
         }
         // get char data
         const uint8_t *chr_data = &font_petme128_8x8[(c - 32) * 8];

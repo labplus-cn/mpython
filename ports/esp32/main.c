@@ -77,6 +77,35 @@ static void timer_1ms_ticker(void *args)
     mpython_music_tick();
 }
 
+void mpython_display_exception(mp_obj_t exc_in)
+{
+    mp_uint_t n, *values;
+    mp_obj_exception_get_traceback(exc_in, &n, &values);
+    if (1) {
+        vstr_t vstr;
+        mp_print_t print;
+        vstr_init_print(&vstr, 50, &print);
+        #if MICROPY_ENABLE_SOURCE_LINE
+        if (n >= 3) {
+            mp_printf(&print, "line %u\n", values[1]);
+        }
+        #endif
+        if (mp_obj_is_native_exception_instance(exc_in)) {
+            mp_obj_exception_t *exc = (mp_obj_exception_t*)MP_OBJ_TO_PTR(exc_in);
+            mp_printf(&print, "%q:\n  ", exc->base.type->name);
+            if (exc->args != NULL && exc->args->len != 0) {
+                mp_obj_print_helper(&print, exc->args->items[0], PRINT_STR);
+            }
+        }
+        oled_init();
+        oled_clear();
+        oled_print(vstr_null_terminated_str(&vstr), 0, 0);
+        oled_show();
+        vstr_clear(&vstr);
+        oled_deinit();
+    }
+}
+
 void mp_task(void *pvParameter) {
     volatile uint32_t sp = (uint32_t)get_sp();
     #if MICROPY_PY_THREAD
@@ -92,8 +121,9 @@ void mp_task(void *pvParameter) {
 soft_reset:
     // startup
     oled_init();
-    oled_drawAnimation(ani_startup, 25, 50);
-    oled_clear();
+    oled_drawImg(ani_startup[24]);
+    //oled_drawAnimation(ani_startup, 25, 50);
+    //oled_clear();
     oled_show();
     oled_deinit();
     
@@ -126,12 +156,6 @@ soft_reset:
     int exit_code = pyexec_file("boot.py");
     if (pyexec_mode_kind == PYEXEC_MODE_FRIENDLY_REPL) {
         exit_code = pyexec_file("main.py");
-    }
-    if (exit_code != 1) {
-        oled_init();
-        oled_drawImg(img_panic);
-        oled_show();
-        oled_deinit();
     }
 
     for (;;) {
