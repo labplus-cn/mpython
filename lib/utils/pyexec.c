@@ -54,6 +54,7 @@ STATIC bool repl_display_debugging_info = 0;
 #define EXEC_FLAG_SOURCE_IS_VSTR (16)
 #define EXEC_FLAG_SOURCE_IS_FILENAME (32)
 
+extern void mpython_display_exception(mp_obj_t exc_in);
 // parses, compiles and executes the code in the lexer
 // frees the lexer before returning
 // EXEC_FLAG_PRINT_EOF prints 2 EOF chars: 1 after normal output, 1 after exception output
@@ -119,7 +120,13 @@ STATIC int parse_compile_execute(const void *source, mp_parse_input_kind_t input
             ret = pyexec_system_exit;
         } else {
             mp_obj_print_exception(&mp_plat_print, MP_OBJ_FROM_PTR(nlr.ret_val));
-            ret = 0;
+           
+            if ((exec_flags & EXEC_FLAG_SOURCE_IS_FILENAME) &&
+                mp_obj_is_subclass_fast(MP_OBJ_FROM_PTR(((mp_obj_base_t*)nlr.ret_val)->type), MP_OBJ_FROM_PTR(&mp_type_KeyboardInterrupt)) == false) {
+                    mpython_display_exception(MP_OBJ_FROM_PTR(nlr.ret_val));
+            }
+
+            ret  = 0;
         }
     }
 
