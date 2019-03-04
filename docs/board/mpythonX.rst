@@ -4,7 +4,7 @@ mPythonX IDE
 软件安装
 -----------
 
-目前最新版本为0.2.3，支持Windows 7/8/10、Windows XP、Macos、树莓派、虚谷号：
+目前最新版本为0.2.3，支持Windows 7/8/10、Windows XP、Macos、树莓派、虚谷号： 
 
 http://static.steamaker.cn/files/mPythonXSetup0.2.3.exe
 (Win 7 / 8 / 10)
