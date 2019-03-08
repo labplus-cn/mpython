@@ -56,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'mPython掌控'
-copyright = u'2018, labplus'
+copyright = u'2019, labplus'
 author = u'tangliufeng'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -64,7 +64,7 @@ author = u'tangliufeng'
 # built documents.
 #
 # The short X.Y version.
-version = release = '1.0.3'
+version = release = '1.0.5'
 # The full version, including alpha/beta/rc tags.
 
 

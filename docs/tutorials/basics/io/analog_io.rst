@@ -8,6 +8,7 @@
     你可以查阅 :ref:`掌控板接口引脚说明<mPythonPindesc>` ,了解可供使用的模拟引脚 。
 
 
+.. _analog_in:
 
 模拟输入
 --------
@@ -53,13 +54,32 @@
     因为adc采样数据宽度为12bit，所以满量程为4095。
 
 
-接下来，你可以接入阻性的电子器件，如光敏、热敏电阻。观察测量的输入值变化……
+EXT鳄鱼夹
++++++++++
+
+接下来，你可以通过鳄鱼夹线将阻性元件(如光敏、热敏电阻)接到掌控板的 ``EXT`` 和 ``GND`` 焊盘 ,测量传感器的输入值变化……
+
+
+EXT连接是掌控板的P3引脚::
+
+    from mpython import *           # 导入mpython模块
+
+        p3=MPythonPin(3,PinMode.ANALOG)     # 实例化MPythonPin,将P3设置为"PinMode.ANALOG"模式
+        while True:
+            value=p3.read_analog()          # 读取EXT(P3)引脚模拟量
+            oled.DispChar("analog:%d" %value,30,20)
+            oled.show()
+            oled.fill(0)
+
+.. image:: /images/tutorials/ext.png
+    :width: 180
+    :align: center
 
 
 模拟输出
 --------
 
-.. admonition:: 什么是模拟输入呢？
+.. admonition:: 什么是模拟输出呢？
 
     电路板的引脚不能像音频放大器那样输出模拟信号 - 通过调制引脚上的电压。这些引脚只能使能全3.3V输出，或者将其下拉至0V。
     然而，仍然可以通过非常快速地接通和断开该电压来控制LED的亮度或电动机的速度，并控制它的开启时间和关闭时间。

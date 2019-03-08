@@ -7,7 +7,6 @@
    introduction.rst
    hardware.rst
    drive.rst
-   mpython2.rst
    mpythonX.rst
+   mpython2.rst
    flashburn.rst
-   release.rst

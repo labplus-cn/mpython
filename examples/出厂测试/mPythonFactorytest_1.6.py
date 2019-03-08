@@ -2,7 +2,7 @@
 from machine import Timer,UART
 from mpython import *
 import time,ubinascii,framebuf,network
-import machine
+import machine,music
 
 
 logo = bytearray([\
@@ -102,17 +102,17 @@ machine_id = ubinascii.hexlify(machine.unique_id()).decode().upper()
 # a,b按键中断处理函数：蜂鸣器响
 def btn_A_irq(_):
     if button_a.value() == 0:
-        buzz.on()
+        music.pitch(1000)
     else:
-        buzz.pwm.freq(20)
-        buzz.off()
+        
+        music.stop()
 
 def btn_B_irq(_):
     if button_b.value() == 0:
-        buzz.on()
+        music.pitch(1000)
     else:
-        buzz.pwm.freq(20)
-        buzz.off()
+       
+        music.stop()
     
     
 def testoled():
