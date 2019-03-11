@@ -37,7 +37,7 @@ mPython掌控板载3颗WS2812灯珠，WS2812是一种集成了电流控制芯片
     rgb.write()
 
 
-
+.. _neopixel_strip:
     
 外部彩带
 ----------
@@ -137,4 +137,7 @@ mPython掌控板载3颗WS2812灯珠，WS2812是一种集成了电流控制芯片
 如果需要使用外部彩带，要先创建一个neopixel对象,定义 ``pin`` 、``bpp`` 、 ``timeing`` 参数，然后才能通过该对象控制彩带上的LED。
 更详细的使用方法，请查阅 :ref:`neopixel<neopixel>` 模块 。
 
+.. Hint:: 
 
+   | mPyhton提供 ``neopixel`` 增强版 ``ledstrip`` 模块，已封装有更丰富的neopixel显示效果，操作简单。详细说明，请到以下链接。
+   | mPython-ledstrip：https://github.com/labplus-cn/mPython_ledstrip

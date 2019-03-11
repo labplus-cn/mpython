@@ -52,9 +52,51 @@ RGB光环板
 +++++++++++
 
 它是由24颗LED WS2812 排列成外径71mm的圆环。这些灯是串联的(将一个输出引脚连接到另一个输入引脚)。只需要控制器一个引脚来控制！每个LED都可以寻址，因为驱动芯片在LED内部。
-每个LED都有~18mA恒流驱动，所以即使电压变化，颜色也会非常一致。
+每个LED都有18mA恒流驱动，所以即使电压变化，颜色也会非常一致。
 
+.. figure:: /images/extboard/pixelRing.png
+    :align: center
+    :width: 250
 
+    光环板的WS2812顺时针排序，0~23
+
+有关neopixel用法，可查阅 :ref:`RGB LED-外部灯带<neopixel_strip>`  章节 和 :ref:`neopixel<neopixel>` 模块 ，此处不再重复。
+
+除 ``neopixel`` 模块外,mPython掌控板还提供 ``ledstrip`` 模块(neopixel增强版)，封装多种显示效果，使用简单。 
+
+| *mPython-ledstrip:* https://github.com/labplus-cn/mPython_ledstrip
+
+使用前，先将ledstrip.py拷至掌控板::
+
+    from ledstrip import *                      # 导入ledstrip
+    from machine import Pin                     # 导入machine的Pin类
+
+    strip=LedStrip(pin=Pin.P15,n=24,brightness=0.5)     # 实例LedStrip,引脚P15，灯数24，亮度50%
+
+    # 以下为不同效果演示
+    print("rainbow")
+    strip.rainbow()  
+    print("rainbow_cycle")
+    strip.rainbow_cycle()  
+    print("cycle")
+    strip.cycle((50,50,50))
+    print("bounce")
+    strip.bounce((0,0,50))
+    strip.clear()
+    print("colorWipe")
+    strip.colorWipe((0,50,0))
+    print("theaterChase")
+    strip.theaterChase((50,0,0))
+    print("theaterChaseRainbow")
+    strip.theaterChaseRainbow(wait=5)
+    print("cylonBounce")
+    strip.cylonBounce((0,0,50),4,10,50)
+    print("runningLight")
+    strip.runningLight((50,50,0),20)
+
+    print("meteorRain")
+    for i in  range(5):
+        strip.meteorRain((100,100,100),8,60,True,20)
 
 blue:bit模块
 +++++++++++
