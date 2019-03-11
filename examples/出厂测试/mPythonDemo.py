@@ -7,7 +7,7 @@ from math import sin, cos
 
 data=(2018, 12, 15, 6, 8,30, 0, 0)
 RTC().datetime(data)
-clock=UI.Clock(64,32,30)
+clock=Clock(oled,64,32,30)
 
 mode=0
 modeNum=5
@@ -21,23 +21,26 @@ def scanBtnThread(_):
     lastaState =0
     lastbState =0
     while True:
-        aState=button_a.value()
-        bState=button_b.value()
-        if aState!=lastaState:
-            sleep_ms(20)
-            if aState==0:
-                mode=mode-1
-                mode=mode % modeNum
-                print("mode:%d" %mode)
-            lastaState=aState
-        if bState!=lastbState:
-            sleep_ms(20)
-            if bState==0:
-                mode=mode+1
-                mode=mode % modeNum
-                print("mode:%d" %mode)
-            lastbState=bState
-
+        try:
+            aState=button_a.value()
+            bState=button_b.value()
+            if aState!=lastaState:
+                sleep_ms(20)
+                if aState==0:
+                    mode=mode-1
+                    mode=mode % modeNum
+                    print("mode:%d" %mode)
+                lastaState=aState
+            if bState!=lastbState:
+                sleep_ms(20)
+                if bState==0:
+                    mode=mode+1
+                    mode=mode % modeNum
+                    print("mode:%d" %mode)
+                lastbState=bState
+        except KeyboardInterrupt:
+            _thread.exit()
+            # break
 _thread.start_new_thread(scanBtnThread,(1,))
     
 def Refresh(_):

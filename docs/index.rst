@@ -16,6 +16,7 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 
 | GitHub开源: https://github.com/labplus-cn/mPython
 | mPython掌控板文档在线托管: https://mPython.readthedocs.io
+| mPythonX IDE 软件编程文档在线托管: https://mPythonX.readthedocs.io
 
 .. Hint::
 
@@ -86,7 +87,7 @@ MicroPython类库
 ---------
 
 mPython类库
-++++++
+==========
 
 .. toctree::
    :maxdepth: 1
@@ -96,11 +97,11 @@ mPython类库
    library/mPython/mpython.rst
    library/mPython/music.rst 
    library/mPython/urequests.rst   
-   library/mPython/umqtt.simple.rst   
+   library/mPython/umqtt.simple.rst                                                   
    library/mPython/servo.rst   
 
 ======================================   ====================================================================  
- :ref:`mpython模块<mpython.py>`           提供了mPython掌控板特有拓展类。获取最新的 :download:`mpython.py </../examples/library/mpython.py>` 。
+ :ref:`mpython模块<mpython.py>`           提供了mPython掌控板特有拓展类。获取最新的 :download:`mpython.py </../ports/esp32/modules/mpython.py>` 。
  :ref:`music模块<music.py>`               兼容micro:bit music 模块
  :ref:`urequests模块<urequests>`          从CPython移植过来的HTTP客户端的第三方库,提供各种HTTP请求方式
  :ref:`umqtt.simple模块<umqtt.simple>`    提供简单MQTT客户端功能 
@@ -118,7 +119,28 @@ mPython类库
  
 有关MicroPython特定语言功能的语言参考信息
 
----------
+
+
+.. toctree::
+   :hidden:
+   
+   release.rst
+
+
+掌控拓展板
+========
+
+.. toctree::
+   :hidden:
+
+   extboard/index.rst
+
+.. image:: /images/extboard/extboard_250.png
+  :scale: 80 %
+  :target: extboard/index.html
+
+
+------------------
 
 索引
 ==================

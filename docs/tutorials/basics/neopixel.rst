@@ -37,69 +37,107 @@ mPython掌控板载3颗WS2812灯珠，WS2812是一种集成了电流控制芯片
     rgb.write()
 
 
-
+.. _neopixel_strip:
     
 外部彩带
 ----------
+
+
+.. image:: /images/tutorials/glamour.jpg
+    :width: 600
+    :align: center
+
 
 例：点亮外部彩带
 ::
 
     from mpython import *
     import neopixel
-    np = neopixel.NeoPixel(Pin(Pin.P13), n=10,bpp=3,timing=1)
+    np = neopixel.NeoPixel(Pin(Pin.P15), n=24,bpp=3,timing=1)
 
-    def demo(np):
-        n = np.n
 
-        # cycle
-        for i in range(4 * n):
-            for j in range(n):
+    def wheel(pos):
+        # 通过改变在0和255之间的每个颜色参数产生彩虹色光谱
+        # Input a value 0 to 255 to get a color value.
+        # The colours are a transition r - g - b - back to r.
+        if pos < 0 or pos > 255:
+            r = g = b = 0
+        elif pos < 85:
+            r = int(pos * 3)
+            g = int(255 - pos*3)
+            b = 0
+        elif pos < 170:
+            pos -= 85
+            r = int(255 - pos*3)
+            g = 0
+            b = int(pos*3)
+        else:
+            pos -= 170
+            r = 0
+            g = int(pos*3)
+            b = int(255 - pos*3)
+        return (r, g, b) 
+
+    def cycle(np,r,g,b,wait=20):
+        # 循环效果,有一个像素在所有灯带位置上运行，而其他像素关闭。
+        for i in range(4 * np.n):
+            for j in range(np.n):
                 np[j] = (0, 0, 0)
-            np[i % n] = (255, 255, 255)
+            np[i % np.n] = (r, g, b)
             np.write()
-            sleep_ms(25)
+            sleep_ms(wait)
 
-        # bounce
+
+    def bounce(np,r,g,b,wait=20):
+        # 弹跳效果,等待时间决定了弹跳效果的速度
+        n=np.n
         for i in range(4 * n):
             for j in range(n):
-                np[j] = (0, 0, 128)
+                np[j] = (r, g, b)
             if (i // n) % 2 == 0:
                 np[i % n] = (0, 0, 0)
             else:
                 np[n - 1 - (i % n)] = (0, 0, 0)
             np.write()
-            sleep_ms(50)
+            sleep_ms(wait)
 
-        # fade in/out
-        for i in range(0, 4 * 256, 8):
-            for j in range(n):
-                if (i // 256) % 2 == 0:
-                    val = i & 0xff
-                else:
-                    val = 255 - (i & 0xff)
-                np[j] = (val, 0, 0)
+
+    def rainbow_cycle(np,wait_us):
+        # 彩虹效果
+        n=np.n
+        for j in range(255):
+            for i in range(n):
+                pixel_index = (i * 256 // n) + j
+                np[i] = wheel(pixel_index & 255)
             np.write()
-
-        # clear
-        for i in range(n):
-            np[i] = (0, 0, 0)
-        np.write()
+            sleep_us(wait_us)
 
     while True:
+        cycle(np,50,50,50,wait=20)
+        bounce(np,50,0,0,wait=20)
+        rainbow_cycle(np,20)
 
-        demo(np)
-    
-    
+
+.. figure:: /images/tutorials/neopixel_control_leds_cycle.png
+    :align: center
+
+    cycle循环效果
+
+.. figure:: /images/tutorials/neopixel_control_leds_bounce.png
+    :align: center
+
+    bounce弹跳效果
+
+.. figure:: /images/tutorials/neopixel_control_leds_rainbow.png
+    :align: center
+
+    rainbow彩虹效果
+
 
 如果需要使用外部彩带，要先创建一个neopixel对象,定义 ``pin`` 、``bpp`` 、 ``timeing`` 参数，然后才能通过该对象控制彩带上的LED。
 更详细的使用方法，请查阅 :ref:`neopixel<neopixel>` 模块 。
 
-.. image:: /images/tutorials/glamour.jpg
-    :height: 300
-    :width: 400
+.. Hint:: 
 
-
-
-
-  
+   | mPyhton提供 ``neopixel`` 增强版 ``ledstrip`` 模块，已封装有更丰富的neopixel显示效果，操作简单。详细说明，请到以下链接。
+   | mPython-ledstrip：https://github.com/labplus-cn/mPython_ledstrip
