@@ -1,4 +1,4 @@
-.. _servo:
+.. _servo_classic:
 
 驱动舵机
 ======

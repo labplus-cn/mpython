@@ -314,6 +314,14 @@ oled屏显示文本。
     - ``r`` -圆弧角半径
     - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
 
+i2c对象
+-------
+
+mPython掌控板已实例 ``I2C`` 类，P19、P20 为I2C的SCL、SDA引脚。I2C设备可连接掌控板I2C总线进行操作。
+
+
+详细有关I2C的读写操作，请查看 :ref:`machine.I2C<machine.I2C>` 模块或 :ref:`I2C基础教程<tutorials_i2c>` 章节。
+
 MPythonPin类
 -------
 
