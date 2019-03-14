@@ -79,37 +79,37 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
 
 
 
-=============  ====================================  
- 引脚          描述
-=============  ====================================
- P0            模拟/数字输入,模拟/数字输出,TouchPad
- P1            模拟/数字输入,模拟/数字输出,TouchPad 
- P2            模拟/数字输入
- P3            模拟输入,连接掌控板EXT鳄鱼夹,可连接阻性传感器
- P4            模拟输入,连接掌控板光线传感器  
- P5            数字输入,模拟/数字输出, 连接掌控板按键A,neopixel
- P6            数字输入,模拟/数字输出, 连接掌控板蜂鸣器,不使用蜂鸣器时,可以作为数字IO使用,neopixel
- P7            数字输入,模拟/数字输出, 连接掌控板RGB LED
- P8            数字输入,模拟/数字输出,neopixel
- P9            数字输入,模拟/数字输出,neopixel
- P10           模拟输入,连接掌控板声音传感器
- P11           数字输入,模拟/数字输出, 连接掌控板按键B,neopixel
- P12           保留
- P13           数字输入,模拟/数字输出,neopixel
- P14           数字输入,模拟/数字输出,neopixel
- P15           数字输入,模拟/数字输出,neopixel
- P16           数字输入,模拟/数字输出,neopixel
- 3V3           电源正输入:连接USB时,掌控板内部稳压输出3.3V,未连接USB可以通过输入(2.7-3.6)V电压为掌控板供电
- P19           数字输入,模拟/数字输出，I2C总线SCL,与内部的OLED和加速度传感器共享I2C总线,neopixel
- P20           数字输入,模拟/数字输出，I2C总线SDA,与内部的OLED和加速度传感器共享I2C总线,neopixel
- GND           电源GND
- Touch_P(P23)  TouchPad
- Touch_Y(P24)  TouchPad      
- Touch_T(P25)  TouchPad
- Touch_H(P26)  TouchPad
- Touch_O(P27)  TouchPad  
- Touch_N(P28)  TouchPad      
-=============  ====================================  
+=============== ======  ====================================  
+ 引脚            类型     描述
+=============== ======  ====================================
+ P0              I/O     模拟/数字输入,模拟/数字输出,TouchPad
+ P1              I/O     模拟/数字输入,模拟/数字输出,TouchPad 
+ P2               I      模拟/数字输入
+ P3               I      模拟输入,连接掌控板EXT鳄鱼夹,可连接阻性传感器
+ P4               I      模拟输入,连接掌控板光线传感器  
+ P5              I/O     数字输入,模拟/数字输出, 连接掌控板按键A,neopixel
+ P6              I/O     数字输入,模拟/数字输出, 连接掌控板蜂鸣器,不使用蜂鸣器时,可以作为数字IO使用,neopixel
+ P7              I/O     数字输入,模拟/数字输出, 连接掌控板RGB LED
+ P8              I/O     数字输入,模拟/数字输出,neopixel
+ P9              I/O     数字输入,模拟/数字输出,neopixel
+ P10              I      模拟输入,连接掌控板声音传感器
+ P11             I/O     数字输入,模拟/数字输出, 连接掌控板按键B,neopixel
+ P12             I/O     保留
+ P13             I/O     数字输入,模拟/数字输出,neopixel
+ P14             I/O     数字输入,模拟/数字输出,neopixel
+ P15             I/O     数字输入,模拟/数字输出,neopixel
+ P16             I/O     数字输入,模拟/数字输出,neopixel
+ 3V3             POWER   电源正输入:连接USB时,掌控板内部稳压输出3.3V,未连接USB可以通过输入(2.7-3.6)V电压为掌控板供电
+ P19             I/O     数字输入,模拟/数字输出，I2C总线SCL,与内部的OLED和加速度传感器共享I2C总线,neopixel
+ P20             I/O     数字输入,模拟/数字输出，I2C总线SDA,与内部的OLED和加速度传感器共享I2C总线,neopixel
+ GND             GND     电源GND
+ Touch_P(P23)    I/O     TouchPad
+ Touch_Y(P24)    I/O     TouchPad      
+ Touch_T(P25)    I/O     TouchPad
+ Touch_H(P26)    I/O     TouchPad
+ Touch_O(P27)    I/O     TouchPad  
+ Touch_N(P28)    I/O     TouchPad      
+=============== ======  ==================================== 
 
 
 相关下载
