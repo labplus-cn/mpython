@@ -1,24 +1,24 @@
-mPythonX IDE
+mPython X IDE
 ====================
 
 软件安装
 -----------
 
-目前最新版本为0.2.3，支持Windows 7/8/10、Windows XP、Macos、树莓派、虚谷号： 
+目前最新版本为0.2.4，支持Windows 7/8/10、Windows XP、Macos、树莓派、虚谷号： 
 
-http://static.steamaker.cn/files/mPythonXSetup0.2.3.exe
+http://static.steamaker.cn/files/mPythonXSetup0.2.4.exe
 (Win 7 / 8 / 10)
 
-http://static.steamaker.cn/files/mPythonXSetup0.2.3_XP.exe
+http://static.steamaker.cn/files/mPythonXSetup0.2.4_XP.exe
 (Win XP)
 
-http://static.steamaker.cn/files/mPythonX_0.2.3_mac.zip
+http://static.steamaker.cn/files/mpythonx-0.2.4-mac.zip
 (Mac OS)
 
-http://static.steamaker.cn/files/mpythonx-0.2.3-arm.tar.gz
+http://static.steamaker.cn/files/mpythonx-0.2.4-arm.tar.gz
 (树莓派)
 
-http://static.steamaker.cn/files/mpythonx-0.2.3-arm64.tar.gz
+http://static.steamaker.cn/files/mpythonx-0.2.4-arm64.tar.gz
 (虚谷号，待测试)
 
 附：掌控板的Mac驱动
