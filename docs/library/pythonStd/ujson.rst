@@ -22,7 +22,7 @@
   >>> obj = {1:2, 3:4, "a":6}
   >>> print(type(obj), obj) #原来为dict类型
   <class 'dict'> {3: 4, 1: 2, 'a': 6}
-  >>> jsObj = json.dumps(obj) #将dict类型转换成str
+  >>> jsObj = ujson.dumps(obj) #将dict类型转换成str
   >>> print(type(jsObj), jsObj)
   <class 'str'> {3: 4, 1: 2, "a": 6}
 
@@ -33,8 +33,8 @@
 示例::
 
   >>> obj = {1:2, 3:4, "a":6}
-  >>> jsDumps = json.dumps(obj)
-  >>> jsLoads = json.loads(jsDumps)
+  >>> jsDumps = ujson.dumps(obj)
+  >>> jsLoads = ujson.loads(jsDumps)
   >>> print(type(obj), obj)
   <class 'dict'> {3: 4, 1: 2, 'a': 6}
   >>> print(type(jsDumps), jsDumps)
