@@ -39,11 +39,11 @@ TCP客户端
 TCP编程的客户端一般步骤是：
 
 1. 创建一个socket，用函数socket()
-2. 设置socket属性，用函數setsockopt() , *可选* 
+2. 设置socket属性，用函数setsockopt() , *可选* 
 3. 绑定IP地址、端口等信息到socket上，用函数bind() , *可选* 
 4. 设置要连接的对方的IP地址和端口等属性 
 5. 连接服务器,用函数connect()
-6. 收发数据,用函數send()和recv(),或者read()和write()
+6. 收发数据,用函数send()和recv(),或者read()和write()
 7. 关闭网络连接
 
 
