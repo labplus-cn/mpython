@@ -124,4 +124,4 @@ UDP服务端的示例:
     ``recvfrom()`` 函数的返回值是二元組 (bytes, address)，其中 bytes 是接收到的字节数据，address 是发送方的IP地址于端口号，
     用二元組 (host, port) 表示。注意，recv() 函數的返回值只有bytes数据。UDP,在每次发送 ``sendto()`` 和接收数据 ``recvfrom`` 时均需要指定地址信息于TCP编程不同,不需要调用 ``listen()`` 和 ``accept()`` 。
 
-
+.. Attention:: 上例,使用``connectWiFi()`` 连接同个路由器wifi。你也可以用 ``enable_APWiFi()`` 开启AP模式,自建wifi网络让其他设备接入进来。这样就无需依赖其他路由器wifi网络。

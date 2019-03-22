@@ -65,6 +65,7 @@ tcpClient示例:
     # 捕获异常，如果在"try" 代码块中意外中断，则停止关闭套接字
     try:
         mywifi.connectWiFi("ssid","password")                   # WiFi连接，设置ssid 和password
+        # mywifi.enable_APWiFi("wifi_name",13)                  # 还可以开启AP模式,自建wifi网络
         ip=mywifi.sta.ifconfig()[0]                             # 获取本机IP地址
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   # 创建TCP的套接字,也可以不给定参数。默认为TCP通讯方式
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # 设置socket属性
@@ -94,6 +95,7 @@ tcpClient示例:
 
     由于在网络中都是以bytes形式传输的，所以需要注意数据编码与解码。
 
+.. Attention:: 上例,使用``connectWiFi()`` 连接同个路由器wifi。你也可以用 ``enable_APWiFi()`` 开启AP模式,自建wifi网络让其他设备接入进来。
 
 首先掌控板和手机须连接至同个局域网内。打开Network Test Utility，进入“TCP Server”界面，
 TCP Server IP选择手机在该网内的IP地址 ，端口号可设范围0~65535。然后，点击Listen，开始监听端口。
@@ -138,6 +140,7 @@ tcpServer示例:
     # 捕获异常，如果在"try" 代码块中意外中断，则停止关闭套接字
     try:
         mywifi.connectWiFi("ssid","password")                                   # WiFi连接，设置ssid 和password
+        # mywifi.enable_APWiFi("wifi_name",13)                                  # 还可以开启AP模式,自建wifi网络
         ip= mywifi.sta.ifconfig()[0]                                            # 获取本机IP地址
         listenSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)        # 创建socket,不给定参数默认为TCP通讯方式
         listenSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)      # 设置套接字属性参数
@@ -172,6 +175,7 @@ tcpServer示例:
             listenSocket.close()
         mywifi.disconnectWiFi()
 
+.. Attention:: 上例,使用``connectWiFi()`` 连接同个路由器wifi。你也可以用 ``enable_APWiFi()`` 开启AP模式,自建wifi网络让其他设备接入进来。
 
 首先掌控板和手机须连接至同个局域网内。掌控板重启运行程序，TCP Server端等待Client端连接请求。打开Network Test Utility，进入“TCP Client”界面，填写Remote host和port,即 ``socket.blind(ip,port)``
 的IP地址和端口。Connect连接成功后，发送文本，掌控板接收到文本显示至oled屏并将返回至TCP Client端。您可在手机接收界面看到文本从Client->Server，Server->Client的过程。

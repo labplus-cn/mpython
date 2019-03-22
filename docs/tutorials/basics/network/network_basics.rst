@@ -6,6 +6,9 @@
 MicroPython :mod:`network` 模块用于配置WiFi连接。有两个WiFi接口，STA模式即工作站模式（ESP32连接到路由器），
 AP模式提供接入服务（其他设备连接到ESP32）。如需了解MicroPython的网络连接方法，请查阅 :mod:`network` 模块。
 
+STA模式
+-------
+
 掌控板以基于network模块封装 :ref:`mpython.wifi()<mpython.wifi>` 类简化wifi连接设置::
 
     from mpython import *       #导入mpython模块
@@ -15,7 +18,7 @@ AP模式提供接入服务（其他设备连接到ESP32）。如需了解MicroPy
 
 .. Note:: 
 
-    实例化wifi()后，会构建 ``sta`` 和 ``ap`` 两个对象。 ``sta`` 对象为工作站模式，通过路由器连接至网络。``ap`` 为AP模式，提供热点接入。
+    实例化wifi()后，会构建 ``sta`` 和 ``ap`` 两个对象。 ``sta`` 对象为工作站模式，通过路由器连接至网络。``ap`` 为AP模式，提供wifi接入。
 
 连接成功后Repl串口如下打印::
 
@@ -27,11 +30,6 @@ AP模式提供接入服务（其他设备连接到ESP32）。如需了解MicroPy
 断开WiFi连接::
 
     mywifi.disconnectWiFi()
-
-
-
-查询WiFi连接信息
--------------------------
 
 查询wifi连接是否已建立::
 
@@ -45,8 +43,27 @@ AP模式提供接入服务（其他设备连接到ESP32）。如需了解MicroPy
 
 .. Note:: 返回值4元组: (IP address, netmask, gateway, DNS)
     
+``ifconfig()`` 带参数时，配置静态IP。例如:
 
+mywifi.sta.ifconfig(('192.168.0.4', '255.255.255.0', '192.168.0.1', '192.168.0.1'))
 
+AP模式
+-------
+
+除STA模式连接路由器wifi,掌控板还可以使用AP模式,提供wifi接入服务。
+
+::
+
+    from mpython import wifi                    # 导入mpython模块的wifi类
+
+    mywifi=wifi()                               # 实例wifi
+    mywifi.enable_APWiFi("mpython-wifi", 13)    # 配置并打开AP模式,第一参数:wifi名称,使用信道
+
+``wifi.enable_APWiFi(essid,channel=10)`` 用于配置并开启AP模式函数, ``essid`` 参数为wifi名称, ``channel`` 参数为wifi信道。AP模式开启后,其他掌控板或网络设备就能连接该网络,进行网络通信。
+
+.. Attention:: AP模式并不是类似手机的热点功能,设备可以通过热点连接至互联网。这点需要注意。
+
+----------------------------
 
 一旦设置了WiFi，访问网络的方式就是使用套接字。
 套接字表示网络设备上的端点，当两个套接字连接在一起时，可以继续进行通信。

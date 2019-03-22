@@ -417,7 +417,7 @@ wifi类
 
 断开wifi网络连接
 
-.. method:: wifi.enable_APWiFi(essid,channel)
+.. method:: wifi.enable_APWiFi(essid,channel=10)
 
 开启wifi的无线AP模式
 
