@@ -543,7 +543,7 @@ class wifi:
         self.sta.active(False)
         print('disconnect WiFi...')
 
-    def enable_APWiFi(self,essid,channel):
+    def enable_APWiFi(self,essid,channel=10):
         self.ap.active(True)
         self.ap.config(essid=essid,channel=channel)
 
