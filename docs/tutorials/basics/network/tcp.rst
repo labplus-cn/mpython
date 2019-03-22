@@ -32,6 +32,8 @@ TCP编程
 本教程的这一部分将介绍如何作为客户端或服务端使用TCP套接字。有关更全面的socket模块的使用，请查阅 :mod:`usocket` 模块。
 以下教程需要使用到TCP网络调试工具。下文使用的是IOS的 **Network Test Utility** ，可在APP Store搜索安装，android系统请点击下载。 :download:`Network Test Utility.apk </../docs/tools/com.jca.udpsendreceive.2.apk>` 
 
+声明：这里的TCP客户端（tcpClient）是你的电脑或者手机，而TCP服务端（tcpServer）是mpython掌控板。
+
 TCP客户端
 ~~~~~~~~
 
@@ -113,11 +115,11 @@ TCP服务端
 TCP编程的服务端一般步骤是：
 
 1. 创建一个socket，用函数socket()
-2. 设置socket属性，用函數setsockopt() , *可选* 
+2. 设置socket属性，用函数setsockopt() , *可选* 
 3. 绑定IP地址、端口等信息到socket上，用函数bind() 
 4. 开启监听和设置最大监听数,用函数listen()
 5. 等待客户端請求一个连接，用函数accept()
-6. 收发数据，用函數send()和recv()，或者read()和write() 
+6. 收发数据，用函数send()和recv()，或者read()和write() 
 7. 关闭网络连接
 
 
