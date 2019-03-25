@@ -10,9 +10,9 @@
 准备
 -------
 
-首先,需要先将拓展板的mPython库,你可以到 https://github.com/labplus-cn/mPython_extBoard 获取。
-将 ``extBoard.py`` 和 ``base64.py`` 上传到文件系统中。
-或者你也可以用 ``upip.install("mPython-extBoard")`` 的方法获取pypi包。
+首先,需要先将拓展板的 ``motor`` 模块,你可以到 https://github.com/labplus-cn/mPython-lib 获取。
+将 ``motor.py`` 上传到文件系统中。
+或者你也可以用 ``upip.install("mPython-motor")`` 的方法获取pypi包。
 
 
 电机驱动
@@ -22,30 +22,31 @@
 
 下面讲解,使用电机如何编程
 
-首先导入extBoard模块的motor对象::
+首先导入motor模块的Motor对象::
 
-    from extBoard import motor
+    from motor import Motor
 
 M1、M2,正转速度设为80::
 
-    from extBoard import motor      # 导入motor
+    from motor import Motor                 # 导入Motor 类
 
-    motor.setMotor1(80)             #  设置M1正转,速度为80
-    motor.setMotor2(80)             #  设置M2正转,速度为80
+    motor=Motor()                           # 实例Motor 类
+    motor.set_speed(motor.MOTOR_1,80)       #  设置M1正转,速度为80
+    motor.set_speed(motor.MOTOR_2,80)       #  设置M2正转,速度为80
 
 反转::
 
-    motor.setMotor1(-80)             #  设置M1反转,速度为80
-    motor.setMotor2(-80)             #  设置M2反转,速度为80
+    motor.set_speed(motor.MOTOR_1,-80)      #  设置M1反转,速度为80
+    motor.set_speed(motor.MOTOR_2,-80)      #  设置M2反转,速度为80
 
 停止::
 
-    motor.setMotor1(0)              # 停止
-    motor.setMotor2(0)              # 停止
+    motor.set_speed(motor.MOTOR_1,0)        # 停止
+    motor.set_speed(motor.MOTOR_2,0)        # 停止
 
 
-M1、M2控制使用到函数 ``setMotor1(SPEED)`` 、 ``setMotor1(SPEED)``。``SPEED`` 参数为速度,范围-100~100,正值表示正转,负值时表示负转。
-当某些时候你需要知道当前设置的速度值,你可以用 ``getMotor1()`` 、``getMotor2()`` 返回当前电机速度。
+控制电机速度使用到函数 ``set_speed(motor_no, spend)`` 。``motor_no`` 参数为电机编号,可选编号常量有 ``MOTOR_1`` 、``MOTOR_2`` 。 ``spend`` 参数为速度,范围-100~100,正值表示正转,负值时表示负转。
+当某些时候你需要知道当前设置的速度值,你可以用 ``get_speed(motor_no)`` 返回当前电机速度。
 
 
 音频播放
@@ -63,11 +64,17 @@ M1、M2控制使用到函数 ``setMotor1(SPEED)`` 、 ``setMotor1(SPEED)``。``S
 
 首先,将 :download:`音频素材</../examples/extboad_audio.rar>` 上传至掌控板的文件系统。
 
+
+首先导入codec模块::
+
+    import codec
+
+
 播放本地mp3音频::
 
-    from extBoard import audio              # 导入audio对象
+    import codec                            # 导入audio对象
 
-    audio.local_play("music_1.mp3")         # 播放"music_1.mp3"音频
+    codec.audio_play("music_1.mp3")         # 播放"music_1.mp3"音频
 
 .. Hint:: 
 
@@ -84,17 +91,20 @@ M1、M2控制使用到函数 ``setMotor1(SPEED)`` 、 ``setMotor1(SPEED)``。``S
 
 播放网络MP3音频::
 
-    from extBoard import audio                   # 导入audio
+    import codec                                 # 导入audio
     from mpython import wifi                     # 导入wifi
 
     mywifi=wifi()                                  # 实例wifi类
     mywifi.connectWiFi('ssid','password')          # 连接 WiFi 网络
 
-    audio.url_play("http://wiki.labplus.cn/images/4/4e/Music_test.mp3")          # 播放网络音频url
+    codec.audio_play("http://wiki.labplus.cn/images/4/4e/Music_test.mp3")          # 播放网络音频url
 
 .. Note:: 
 
-    在使用 ``url_play(url)`` 前，掌控板需要确保连接网络通畅。
+    掌控板需要确保连接网络通畅。URL必须是完整的网络地址，否则无法解析。
+
+音频解码功能使用到 ``codec`` 模块的 ``codec.audio_play(dir)`` 函数, ``dir`` 参数可以为音源的本地文件系统的路径或网络URL地址。有关 ``codec`` 模块更详细使用,请查阅
+:ref:`codec章节<codec>` 。
 
 语音合成(TTS)
 ------------
@@ -117,21 +127,7 @@ TTS是Text To Speech的缩写，即“从文本到语音”，是人机对话的
 .. image:: /images/extboard/xfyun_2.gif
 
 
-- 步骤3.添加"在线语音合成"服务，且在程序中传入APPID、APIKey实例 ``TTS`` ，使用 ``TTS.client_ip()`` 获取自己的公网IP并添加到IP白名单。
-
-::
-
-    from extBoard import TTS                             # 导入TTS类
-    from mpython import wifi                             # 导入wifi
-
-    mywifi=wifi()                                        # 实例wifi
-    mywifi.connectWiFi('ssid','password')                # 连接 WiFi 网络
-
-    APPID = ""                                           # 填写你的讯飞应用ID
-    API_KEY = ""                                         # 填写你的讯飞应用的api key
-
-    tts=TTS(APPID,API_KEY)                               # 构建TTS实例,并传入appid,api key 参数
-    print(tts.client_ip())                               # 获取你的公网IP后，在讯飞应用中添加到IP白名单
+- 步骤3.添加"在线语音合成"服务，且在程序中传入APPID、APIKey实例 ``TTS`` ，获取自己的公网IP(http://www.ip138.com)并添加到IP白名单。
 
 .. image:: /images/extboard/xfyun_3.gif
 
@@ -143,7 +139,7 @@ TTS是Text To Speech的缩写，即“从文本到语音”，是人机对话的
 
 ::
 
-    from extBoard import TTS                               # 导入TTS类
+    from tts import TTS                                    # 导入TTS类
     from mpython import wifi                               # 导入wifi
 
     mywifi=wifi()                                          # 实例wifi
@@ -159,5 +155,10 @@ TTS是Text To Speech的缩写，即“从文本到语音”，是人机对话的
             孤帆远影碧空尽，唯见长江天际流。"
 
     tts.translate(text)                                    # 文字转语音
+
+TTS语音合成功能使用到 :ref:`codec<codec>` 模块。首先需要构建 ``TTS(appid, api_key)`` , ``appid`` , ``api_key`` 为必选参数,在讯飞平台的应用的APPID、API_KET 。然后使用 ``translate(text)``
+将文本转为语音并播放。
+
+
 
 TTS支持中英文的文本转换。你可以将你想要说话的内容，通过文本的形式转化为语音。这样你就可以给你掌控板添上“人嘴”，模拟人机对话场景。

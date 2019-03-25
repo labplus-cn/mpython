@@ -1,5 +1,4 @@
-.. _servo:
-:mod:`servo`
+.. _servo_api:
 
 servo 模块
 ==========

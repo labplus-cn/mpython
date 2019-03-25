@@ -99,14 +99,18 @@ mPython类库
    library/mPython/urequests.rst   
    library/mPython/umqtt.simple.rst                                                   
    library/mPython/servo.rst   
+   library/mPython/codec.rst   
+   library/mPython/tts.rst   
                                              
 ======================================   ====================================================================  
  :ref:`mpython模块<mpython.py>`           提供了mPython掌控板特有拓展类。:ref:`mpython.py源码查看 <mpython_code>`
  :ref:`music模块<music.py>`               兼容micro:bit music 模块
  :ref:`urequests模块<urequests>`          从CPython移植过来的HTTP客户端的第三方库,提供各种HTTP请求方式
  :ref:`umqtt.simple模块<umqtt.simple>`    提供简单MQTT客户端功能 
- :ref:`servo模块<servo>`                  舵机驱动 
+ :ref:`servo模块<servo_api>`              舵机驱动 
  :ref:`gui模块<gui>`                      提供GUI类的绘制元素 
+ :ref:`codec模块<codec>`                  音频编解码
+ :ref:`tts模块<tts>`                      文字转语音TTS
 ======================================   ====================================================================
 
 ---------
