@@ -1,85 +1,70 @@
-Branch instructions
+分支指令
 ===================
 
-These cause execution to jump to a target location usually specified by a label (see the ``label``
-assembler directive). Conditional branches and the ``it`` and ``ite`` instructions test
-the Application Program Status Register (APSR) N (negative), Z (zero), C (carry) and V
-(overflow) flags to determine whether the branch should be executed.
+这些指令使执行执行跳转至通常由标记指定的目标位置（请参阅 ``label`` 汇编指令）。条件分支及 ``it`` 和 ``ite`` 指令测试应用程序
+状态寄存器（APSR）、N（负）、Z（零）、C（进位）和V（溢出）标志以确定是否应执行分支。
 
-Most of the exposed assembler instructions (including move operations) set the flags but
-there are explicit comparison instructions to enable values to be tested.
+大多数公开的汇编程序指令（包括移动操作）会设置标志，但有明确的比对指令来允许测试值。
 
-Further detail on the meaning of the condition flags is provided in the section
-describing comparison functions.
+有关条件标志含义的更多细节，请参见描述比对函数的章节。
 
-Document conventions
+文件规范
 --------------------
 
-Notation: ``Rm`` denotes ARM registers R0-R15. ``LABEL`` denotes a label defined with the
-``label()`` assembler directive. ``<condition>`` indicates one of the following condition
-specifiers:
+符号： ``Rm`` 表示ARM寄存器R0-R15。 ``LABEL`` 表示由 ``label()`` 汇编指令定义的标记。 ``<condition>`` 表示下列条件说明符之一:
 
-* eq Equal to (result was zero)
-* ne Not equal
-* cs Carry set
-* cc Carry clear
-* mi Minus (negative)
-* pl Plus (positive)
-* vs Overflow set
-* vc Overflow clear
-* hi > (unsigned comparison)
-* ls <= (unsigned comparison)
-* ge >= (signed comparison)
-* lt < (signed comparison)
-* gt > (signed comparison)
-* le <= (signed comparison)
+* eq 相等（结果为0）
+* ne 不相等
+* cs 设置进位
+* cc 清除进位
+* mi 负
+* pl 正
+* vs 设置溢出
+* vc 清除溢出
+* hi > （无符号比对）
+* ls <= （无符号比对）
+* ge >= （有符号比对）
+* lt < （有符号比对）
+* gt > （有符号比对）
+* le <= （有符号比对）
 
-Branch to label
+转移标记
 ---------------
 
-* b(LABEL) Unconditional branch
-* beq(LABEL) branch if equal
-* bne(LABEL) branch if not equal
-* bge(LABEL) branch if greater than or equal
-* bgt(LABEL) branch if greater than
-* blt(LABEL) branch if less than (<) (signed)
-* ble(LABEL) branch if less than or equal to (<=) (signed)
-* bcs(LABEL) branch if carry flag is set
-* bcc(LABEL) branch if carry flag is clear
-* bmi(LABEL) branch if negative
-* bpl(LABEL) branch if positive
-* bvs(LABEL) branch if overflow flag set
-* bvc(LABEL) branch if overflow flag is clear
-* bhi(LABEL) branch if higher (unsigned)
-* bls(LABEL) branch if lower or equal (unsigned)
+* b(LABEL) 无条件转移
+* beq(LABEL) 若相等则转移
+* bne(LABEL) 若不相等则转移
+* bge(LABEL) 若大于等于则转移
+* bgt(LABEL) 若大于则转移
+* blt(LABEL) 若小于则转移（<）（有符号）
+* ble(LABEL) 若小于等于则转移（<=）（有符号）
+* bcs(LABEL) 若设置进位标志则转移
+* bcc(LABEL) 若清除进位标志则转移
+* bmi(LABEL) 若为负则转移
+* bpl(LABEL) 若为正则转移
+* bvs(LABEL) 若设置溢出标志则转移
+* bvc(LABEL) 若清除溢出标志则转移
+* bhi(LABEL) 若高于则转移（无符号）
+* bls(LABEL) 若低于或相等则转移（无符号）
 
-Long branches
+长分支
 -------------
 
-The code produced by the branch instructions listed above uses a fixed bit width to specify the
-branch destination, which is PC relative. Consequently in long programs where the
-branch instruction is remote from its destination the assembler will produce a "branch not in
-range" error. This can be overcome with the "wide" variants such as
+以上列出的转移指令生成的代码使用固定位宽来指定与PC相关的转移目标。 因此，在转移指令远离其目标的长程序中，汇编程序将产生"转移不在范围内"的错误。这可以通过诸如"宽"这样的变量来克服
 
-* beq\_w(LABEL) long branch if equal
+* beq\_w(LABEL) 若相等则长分支
 
-Wide branches use 4 bytes to encode the instruction (compared with 2 bytes for standard branch instructions).
+宽分支使用4字节来编码指令（标准转移指令为2字节）。
 
-Subroutines (functions)
+子程序（函数）
 -----------------------
 
-When entering a subroutine the processor stores the return address in register r14, also
-known as the link register (lr). Return to the instruction after the subroutine call is
-performed by updating the program counter (r15 or pc) from the link register, This
-process is handled by the following instructions.
+输入子程序时，处理器将返回地址存储在寄存器r14中，也称为链接寄存器（lr）。通过从链接寄存器更新程序计数器（r15或pc），在执行子程序调用后返回该指令，此过程由以下指令处理。
 
 * bl(LABEL)
 
-Transfer execution to the instruction after ``LABEL`` storing the return address in
-the link register (r14).
+在 ``LABEL`` 将返回地址储存到链接寄存器(r14)后，将执行传输到指令。
 
-* bx(Rm) Branch to address specified by Rm.
+* bx(Rm) 转移到由Rm指定的地址。
 
-Typically ``bx(lr)`` is issued to return from a subroutine. For nested subroutines the
-link register of outer scopes must be saved (usually on the stack) before performing
-inner subroutine calls.
+通常，发送 ``bx(lr)`` 以从子程序中返回。对于嵌套子程序，在执行内部子程序调用前，须保存外部范围的链接寄存器（通常在堆栈上）。

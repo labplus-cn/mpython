@@ -1,20 +1,17 @@
-Stack push and pop
+入栈和出栈
 ==================
 
-Document conventions
+文件规范
 --------------------
 
-The ``push()`` and ``pop()`` instructions accept as their argument a register set containing
-a subset, or possibly all, of the general-purpose registers R0-R12 and the link register (lr or R14).
-As with any Python set the order in which the registers are specified is immaterial. Thus the
-in the following example the pop() instruction would restore R1, R7 and R8 to their contents prior
-to the push():
+``push()`` 和 ``pop()`` 指令将包含通用寄存器R0-R12和链接寄存器（lr或R14）的子集或全部的寄存器组作为其参数。
+对于任何任何Python设置而言，寄存器被指定的顺序无关紧要。因此，在以下示例中，pop()指令会在push()前将恢复R1、R7和R8的内容:
 
-* push({r1, r8, r7}) Save three registers on the stack.
-* pop({r7, r1, r8}) Restore them
+* push({r1, r8, r7}) 在堆栈上保存3个寄存器。
+* pop({r7, r1, r8}) 回复R1、R7、R8。
 
-Stack operations
+ 堆栈操作
 ----------------
 
-* push({regset}) Push a set of registers onto the stack
-* pop({regset}) Restore a set of registers from the stack
+* push({regset}) 将一组寄存器压入堆栈
+* pop({regset}) 从堆栈中回复一组寄存器

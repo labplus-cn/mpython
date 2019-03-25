@@ -1,98 +1,70 @@
 .. _constrained:
 
-微控制器上的MicroPython
+微控制器中的MicroPython
 ===============================
 
-MicroPython is designed to be capable of running on microcontrollers. These
-have hardware limitations which may be unfamiliar to programmers more familiar
-with conventional computers. In particular the amount of RAM and nonvolatile
-"disk" (flash memory) storage is limited. This tutorial offers ways to make
-the most of the limited resources. Because MicroPython runs on controllers
-based on a variety of architectures, the methods presented are generic: in some
-cases it will be necessary to obtain detailed information from platform specific
-documentation.
+MicroPython设计为可在微控制器上运行。熟悉常规计算机的程序员可能不熟悉这些硬件限制。
+尤其是RAM和非易失性"磁盘"（闪存）存储量是有限的。本教程提供了充分利用有限资源的方法。
+由于MicroPython在基于各种体系结构的控制器上运行，因此所提供的方法是通用的：某些情况下，
+需要从平台特定的文档中获取详细信息。
 
-Flash Memory
+闪存
 ------------
 
-On the Pyboard the simple way to address the limited capacity is to fit a micro
-SD card. In some cases this is impractical, either because the device does not
-have an SD card slot or for reasons of cost or power consumption; hence the
-on-chip flash must be used. The firmware including the MicroPython subsystem is
-stored in the onboard flash. The remaining capacity is available for use. For
-reasons connected with the physical architecture of the flash memory part of
-this capacity may be inaccessible as a filesystem. In such cases this space may
-be employed by incorporating user modules into a firmware build which is then
-flashed to the device.
+在Pyboard上，解决有限容量的简单方法是安装微型SD卡。但有时由于设备并无SD卡槽或出于成本或功耗的原因，
+这一方法并不可行；因此必须使用片上闪存。包含MicroPython子系统的固件存储在板载闪存中。剩余容量可供使用。
+由于与闪存的物理结构相关的原因，该容量的一部分可能无法作为文件系统访问。在这种情况下，
+可以通过将用户模块合并到随后闪存到设备的固件版本中来使用该空间。
 
-There are two ways to achieve this: frozen modules and frozen bytecode. Frozen
-modules store the Python source with the firmware. Frozen bytecode uses the
-cross compiler to convert the source to bytecode which is then stored with the
-firmware. In either case the module may be accessed with an import statement:
+有两种方法可以实现这一点：冻结模块和冻结字节码。冻结模块将Python源代码与固件一同存储。
+冻结字节码使用交叉编译器将源代码转换为随后与固件一同存储的字节码。这两种情况下都可使用导入语句访问该模块:
 
 .. code::
 
     import mymodule
 
-The procedure for producing frozen modules and bytecode is platform dependent;
-instructions for building the firmware can be found in the README files in the
-relevant part of the source tree.
+生成冻结模块和字节码的过程取决于平台；有关构建固件的说明可查阅源代码树相关部分中的README文件。
 
-In general terms the steps are as follows:
+一般来说，步骤如下:
 
 * Clone the MicroPython `repository <https://github.com/micropython/micropython>`_.
-* Acquire the (platform specific) toolchain to build the firmware.
-* Build the cross compiler.
-* Place the modules to be frozen in a specified directory (dependent on whether
-  the module is to be frozen as source or as bytecode).
-* Build the firmware. A specific command may be required to build frozen
-  code of either type - see the platform documentation.
-* Flash the firmware to the device.
+* 获取（平台特定的）工具链来构建固件。
+* 构建交叉编译器。
+* 将要冻结的模块放置在指定目录中（取决于将模块冻结为源/字节码）。
+* 构建固件。需特定指令以构建任一类型的冻结代码-见平台文件。
+* 将固件闪存到设备。
 
 RAM
 ---
 
-When reducing RAM usage there are two phases to consider: compilation and
-execution. In addition to memory consumption, there is also an issue known as
-heap fragmentation. In general terms it is best to minimise the repeated
-creation and destruction of objects. The reason for this is covered in the
-section covering the `heap`_.
+在减少RAM使用时，需考虑两个阶段：编译和执行。除内存消耗外，还有一个称为堆碎片的问题。总的来说，最好是尽量减少对象的重复创建和损坏。
+其原因在与堆（ `heap`_）相关的部分中进行了介绍。
 
-Compilation Phase
+编译阶段
 ~~~~~~~~~~~~~~~~~
 
-When a module is imported, MicroPython compiles the code to bytecode which is
-then executed by the MicroPython virtual machine (VM). The bytecode is stored
-in RAM. The compiler itself requires RAM, but this becomes available for use
-when the compilation has completed.
+导入模块时，MicroPython将代码编译为字节码，然后由MicroPython虚拟机（VM）执行字节码。
+字节码存储在RAM中。编译器本身需要RAM，但其在编译完成后才可用。
 
-If a number of modules have already been imported the situation can arise where
-there is insufficient RAM to run the compiler. In this case the import
-statement will produce a memory exception.
+若已导入多个模块，则在没有足够的RAM来运行编译器时，会出现这种情况。在这种情况下，导入语句将引发内存异常。
 
-If a module instantiates global objects on import it will consume RAM at the
-time of import, which is then unavailable for the compiler to use on subsequent
-imports. In general it is best to avoid code which runs on import; a better
-approach is to have initialisation code which is run by the application after
-all modules have been imported. This maximises the RAM available to the
-compiler.
+若模块在导入时实例化全局对象，则将在导入时占用RAM，编译器就无法在随后的导入中使用该RAM。通常，
+最好避免导入时运行的代码； 更好的方法是在所有模块被导入后都有由应用程序运行的初始化代码。
+这一方法将编译器可用的RAM最大化。
 
-If RAM is still insufficient to compile all modules one solution is to
-precompile modules. MicroPython has a cross compiler capable of compiling Python
-modules to bytecode (see the README in the mpy-cross directory). The resulting
-bytecode file has a .mpy extension; it may be copied to the filesystem and
-imported in the usual way. Alternatively some or all modules may be implemented
-as frozen bytecode: on most platforms this saves even more RAM as the bytecode
-is run directly from flash rather than being stored in RAM.
+若RAM仍不足够编译所有模块，一种解决方案是预编译模块。MicroPython有一个交叉编译器，
+可将Python模块编译为字节码（参见mpy-cross目录中的README）。生成的字节码文件的扩展名为.mpy。
+此文件可能被复制到文件系统，并以常规方式导入。或者，某些或所有模块可实现为冻结字节码：
+在大多数平台上，这样可以节省更多的RAM，因为字节码直接从闪存运行而没有存储在RAM中的。
 
-Execution Phase
+执行阶段
 ~~~~~~~~~~~~~~~
 
-There are a number of coding techniques for reducing RAM usage.
+有许多编码技术可以减少RAM的使用。
 
-**Constants**
+**常量**
 
-MicroPython provides a ``const`` keyword which may be used as follows:
+MicroPython提供了可按照如下方式使用的 ``const`` 关键字:
 
 .. code::
 
@@ -102,70 +74,50 @@ MicroPython provides a ``const`` keyword which may be used as follows:
     a = ROWS
     b = _COLS
 
-In both instances where the constant is assigned to a variable the compiler
-will avoid coding a lookup to the name of the constant by substituting its
-literal value. This saves bytecode and hence RAM. However the ``ROWS`` value
-will occupy at least two machine words, one each for the key and value in the
-globals dictionary. The presence in the dictionary is necessary because another
-module might import or use it. This RAM can be saved by prepending the name
-with an underscore as in ``_COLS``: this symbol is not visible outside the
-module so will not occupy RAM.
+在常量被分配给变量的两种情况下，编译器都会避免通过替换其常量值来将查找编码为常量名。这节省了字节码，
+从而也节省了RAM。但是 ``ROWS`` 值将占用至少两个机器字，两个字分别对应globals字典中的键值和值。
+必须出现在字典中，因为另一个模块可能会导入或使用它。这个RAM可通过在名称前加下划线前面（如 ``_COLS`` ）来保存。
+这个 RAM可以通过用下划线作为in_COLS的名字来保存：这个符号在模块外不可见，所以不会占用RAM。
 
-The argument to ``const()`` may be anything which, at compile time, evaluates
-to an integer e.g. ``0x100`` or ``1 << 8``. It can even include other const
-symbols that have already been defined, e.g. ``1 << BIT``.
+``const()`` 的参数可为在编译时计算结果为整数的任何值，如 ``0x100`` 或 ``1 << 8`` 。
+甚至可包括其他已定义的常量符号，如 ``1 << BIT`` 。
 
-**Constant data structures**
+**常量数据结构**
 
-Where there is a substantial volume of constant data and the platform supports
-execution from Flash, RAM may be saved as follows. The data should be located in
-Python modules and frozen as bytecode. The data must be defined as `bytes`
-objects. The compiler 'knows' that `bytes` objects are immutable and ensures
-that the objects remain in flash memory rather than being copied to RAM. The
-`ustruct` module can assist in converting between `bytes` types and other
-Python built-in types.
+若存在大量常量数据，且平台支持从Flash执行，则RAM可能会如下保存。数据应该位于Python模块中并冻结为字节码。
+数据必须定义为 `bytes` 对象。编译器"知道" `bytes` 对象是不可变的，并确保对象保留在闪存中，而不是被复制到RAM中。
+`ustruct` 模块可协助类型和其他Python内置类型间的转换。
 
-When considering the implications of frozen bytecode, note that in Python
-strings, floats, bytes, integers and complex numbers are immutable. Accordingly
-these will be frozen into flash. Thus, in the line
+在考虑冻结字节码的含义时，请注意：在Python中，字符串、浮点数、字节、整数和复数是不可变的。因此这些将被冻结进Flash中。因此，在如下行中
 
 .. code::
 
     mystring = "The quick brown fox"
 
-the actual string "The quick brown fox" will reside in flash. At runtime a
-reference to the string is assigned to the *variable* ``mystring``. The reference
-occupies a single machine word. In principle a long integer could be used to
-store constant data:
+实际的字符串"The quick brown fox"将停留在Flash中。运行时，字符串的引用被分配给变量 ``mystring`` 。
+该引用占用一个机器字。原则上可使用长整数来存储常量数据:
 
 .. code::
 
     bar = 0xDEADBEEF0000DEADBEEF
 
-As in the string example, at runtime a reference to the arbitrarily large
-integer is assigned to the variable ``bar``. That reference occupies a
-single machine word. 
+正如字符串示例中所示，运行时，将对任意大整数的引用分配给变量bar。该引用占据一个机器字节。
 
-It might be expected that tuples of integers could be employed for the purpose
-of storing constant data with minimal RAM use. With the current compiler this
-is ineffective (the code works, but RAM is not saved).
+可以预期的是，整数元组可用于以最小RAM空间来储存常量数据。在使用当前的编译器的情况下，这是无效的（代码工作，但不保存RAM）。
 
 .. code::
 
     foo = (1, 2, 3, 4, 5, 6, 100000)
 
-At runtime the tuple will be located in RAM. This may be subject to future
-improvement.
+运行时元组将位于RAM中。未来可能会对此进行改进。
 
-**Needless object creation**
+**无需创建对象**
 
-There are a number of situations where objects may unwittingly be created and
-destroyed. This can reduce the usability of RAM through fragmentation. The
-following sections discuss instances of this.
+很多情况下，可能无意地创建和销毁了对象。这可能会因碎片化而降低RAM的可用性。以下部分讨论此类实例。
 
-**String concatenation**
+**字串连接**
 
-Consider the following code fragments which aim to produce constant strings:
+思考下面的代码段，其目的是产生常量字符串:
 
 .. code::
 
@@ -175,47 +127,38 @@ Consider the following code fragments which aim to produce constant strings:
     foo\
     bar"""
 
-Each produces the same outcome, however the first needlessly creates two string
-objects at runtime, allocates more RAM for concatenation before producing the
-third. The others perform the concatenation at compile time which is more
-efficient, reducing fragmentation.
+每个代码段都产生相同结果，但是第一个代码在运行时却创建了两个不必要的字符串对象，并在生成第三个对象前为连接分配更多的RAM。
+其他编译器在编译时执行更高效的连接，从而降低碎片化。
 
-Where strings must be dynamically created before being fed to a stream such as
-a file it will save RAM if this is done in a piecemeal fashion. Rather than
-creating a large string object, create a substring and feed it to the stream
-before dealing with the next.
+在字符串输入流（如文件）之前须动态创建字符串的情况下，若以零碎方式完成，则会节省RAM。
+创建一个子字符串（而不是创建一个大型字符串对象），并在处理下一个字符串前将其输入到流中。
 
-The best way to create dynamic strings is by means of the string `format`
-method:
+创建动态字符串的最佳方式是通过字符串 `format` 方法:
 
 .. code::
 
     var = "Temperature {:5.2f} Pressure {:06d}\n".format(temp, press)
 
-**Buffers**
+**缓冲区**
 
-When accessing devices such as instances of UART, I2C and SPI interfaces, using
-pre-allocated buffers avoids the creation of needless objects. Consider these
-two loops:
+当访问诸如UART、I2C和SPI接口的设备时，使用预分配的缓冲器避免不要的对象创建。思考这两个循环:
 
 .. code::
 
     while True:
         var = spi.read(100)
-        # process data
+        # process data 处理数据
 
     buf = bytearray(100)
     while True:
         spi.readinto(buf)
-        # process data in buf
+        # process data in buf 在缓冲区中处理对象
 
-The first creates a buffer on each pass whereas the second re-uses a pre-allocated
-buffer; this is both faster and more efficient in terms of memory fragmentation.
+第一个循环在每次传递时创建一个缓冲区，第二个循环则重新使用一个预分配的缓冲区；这在内存碎片化方面既快又有效。
 
-**Bytes are smaller than ints**
+**字节小于整数**
 
-On most platforms an integer consumes four bytes. Consider the two calls to the
-function ``foo()``:
+在大多数平台中，一个整数消耗四个字节。思考这两个函数 ``foo()`` 的调用:
 
 .. code::
 
@@ -225,116 +168,86 @@ function ``foo()``:
     foo((1, 2, 0xff))
     foo(b'\1\2\xff')
 
-In the first call a tuple of integers is created in RAM. The second efficiently
-creates a `bytes` object consuming the minimum amount of RAM. If the module
-were frozen as bytecode, the `bytes` object would reside in flash.
+首次调用中，在RAM中创建一个整数元组。第二次调用有效地创建消耗最小RAM的 ``bytes`` 对象。
+若模块被冻结为字节码，则 ``bytes`` 对象将保留在Flash中。
 
-**Strings Versus Bytes**
+**字符串vs字节**
 
-Python3 introduced Unicode support. This introduced a distinction between a
-string and an array of bytes. MicroPython ensures that Unicode strings take no
-additional space so long as all characters in the string are ASCII (i.e. have
-a value < 126). If values in the full 8-bit range are required `bytes` and
-`bytearray` objects can be used to ensure that no additional space will be
-required. Note that most string methods (e.g. :meth:`str.strip()`) apply also to `bytes`
-instances so the process of eliminating Unicode can be painless.
+Python3引入了Unicode支持，也就引入了字符串和字节数组之间的区别。只要字符串中的所有字符都为ASCII（即值<126），
+MicroPython即可确保Unicode字符串不占用额外空间。若需完整8位范围内的值，则可使用 `bytes` 和 `bytearray` 对象来确保无需额外空间。
+请注意：大多数字符串方法（例如 :meth:`str.strip()`）也适用于 `bytes` 实例，所以消除Unicode并不困难。
 
 .. code::
 
-    s = 'the quick brown fox'   # A string instance
-    b = b'the quick brown fox'  # A bytes instance
+    s = 'the quick brown fox'   # A string instance 一个字符串实例
+    b = b'the quick brown fox'  # A bytes instance 一个字节实例
 
-Where it is necessary to convert between strings and bytes the :meth:`str.encode`
-and the :meth:`bytes.decode` methods can be used. Note that both strings and bytes
-are immutable. Any operation which takes as input such an object and produces
-another implies at least one RAM allocation to produce the result. In the
-second line below a new bytes object is allocated. This would also occur if ``foo``
-were a string.
+在需在字符串和字节之间进行转换之处，可使用 `str.encode()` 和 `bytes.decode()` 方法。请注意：字符串和字节都是不可变的。
+任何将这种对象作为输入并产生另一个对象的操作都表示，为产生结果，至少有一次RAM分配。在下面第二行中，分配了一个新的字节对象。
+若 ``foo`` 为字符串，也会出现这种情况。
 
 .. code::
 
     foo = b'   empty whitespace'
     foo = foo.lstrip()
 
-**Runtime compiler execution**
+**运行时的编译器执行**
 
-The Python funcitons `eval` and `exec` invoke the compiler at runtime, which
-requires significant amounts of RAM. Note that the `pickle` library from
-`micropython-lib` employs `exec`. It may be more RAM efficient to use the
-`ujson` library for object serialisation.
+Python的函数 `eval` 和 `exec` 在运行时调用编译器，这需要大量的RAM。请注意：来自 `micropython-lib` 的
+`pickle` 库使用 `exec` 。使用 `ujson` 库进行对象序列化可能会更高效地利用RAM。
 
-**Storing strings in flash**
+**将字符串储存到Flash中**
 
-Python strings are immutable hence have the potential to be stored in read only
-memory. The compiler can place in flash strings defined in Python code. As with
-frozen modules it is necessary to have a copy of the source tree on the PC and
-the toolchain to build the firmware. The procedure will work even if the
-modules have not been fully debugged, so long as they can be imported and run.
+Python字符串是不可变的，因此可能存储在只读存储器中。编译器可将Python代码中定义的字符串置于Flash中。
+与冻结模块一样，必须在PC上有一个源代码树的副本，然后使用工具链来构建固件。即使模块尚未完全调试，只要可以导入并运行，该程序仍将正常工作。
 
-After importing the modules, execute:
+导入模块后，执行:
 
 .. code::
 
     micropython.qstr_info(1)
 
-Then copy and paste all the Q(xxx) lines into a text editor. Check for and
-remove lines which are obviously invalid. Open the file qstrdefsport.h which
-will be found in ports/stm32 (or the equivalent directory for the architecture in
-use). Copy and paste the corrected lines at the end of the file. Save the file,
-rebuild and flash the firmware. The outcome can be checked by importing the
-modules and again issuing:
+然后将所有Q(xxx)行复制并粘贴到文本编辑器中。检查并删除明显无效的行。 打开将在stmhal中（或使用中的架构的等效目录）
+的文件qstrdefsport.h。将更正的行复制并粘贴到文件末尾。保存文件，重建并刷新固件。可通过导入模块和再次发出来检查结果:
 
 .. code::
 
     micropython.qstr_info(1)
 
-The Q(xxx) lines should be gone.
+Q(xxx) 行应消失。
 
 .. _heap:
 
-The Heap
+堆
 --------
 
-When a running program instantiates an object the necessary RAM is allocated
-from a fixed size pool known as the heap. When the object goes out of scope (in
-other words becomes inaccessible to code) the redundant object is known as
-"garbage". A process known as "garbage collection" (GC) reclaims that memory,
-returning it to the free heap. This process runs automatically, however it can
-be invoked directly by issuing `gc.collect()`.
+当正在运行的程序实例化对象时，将从一个固定大小的池中分配必要的RAM，这个池被称为堆。当对象超出范围
+（换言之：已不可用于代码）时，冗余对象即为"垃圾"。"垃圾回收"（GC）的进程回收该内存，并将其返回到空闲堆。
+这个过程自动进行，但可通过发出 `gc.collect()` 来直接调用。
 
-The discourse on this is somewhat involved. For a 'quick fix' issue the
-following periodically:
+有关这方面的讨论有所涉及。为"快速修复"，定期发布以下内容:
 
 .. code::
 
     gc.collect()
     gc.threshold(gc.mem_free() // 4 + gc.mem_alloc())
 
-Fragmentation
+碎片化
 ~~~~~~~~~~~~~
 
-Say a program creates an object ``foo``, then an object ``bar``. Subsequently
-``foo`` goes out of scope but ``bar`` remains. The RAM used by ``foo`` will be
-reclaimed by GC. However if ``bar`` was allocated to a higher address, the
-RAM reclaimed from ``foo`` will only be of use for objects no bigger than
-``foo``. In a complex or long running program the heap can become fragmented:
-despite there being a substantial amount of RAM available, there is insufficient
-contiguous space to allocate a particular object, and the program fails with a
-memory error.
+程序创建对象 ``foo`` ，然后创建对象 ``bar`` 。随后 ``foo`` 超出范围，但 ``bar`` 仍保留。 ``foo`` 所占用的
+RAM将被GC回收。但是，若 ``bar`` 被分配到更高地址，从 ``foo`` 回收的RAM只能用于不大于 ``foo`` 的对象。
+在复杂或长时间运行的程序中，堆可进行碎片化处理：尽管存在大量可用的RAM，但并无足够的连续空间来分配特定对象，且程序因存储器错误而失效。
 
-The techniques outlined above aim to minimise this. Where large permanent buffers
-or other objects are required it is best to instantiate these early in the
-process of program execution before fragmentation can occur. Further improvements
-may be made by monitoring the state of the heap and by controlling GC; these are
-outlined below.
+上述技术旨在最大限度地减少这种情况。 在需要大的永久性缓冲区或其他对象的情况下，最好在程序执行过程中、
+碎片化进行前尽早将这些缓冲区实例化。 可通过监视堆的状态和控制GC来进一步改进。概述如下。
 
-Reporting
+报告
 ~~~~~~~~~
 
-A number of library functions are available to report on memory allocation and
-to control GC. These are to be found in the `gc` and `micropython` modules.
-The following example may be pasted at the REPL (``ctrl e`` to enter paste mode,
-``ctrl d`` to run it).
+许多库函数可用于报告内存分配和控制GC。这些都可以在 `gc` 和 `micropython` 模块中找到。
+下面的例子可能被粘贴在REPL（ctrl e进入粘贴模式，ctrl d运行它）。许多库函数可用于报告内存分配并控制GC。
+这些同样存在 `gc` 和 `micropython` 模块中。以下示例可能粘贴到REPL中（ ``ctrl e`` 进入粘贴模式， ``ctrl d`` 运行它）。
 
 .. code::
 
@@ -355,102 +268,75 @@ The following example may be pasted at the REPL (``ctrl e`` to enter paste mode,
     print('-----------------------------')
     micropython.mem_info(1)
 
-Methods employed above:
+以上使用的方法:
 
-* `gc.collect()` Force a garbage collection. See footnote.
-* `micropython.mem_info()` Print a summary of RAM utilisation.
-* `gc.mem_free()` Return the free heap size in bytes.
-* `gc.mem_alloc()` Return the number of bytes currently allocated.
-* ``micropython.mem_info(1)`` Print a table of heap utilisation (detailed below).
+* `gc.collect()` 强制执行垃圾收集。见脚注。
+* `micropython.mem_info()` 打印RAM利用率的总结。
+* `gc.mem_free()` 返回空闲堆大小（以字节为单位）。
+* `gc.mem_alloc()` 返回当前分配的字节数量。
+* ``micropython.mem_info(1)`` 打印堆利用率的表格（详情见下）。
 
-The numbers produced are dependent on the platform, but it can be seen that
-declaring the function uses a small amount of RAM in the form of bytecode
-emitted by the compiler (the RAM used by the compiler has been reclaimed).
-Running the function uses over 10KiB, but on return ``a`` is garbage because it
-is out of scope and cannot be referenced. The final `gc.collect()` recovers
-that memory.
+生成的数字取决于平台，但可以看到，定义函数使用由编译器发出的字节码形式的少量RAM（编译器使用的RAM已被回收）。
+运行该函数使用超过10KiB，但返回时， ``a`` 为垃圾，因为它超出范围且无法引用。最后的 `gc.collect()` 会恢复内存。
 
-The final output produced by ``micropython.mem_info(1)`` will vary in detail but
-may be interpreted as follows:
+由 ``micropython.mem_info(1)`` 生成的最终输出将有所不同，但可能会如下解释:
 
 ====== =================
-Symbol Meaning
+ 符号    含义
 ====== =================
-   .   free block
+   .   空闲块
    h   head block
    =   tail block
    m   marked head block
-   T   tuple
-   L   list
-   D   dict
-   F   float
-   B   byte code
-   M   module
+   T   元组
+   L   列表
+   D   字典
+   F   浮点数
+   B   字节代码
+   M   模块
 ====== =================
 
-Each letter represents a single block of memory, a block being 16 bytes. So each
-line of the heap dump represents 0x400 bytes or 1KiB of RAM.
+每个字母代表一个内存块，每个块16字节。因此，堆转储的一行代表0x400字节或1KiB的RAM。
 
-Control of Garbage Collection
+控制垃圾回收
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A GC can be demanded at any time by issuing `gc.collect()`. It is advantageous
-to do this at intervals, firstly to pre-empt fragmentation and secondly for
-performance. A GC can take several milliseconds but is quicker when there is
-little work to do (about 1ms on the Pyboard). An explicit call can minimise that
-delay while ensuring it occurs at points in the program when it is acceptable.
+可随时通过发出 `gc.collect()` 来请求GC。定期执行首先有助于防止碎片化，其次也有利于提高性能。
+GC可能耗费数毫秒，在工作量较小时耗时更短（在Pyboard上只需大约1ms）。显式调用可最大限度减少延迟，
+同时确保其在程序中可接受的情况下出现。
 
-Automatic GC is provoked under the following circumstances. When an attempt at
-allocation fails, a GC is performed and the allocation re-tried. Only if this
-fails is an exception raised. Secondly an automatic GC will be triggered if the
-amount of free RAM falls below a threshold. This threshold can be adapted as
-execution progresses:
+以下情况下，自动GC将被激活。尝试分配失败时，执行GC并重新尝试分配。只有在此分配失败时才会引发异常。
+其次，若可用RAM数量低于阈值，则会触发自动GC。这个阈值可随执行进行而调整:
 
 .. code::
 
     gc.collect()
     gc.threshold(gc.mem_free() // 4 + gc.mem_alloc())
 
-This will provoke a GC when more than 25% of the currently free heap becomes
-occupied.
+超过25％的当前空闲堆被占用时，将触发GC。
 
-In general modules should instantiate data objects at runtime using constructors
-or other initialisation functions. The reason is that if this occurs on
-initialisation the compiler may be starved of RAM when subsequent modules are
-imported. If modules do instantiate data on import then `gc.collect()` issued
-after the import will ameliorate the problem.
+通常，模块应在运行时使用构造函数或其他初始化函数实例化数据对象。这一因为，若在初始化时发生这种情况，
+则在导入后续模块时，编译器可能会缺乏可用RAM。若模块在导入时实例化数据，那么在导入后发出的 `gc.collect()` 会改善这一问题。
 
-String Operations
+字符串操作
 -----------------
 
-MicroPython handles strings in an efficient manner and understanding this can
-help in designing applications to run on microcontrollers. When a module
-is compiled, strings which occur multiple times are stored once only, a process
-known as string interning. In MicroPython an interned string is known as a ``qstr``.
-In a module imported normally that single instance will be located in RAM, but
-as described above, in modules frozen as bytecode it will be located in flash.
+MicroPython以有效的方式处理字符串，理解其处理方式这可帮助设计在微控制器上运行的应用程序。
+模块被编译时，出现多次的字符串只存储一次，此过程被称为字符串驻留。在MicroPython中，
+驻留字符串被称为 ``qstr`` 。在正常导入的模块中，单个实例将位于RAM中，但如上所述，在冻结为字节码的模块中，则将位于Flash中。
 
-String comparisons are also performed efficiently using hashing rather than
-character by character. The penalty for using strings rather than integers may
-hence be small both in terms of performance and RAM usage - a fact which may
-come as a surprise to C programmers.
+字符串对比也使用散列有效进行（而非逐个字符执行）。因此，在性能和RAM使用方面，使用字符串而非整数的惩罚可能会很小-这可能会让C程序员感到意外。
 
-Postscript
+附言
 ----------
 
-MicroPython passes, returns and (by default) copies objects by reference. A
-reference occupies a single machine word so these processes are efficient in
-RAM usage and speed.
+MicroPython传输、返回并（默认为）通过引用复制对象。一个引用占用一个机器字，所以这些进程在RAM使用率和速度方面较为高效。
 
-Where variables are required whose size is neither a byte nor a machine word
-there are standard libraries which can assist in storing these efficiently and
-in performing conversions. See the `array`, `ustruct` and `uctypes`
-modules.
+在必需变量（其大小既非一个字节也非一个机器字）的情况下，将有可帮助有效存储变量并进行转换的标准库。
+见 `array` 、 `ustruct` 和 `uctypes` 模块。
 
-Footnote: gc.collect() return value
+脚注：gc.collect()返回值
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On Unix and Windows platforms the `gc.collect()` method returns an integer
-which signifies the number of distinct memory regions that were reclaimed in the
-collection (more precisely, the number of heads that were turned into frees). For
-efficiency reasons bare metal ports do not return this value.
+在Unix和Windows平台上， `gc.collect()` 方法返回一个整数，该整数表示在回收中收回的不同内存
+区域的数量（更确切地说，是变为空闲块的head block的数量）。出于效率原因，baremetal端口不返回此值。

@@ -4,129 +4,93 @@
 
 .. contents::
 
-This tutorial describes ways of improving the performance of MicroPython code.
-Optimisations involving other languages are covered elsewhere, namely the use
-of modules written in C and the MicroPython inline assembler.
+本教程介绍了改进MicroPython代码的方法。最优化及其他语言在另外章节中介绍（即使用C语言和MicroPython内联汇编编写的模块）。
 
-The process of developing high performance code comprises the following stages
-which should be performed in the order listed.
+开发高性能的代码包括以下两个阶段，我们将依次介绍。
 
-* Design for speed.
-* Code and debug.
+* 速度设计
+* 代码和排错
 
-Optimisation steps:
+优化步骤:
 
-* Identify the slowest section of code.
-* Improve the efficiency of the Python code.
-* Use the native code emitter.
-* Use the viper code emitter.
-* Use hardware-specific optimisations.
+* 识别代码的最慢段
+* 改进Python代码的效率
+* 使用本地代码发射器
+* 使用Viper代码发射器
+* 使用特定于硬件的优化
 
-Designing for speed
+速度设计
 -------------------
 
-Performance issues should be considered at the outset. This involves taking a view
-on the sections of code which are most performance critical and devoting particular
-attention to their design. The process of optimisation begins when the code has
-been tested: if the design is correct at the outset optimisation will be
-straightforward and may actually be unnecessary.
+应该从开始就考虑性能问题。这涉及到对性能至关重要的代码部分，应特别关注代码的设计。
+优化过程从检测代码开始：若设计从开始就没有差错，那优化就很轻松了，实际上可能没有优化的必要。
 
-Algorithms
+算法
 ~~~~~~~~~~
 
-The most important aspect of designing any routine for performance is ensuring that
-the best algorithm is employed. This is a topic for textbooks rather than for a 
-MicroPython guide but spectacular performance gains can sometimes be achieved
-by adopting algorithms known for their efficiency.
+设计性能程序的最重要的部分就是确保使用最佳算法。这应是教科书上的议题而非出现在MicroPython指南中。
+但是有时可通过使用已知效率的算法来实现可观的性能收益。
 
-RAM Allocation
+RAM分配
 ~~~~~~~~~~~~~~
 
-To design efficient MicroPython code it is necessary to have an understanding of the
-way the interpreter allocates RAM. When an object is created or grows in size
-(for example where an item is appended to a list) the necessary RAM is allocated
-from a block known as the heap. This takes a significant amount of time;
-further it will on occasion trigger a process known as garbage collection which
-can take several milliseconds.
+设计高效的MicroPython代码，则有必要理解解释器分配RAM的方式。当创建某一对象或该对象大小增长时（例如将一个项附加到列表），
+RAM即从名为堆的块中分配出来。这一过程需耗费很长时间，而且有时会触发垃圾收集的过程，此过程将耗时数毫秒。
 
-Consequently the performance of a function or method can be improved if an object is created
-once only and not permitted to grow in size. This implies that the object persists
-for the duration of its use: typically it will be instantiated in a class constructor
-and used in various methods.
+因此，若对象仅允许创建一次且其大小不可增长，则函数或方法的性能得以改进。这意味着对象在其使用期间持续存在：
+通常对象在类构造函数中实例化，并在各种方法中使用。
 
-This is covered in further detail :ref:`Controlling garbage collection <controlling_gc>` below.
+更多详细信息，请参见下面的 :ref:`Controlling garbage collection <controlling_gc>` below.
 
-Buffers
+缓冲区
 ~~~~~~~
 
-An example of the above is the common case where a buffer is required, such as one
-used for communication with a device. A typical driver will create the buffer in the
-constructor and use it in its I/O methods which will be called repeatedly.
+上述示例是需要缓冲区的常见情况，例如用于与设备通信的缓冲区。典型的驱动器将在构造函数中创建缓冲区，
+并在其I/O方法中使用，该方法将重复调用。
 
-The MicroPython libraries typically provide support for pre-allocated buffers. For
-example, objects which support stream interface (e.g., file or UART) provide `read()`
-method which allocates new buffer for read data, but also a `readinto()` method
-to read data into an existing buffer.
+MicroPython库通常为预分配的缓冲区提供支持。例如，支持流接口（例如：文件或UART）的对象提供为
+读取数据分配新的缓冲区的 `read()` 方法，以及将数据读取入现存缓冲区的 `readinto()` 方法。
 
-Floating Point
+浮点数
 ~~~~~~~~~~~~~~
 
-Some MicroPython ports allocate floating point numbers on heap. Some other ports
-may lack dedicated floating-point coprocessor, and perform arithmetic operations
-on them in "software" at considerably lower speed than on integers. Where
-performance is important, use integer operations and restrict the use of floating
-point to sections of the code where performance is not paramount. For example,
-capture ADC readings as integers values to an array in one quick go, and only then
-convert them to floating-point numbers for signal processing.
+某些MicroPython端口在堆上分配浮点数。其他端口可能缺少专用的浮点协处理器，且在"软件"上以低于在整数上的速度对它们执行算术运算。
+性能事关重要的情况下，使用整数运算；性能无关紧要的情况下，限制浮点数用于代码的部分。例如，将ADC读数作为整数值捕捉到数组中，
+然后将其转换为浮点数进行信号处理。
 
-Arrays
+数组
 ~~~~~~
 
-Consider the use of the various types of array classes as an alternative to lists.
-The `array` module supports various element types with 8-bit elements supported
-by Python's built in `bytes` and `bytearray` classes. These data structures all store
-elements in contiguous memory locations. Once again to avoid memory allocation in critical
-code these should be pre-allocated and passed as arguments or as bound objects.
+考虑使用各种类型的数组来替代列表。 `array` 模块支持不同的项类型，8位项由的内置 `bytes` 和 `bytearray` 类支持。
+这些数据结构将项储存在连续内存位置中。为避免在临界区代码中分配内存，内存应进行预分配并作为参数或限定性对象传递。
 
-When passing slices of objects such as `bytearray` instances, Python creates
-a copy which involves allocation of the size proportional to the size of slice.
-This can be alleviated using a `memoryview` object. `memoryview` itself
-is allocated on heap, but is a small, fixed-size object, regardless of the size
-of slice it points too.
+在传递诸如 `bytearray` 实例之类的对象片段时，Python会创建一个副本，该副本涉及与片段大小成比例的大小分配。
+这可以使用 `memoryview` 对象缓解。 `memoryview` 本身在堆上分配，但其为一个较小且固定大小的对象。
 
 .. code:: python
 
     ba = bytearray(10000)  # big array
-    func(ba[30:2000])      # a copy is passed, ~2K new allocation
-    mv = memoryview(ba)    # small object is allocated
-    func(mv[30:2000])      # a pointer to memory is passed
+    func(ba[30:2000])      # a copy is passed, ~2K new allocation 传递一个副本，~2K新分配
+    mv = memoryview(ba)    # small object is allocated 分配小对象
+    func(mv[30:2000])      # a pointer to memory is passed 传递指向内存的指针
 
-A `memoryview` can only be applied to objects supporting the buffer protocol - this
-includes arrays but not lists. Small caveat is that while memoryview object is live,
-it also keeps alive the original buffer object. So, a memoryview isn't a universal
-panacea. For instance, in the example above, if you are done with 10K buffer and
-just need those bytes 30:2000 from it, it may be better to make a slice, and let
-the 10K buffer go (be ready for garbage collection), instead of making a
-long-living memoryview and keeping 10K blocked for GC.
+`memoryview` 仅可应用于支持缓冲区协议的对象-这包括数组但不包括列表。小提示：memoryview对象是有用的，
+它保留了原始的缓冲区对象。因此，memoryview并非万能的灵丹妙药。例如，在上述示例中，若您用10K缓冲区完成，
+只需其中的30：2000字节，那么最好做一个片段，不使用10K缓冲区（垃圾收集准备就绪），而不是做一个长时间的内存视图，
+并保持10K阻塞的GC。
 
-Nonetheless, `memoryview` is indispensable for advanced preallocated buffer
-management. `readinto()` method discussed above puts data at the beginning
-of buffer and fills in entire buffer. What if you need to put data in the
-middle of existing buffer? Just create a memoryview into the needed section
-of buffer and pass it to `readinto()`.
+尽管如此， `memoryview` 对于高级预分配缓冲区管理而言必不可少。上述 `readinto()` 方法将数据放在缓冲区的开始处，
+并填充整个缓冲区。 若您需要将数据放进现有缓冲区中，应如何操作？ 只需在缓冲区的所需部分创建一个内存视图，
+并将其传递给 `readinto()` 。
 
-Identifying the slowest section of code
+识别代码的最慢段
 ---------------------------------------
 
-This is a process known as profiling and is covered in textbooks and
-(for standard Python) supported by various software tools. For the type of
-smaller embedded application likely to be running on MicroPython platforms
-the slowest function or method can usually be established by judicious use
-of the timing ``ticks`` group of functions documented in `time`.
-Code execution time can be measured in ms, us, or CPU cycles.
+此过程也称为profiling，教科书中对其进行了介绍，此过程由不同的软件工具支持（对于标准Python而言）。
+对于可能在MicroPython平台上运行的较小型嵌入式应用程序，最慢的函数或方法通常可通过正确
+使用 `utime` 中记录的时序 ``ticks`` 函数来建立。代码执行时长可用毫秒、微秒和CPU周期来计算。
 
-The following enables any function or method to be timed by adding an
-``@timed_function`` decorator:
+以下代码可以通过添加 ``@timed_function`` 装饰器使任何函数或方法计时:
 
 .. code:: python
 
@@ -140,25 +104,22 @@ The following enables any function or method to be timed by adding an
             return result
         return new_func
 
-MicroPython code improvements
+MicroPython代码改进
 -----------------------------
 
-The const() declaration
+const()声明
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-MicroPython provides a ``const()`` declaration. This works in a similar way
-to ``#define`` in C in that when the code is compiled to bytecode the compiler
-substitutes the numeric value for the identifier. This avoids a dictionary
-lookup at runtime. The argument to ``const()`` may be anything which, at
-compile time, evaluates to an integer e.g. ``0x100`` or ``1 << 8``.
+MicroPython提供了一个 ``const()`` 声明。 其运行方式与C语言中的 ``#define`` 类似，因为当代码被编译为字节码时，
+编译器会将数字值替换为标识符。这可以避免在运行时查找字典。 ``const()`` 的参数可为任何可在编译时计算为整数的数值，
+例如 ``0x100`` 或 ``1 << 8`` 。
 
 .. _Caching:
 
-Caching object references
+缓存对象引用
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Where a function or method repeatedly accesses objects performance is improved
-by caching the object in a local variable:
+在函数或方法重复访问对象的情况下，通过将对象缓存在局部变量中可以提高性能:
 
 .. code:: python
 
@@ -168,65 +129,50 @@ by caching the object in a local variable:
         def bar(self, obj_display):
             ba_ref = self.ba
             fb = obj_display.framebuffer
-            # iterative code using these two objects
+            # iterative code using these two objects 使用这两个对象的代码
 
-This avoids the need repeatedly to look up ``self.ba`` and ``obj_display.framebuffer``
-in the body of the method ``bar()``.
+这就避免了在方法 ``bar()`` 中重复查找 ``self.ba`` 和 ``obj_display.framebuffer`` 。
 
 .. _controlling_gc:
 
-Controlling garbage collection
+控制垃圾回收
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When memory allocation is required, MicroPython attempts to locate an adequately
-sized block on the heap. This may fail, usually because the heap is cluttered
-with objects which are no longer referenced by code. If a failure occurs, the
-process known as garbage collection reclaims the memory used by these redundant
-objects and the allocation is then tried again - a process which can take several
-milliseconds.
+当需要内存分配时，MicroPython会尝试在堆上寻找适当大小的块。寻找可能会失败，通常是因为堆中堆满了代码不再引用的对象。
+若发生故障，垃圾回收将回收冗余对象所占用的内存，然后再次尝试分配。此过程可能需要数毫秒。
 
-There may be benefits in pre-empting this by periodically issuing `gc.collect()`.
-Firstly doing a collection before it is actually required is quicker - typically on the
-order of 1ms if done frequently. Secondly you can determine the point in code
-where this time is used rather than have a longer delay occur at random points,
-possibly in a speed critical section. Finally performing collections regularly
-can reduce fragmentation in the heap. Severe fragmentation can lead to
-non-recoverable allocation failures.
+周期性地发布 ``gc.collect()`` 可能对预防有帮助。首先，在真正需要回收之前进行回收速度会更快，
+若经常回收，则耗时约1毫秒。其次，您可在代码中确定此时间的使用点，而非在随机点上发生较长的延迟，
+可能在速度临界区。最后，经常进行回收可减少堆中的碎片化。严重的碎片化会导致无法修复的分配故障。
 
-The Native code emitter
+本地密码发射器
 -----------------------
 
-This causes the MicroPython compiler to emit native CPU opcodes rather than
-bytecode. It covers the bulk of the MicroPython functionality, so most functions will require
-no adaptation (but see below). It is invoked by means of a function decorator:
+这使得MicroPython编译器发送本地CPU操作码，而非字节码。它涵盖了MicroPython的大部分功能，
+所以大部分功能无需适应（见下文）。它是通过一个函数装饰器调用的:
 
 .. code:: python
 
     @micropython.native
     def foo(self, arg):
-        buf = self.linebuf # Cached object
+        buf = self.linebuf # Cached object 缓存对象
         # code
 
-There are certain limitations in the current implementation of the native code emitter. 
+目前本地代码发送器仍然存在一些局限性。
 
-* Context managers are not supported (the ``with`` statement).
-* Generators are not supported.
-* If ``raise`` is used an argument must be supplied.
+* 不支持上下文管理器（ ``with`` 语句）。
+* 不支持生成器。
+* 若使用 ``raise`` ，则必须应用一个参数。
 
-The trade-off for the improved performance (roughly twices as fast as bytecode) is an
-increase in compiled code size.
+性能提高的代价（约为字节码的两倍）是编译代码大小的增加。
 
-The Viper code emitter
+Viper代码发送器
 ----------------------
 
-The optimisations discussed above involve standards-compliant Python code. The 
-Viper code emitter is not fully compliant. It supports special Viper native data types
-in pursuit of performance. Integer processing is non-compliant because it uses machine
-words: arithmetic on 32 bit hardware is performed modulo 2**32.
+上面讨论的优化包含符合标准的Python代码。 Viper代码发射器并不完全兼容。为实现高性能，它支持特殊的Viper本地数据类型。
+整数处理并不兼容，因其使用机器字：32位硬件上的算法是执行模块2**32。
 
-Like the Native emitter Viper produces machine instructions but further optimisations
-are performed, substantially increasing performance especially for integer arithmetic and
-bit manipulations. It is invoked using a decorator:
+与本地发送器相似，Viper生成机器指令，但进行了进一步优化，大大提高了性能，尤其是在整数算法和位操作方面。其使用装饰器调用:
 
 .. code:: python
 
@@ -234,69 +180,53 @@ bit manipulations. It is invoked using a decorator:
     def foo(self, arg: int) -> int:
         # code
 
-As the above fragment illustrates it is beneficial to use Python type hints to assist the Viper optimiser. 
-Type hints provide information on the data types of arguments and of the return value; these
-are a standard Python language feature formally defined here `PEP0484 <https://www.python.org/dev/peps/pep-0484/>`_.
-Viper supports its own set of types namely ``int``, ``uint`` (unsigned integer), ``ptr``, ``ptr8``,
-``ptr16`` and ``ptr32``. The ``ptrX`` types are discussed below. Currently the ``uint`` type serves
-a single purpose: as a type hint for a function return value. If such a function returns ``0xffffffff``
-Python will interpret the result as 2**32 -1 rather than as -1.
+如上所述，使用Python提示类型来辅助Viper优化器大有益处。类型提示提供参数的数据类型和返回值的信息；
+这些是在此正式定义的标准Python语言特性 `PEP0484 <https://www.python.org/dev/peps/pep-0484/>`_.
+Viper支持名为 ``int`` 、 ``uint`` （无符号整数）、 ``ptr`` 、 ``ptr8`` 、 ``ptr16`` 和 ``ptr32`` 的其自身的类型组。 ``ptrX``类型在下面进行介绍。
+目前类型仅作一种用途：作为函数返回值的类型提示。若函数返回 ``0xffffffff`` ，Python将结果解释为2**32 -1而非-1。
 
-In addition to the restrictions imposed by the native emitter the following constraints apply:
+除了本地发送器施加的限制之外，以下限制也适用:
 
-* Functions may have up to four arguments.
-* Default argument values are not permitted.
-* Floating point may be used but is not optimised.
+* 函数可能有多达4个参数。
+* 不许可默认参数值。
+* 浮点数可能被使用但未优化。
 
-Viper provides pointer types to assist the optimiser. These comprise
+Viper提供指针类型以协助优化器。这些包括
 
-* ``ptr`` Pointer to an object.
-* ``ptr8`` Points to a byte.
-* ``ptr16`` Points to a 16 bit half-word.
-* ``ptr32`` Points to a 32 bit machine word.
+* ``ptr`` 指向对象的指针。
+* ``ptr8`` 指向一个字节的指针。
+* ``ptr16`` 指向一个16位半字的指针。
+* ``ptr32`` 指向一个32位机器字的指针。
 
-The concept of a pointer may be unfamiliar to Python programmers. It has similarities
-to a Python `memoryview` object in that it provides direct access to data stored in memory.
-Items are accessed using subscript notation, but slices are not supported: a pointer can return
-a single item only. Its purpose is to provide fast random access to data stored in contiguous
-memory locations - such as data stored in objects which support the buffer protocol, and
-memory-mapped peripheral registers in a microcontroller. It should be noted that programming
-using pointers is hazardous: bounds checking is not performed and the compiler does nothing to
-prevent buffer overrun errors.
+Python程序员可能不熟悉指针的概念。 它与Python `memoryview` 对象有相似之处，它可以直接访问存储在内存中的数据。
+使用下标符号访问项目，但不支持片段：指针只能返回单个项目。其目的是提供快速随机访问存储在连续存储位置的数据--
+例如存储在支持缓冲协议的对象中的数据，以及微控制器中存储器映射的外设寄存器。应该指出的是，使用指针编程很危险：
+边界检查不会执行，编译器不会阻止缓冲区的超限错误。
 
-Typical usage is to cache variables:
+典型的用法是缓存变量:
 
 .. code:: python
 
     @micropython.viper
     def foo(self, arg: int) -> int:
-        buf = ptr8(self.linebuf) # self.linebuf is a bytearray or bytes object
+        buf = ptr8(self.linebuf) # self.linebuf is a bytearray or bytes object 是一个字节数组或一个字节对象
         for x in range(20, 30):
-            bar = buf[x] # Access a data item through the pointer
-            # code omitted
+            bar = buf[x] # Access a data item through the pointer 通过指针访问数据项目
+            # code omitted 省略的代码
 
-In this instance the compiler "knows" that ``buf`` is the address of an array of bytes;
-it can emit code to rapidly compute the address of ``buf[x]`` at runtime. Where casts are
-used to convert objects to Viper native types these should be performed at the start of
-the function rather than in critical timing loops as the cast operation can take several
-microseconds. The rules for casting are as follows:
+在此示例中，编译器"知道" ``buf`` 为字节组的地址；其可发送代码，以在运行时快速计算 ``buf[x]`` 的地址。
+在使用转换将对象转换为Viper本机类型时，应在函数启动时执行，而不是在关键计时回路中执行，因为转换操作可能需要数微秒。转换要求如下:
 
-* Casting operators are currently: ``int``, ``bool``, ``uint``, ``ptr``, ``ptr8``, ``ptr16`` and ``ptr32``.
-* The result of a cast will be a native Viper variable.
-* Arguments to a cast can be a Python object or a native Viper variable.
-* If argument is a native Viper variable, then cast is a no-op (i.e. costs nothing at runtime)
-  that just changes the type (e.g. from ``uint`` to ``ptr8``) so that you can then store/load
-  using this pointer.
-* If the argument is a Python object and the cast is ``int`` or ``uint``, then the Python object
-  must be of integral type and the value of that integral object is returned.
-* The argument to a bool cast must be integral type (boolean or integer); when used as a return
-  type the viper function will return True or False objects.
-* If the argument is a Python object and the cast is ``ptr``, ``ptr``, ``ptr16`` or ``ptr32``,
-  then the Python object must either have the buffer protocol with read-write capabilities
-  (in which case a pointer to the start of the buffer is returned) or it must be of integral
-  type (in which case the value of that integral object is returned).
- 
-The following example illustrates the use of a ``ptr16`` cast to toggle pin X1 ``n`` times:
+* 转换操作符当前为: ``int``, ``bool``, ``uint``, ``ptr``, ``ptr8``, ``ptr16`` 和 ``ptr32``.
+* 转换结果为本地Viper变量。
+* 转换的参数可为Python对象或本地Viper变量。
+* 若参数为本地Viper变量，则转换为仅改变类型（例如：从 ``uint`` 到 ``ptr8`` ）的空操作，所以您可使用此指针来储存/加载。
+* 若参数为Python对象，且转换为 ``int`` 或 ``uint`` ，则Python对象须为整数类型，且返回该整数对象的值。
+* 布尔转换的参数须为整数类型（布尔值或整数）；当用作返回类型时，Viper函数将返回True或False对象。
+* 若参数为Python对象，转换为 ``ptr``、 ``ptr``、 ``ptr16`` 或 ``ptr32``，则Python对象须具有读写功能的缓冲区协议
+ （在此情况下，返回指向缓冲区开始的指针）或为整数类型（在此情况下，返回整数对象的值）。
+
+以下示例说明了使用 ``ptr16`` 转换来切换引脚X1 ``n`` 次:
 
 .. code:: python
 
@@ -307,32 +237,25 @@ The following example illustrates the use of a ``ptr16`` cast to toggle pin X1 `
         for _ in range(n):
             odr[0] ^= BIT0
 
-A detailed technical description of the three code emitters may be found
-on Kickstarter here `Note 1 <https://www.kickstarter.com/projects/214379695/micro-python-python-for-microcontrollers/posts/664832>`_
-and here `Note 2 <https://www.kickstarter.com/projects/214379695/micro-python-python-for-microcontrollers/posts/665145>`_
+这三个代码发送器的详细技术说明，请参见Kickstarter的 `Note 1 <https://www.kickstarter.com/projects/214379695/micro-python-python-for-microcontrollers/posts/664832>`_
+和 `Note 2 <https://www.kickstarter.com/projects/214379695/micro-python-python-for-microcontrollers/posts/665145>`_
 
-Accessing hardware directly
+直接访问硬件
 ---------------------------
 
 .. note::
 
-    Code examples in this section are given for the Pyboard. The techniques
-    described however may be applied to other MicroPython ports too.
+    本节给出了Pyboard的代码示例。 不过，此处介绍的技术也可能适用于其他MicroPython端口。
 
-This comes into the category of more advanced programming and involves some knowledge
-of the target MCU. Consider the example of toggling an output pin on the Pyboard. The
-standard approach would be to write
+这属于更高级的编程范畴，涉及目标MCU的一些知识。考虑切换Pyboard上的输出引脚的例子。标准方法是写入
 
 .. code:: python
 
-    mypin.value(mypin.value() ^ 1) # mypin was instantiated as an output pin
+    mypin.value(mypin.value() ^ 1) # mypin was instantiated as an output pin实例化为输出引脚
 
-This involves the overhead of two calls to the `Pin` instance's :meth:`~machine.Pin.value()`
-method. This overhead can be eliminated by performing a read/write to the relevant bit
-of the chip's GPIO port output data register (odr). To facilitate this the ``stm``
-module provides a set of constants providing the addresses of the relevant registers.
-A fast toggle of pin ``P4`` (CPU pin ``A14``) - corresponding to the green LED -
-can be performed as follows:
+这涉及两次调用 `Pin` 实例的 `value()` 方法的开销。通过对芯片的GPIO端口输出数据寄存器（odr）的相关位执行读/写操作，
+可消除此开销。为实现这一点， ``stm`` 模块提供了一组提供相关寄存器地址的常量。引脚 ``P4`` （CPU引脚 ``A14`` ）的快速切换
+（对应绿色LED）可按如下方式执行:
 
 .. code:: python
 

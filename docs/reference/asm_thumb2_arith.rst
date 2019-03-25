@@ -1,20 +1,18 @@
-Arithmetic instructions
+算法指令
 =======================
 
-Document conventions
+文件规范
 --------------------
 
-Notation: ``Rd, Rm, Rn`` denote ARM registers R0-R7. ``immN`` denotes an immediate
-value having a width of N bits e.g. ``imm8``, ``imm3``. ``carry`` denotes
-the carry condition flag, ``not(carry)`` denotes its complement. In the case of instructions
-with more than one register argument, it is permissible for some to be identical. For example
-the following will add the contents of R0 to itself, placing the result in R0:
+符号： ``Rd`` , ``Rm`` , ``Rn`` 表示ARM寄存器R0-R7。 ``immN`` 表示具有N位宽度的即时值，如 ``imm8`` 、 ``imm3``等。
+``Carry`` 表示进位条件标志。 ``not(carry)`` 表示其补码。对于多于一个寄存器参数的指令，允许其相同。
+例如，以下指令将把R0的内容添加到其自身，将结果置于R0中:
 
 * add(r0, r0, r0)
 
-Arithmetic instructions affect the condition flags except where stated.
+除特殊说明的情况外，算法指令将会影响条件标志。
 
-Addition
+加
 --------
 
 * add(Rdn, imm8) ``Rdn = Rdn + imm8``
@@ -22,7 +20,7 @@ Addition
 * add(Rd, Rn, Rm) ``Rd = Rn +Rm``
 * adc(Rd, Rn) ``Rd = Rd + Rn + carry``
 
-Subtraction
+减
 -----------
 
 * sub(Rdn, imm8) ``Rdn = Rdn - imm8``
@@ -30,21 +28,19 @@ Subtraction
 * sub(Rd, Rn, Rm) ``Rd = Rn - Rm``
 * sbc(Rd, Rn) ``Rd = Rd - Rn - not(carry)``
 
-Negation
+取反
 --------
 
 * neg(Rd, Rn) ``Rd = -Rn``
 
-Multiplication and division
+乘和除
 ---------------------------
 
 * mul(Rd, Rn) ``Rd = Rd * Rn``
 
-This produces a 32 bit result with overflow lost. The result may be treated as
-signed or unsigned according to the definition of the operands.
+这会产生一个溢出丢失的32位结果。结果可能将根据操作数的定义被视为有符号或无符号。
 
 * sdiv(Rd, Rn, Rm) ``Rd = Rn / Rm``
 * udiv(Rd, Rn, Rm) ``Rd = Rn / Rm``
 
-These functions perform signed and unsigned division respectively. Condition flags
-are not affected.
+这些函数分别执行有符号和无符号的除法。条件标志不受影响。

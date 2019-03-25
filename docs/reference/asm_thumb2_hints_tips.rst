@@ -1,31 +1,18 @@
-Hints and tips
+ 提示与技巧
 ==============
 
-The following are some examples of the use of the inline assembler and some
-information on how to work around its limitations. In this document the term
-"assembler function" refers to a function declared in Python with the 
-``@micropython.asm_thumb`` decorator, whereas "subroutine" refers to assembler
-code called from within an assembler function.
+以下为使用内联汇编程序的示例以及有关解决其局限性的信息。在此文件中，术语"汇编程序函数"是
+指在Python中用 ``@micropython.asm_thumb`` 装饰器声明的函数，而"子程序"是指从汇编程序函数中调用的汇编程序代码。
 
-Code branches and subroutines
+代码分支和子程序
 -----------------------------
 
-It is important to appreciate that labels are local to an assembler function.
-There is currently no way for a subroutine defined in one function to be called
-from another.
+知道标记相对汇编函数为本地，这一信息十分重要。目前尚无法实现在某函数中定义的子程序从另一个函数中调用。
 
-To call a subroutine the instruction ``bl(LABEL)`` is issued. This transfers
-control to the instruction following the ``label(LABEL)`` directive and stores
-the return address in the link register (``lr`` or ``r14``). To return the
-instruction ``bx(lr)`` is issued which causes execution to continue with
-the instruction following the subroutine call. This mechanism implies that, if
-a subroutine is to call another, it must save the link register prior to
-the call and restore it before terminating.
+调用子程序，则发送指令 ``bl(LABEL)`` 。这会将控制转移到 ``label(LABEL)`` 指令后的指令，并将返回地址存储在链接寄存器（ ``lr`` 或 ``r14`` ）中。
+为返回指令，需发送 ``bx(lr)`` ，这会使子程序调用后的指令继续执行。这种机制意味着，若子程序要调用另一子程序，则须在调用前保存链接寄存器并在终止前将其恢复。
 
-The following rather contrived example illustrates a function call. Note that
-it's necessary at the start to branch around all subroutine calls: subroutines
-end execution with ``bx(lr)`` while the outer function simply "drops off the end"
-in the style of Python functions.
+以下示例对函数调用进行说明。请注意：开始时需分支所有子程序调用：子程序以 ``bx(lr)`` 结束执行，而外部函数只是以Python函数样式"下降"结束。
 
 ::
 
@@ -41,9 +28,7 @@ in the style of Python functions.
 
     print(quad(10))
 
-The following code example demonstrates a nested (recursive) call: the classic
-Fibonacci sequence. Here, prior to a recursive call, the link register is saved
-along with other registers which the program logic requires to be preserved.
+以下代码示例演示了嵌套（递归）调用：经典的斐波那契数列。此处，在递归调用前，链接寄存器与其他寄存器一起保存，程序逻辑需保存该寄存器。
 
 ::
 
@@ -70,19 +55,13 @@ along with other registers which the program logic requires to be preserved.
     for n in range(10):
         print(fib(n))
 
-Argument passing and return
+传输和返回参数
 ---------------------------
 
-The tutorial details the fact that assembler functions can support from zero to
-three arguments, which must (if used) be named ``r0``, ``r1`` and ``r2``. When
-the code executes the registers will be initialised to those values.
+本教程详细介绍了汇编程序函数可以支持0到3个参数这一特性，这三个参数须（若使用）命名为 ``r0`` 、 ``r1`` 和 ``r2`` 。执行代码时，寄存器将被初始化为该值。
 
-The data types which can be passed in this way are integers and memory
-addresses. With current firmware all possible 32 bit values may be passed and
-returned. If the return value may have the most significant bit set a Python
-type hint should be employed to enable MicroPython to determine whether the
-value should be interpreted as a signed or unsigned integer: types are
-``int`` or ``uint``.
+可用此种方式传输的数据类型为整数和内存地址。使用当前固件，所有可能的32位值都可传输并返回。若返回值可能设置了最高有效位，
+则应使用Python类型提示来启用MicroPython以确定值是否应解释为有符号或无符号整数：类型 ``int`` 或 ``uint`` 。
 
 ::
 
@@ -90,34 +69,26 @@ value should be interpreted as a signed or unsigned integer: types are
     def uadd(r0, r1) -> uint:
         add(r0, r0, r1)
 
-``hex(uadd(0x40000000,0x40000000))`` will return 0x80000000, demonstrating the
-passing and return of integers where bits 30 and 31 differ.
+``hex(uadd(0x40000000,0x40000000))`` 将返回0x80000000，证明30位和31位不同的整数的传输和返回。
 
-The limitations on the number of arguments and return values can be overcome by means
-of the ``array`` module which enables any number of values of any type to be accessed.
+参数和返回值数量的限制可通过 ``array`` 模块方式克服，此方式允许访问任何类型的任何数量的值。
 
-Multiple arguments
+多个参数
 ~~~~~~~~~~~~~~~~~~
 
-If a Python array of integers is passed as an argument to an assembler
-function, the function will receive the address of a contiguous set of integers.
-Thus multiple arguments can be passed as elements of a single array. Similarly a
-function can return multiple values by assigning them to array elements.
-Assembler functions have no means of determining the length of an array:
-this will need to be passed to the function.
+若将一个Python整数数组作为参数传输给汇编函数，则该函数将接收一组连续的整数地址。因此可将多个参数作为单个数组的元素传递。
+同样，一个函数可通过将多个值赋值给数组元素来返回多个值。汇编函数尚无法确定数组的长度：这需要传输给函数。
 
-This use of arrays can be extended to enable more than three arrays to be used. 
-This is done using indirection: the ``uctypes`` module supports ``addressof()`` 
-which will return the address of an array passed as its argument. Thus you can
-populate an integer array with the addresses of other arrays:
+数组的这种用法可进行拓展，以使用三个以上的数组。这是间接完成的： ``uctypes`` 模块支持 ``addressof()`` ，
+其将返回作为参数传递的数组地址。因此，您可使用其他数组的地址填充整数数组:
 
 ::
 
     from uctypes import addressof
     @micropython.asm_thumb
     def getindirect(r0):
-        ldr(r0, [r0, 0]) # Address of array loaded from passed array
-        ldr(r0, [r0, 4]) # Return element 1 of indirect array (24)
+        ldr(r0, [r0, 0]) # Address of array loaded from passed array 从传输数组中加载的数组地址
+        ldr(r0, [r0, 4]) # Return element 1 of indirect array (24) 返回间接数组（24）的元素1
 
     def testindirect():
         a = array.array('i',[23, 24])
@@ -125,13 +96,10 @@ populate an integer array with the addresses of other arrays:
         b[0] = addressof(a)
         print(getindirect(b))
 
-Non-integer data types
+非整数数据类型
 ~~~~~~~~~~~~~~~~~~~~~~
 
-These may be handled by means of arrays of the appropriate data type. For
-example, single precision floating point data may be processed as follows.
-This code example takes an array of floats and replaces its contents with
-their squares.
+这些可以通过适当数据类型的数组来处理。例如，可按照如下方法处理单精度浮点数据。这段代码示例需一个浮点数组，并用其平方替换其内容。
 
 ::
 
@@ -151,16 +119,12 @@ their squares.
     square(a, len(a))
     print(a)
 
-The uctypes module supports the use of data structures beyond simple
-arrays. It enables a Python data structure to be mapped onto a bytearray
-instance which may then be passed to the assembler function.
+uctypes模块支持使用超出简单数组范围的数据结构。它使Python数据结构能够映射到字节数组实例，然后可将其传输给汇编程序函数。
 
-Named constants
+命名常量
 ---------------
 
-Assembler code may be made more readable and maintainable by using named
-constants rather than littering code with numbers. This may be achieved
-thus:
+通过使用命名常量而非用数字随意命名代码，可以使汇编代码变得更具可读性和可维护性。可通过如下方式实现:
 
 ::
 
@@ -170,17 +134,12 @@ thus:
     def foo():
         mov(r0, MYDATA)
 
-The const() construct causes MicroPython to replace the variable name
-with its value at compile time. If constants are declared in an outer
-Python scope they can be shared between multiple assembler functions and
-with Python code.
+const()构造使得MicroPython在编译时用其值替换变量名。若常量在外部Python作用域中声明，则其可在多个汇编函数和Python代码间共享。
 
-Assembler code as class methods
+汇编代码作为类方法
 -------------------------------
 
-MicroPython passes the address of the object instance as the first argument
-to class methods. This is normally of little use to an assembler function.
-It can be avoided by declaring the function as a static method thus:
+MicroPython将对象实例的地址作为第一个参数传输给类方法。通常，这对汇编函数没有多大用处。通过将函数声明为静态类函数可避免这种情况:
 
 ::
 
@@ -190,30 +149,24 @@ It can be avoided by declaring the function as a static method thus:
       def bar(r0):
         add(r0, r0, r0)
 
-Use of unsupported instructions
+使用不支持的指令
 -------------------------------
 
-These can be coded using the data statement as shown below. While
-``push()`` and ``pop()`` are supported the example below illustrates the
-principle. The necessary machine code may be found in the ARM v7-M
-Architecture Reference Manual. Note that the first argument of data
-calls such as
+这些指令可使用数据语句进行编码，如下所示。尽管支持 ``push()`` 和 ``pop()`` ，以下示例说明其原理。
+必要的机器代码可在ARM v7-M体系结构参考手册中查找。请注意：数据调用的第一个参数如
 
 ::
 
     data(2, 0xe92d, 0x0f00) # push r8,r9,r10,r11
 
-indicates that each subsequent argument is a two byte quantity.
+表示每个后续参数为2字节值。
 
-Overcoming MicroPython's integer restriction
+克服MicroPython的整数限制
 --------------------------------------------
 
-The Pyboard chip includes a CRC generator. Its use presents a problem in
-MicroPython because the returned values cover the full gamut of 32 bit
-quantities whereas small integers in MicroPython cannot have differing values
-in bits 30 and 31. This limitation is overcome with the following code, which
-uses assembler to put the result into an array and Python code to
-coerce the result into an arbitrary precision unsigned integer.
+Pyboard芯片包含一个CRC发生器。其使用在MicroPython中提出了一个问题，由于返回值覆盖了32位的完整色域，
+而MicroPython中的小整数在位30和31中不能存在不同值。使用以下代码可以克服此限制：使用汇编程序将结果放入数组和Python代码中，
+以将结果强制转换为任意精度无符号整数。
 
 ::
 

@@ -1,23 +1,20 @@
-Load register from memory
+从内存中加载寄存器
 =========================
 
-Document conventions
+文件规范
 --------------------
 
-Notation: ``Rt, Rn`` denote ARM registers R0-R7 except where stated. ``immN`` represents an immediate
-value having a width of N bits hence ``imm5`` is constrained to the range 0-31. ``[Rn + immN]`` is the contents
-of the memory address obtained by adding Rn and the offset ``immN``. Offsets are measured in
-bytes. These instructions affect the condition flags.
+符号：除特殊注明外， ``Rt, Rn`` 表示ARM寄存器R0-R7。 ``immN`` 表示具有N为宽度的即时值，因此 ``imm5`` 的范围限制为0-31。 ``[Rn + immN]`` 是通过
+添加Rn和误差 ``immN`` 获得的内存地址的内容。误差单位为字节。这些指令会影响条件标志。
 
-Register Load
+寄存器加载
 -------------
 
-* ldr(Rt, [Rn, imm7]) ``Rt = [Rn + imm7]`` Load a 32 bit word
-* ldrb(Rt, [Rn, imm5]) ``Rt = [Rn + imm5]`` Load a byte
-* ldrh(Rt, [Rn, imm6]) ``Rt = [Rn + imm6]`` Load a 16 bit half word
+* ldr(Rt, [Rn, imm7]) ``Rt = [Rn + imm7]`` 加载一个32位字
+* ldrb(Rt, [Rn, imm5]) ``Rt = [Rn + imm5]`` 加载一个字节
+* ldrh(Rt, [Rn, imm6]) ``Rt = [Rn + imm6]`` 加载一个16位半字
 
-Where a byte or half word is loaded, it is zero-extended to 32 bits.
+一个字节或一个半字加载的情况下，其从补零变为32位。
 
-The specified immediate offsets are measured in bytes. Hence in the case of ``ldr`` the 7 bit value
-enables 32 bit word aligned values to be accessed with a maximum offset of 31 words. In the case of ``ldrh`` the
-6 bit value enables 16 bit half-word aligned values to be accessed with a maximum offset of 31 half-words.
+指定即时误差单位为字节。因此，在 ``ldr`` 的情况下，7位值使得可用31字的最大偏移量来访问32位字对齐值。
+在 ``ldrh`` 的情况下，6位值使得可用31半字的最大偏移值访问16位半字对齐值。

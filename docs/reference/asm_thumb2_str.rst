@@ -1,21 +1,18 @@
-Store register to memory
+将寄存器存入内存
 ========================
 
-Document conventions
+文件规范
 --------------------
 
-Notation: ``Rt, Rn`` denote ARM registers R0-R7 except where stated. ``immN`` represents an immediate
-value having a width of N bits hence ``imm5`` is constrained to the range 0-31. ``[Rn + imm5]`` is the
-contents of the memory address obtained by adding Rn and the offset ``imm5``. Offsets are measured in
-bytes. These instructions do not affect the condition flags.
+符号：除特殊注明外， ``Rt, Rn`` 表示ARM寄存器R0-R7。 ``immN`` 表示具有N位宽度的即时值，因此 ``imm5`` 的范围限制为0-31。
+``[Rn + imm5]`` 为通过添加Rn和偏移值 ``imm5`` 获得的内存地址的内容。偏移值单位为字节。这些指令不会影响条件标志。
 
-Register Store
+寄存器存储
 --------------
 
-* str(Rt, [Rn, imm7]) ``[Rn + imm7] = Rt`` Store a 32 bit word
-* strb(Rt, [Rn, imm5]) ``[Rn + imm5] = Rt`` Store a byte (b0-b7)
-* strh(Rt, [Rn, imm6]) ``[Rn + imm6] = Rt`` Store a 16 bit half word (b0-b15)
+* str(Rt, [Rn, imm7]) ``[Rn + imm7] = Rt`` 储存一个32位字
+* strb(Rt, [Rn, imm5]) ``[Rn + imm5] = Rt`` 储存一个字节(b0-b7)
+* strh(Rt, [Rn, imm6]) ``[Rn + imm6] = Rt`` 储存一个16位半字(b0-b15)
 
-The specified immediate offsets are measured in bytes. Hence in the case of ``str`` the 7 bit value
-enables 32 bit word aligned values to be accessed with a maximum offset of 31 words. In the case of ``strh`` the
-6 bit value enables 16 bit half-word aligned values to be accessed with a maximum offset of 31 half-words.
+指定即时偏差值的单位为字节。因此在 ``str`` 的情况下，7位值使得可用31字的最大偏差访问32位字对齐值。
+在 ``strh`` 的情况下，6位值使得可用31半字的最大偏差访问16位半字对齐值。

@@ -1,27 +1,23 @@
-Register move instructions
+寄存器移位指令
 ==========================
 
-Document conventions
+文件规范
 --------------------
 
-Notation: ``Rd, Rn`` denote ARM registers R0-R15. ``immN`` denotes an immediate
-value having a width of N bits. These instructions affect the condition flags.
+符号： ``Rd, Rn`` 表示ARM寄存器R0-R15。 ``immN`` 表示具有N为宽度的即时值。这些指令会影响条件标志。
 
-Register moves
+寄存器移位
 --------------
 
-Where immediate values are used, these are zero-extended to 32 bits. Thus
-``mov(R0, 0xff)`` will set R0 to 255.
+使用即时值的情况下，其从补零变为32位。因此 ``mov(R0, 0xff)`` 将R0设置为255。
 
 * mov(Rd, imm8) ``Rd = imm8``
 * mov(Rd, Rn) ``Rd = Rn``
 * movw(Rd, imm16) ``Rd = imm16``
 * movt(Rd, imm16) ``Rd = (Rd & 0xffff) | (imm16 << 16)``
 
-movt writes an immediate value to the top halfword of the destination register.
-It does not affect the contents of the bottom halfword.
+movt将一个即时值写入目标寄存器的前半字，其并不影响后半字的内容。
 
 * movwt(Rd, imm32) ``Rd = imm32``
 
-movwt is a pseudo-instruction: the MicroPython assembler emits a ``movw`` followed
-by a ``movt`` to move a 32-bit value into Rd.
+movwt是一个虚拟指令：MicroPython汇编程序在发送 ``movw`` 后，再发送 ``movt`` ，以将32位值移入Rd。跟一个movt将一个32位值移入Rd。

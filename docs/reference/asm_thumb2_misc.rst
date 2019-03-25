@@ -1,13 +1,10 @@
-Miscellaneous instructions
+各种指令
 ==========================
 
-* nop() ``pass`` no operation.
-* wfi() Suspend execution in a low power state until an interrupt occurs.
-* cpsid(flags) set the Priority Mask Register - disable interrupts.
-* cpsie(flags) clear the Priority Mask Register - enable interrupts.
-* mrs(Rd, special_reg) ``Rd = special_reg`` copy a special register to a general register. The special register
-  may be IPSR (Interrupt Status Register) or BASEPRI (Base Priority Register). The IPSR provides a means of determining
-  the exception number of an interrupt being processed. It contains zero if no interrupt is being processed.
+* nop() ``pass`` 无操作。
+* wfi() 在低能耗状态下暂停执行，直至发生中断。
+* cpsid(flags) 设置优先级屏蔽寄存器 - 禁用中断。
+* cpsie(flags) 清除优先级屏蔽寄存器 - 启用中断。
+* mrs(Rd, special_reg) ``Rd = special_reg`` 将特殊寄存器复制到通用寄存器。特殊寄存器可能为IPSR（中断状态寄存器）或BASEPRI（基本优先级寄存器）。IPSR提供一种确定正在处理的中断的例外编号的方法。若不存在正在处理的中断，则其包含0。
 
-Currently the ``cpsie()`` and ``cpsid()`` functions are partially implemented.
-They require but ignore the flags argument and serve as a means of enabling and disabling interrupts.
+目前， ``cpsie()`` 和 ``cpsid()`` 函数已部分实现。这些函数需要但却忽略标记参数，并作为启用或禁用中断的方法。
