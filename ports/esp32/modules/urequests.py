@@ -28,7 +28,10 @@ class Response:
   def json(self):
     import ujson
     return ujson.loads(self.content)
-
+    
+  def recv(self, dataLen):
+    dat = self.raw.read(dataLen)
+    return dat
 
 def request(method, url, data=None, json=None, headers={}, stream=None,params=None):
   try:
