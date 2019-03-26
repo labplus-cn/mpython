@@ -45,7 +45,7 @@ M1、M2,正转速度设为80::
     motor.set_speed(motor.MOTOR_2,0)        # 停止
 
 
-控制电机速度使用到函数 ``set_speed(motor_no, spend)`` 。``motor_no`` 参数为电机编号,可选编号常量有 ``MOTOR_1`` 、``MOTOR_2`` 。 ``spend`` 参数为速度,范围-100~100,正值表示正转,负值时表示负转。
+控制电机速度使用到函数 ``set_speed(motor_no, speed)`` 。``motor_no`` 参数为电机编号,可选编号常量有 ``MOTOR_1`` 、``MOTOR_2`` 。 ``speed`` 参数为速度,范围-100~100,正值表示正转,负值时表示负转。
 当某些时候你需要知道当前设置的速度值,你可以用 ``get_speed(motor_no)`` 返回当前电机速度。
 
 
