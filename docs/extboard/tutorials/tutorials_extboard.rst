@@ -156,7 +156,7 @@ TTS是Text To Speech的缩写，即“从文本到语音”，是人机对话的
 
     tts.translate(text)                                    # 文字转语音
 
-TTS语音合成功能使用到 :ref:`codec<codec>` 模块。首先需要构建 ``TTS(appid, api_key)`` , ``appid`` , ``api_key`` 为必选参数,在讯飞平台的应用的APPID、API_KET 。然后使用 ``translate(text)``
+TTS语音合成功能使用到 :ref:`tts<tts>` 模块。首先需要构建 ``TTS(appid, api_key)`` , ``appid`` , ``api_key`` 为必选参数,在讯飞平台的应用的APPID、API_KET 。然后使用 ``translate(text)``
 将文本转为语音并播放。
 
 

@@ -39,14 +39,19 @@ TT马达                                2
 
 有关掌控板拓展板的基础使用可查阅 :ref:`拓展板入门教程<extboard_tutorials>`，这里不再作讲解。
 
-拓展板的电机驱动为PWM输出。除了可以驱动马达外，还可以驱动本套件内的满天星灯带。使用方法同驱动马达大体相同，``setMotor1(SPEED)``,参数 ``SPEED`` ，范围0~100
+拓展板的电机驱动为PWM输出。除了可以驱动马达外，还可以驱动本套件内的满天星灯带。使用方法同驱动马达大体相同，``set_speed(motor_no, spend)``,参数 ``spend`` ，范围0~100
 
 
 ::
 
-    motor.setMotor1(0)         # 亮度为0%
-    motor.setMotor1(50)        # 亮度为50%
-    motor.setMotor1(100)       # 亮度为100%
+    from motor import Motor                 # 导入Motor 类
+
+    motor=Motor()                           # 实例Motor 类
+    motor.set_speed(motor.MOTOR_1,0)        # 亮度为0%
+    motor.set_speed(motor.MOTOR_1,50)       # 亮度为50%
+    motor.set_speed(motor.MOTOR_1,100)      # 亮度为100%
+
+
 
 RGB光环板
 +++++++++++
