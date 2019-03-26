@@ -57,11 +57,16 @@ INC += -I$(TOP)/lib/mp-readline
 INC += -I$(TOP)/lib/netutils
 INC += -I$(TOP)/lib/timeutils
 INC += -I$(BUILD)
+INC += -I$(TOP)/ports/esp32/codec/codec_lib/helix/include
+INC += -I$(TOP)/ports/esp32/codec/decoder/include
+INC += -I$(TOP)/ports/esp32/codec/include
 
 INC_ESPCOMP += -I$(ESPCOMP)/bootloader_support/include
 INC_ESPCOMP += -I$(ESPCOMP)/bootloader_support/include_bootloader
 INC_ESPCOMP += -I$(ESPCOMP)/driver/include
 INC_ESPCOMP += -I$(ESPCOMP)/driver/include/driver
+INC_ESPCOMP += -I$(ESPCOMP)/esp_http_client/include
+INC_ESPCOMP += -I$(ESPCOMP)/esp_http_client/lib/include
 INC_ESPCOMP += -I$(ESPCOMP)/nghttp/port/include
 INC_ESPCOMP += -I$(ESPCOMP)/nghttp/nghttp2/lib/includes
 INC_ESPCOMP += -I$(ESPCOMP)/esp32/include
@@ -107,6 +112,8 @@ CFLAGS_BASE = -std=gnu99 $(CFLAGS_COMMON) -DMBEDTLS_CONFIG_FILE='"mbedtls/esp_co
 CFLAGS = $(CFLAGS_BASE) $(INC) $(INC_ESPCOMP)
 CFLAGS += -DIDF_VER=\"$(IDF_VER)\"
 CFLAGS += $(CFLAGS_MOD)
+CFLAGS += -DARM -DCONFIG_AUDIO_HELIX    # 避免编译音频库出错
+CFLAGS += -Wno-unused-but-set-variable
 
 # this is what ESPIDF uses for c++ compilation
 CXXFLAGS = -std=gnu++11 $(CFLAGS_COMMON) $(INC) $(INC_ESPCOMP)
@@ -228,6 +235,31 @@ DRIVERS_SRC_C = $(addprefix drivers/,\
 	dht/dht.c \
 	)
 
+CODEC_SRC_C = $(addprefix codec/,\
+	modcodec.c \
+	http_client.c \
+	audio_player.c \
+	audio_renderer.c \
+	url_codec.c \
+	local_file.c \
+	codec_lib/helix/src/bitstream.c \
+	codec_lib/helix/src/buffers.c \
+	codec_lib/helix/src/dct32.c \
+	codec_lib/helix/src/dequant.c \
+	codec_lib/helix/src/dqchan.c \
+	codec_lib/helix/src/huffman.c \
+	codec_lib/helix/src/hufftabs.c \
+	codec_lib/helix/src/imdct.c \
+	codec_lib/helix/src/mp3dec.c \
+	codec_lib/helix/src/mp3tabs.c \
+	codec_lib/helix/src/polyphase.c \
+	codec_lib/helix/src/scalfact.c \
+	codec_lib/helix/src/stproc.c \
+	codec_lib/helix/src/subband.c \
+	codec_lib/helix/src/trigtabs.c \
+	decoder/helix_mp3_decoder.c \
+	)
+
 OBJ_MP =
 OBJ_MP += $(PY_O)
 OBJ_MP += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
@@ -235,9 +267,10 @@ OBJ_MP += $(addprefix $(BUILD)/, $(Labplus_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(EXTMOD_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(LIB_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(DRIVERS_SRC_C:.c=.o))
+OBJ_MP += $(addprefix $(BUILD)/, $(CODEC_SRC_C:.c=.o))
 
 # List of sources for qstr extraction
-SRC_QSTR += $(SRC_C) $(EXTMOD_SRC_C) $(LIB_SRC_C) $(DRIVERS_SRC_C)
+SRC_QSTR += $(SRC_C) $(EXTMOD_SRC_C) $(LIB_SRC_C) $(DRIVERS_SRC_C) $(CODEC_SRC_C)
 # Append any auto-generated sources that are needed by sources listed in SRC_QSTR
 SRC_QSTR_AUTO_DEPS +=
 
@@ -255,6 +288,17 @@ ESPIDF_DRIVER_O = $(addprefix $(ESPCOMP)/driver/,\
 	rtc_module.o \
 	mcpwm.o \
 	i2c.o \
+	i2s.o \
+	)
+
+ESPIDF_ESP_HTTP_CLIENT_O = $(addprefix $(ESPCOMP)/esp_http_client/,\
+	esp_http_client.o \
+	lib/http_auth.o \
+	lib/http_header.o \
+	lib/http_utils.o \
+	lib/transport_ssl.o \
+	lib/transport_tcp.o \
+	lib/transport.o \
 	)
 
 $(BUILD)/$(ESPCOMP)/esp32/dport_access.o: CFLAGS += -Wno-array-bounds
@@ -640,6 +684,7 @@ ESPIDF_WPA_SUPPLICANT_O = $(addprefix $(ESPCOMP)/wpa_supplicant/,\
 OBJ_ESPIDF =
 OBJ_ESPIDF += $(addprefix $(BUILD)/, $(ESPIDF_NEWLIB_O))
 OBJ_ESPIDF += $(addprefix $(BUILD)/, $(ESPIDF_DRIVER_O))
+OBJ_ESPIDF += $(addprefix $(BUILD)/, $(ESPIDF_ESP_HTTP_CLIENT_O))
 OBJ_ESPIDF += $(addprefix $(BUILD)/, $(ESPIDF_ESP32_O))
 OBJ_ESPIDF += $(addprefix $(BUILD)/, $(ESPIDF_HEAP_O))
 OBJ_ESPIDF += $(addprefix $(BUILD)/, $(ESPIDF_SOC_O))
