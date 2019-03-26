@@ -57,12 +57,16 @@ INC += -I$(TOP)/lib/mp-readline
 INC += -I$(TOP)/lib/netutils
 INC += -I$(TOP)/lib/timeutils
 INC += -I$(BUILD)
-INC += -I$(TOP)/ports/esp32/codec/helix/include
+INC += -I$(TOP)/ports/esp32/codec/codec_lib/helix/include
+INC += -I$(TOP)/ports/esp32/codec/decoder/include
+INC += -I$(TOP)/ports/esp32/codec/include
 
 INC_ESPCOMP += -I$(ESPCOMP)/bootloader_support/include
 INC_ESPCOMP += -I$(ESPCOMP)/bootloader_support/include_bootloader
 INC_ESPCOMP += -I$(ESPCOMP)/driver/include
 INC_ESPCOMP += -I$(ESPCOMP)/driver/include/driver
+INC_ESPCOMP += -I$(ESPCOMP)/esp_http_client/include
+INC_ESPCOMP += -I$(ESPCOMP)/esp_http_client/lib/include
 INC_ESPCOMP += -I$(ESPCOMP)/nghttp/port/include
 INC_ESPCOMP += -I$(ESPCOMP)/nghttp/nghttp2/lib/includes
 INC_ESPCOMP += -I$(ESPCOMP)/esp32/include
@@ -233,21 +237,27 @@ DRIVERS_SRC_C = $(addprefix drivers/,\
 
 CODEC_SRC_C = $(addprefix codec/,\
 	modcodec.c \
-	helix/src/bitstream.c \
-	helix/src/buffers.c \
-	helix/src/dct32.c \
-	helix/src/dequant.c \
-	helix/src/dqchan.c \
-	helix/src/huffman.c \
-	helix/src/hufftabs.c \
-	helix/src/imdct.c \
-	helix/src/mp3dec.c \
-	helix/src/mp3tabs.c \
-	helix/src/polyphase.c \
-	helix/src/scalfact.c \
-	helix/src/stproc.c \
-	helix/src/subband.c \
-	helix/src/trigtabs.c \
+	http_client.c \
+	audio_player.c \
+	audio_renderer.c \
+	url_codec.c \
+	local_file.c \
+	codec_lib/helix/src/bitstream.c \
+	codec_lib/helix/src/buffers.c \
+	codec_lib/helix/src/dct32.c \
+	codec_lib/helix/src/dequant.c \
+	codec_lib/helix/src/dqchan.c \
+	codec_lib/helix/src/huffman.c \
+	codec_lib/helix/src/hufftabs.c \
+	codec_lib/helix/src/imdct.c \
+	codec_lib/helix/src/mp3dec.c \
+	codec_lib/helix/src/mp3tabs.c \
+	codec_lib/helix/src/polyphase.c \
+	codec_lib/helix/src/scalfact.c \
+	codec_lib/helix/src/stproc.c \
+	codec_lib/helix/src/subband.c \
+	codec_lib/helix/src/trigtabs.c \
+	decoder/helix_mp3_decoder.c \
 	)
 
 OBJ_MP =
@@ -279,6 +289,16 @@ ESPIDF_DRIVER_O = $(addprefix $(ESPCOMP)/driver/,\
 	mcpwm.o \
 	i2c.o \
 	i2s.o \
+	)
+
+ESPIDF_ESP_HTTP_CLIENT_O = $(addprefix $(ESPCOMP)/esp_http_client/,\
+	esp_http_client.o \
+	lib/http_auth.o \
+	lib/http_header.o \
+	lib/http_utils.o \
+	lib/transport_ssl.o \
+	lib/transport_tcp.o \
+	lib/transport.o \
 	)
 
 $(BUILD)/$(ESPCOMP)/esp32/dport_access.o: CFLAGS += -Wno-array-bounds
@@ -664,6 +684,7 @@ ESPIDF_WPA_SUPPLICANT_O = $(addprefix $(ESPCOMP)/wpa_supplicant/,\
 OBJ_ESPIDF =
 OBJ_ESPIDF += $(addprefix $(BUILD)/, $(ESPIDF_NEWLIB_O))
 OBJ_ESPIDF += $(addprefix $(BUILD)/, $(ESPIDF_DRIVER_O))
+OBJ_ESPIDF += $(addprefix $(BUILD)/, $(ESPIDF_ESP_HTTP_CLIENT_O))
 OBJ_ESPIDF += $(addprefix $(BUILD)/, $(ESPIDF_ESP32_O))
 OBJ_ESPIDF += $(addprefix $(BUILD)/, $(ESPIDF_HEAP_O))
 OBJ_ESPIDF += $(addprefix $(BUILD)/, $(ESPIDF_SOC_O))
