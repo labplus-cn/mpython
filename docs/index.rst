@@ -61,7 +61,7 @@ mPython掌控板资料
 ---------
 
 MicroPython类库
-++++++
+----------------
 
 .. toctree::
    :maxdepth: 1
@@ -88,20 +88,14 @@ MicroPython类库
 ---------
 
 mPython类库
-==========
+-------------
 
 .. toctree::
    :maxdepth: 1
    :caption: mPython类库
    :hidden:
    
-   library/mPython/mpython.rst
-   library/mPython/music.rst 
-   library/mPython/urequests.rst   
-   library/mPython/umqtt.simple.rst                                                   
-   library/mPython/servo.rst   
-   library/mPython/codec.rst   
-   library/mPython/tts.rst   
+   library/mPython/index.rst
                                              
 ======================================   ====================================================================  
  :ref:`mpython模块<mpython.py>`           提供了mPython掌控板特有拓展类。:ref:`mpython.py源码查看 <mpython_code>`
@@ -133,7 +127,7 @@ mPython类库
 
 
 掌控拓展板
-========
+----------
 
 .. toctree::
    :hidden:
