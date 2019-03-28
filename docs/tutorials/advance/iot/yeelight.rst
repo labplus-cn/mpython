@@ -33,9 +33,22 @@ Yeelight第三方控制协议：https://www.yeelight.com/download/Yeelight_Inter
 
 - YeeLight智能灯泡在使用前，须使用YeeLight APP先配置连接好wifi，并将 "局域网控制" 功能打开。
 
+.. figure:: /images/tutorials/yeelight/yeelight_app.gif
+  :align: center
+  :width: 400
+
+  Yeelight配置过程
+  
 - 掌控板提供 ``yeelight`` 驱动库,该库可在 ``mPython-lib`` https://github.com/labplus-cn/mPython-lib 获取。将 ``yeelight.py`` 下载至掌控板的文件系统。
 
 - 掌控板连接到Yeelight相同的局域网内。 
+
+
+
+
+
+
+
 
 编程
 ++++++
