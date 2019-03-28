@@ -114,6 +114,7 @@ Yeelight第三方控制协议：https://www.yeelight.com/download/Yeelight_Inter
 HSV（Hue Saturation Value）颜色模型：``hue`` 色调,用角度度量，取值范围为0～359，从红色开始按逆时针方向计算，红色为0°，绿色为120°,蓝色为240°。``saturation`` 饱和度,表示颜色接近光谱色的程度。颜色的饱和度也就愈高。饱和度高，颜色则深而艳。范围0~100。
 Value亮度参数,未提供支持。只需设置 ``hue`` 、``saturation`` 参数即可。在做些彩虹效果,颜色过渡时,HSV更为自然。
 
+还可以使用 ``set_color_temp(degrees)`` 函数设置灯泡色温, ``degrees`` 色温参数,范围1700~6500。
 
 .. figure:: /images/tutorials/yeelight/hsv.png
   :align: center
