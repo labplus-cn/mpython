@@ -184,14 +184,8 @@ SRC_C = \
 	machine_rtc.c \
 	modmusic.c \
 	modmusictunes.c \
+	modradio.c \
 	$(SRC_MOD)
-
-Labplus_SRC_C = $(addprefix labplus/, \
-	oled.c \
-	i2c_master.c \
-	panic.c \
-	startup.c \
-	)
 
 EXTMOD_SRC_C = $(addprefix extmod/,\
 	modonewire.c \
@@ -235,6 +229,14 @@ DRIVERS_SRC_C = $(addprefix drivers/,\
 	dht/dht.c \
 	)
 
+# 开机显示和异常打印功能模块
+STARTUP_SRC_C = $(addprefix startup/, \
+	oled.c \
+	i2c_master.c \
+	panic.c \
+	startup.c \
+	)
+# 音频功能模块
 CODEC_SRC_C = $(addprefix codec/,\
 	modcodec.c \
 	http_client.c \
@@ -263,10 +265,11 @@ CODEC_SRC_C = $(addprefix codec/,\
 OBJ_MP =
 OBJ_MP += $(PY_O)
 OBJ_MP += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
-OBJ_MP += $(addprefix $(BUILD)/, $(Labplus_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(EXTMOD_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(LIB_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(DRIVERS_SRC_C:.c=.o))
+
+OBJ_MP += $(addprefix $(BUILD)/, $(STARTUP_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(CODEC_SRC_C:.c=.o))
 
 # List of sources for qstr extraction

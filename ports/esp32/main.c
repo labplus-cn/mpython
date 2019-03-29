@@ -39,7 +39,7 @@
 #include "esp_log.h"
 
 #include "esp_timer.h"		// add by zkh
-#include "labplus/oled.h"
+#include "startup/oled.h"
 
 #include "py/stackctrl.h"
 #include "py/nlr.h"
