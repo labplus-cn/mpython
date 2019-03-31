@@ -94,6 +94,63 @@ static int read_ringbuf(mp3_decode_t *decoder)
     return 0;
 }
 
+static int proccess_tag(mp3_decode_t *decoder)
+{
+    int tag_len;
+    int ringBufRemainBytes = 0;
+    size_t len;
+    uint8_t *temp = NULL;
+    player_t *player = get_player_handle();
+
+    //xSemaphoreTake(player->ringbuf_sem, portMAX_DELAY);
+    ringBufRemainBytes = RINGBUF_SIZE - xRingbufferGetCurFreeSize(player->buf_handle); //
+    if(ringBufRemainBytes >= 10)
+    {
+        temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 500 / portTICK_PERIOD_MS, 10);
+        if(temp != NULL)
+        {
+            ESP_LOGE(TAG, "mp3 TAG? : %x %x %x %x", temp[0], temp[1],temp[2],temp[3]);
+            if (memcmp((char *)temp, "ID3", 3) == 0) //mp3? 有标签头，读取所有标签帧并去掉。
+            { 
+                //获取ID3V2标签头长，以确定MP3数据起始位置
+                tag_len = ((temp[6] & 0x7F) << 21) | ((temp[7] & 0x7F) << 14) | ((temp[8] & 0x7F) << 7) | (temp[9] & 0x7F); 
+                // ESP_LOGE(TAG, "tag_len: %d %x %x %x %x", tag_len, temp[6], temp[7], temp[8], temp[9]);
+                vRingbufferReturnItem(player->buf_handle, (void *)temp);
+                do
+                {
+                    ringBufRemainBytes = RINGBUF_SIZE - xRingbufferGetCurFreeSize(player->buf_handle);
+                    if(tag_len <= ringBufRemainBytes) //ring buf中数据多于tag_len，把tag数据读完并退出
+                    {
+                        temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 500 / portTICK_PERIOD_MS, tag_len);
+                        if(temp != NULL)
+                        {
+                            vRingbufferReturnItem(player->buf_handle, (void *)temp);
+                            return 0;
+                        }
+                    }
+                    else 
+                    {
+                        temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 500 / portTICK_PERIOD_MS, ringBufRemainBytes);
+                        if(temp != NULL)
+                        {
+                            vRingbufferReturnItem(player->buf_handle, (void *)temp);
+                            tag_len -= len;
+                        }
+                    }
+                } while(tag_len > 0);
+            } 
+            else //无tag头 把前面读到的10字节加入解码buff
+            {
+                memcpy(decoder->readPtr, (char *)temp, 10);
+                decoder->bytesleft += len;
+                vRingbufferReturnItem(player->buf_handle, (void *)temp);
+                decoder->supply_bytes = MAINBUF_SIZE1 - 10;
+            }      
+        }
+    }  
+    return 0;
+}
+
 static void mp3_decode(mp3_decode_t *decoder)
 {
     renderer_config_t *renderer = renderer_get();
@@ -161,6 +218,7 @@ void mp3_decoder_task(void *pvParameters)
 {
     player_t *player = pvParameters;
     mp3_decode_t *decoder;
+    int state;
 
     // ESP_LOGE(TAG, "Enter mp3 decode task.");
     decoder = calloc(1, sizeof(mp3_decode_t));
@@ -191,7 +249,8 @@ void mp3_decoder_task(void *pvParameters)
     decoder->bytesleft = 0;
     decoder->readPtr = decoder->readBuf;
     decoder->samplerate = 0;
-    int state;
+
+    proccess_tag(decoder);
     while(1)
     {
         state = read_ringbuf(decoder);

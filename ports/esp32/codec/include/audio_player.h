@@ -93,6 +93,6 @@ void audio_player_start();
 void audio_player_stop();
 void audio_player_pause();
 void audio_player_destroy();
-void create_decode_task(player_t *player);
+int create_decode_task(player_t *player);
 
 #endif /* INCLUDE_AUDIO_PLAYER_H_ */

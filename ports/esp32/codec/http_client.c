@@ -92,7 +92,7 @@ static esp_err_t _http_event_handler(esp_http_client_event_t *evt)
                 else if (strcmp(evt->header_value, "audio/mpeg") == 0) player->media_stream.content_type = AUDIO_MPEG;
                 else if (strcmp(evt->header_value, "text/plain") == 0) player->media_stream.content_type = AUDIO_TEXT;
                 else player->media_stream.content_type = MIME_UNKNOWN;
-                // ESP_LOGE(TAG, "media type: %x", player->media_stream.content_type);
+                ESP_LOGE(TAG, "media type: %x", player->media_stream.content_type);
             }
             break;
         case HTTP_EVENT_ON_DATA:
@@ -208,57 +208,23 @@ static int http_get_data(esp_http_client_handle_t client, int *total_read_len, i
     return 0;
 }
 
-static int proccess_tag(esp_http_client_handle_t client, int *total_read_len, int content_length)
+static int get_conten_type(esp_http_client_handle_t client, int content_length)
 {
-    int read_len, tag_len;
+    int total_read_len = 0;
+    int read_len;
     uint8_t buffer[BODY_READ_LEN];
     player_t *player = get_player_handle();
 
-    //处理ID3V2标签头
-    tag_len = esp_http_client_read(client, (char *)buffer, 10); //读TAG头
-    *total_read_len += tag_len;
-    // ESP_LOGE(TAG, "mp3 TAG? : %x %x %x %x", buffer[0], buffer[1],buffer[2],buffer[3]);
-    
-    if (memcmp((char *)buffer, "ID3", 3) == 0) //mp3? 有标签头，读取所有标签帧并去掉。
-    { 
-        //获取ID3V2标签头长，以确定MP3数据起始位置
-        tag_len = ((buffer[6] & 0x7F) << 21) | ((buffer[7] & 0x7F) << 14) | ((buffer[8] & 0x7F) << 7) | (buffer[9] & 0x7F); 
-        // ESP_LOGE(TAG, "tag_len: %d %x %x %x %x", tag_len, buffer[6], buffer[7], buffer[8], buffer[9]);
-        while(tag_len >= BODY_READ_LEN)
-        {
+    if(player->media_stream.content_type == AUDIO_TEXT){
+        ESP_LOGE(TAG,"Not audio stream!");
+        while(total_read_len < content_length){
             read_len = esp_http_client_read(client, (char *)buffer, BODY_READ_LEN); 
-            tag_len -= read_len;
-            *total_read_len += read_len;
-        } 
-        if(tag_len > 0){
-            read_len = esp_http_client_read(client, (char *)buffer, tag_len); //read the final tag data.
-            *total_read_len += read_len;
-        } 
-
-        // read_len = esp_http_client_read(client, (char *)buffer, 100);  //test first frame data head
-        // ESP_LOGE(TAG, "audio first frame head: %x %x %x %x", buffer[0], buffer[1],buffer[2],buffer[3]);
-    }
-    else //无tag头 把前面读到的10字节加入ringbuf
-    {
-        // ESP_LOGE(TAG, "No mp3 tag."); 
-        if(player->media_stream.content_type == AUDIO_MPEG ){
-            //xSemaphoreTake(player->ringbuf_sem, portMAX_DELAY);
-            xRingbufferSend(player->buf_handle, (const void *)buffer, (size_t)tag_len, 200/portTICK_PERIOD_MS);
-            //xSemaphoreGive(player->ringbuf_sem);
-        }
-        else if(player->media_stream.content_type == AUDIO_TEXT){
-            ESP_LOGE(TAG,"Not audio stream!");
+            total_read_len += read_len;
             printf("%s", (char *)buffer);
-            *total_read_len += 10;
-            while(*total_read_len < content_length){
-                read_len = esp_http_client_read(client, (char *)buffer, BODY_READ_LEN); 
-                *total_read_len += read_len;
-                printf("%s", (char *)buffer);
-            }
-            return -1;
-        }      
-    }  
-    return 0;
+        }
+        return -1;
+    } 
+    return 0;     
 }
 
 void http_request_task(void *pvParameters)
@@ -278,28 +244,36 @@ void http_request_task(void *pvParameters)
     if(strstr(player->url, "https") != NULL)
         config.cert_pem = cert_pem;
     client = esp_http_client_init(&config);
-    if(client == NULL){
-        http_err = -1;
-        goto abort;      
-    }
-
-    if(http_request(client, &content_length) == -1){
+    if(client == NULL)
+    {
         http_err = -1;
         goto abort;
     }
 
-    if(proccess_tag(client, &total_read_len, content_length) == -1){
+    if(http_request(client, &content_length) != 0)
+    {
         http_err = -1;
         goto abort;
     }
 
-    if(http_get_data(client, &total_read_len, content_length) == -1){
+    if(get_conten_type(client,  content_length) != 0)
+    {
+        http_err = -1;
+        goto abort;
+    }
+
+    if(http_get_data(client, &total_read_len, content_length) != 0) /*创建解码任务前，先把ringbuff填满*/
+    {
         http_err = -1;
         goto abort;
     }
 
     audio_player_start();
-    create_decode_task(player);
+    if(create_decode_task(player) != 0)
+    {
+        http_err = -1;
+        goto abort;
+    }
 
     // ESP_LOGE(TAG, "3.1. http request run, RAM left: %d, total_read_len = %d", esp_get_free_heap_size(), total_read_len);
     /* 3种情况退出循环：1 长时间取不到数据 2 数据读完 3 收到指令 */ 
@@ -329,6 +303,7 @@ void http_request_task(void *pvParameters)
         esp_http_client_cleanup(client);
     }
     //audio_player_destroy();
+    ESP_LOGE(TAG, "5. http_err: %d", http_err); 
     // ESP_LOGE(TAG, "http request stack: %d\n", uxTaskGetStackHighWaterMark(NULL));
     ESP_LOGE(TAG, "5. http request task will delete, RAM left: %d", esp_get_free_heap_size()); 
     if(http_err == -1){

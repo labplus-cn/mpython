@@ -161,11 +161,11 @@ void local_file_read(player_t *player)
 
     file = local_open(player->url);
 
-    if(proccess_tag(file, buffer) == -1){
-        ESP_LOGE(TAG, "File too short.");
-        err = -1;
-        goto abort;
-    }  
+    // if(proccess_tag(file, buffer) == -1){
+    //     ESP_LOGE(TAG, "File too short.");
+    //     err = -1;
+    //     goto abort;
+    // }  
     // ESP_LOGE(TAG, "3.1. local file read task run, RAM left: %d", esp_get_free_heap_size()); 
 
     if(data_read(file, buffer) == -1)

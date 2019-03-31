@@ -51,25 +51,29 @@ void audio_player_begin(void)
     }
 }
 
-void create_decode_task(player_t *player)
+int create_decode_task(player_t *player)
 {
+    int err = 0;
+
     switch(player->media_stream.content_type){ //创建不同的解码任务
         case OCTET_STREAM:
-
+            err = -1;
         break;
         case AUDIO_AAC:
-        
+            err = -1;
         break;
         case AUDIO_MP4:
-
+            err = -1;
         break;
         case AUDIO_MPEG:
             xTaskCreate(mp3_decoder_task, "mp3_decoder_task", HELIX_DECODER_TASK_STACK_DEPTH, player, ESP_TASK_PRIO_MIN + 1, &mp3_decode_task_handel );
             ESP_LOGE(TAG, "4. mp3 decoder task builded, RAM left: %d", esp_get_free_heap_size()); 
         break;
         default:
+            err = -1;
         break;
     }
+    return err;
 }
 
 void audio_player_destroy()

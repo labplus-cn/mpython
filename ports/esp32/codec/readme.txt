@@ -371,3 +371,4 @@ github分支提交
 3. 修正一些bug.
 4. 更改用户接口层函数名。
 5. 完善出错处理。
+6. 把对mp3tag处理从http_client移到mp3解码任务,使http_client只处理跟网络相关事务。
