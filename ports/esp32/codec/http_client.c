@@ -1,11 +1,10 @@
-/* ESP HTTP Client Example
+/*
+ * http_client.c
+ *
+ *  Created on: 2019.02.03
+ *      Author: zhaohuijiang
+ */
 
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
-
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
-*/
 
 #include <string.h>
 #include <stdlib.h>
@@ -26,8 +25,8 @@
 #define BODY_READ_LEN 64
 
 static const char *TAG = "HTTP_CLIENT";
-static int http_err;
-extern int player_status;
+extern HTTP_HEAD_VAL http_head[6];
+extern TaskHandle_t mp3_decode_task_handel;
 
 /* Root cert for howsmyssl.com, taken from howsmyssl_com_root_cert.pem
 
@@ -121,12 +120,14 @@ static int http_request(esp_http_client_handle_t client, int *content_length)
     if(client == NULL)
     {
         ESP_LOGE(TAG, "client is Null.");
-        while(1);
+         return -1;
     }
 
     if(player->http_head != NULL){
         for(int i = 0; i < 6; i++)
             esp_http_client_set_header(client, player->http_head[i].key, player->http_head[i].value);
+        free((char *)http_head[3].value);
+        free((char *)http_head[0].value);
     }
 
     if ((err = esp_http_client_open(client, player->http_body_len)) != ESP_OK) {
@@ -142,7 +143,7 @@ static int http_request(esp_http_client_handle_t client, int *content_length)
     *content_length =  esp_http_client_fetch_headers(client);
     if(*content_length <= 0){
         player->media_stream.eof = true;
-        ESP_LOGE(TAG, "Failed to get content.");
+        ESP_LOGE(TAG, "Failed to get content. content_length = %d", *content_length);
         return -1;
     }
 
@@ -266,7 +267,7 @@ void http_request_task(void *pvParameters)
     int content_length = 0;
     player_t *player = pvParameters;
     esp_http_client_handle_t client = NULL;
-    http_err = 0;
+    int http_err = 0;
 
     esp_http_client_config_t config = {
         .url = player->url, //"http://httpbin.org/get", //
@@ -319,10 +320,6 @@ void http_request_task(void *pvParameters)
 
     //ESP_LOGE(TAG, "total_read_len = %d", total_read_len);
     abort:
-    if(http_err == -1){
-        audio_player_destroy();
-        player_status = 1;
-    }
     player->media_stream.eof = true;
     // ESP_LOGE(TAG, "HTTP Stream reader Status = %d, content_length = %d total_readlen = %d",
     //                 esp_http_client_get_status_code(client),
@@ -334,6 +331,13 @@ void http_request_task(void *pvParameters)
     //audio_player_destroy();
     // ESP_LOGE(TAG, "http request stack: %d\n", uxTaskGetStackHighWaterMark(NULL));
     ESP_LOGE(TAG, "5. http request task will delete, RAM left: %d", esp_get_free_heap_size()); 
-    vTaskDelete(NULL);
+    if(http_err == -1){
+        player->player_status = INITIALIZED;
+        vTaskDelete(NULL);
+    }
+    else{
+        ESP_LOGE(TAG, "Http tast suppended."); 
+        vTaskSuspend( NULL );
+    }
 }
 

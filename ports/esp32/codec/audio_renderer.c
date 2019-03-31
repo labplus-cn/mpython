@@ -1,11 +1,8 @@
 /*
  * audio_renderer.c
  *
- *  Created on: 12.03.2017
- *      Author: michaelboeckling
- *
- *  Rev. 17.4.2017/Jorgen Kragh Jakobsen
- *      Added 32 bit entry for i2s output and setup i2c call for Merus Audio power audio amp.
+ *  Created on: 2019.02.03
+ *      Author: zhaohuijiang
  */
 
 #include <stdbool.h>

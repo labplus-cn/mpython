@@ -1,8 +1,8 @@
 /*
  * audio_player.h
  *
- *  Created on: 12.03.2017
- *      Author: michaelboeckling
+ *  Created on: 2019.02.03
+ *      Author: zhaohuijiang
  */
 
 #ifndef INCLUDE_AUDIO_PLAYER_H_
@@ -53,26 +53,6 @@ typedef struct {
     bool eof;
 } media_stream_t;
 
-#define PLAYER_DEFAULT(){                     \
-        .command  = CMD_NONE,                  \
-        .player_status = RUNNING,        \
-        .buffer_pref = BUF_PREF_SAFE,          \
-        .buf_handle = NULL,                    \
-        .ringbuf_size = RINGBUF_SIZE,          \
-        .ringbuf_sem = NULL,                   \
-        .play_begin = true,                    \
-        .mp3_get_tag = true,                   \
-        .wait_first_read_full = true,          \
-        .http_head = NULL,                     \
-        .http_body = NULL,                     \
-        .set_http_head = fasle,                \
-        .has_http_body = fasle,                \
-        .media_stream = {                      \
-            .content_type = MIME_UNKNOWN,      \
-            .eof = false,                      \
-        },                                     \
-};
-
 typedef struct {
     player_command_t command; 
     player_status_t player_status;
@@ -82,9 +62,8 @@ typedef struct {
     
     RingbufHandle_t *buf_handle;    //环形缓存结构
     int ringbuf_size;
-    SemaphoreHandle_t ringbuf_sem; /* 互斥信号量句柄 */
+    //SemaphoreHandle_t ringbuf_sem; /* 互斥信号量句柄 */
     // EventGroupHandle_t ringbuf_eventGroup;
-
     HTTP_HEAD_VAL *http_head;
     char *http_body;
     int http_body_len;
@@ -92,6 +71,8 @@ typedef struct {
 
     audio_type_t file_type;
     media_stream_t media_stream;
+    double volume;
+    bool webtts_config_flag;
 } player_t;
 
 typedef struct {
@@ -104,9 +85,10 @@ typedef struct {
 } web_radio_t;
 
 player_status_t get_player_status();
+void init_palyer_handle(player_t *Player);
 player_t *get_player_handle();
 
-void audio_player_init(player_t *player, renderer_config_t *renderer);
+void audio_player_begin(void);
 void audio_player_start();
 void audio_player_stop();
 void audio_player_pause();
