@@ -175,7 +175,7 @@ TTS是Text To Speech的缩写，即“从文本到语音”，是人机对话的
     audio.xunfei_tts(poem)                                # TTS转换
 
 
-首先使用 ``ntptime.settime()`` 校准RTC时钟。``player_init()`` 初始化。首先需要构建 ``TTS(appid, api_key)`` , ``appid`` , ``api_key`` 为必选参数,在讯飞平台的应用的APPID、API_KET 。然后使用 ``translate(text)``
+首先使用 ``ntptime.settime()`` 校准RTC时钟。然后 ``player_init()`` 初始化。用 ``xunfei_tts_config(api_key, appid )`` , ``appid`` , ``api_key`` 为必选参数,在讯飞平台的应用的APPID、API_KET 。然后使用 ``xunfei_tts(text)``
 将文本转为语音并播放。
 
 

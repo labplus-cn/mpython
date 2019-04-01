@@ -131,6 +131,10 @@ Value亮度参数,未提供支持。只需设置 ``hue`` 、``saturation`` 参�
 
   掌控板控制Yeelight
 
+.. Attention:: 
+
+  Yeelight,目前WiFi智能设备最多支持4个同时TCP连接。连接尝试将被拒绝。对于每个连接，都有一个命令消息配额限制，
+  也就是每分钟60个指令。所有LAN也有一个总配额限制,144。
 
 有关更详细的 ``yeelight`` 模块的API说明,请查阅 https://mpython-lib.readthedocs.io
 
