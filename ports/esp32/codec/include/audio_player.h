@@ -22,7 +22,7 @@
 
 #define RINGBUF_SIZE 5000
 #define FILE_DATA_READ_LEN 100
-#define MIN_VOL_OFFSET -25 //50
+#define MIN_VOL_OFFSET -50 //50
 
 // int audio_stream_consumer(const char *recv_buf, ssize_t bytes_read, void *user_data);
 typedef enum {

@@ -102,7 +102,7 @@ STATIC mp_obj_t audio_player_init(void)
         player->media_stream.content_type = MIME_UNKNOWN;      
         player->media_stream.eof = false; 
         player->file_type = UNKNOW_TYPE;
-        player->volume = pow(10, (MIN_VOL_OFFSET + 10 / 2) / 20.0); 
+        player->volume = pow(10, (MIN_VOL_OFFSET + 80 / 2) / 20.0); 
         //player->ringbuf_eventGroup = xEventGroupCreate();
         player->buf_handle = xRingbufferCreate(RINGBUF_SIZE, RINGBUF_TYPE_BYTEBUF);
         init_palyer_handle(player);
@@ -135,7 +135,12 @@ STATIC mp_obj_t audio_player_deinit(void)
         ESP_LOGE(TAG,"Sorry, no player.");
         return MP_OBJ_NEW_SMALL_INT(-1);
     }
-    audio_player_destroy();
+    if(player->player_status == INITIALIZED || player->player_status == UNINITIALIZED)
+        audio_player_destroy();
+    else{
+        ESP_LOGE(TAG,"Sorry, player is in playing status, can't release.");
+        return MP_OBJ_NEW_SMALL_INT(-1);
+    }
     return mp_const_none; 
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(audio_player_deinit_obj, audio_player_deinit);
@@ -276,7 +281,7 @@ STATIC mp_obj_t audio_webtts_config(size_t n_args, const mp_obj_t *pos_args, mp_
     int out;
     size_t n = 0;
     char tmp1[100] = "{\"auf\":\"audio/L16;rate=16000\",\"aue\":\"lame\",\"voice_name\":\"";
-    char tmp2[100] = "\",\"speed\":\"50\",\"volume\":\"100\",\"pitch\":\"0\",\"engine_type\":\"intp65\",\"text_type\":\"text\"}";
+    char tmp2[100] = "\",\"speed\":\"50\",\"volume\":\"100\",\"pitch\":\"50\",\"engine_type\":\"intp65\",\"text_type\":\"text\"}";
     sprintf(src, "%s%s%s", tmp1, mp_obj_str_get_str(args[ARG_voice_name].u_obj), tmp2);
     mbedtls_base64_encode(NULL, 0, &n, (const unsigned char *)src, strlen(src));
     char *digest = calloc(n, sizeof(char));  //资源在play_destroy()中释放
