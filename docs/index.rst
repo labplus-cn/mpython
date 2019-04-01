@@ -104,8 +104,7 @@ mPython类库
  :ref:`umqtt.simple模块<umqtt.simple>`    提供简单MQTT客户端功能 
  :ref:`servo模块<servo_api>`              舵机驱动 
  :ref:`gui模块<gui>`                      提供GUI类的绘制元素 
- :ref:`codec模块<codec>`                  音频编解码
- :ref:`tts模块<tts>`                      文字转语音TTS
+ :ref:`auido模块<audio>`                  音频播放录音
 ======================================   ====================================================================
 
 ---------
