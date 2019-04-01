@@ -44,7 +44,7 @@
     拓展板扩展引脚有P0、P1、P2、P3、P5、P6、P7、P11、P13、P14、P15、P16、P19(SCL)、P20(SDA)
 
 
-掌控拓展板 ``motor`` 模块: https://github.com/labplus-cn/mPython-lib
+- 掌控拓展板 ``motor`` 模块: https://github.com/labplus-cn/mPython-lib
 
 
 
