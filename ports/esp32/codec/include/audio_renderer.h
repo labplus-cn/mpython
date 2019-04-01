@@ -1,8 +1,8 @@
 /*
  * audio_renderer.h
  *
- *  Created on: 12.03.2017
- *      Author: michaelboeckling
+ *  Created on: 2019.02.03
+ *      Author: zhaohuijiang
  */
 
 #ifndef INCLUDE_AUDIO_RENDERER_H_

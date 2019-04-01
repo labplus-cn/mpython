@@ -363,3 +363,12 @@ codec-v2.5.1-helix-2019-03-23.tar.xz(发布版)
 2. 修改解码后output值算法。
 3. 增加播放状态查询。
 4. 修正http_head定义为局部变量时，导致player成员http_head会指向未知位置，导致系统复位。
+
+2019.03.30
+github分支提交
+1. 完成固件层对webtts http client head处理，简化用户层面工作。
+2. 增加player_init()和player_deinit(),实现播放器初始化和资源释放。
+3. 修正一些bug.
+4. 更改用户接口层函数名。
+5. 完善出错处理。
+6. 把对mp3tag处理从http_client移到mp3解码任务,使http_client只处理跟网络相关事务。

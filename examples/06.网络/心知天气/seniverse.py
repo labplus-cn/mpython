@@ -422,6 +422,6 @@ ico={'0':sunny,'1':clear,'2':sunny,'3':clear,'4':cloud,'5':day_partly_cloudy,'6'
             '8':day_cloudy,'9':cloudy,'10':shower,'11':shower,'19':shower,'12':shower_hail,'13':light_rain,'14':moderate_rain,\
             '15':heavy_rain,'16':storm,'17':storm,'18':storm,'20':sleet,'21':snow,'22':snow,'23':snow,'24':heavy_snow,'25':dust_storm, \
             '26':dust_storm,'27':dust_storm,'28':dust_storm,'29':dust_storm,'30':foggy,'31':haze,'32':windy,'33':strong_wind,\
-            '34':hurricane,'35':hurricane,'36':hurricane,'37':cold,'38':hot,'99':na \
+            '34':hurricane,'35':hurricane,'36':hurricane,'37':cold,'38':hot,'99':na
             }  
 

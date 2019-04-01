@@ -27,29 +27,7 @@
 #define TAG "helix_decoder"
 
 #define MAINBUF_SIZE1 2880 //2880 //1940
-
-#define CCCC(c1, c2, c3, c4) ((c4 << 24) | (c3 << 16) | (c2 << 8) | c1)
-// #define PIN_PD 4
-
-// #define PLAYMODE_REPEAT 0
-// #define PLAYMODE_REPEAT_PLAYLIST 1
-// #define PLAYMODE_PLAYLIST 2
-// #define PLAYMODE_RANDOM 3
-
-// #define MUSICDB_FN_LEN 128
-// #define MUSICDB_TITLE_LEN 128
-
-unsigned long music_data_index;
-extern double volume;
-extern int player_status;
-
-/* default MAD buffer format */
-pcm_format_t mad_buffer_fmt = {
-    .sample_rate = 44100,
-    .bit_depth = I2S_BITS_PER_SAMPLE_16BIT,
-    .num_channels = 2,
-    .buffer_format = PCM_LEFT_RIGHT
-};
+extern TaskHandle_t http_client_task_handel;
 
 typedef struct{
     HMP3Decoder HMP3Decoder;
@@ -116,6 +94,63 @@ static int read_ringbuf(mp3_decode_t *decoder)
     return 0;
 }
 
+static int proccess_tag(mp3_decode_t *decoder)
+{
+    int tag_len;
+    int ringBufRemainBytes = 0;
+    size_t len;
+    uint8_t *temp = NULL;
+    player_t *player = get_player_handle();
+
+    //xSemaphoreTake(player->ringbuf_sem, portMAX_DELAY);
+    ringBufRemainBytes = RINGBUF_SIZE - xRingbufferGetCurFreeSize(player->buf_handle); //
+    if(ringBufRemainBytes >= 10)
+    {
+        temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 500 / portTICK_PERIOD_MS, 10);
+        if(temp != NULL)
+        {
+            ESP_LOGE(TAG, "mp3 TAG? : %x %x %x %x", temp[0], temp[1],temp[2],temp[3]);
+            if (memcmp((char *)temp, "ID3", 3) == 0) //mp3? 有标签头，读取所有标签帧并去掉。
+            { 
+                //获取ID3V2标签头长，以确定MP3数据起始位置
+                tag_len = ((temp[6] & 0x7F) << 21) | ((temp[7] & 0x7F) << 14) | ((temp[8] & 0x7F) << 7) | (temp[9] & 0x7F); 
+                // ESP_LOGE(TAG, "tag_len: %d %x %x %x %x", tag_len, temp[6], temp[7], temp[8], temp[9]);
+                vRingbufferReturnItem(player->buf_handle, (void *)temp);
+                do
+                {
+                    ringBufRemainBytes = RINGBUF_SIZE - xRingbufferGetCurFreeSize(player->buf_handle);
+                    if(tag_len <= ringBufRemainBytes) //ring buf中数据多于tag_len，把tag数据读完并退出
+                    {
+                        temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 500 / portTICK_PERIOD_MS, tag_len);
+                        if(temp != NULL)
+                        {
+                            vRingbufferReturnItem(player->buf_handle, (void *)temp);
+                            return 0;
+                        }
+                    }
+                    else 
+                    {
+                        temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 500 / portTICK_PERIOD_MS, ringBufRemainBytes);
+                        if(temp != NULL)
+                        {
+                            vRingbufferReturnItem(player->buf_handle, (void *)temp);
+                            tag_len -= len;
+                        }
+                    }
+                } while(tag_len > 0);
+            } 
+            else //无tag头 把前面读到的10字节加入解码buff
+            {
+                memcpy(decoder->readPtr, (char *)temp, 10);
+                decoder->bytesleft += len;
+                vRingbufferReturnItem(player->buf_handle, (void *)temp);
+                decoder->supply_bytes = MAINBUF_SIZE1 - 10;
+            }      
+        }
+    }  
+    return 0;
+}
+
 static void mp3_decode(mp3_decode_t *decoder)
 {
     renderer_config_t *renderer = renderer_get();
@@ -161,13 +196,13 @@ static void mp3_decode(mp3_decode_t *decoder)
         {
             decoder->samplerate = decoder->mp3FrameInfo.samprate;
             i2s_set_clk(renderer->i2s_num, decoder->samplerate, 16, decoder->mp3FrameInfo.nChans);
-            ESP_LOGE(TAG,"mp3file info---bitrate=%d, layer=%d, nChans=%d, samprate=%d, outputSamps=%d",
-                decoder->mp3FrameInfo.bitrate, decoder->mp3FrameInfo.layer, decoder->mp3FrameInfo.nChans, 
-                decoder->mp3FrameInfo.samprate, decoder->mp3FrameInfo.outputSamps);
+            // ESP_LOGE(TAG,"mp3file info---bitrate=%d, layer=%d, nChans=%d, samprate=%d, outputSamps=%d",
+            //     decoder->mp3FrameInfo.bitrate, decoder->mp3FrameInfo.layer, decoder->mp3FrameInfo.nChans, 
+            //     decoder->mp3FrameInfo.samprate, decoder->mp3FrameInfo.outputSamps);
         }
         for (int i = 0; i < decoder->mp3FrameInfo.outputSamps; ++i)
         {
-            decoder->output[i] = (short)((decoder->output[i]*255.0/65535+128) * volume); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
+            decoder->output[i] = (short)((decoder->output[i]*255.0/65535+128) * player->volume); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
             // decoder->output[i] = (short)((decoder->output[i]*255.0/65535)); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
             decoder->output[i] = decoder->output[i] << 8;
             // decoder->output[i] *= pow(10, -25 / 20.0);
@@ -183,6 +218,7 @@ void mp3_decoder_task(void *pvParameters)
 {
     player_t *player = pvParameters;
     mp3_decode_t *decoder;
+    int state;
 
     // ESP_LOGE(TAG, "Enter mp3 decode task.");
     decoder = calloc(1, sizeof(mp3_decode_t));
@@ -212,8 +248,9 @@ void mp3_decoder_task(void *pvParameters)
     decoder->supply_bytes = MAINBUF_SIZE1;
     decoder->bytesleft = 0;
     decoder->readPtr = decoder->readBuf;
-    decoder->samplerate = 44100;
-    int state;
+    decoder->samplerate = 0;
+
+    proccess_tag(decoder);
     while(1)
     {
         state = read_ringbuf(decoder);
@@ -239,9 +276,20 @@ void mp3_decoder_task(void *pvParameters)
 
     abort:
     renderer_zero_dma_buffer();
-    audio_player_destroy();
-    player_status = 1;
-
+    renderer_stop();
+    if(player->file_type == WEB_TYPE)
+    {
+        if(http_client_task_handel != NULL){
+            player->player_status = INITIALIZED;
+            vTaskDelete(http_client_task_handel);
+            http_client_task_handel = NULL;
+            ESP_LOGE(TAG, "play status: %d", player->player_status); 
+        }
+    }
+    else if ( player->file_type == LOCAL_TYPE) {
+        player->player_status = INITIALIZED;
+    }
+    
     // ESP_LOGE(TAG, "helix decoder stack: %d\n", uxTaskGetStackHighWaterMark(NULL));
     ESP_LOGE(TAG, "6. mp3 decode task will delete, RAM left: %d", esp_get_free_heap_size()); 
     vTaskDelete(NULL);

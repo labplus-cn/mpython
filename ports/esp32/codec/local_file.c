@@ -1,11 +1,9 @@
-/* ESP HTTP Client Example
-
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
-
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
-*/
+/*
+ * local_file.h
+ *
+ *  Created on: 2019.02.03
+ *      Author: zhaohuijiang
+ */
 
 #include <string.h>
 #include <stdio.h>
@@ -31,7 +29,7 @@
 #define BODY_READ_LEN 64
 static const char *TAG = "LOCAL_FILE";
 static int err;
-extern int player_status;
+// extern int player_status;
 
 mp_obj_t local_open(const char *filename)
 {
@@ -163,11 +161,11 @@ void local_file_read(player_t *player)
 
     file = local_open(player->url);
 
-    if(proccess_tag(file, buffer) == -1){
-        ESP_LOGE(TAG, "File too short.");
-        err = -1;
-        goto abort;
-    }  
+    // if(proccess_tag(file, buffer) == -1){
+    //     ESP_LOGE(TAG, "File too short.");
+    //     err = -1;
+    //     goto abort;
+    // }  
     // ESP_LOGE(TAG, "3.1. local file read task run, RAM left: %d", esp_get_free_heap_size()); 
 
     if(data_read(file, buffer) == -1)
@@ -200,10 +198,9 @@ void local_file_read(player_t *player)
     abort:
     if(err == -1)
     {
-        audio_player_destroy();
-        player_status = 1;
+        player->player_status = INITIALIZED;
     }
-    ESP_LOGE(TAG, "local_file_read task stack: %d\n", uxTaskGetStackHighWaterMark(NULL));
+    ESP_LOGE(TAG, "mp task stack: %d\n", uxTaskGetStackHighWaterMark(NULL));
     // ESP_LOGE(TAG, "5. local file read task will delete, RAM left: %d", esp_get_free_heap_size());
     vTaskDelay(1 / portTICK_PERIOD_MS); 
 }
