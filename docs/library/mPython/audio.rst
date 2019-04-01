@@ -40,7 +40,7 @@ audio 模块
     play('music.mp3')                           # 本地音频解码
     play('http://wiki.labplus.cn/images/4/4e/Music_test.mp3')   # 网络音频解码
 
-.. py:method:: audio.volume(vol)
+.. py:method:: audio.set_volume(vol)
 
 设置音频音量
 
