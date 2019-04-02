@@ -4,8 +4,8 @@
 .. toctree::
    :maxdepth: 1
 
-   extboard.rst
-   tutorials/tutorials_extboard.rst
-   tutorials/extboard_kit.rst
+   parrot.rst
+   tutorials/tutorials_parrot.rst
+   tutorials/parrot_kit.rst
 
 

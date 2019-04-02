@@ -10,7 +10,7 @@ Python入门套装基础教程
 
 |
 |
-Python 入门套装含掌控板、掌控拓展板、RGB光环板、直流电机、满天星灯带及blue:bit的(超声波，按键，颜色)模块等。可满足用户的python基础编程学习及DIY造物。
+Python 入门套装含掌控板、掌控拓展板parrot、RGB光环板、直流电机、满天星灯带及blue:bit的(超声波，按键，颜色)模块等。可满足用户的python基础编程学习及DIY造物。
 本教程讲解套装内的模块基本的使用和编程。
 
 套装含:
@@ -39,17 +39,15 @@ TT马达                                2
 
 有关掌控板拓展板的基础使用可查阅 :ref:`拓展板入门教程<extboard_tutorials>`，这里不再作讲解。
 
-拓展板的电机驱动为PWM输出。除了可以驱动马达外，还可以驱动本套件内的满天星灯带。使用方法同驱动马达大体相同，``set_speed(motor_no, speed)``,参数 ``speed`` ，范围0~100
+拓展板的电机驱动为PWM输出。除了可以驱动马达外，还可以驱动本套件内的满天星灯带。
 
 
 ::
 
-    from motor import Motor                 # 导入Motor 类
+    import parrot                           # 导入parrot 模块
 
-    motor=Motor()                           # 实例Motor 类
-    motor.set_speed(motor.MOTOR_1,0)        # 亮度为0%
-    motor.set_speed(motor.MOTOR_1,50)       # 亮度为50%
-    motor.set_speed(motor.MOTOR_1,100)      # 亮度为100%
+    parrot.led_on(parrot.MOTOR_1,50)        # 亮度为50%
+ 
 
 
 

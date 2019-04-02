@@ -3,16 +3,16 @@
 拓展板入门教程
 ============
 
-本章节将讲解掌控拓展板基本的使用,如电机驱动、语音播放、TTS语音合成等功能。有关,掌控拓展板技术参数详细说明,请查阅 :ref:`掌控拓展板介绍 <extboard_introduce>` 章节。  
+本章节将讲解掌控拓展板parrot基本的使用,如电机驱动、语音播放、TTS语音合成等功能。有关,掌控拓展板技术参数详细说明,请查阅 :ref:`掌控拓展板介绍 <extboard_introduce>` 章节。  
 
 .. image:: /images/extboard/extboard_back.png
 
 准备
 -------
 
-首先,需要先将拓展板的 ``motor`` 模块,你可以到 https://github.com/labplus-cn/mPython-lib 获取。
-将 ``motor.py`` 上传到文件系统中。
-或者你也可以用 ``upip.install("mPython-motor")`` 的方法获取pypi包。
+首先,需要先将拓展板的 ``parrot`` 模块,你可以到 https://github.com/labplus-cn/mPython_parrot 获取。
+将 ``parrot.py`` 上传到文件系统中。
+或者你也可以用 ``upip.install("mPython-parrot")`` 的方法获取pypi包。
 
 
 电机驱动
@@ -22,27 +22,26 @@
 
 下面讲解,使用电机如何编程
 
-首先导入motor模块的Motor对象::
+首先导入parrot模块::
 
-    from motor import Motor
+    import parrot
 
 M1、M2,正转速度设为80::
 
-    from motor import Motor                 # 导入Motor 类
+    import parrot                           # 导入parrot 模块
 
-    motor=Motor()                           # 实例Motor 类
-    motor.set_speed(motor.MOTOR_1,80)       #  设置M1正转,速度为80
-    motor.set_speed(motor.MOTOR_2,80)       #  设置M2正转,速度为80
+    parrot.set_speed(parrot.MOTOR_1,80)       #  设置M1正转,速度为80
+    parrot.set_speed(parrot.MOTOR_2,80)       #  设置M2正转,速度为80
 
 反转::
 
-    motor.set_speed(motor.MOTOR_1,-80)      #  设置M1反转,速度为80
-    motor.set_speed(motor.MOTOR_2,-80)      #  设置M2反转,速度为80
+    parrot.set_speed(parrot.MOTOR_1,-80)      #  设置M1反转,速度为80
+    parrot.set_speed(parrot.MOTOR_2,-80)      #  设置M2反转,速度为80
 
 停止::
 
-    motor.set_speed(motor.MOTOR_1,0)        # 停止
-    motor.set_speed(motor.MOTOR_2,0)        # 停止
+    parrot.set_speed(parrot.MOTOR_1,0)        # 停止
+    parrot.set_speed(parrot.MOTOR_2,0)        # 停止
 
 
 控制电机速度使用到函数 ``set_speed(motor_no, speed)`` 。``motor_no`` 参数为电机编号,可选编号常量有 ``MOTOR_1`` 、``MOTOR_2`` 。 ``speed`` 参数为速度,范围-100~100,正值表示正转,负值时表示负转。
