@@ -64,7 +64,7 @@ audio 模块
 用于获取系统是否处于音频播放状态,返回1,说明正处于播放中,返回0,说明播放结束,处于空闲。
 
 
-.. py:method:: audio.deinit()
+.. py:method:: audio.player_deinit()
 
 音频播放结束后,释放缓存
 
