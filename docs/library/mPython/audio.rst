@@ -59,7 +59,7 @@ audio 模块
 音频播放恢复,用于暂停后的重新播放
 
 
-.. py:method:: audio.status()
+.. py:method:: audio.player_status()
 
 用于获取系统是否处于音频播放状态,返回1,说明正处于播放中,返回0,说明播放结束,处于空闲。
 
