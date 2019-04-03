@@ -22,7 +22,7 @@ Servo类
 
 - ``pin`` -舵机PWM控制信号引脚
 - ``min_us`` -舵机PWM信号脉宽最小宽度,单位微秒。默认min_us=750
-- ``max_us`` -舵机PWM信号脉宽最小宽度,单位微秒。默认max_us=2250
+- ``max_us`` -舵机PWM信号脉宽最大宽度,单位微秒。默认max_us=2250
 - ``actuation_range`` -舵机转动最大角度
 
 
