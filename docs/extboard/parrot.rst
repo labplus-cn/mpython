@@ -6,7 +6,8 @@
 概述
 ----
 
-掌控拓展板parrot是mPython掌控板衍生的一款体积小巧、易于携带。支持电机驱动、语音播放、语音合成等功能的IO引脚扩展板,可扩展12路IO接口和2路I2C接口。
+掌控拓展板(parrot)是掌控板衍生的一款体积小巧、易于携带的拓展板。支持电机驱动、语音播放、语音合成等功能的IO引脚扩展板,可扩展12路IO接口和2路I2C接口。
+通过连接掌控板，带来更加丰富多元的物联网应用与编程体验，你的奇思妙想也将进一步获得延伸，激发你的创意，造起来！
 
 .. image:: /images/extboard/extboard.png
 
@@ -27,23 +28,69 @@
     - 最大输出电流: `1A@3.3V`
     
 
-说明
-------
 
-.. image:: /images/extboard/layout.png
-    :scale: 70 %
+
+接口说明
+--------
+
+.. figure:: /images/extboard/parrot_front.png
+    :scale: 40 %
     :align: center
+
+    parrot正面
+
+.. figure:: /images/extboard/parrot_reverse.png
+    :scale: 40 %
+    :align: center
+
+    parrot背面
 
 - *电源指示灯状态:3.3V输出,指示灯亮;无输出则灭*
 - *充电指示灯状态:充电中,指示灯亮;充满,指示灯熄灭.(注意:只能在开关打开下,才能指示充电状态)*
 
 
-.. admonition:: 扩展引脚
+安装说明
+-----------
 
+掌控板和掌控拓展板都有3个孔，通过3个铜柱将两板连接连接，拧上螺丝固定，套入软质外壳即可，如图所示。
+
+.. figure:: /images/extboard/parrot_install.png
+    :scale: 70 %
+    :align: center
+
+    安装图
+
+
+使用说明
+----------
+
+功能说明
++++++++++
+
+**电机驱动**
+
+    掌控拓展板支持2路的PWM电机驱动(掌控拓展板背面标记M1和M2，仅限教育版)，你可以接入直流电机马达(如TT马达、N20)和LED灯(满天星灯带)
+
+
+**I/O**
+
+    掌控拓展板左右两侧扩展出12路I/O接口、2路I2C接口。可以通过这些接口接入经典的传感器输入模块，输出模块。例如：按键、人体红外、超声波、LED、马达、蜂鸣器、数码管......
     拓展板扩展引脚有P0、P1、P2、P3、P5、P6、P7、P11、P13、P14、P15、P16、P19(SCL)、P20(SDA)
 
+**喇叭—音频播放**
 
-- 掌控拓展板 ``motor`` 模块: https://github.com/labplus-cn/mPython-lib
+    掌控拓展板内置喇叭,支持音频播放。
 
+
+**语音合成(TTS)**
+
+    将文本转化为文字，让机器能够说话。这样就可以给掌控板添上“嘴巴”。比如在程序内输入你想要说话的内容，让它说给你听。
+
+
+Python库
++++++++++
+
+- 掌控拓展板 ``parrot`` 模块: https://github.com/labplus-cn/mPython-lib
+- :ref:`auido<audio>` 模块 : 用于音频播放功能
 
 
