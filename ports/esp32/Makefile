@@ -15,7 +15,7 @@ FROZEN_MPY_DIR = modules
 include $(TOP)/py/py.mk
 
 PORT ?= /dev/ttyUSB0
-BAUD ?= 460800
+BAUD ?= 1152000
 FLASH_MODE ?= dio
 FLASH_FREQ ?= 40m
 FLASH_SIZE ?= 4MB
@@ -730,14 +730,15 @@ deploy: $(BUILD)/firmware.bin
 	$(ECHO) "Writing $^ to the board"
 	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) write_flash -z --flash_mode $(FLASH_MODE) --flash_freq $(FLASH_FREQ) 0x1000 $^
 
-release: $(BUILD)/firmware.bin
-	$(ECHO) "generate firmware, address = 0"
-	$(Q)$(PYTHON) release.py $^ $(BUILD)/mpython.bin
-	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) write_flash -z --flash_mode $(FLASH_MODE) --flash_freq $(FLASH_FREQ) 0 $(BUILD)/mpython.bin
+$(BUILD)/mpython.bin: $(BUILD)/bootloader.bin $(BUILD)/partitions.bin $(BUILD)/application.bin
+	$(ECHO) "Create $@, with address from 0"
+	$(Q)$(PYTHON) release.py $^ $@
+
+release: $(BUILD)/mpython.bin
 
 font:
 	$(ECHO) "Write $^ to the board"
-	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) write_flash -z --flash_mode $(FLASH_MODE) --flash_freq $(FLASH_FREQ) 0x300000 ../../firmware/Noto_Sans_CJK_SC_Light16.bin
+	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) write_flash -z --flash_mode $(FLASH_MODE) --flash_freq $(FLASH_FREQ) 0x300000 ../../firmware/font/Noto_Sans_CJK_SC_Light16.bin
 	
 erase:
 	$(ECHO) "Erasing flash"
