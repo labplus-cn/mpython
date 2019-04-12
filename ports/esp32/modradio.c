@@ -21,6 +21,8 @@
 #define RADIO_QUEUE_SIZE_DEFUALT 5
 
 static const uint8_t broadcast_mac[ESP_NOW_ETH_ALEN] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
+static bool radio_inited = false;
+extern bool wifi_started;
 
 typedef struct {
     uint8_t mac_address[ESP_NOW_ETH_ALEN];
@@ -43,53 +45,130 @@ static void radio_recv_cb(const uint8_t *mac_addr, const uint8_t *data, int len)
 }
 
 void radio_enable(void) {
-    // wifi init
-    tcpip_adapter_init();
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-    ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-    ESP_ERROR_CHECK(esp_wifi_start());
-    ESP_ERROR_CHECK(esp_wifi_set_channel(radio_channel, 0));
+    if(!radio_inited) {
+        if (!wifi_started) {
+            // wifi init
+            tcpip_adapter_init();
+            wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+            ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+            ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
+            ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+            ESP_ERROR_CHECK(esp_wifi_start());
+        }
+        ESP_ERROR_CHECK(esp_wifi_set_channel(radio_channel, 0));
 
-    // espnow init
-    radio_recv_queue = xQueueCreate(RADIO_QUEUE_SIZE_DEFUALT, sizeof(radio_recv_event_t));
-    if (radio_recv_queue == NULL) {
-        mp_raise_ValueError("radio on failed");
+        // espnow init
+        radio_recv_queue = xQueueCreate(RADIO_QUEUE_SIZE_DEFUALT, sizeof(radio_recv_event_t));
+        if (radio_recv_queue == NULL) {
+            mp_raise_ValueError("radio on failed");
+        }
+        ESP_ERROR_CHECK(esp_now_init());
+        ESP_ERROR_CHECK(esp_now_register_recv_cb(radio_recv_cb));
+        ESP_ERROR_CHECK(esp_now_set_pmk((uint8_t *)"mpython-2019"));
+
+        // add broadcast peer
+        esp_now_peer_info_t *peer = malloc(sizeof(esp_now_peer_info_t));
+        if( peer == NULL) {
+            mp_raise_ValueError("radio on failed");
+            esp_now_deinit();
+        }
+        memset(peer, 0, sizeof(esp_now_peer_info_t));
+        peer->channel = radio_channel;
+        wifi_mode_t mode;
+        esp_wifi_get_mode(&mode);
+        peer->ifidx = (mode == WIFI_MODE_STA) ? ESP_IF_WIFI_STA:ESP_IF_WIFI_AP;
+        peer->encrypt = false;
+        memcpy(peer->peer_addr, broadcast_mac, ESP_NOW_ETH_ALEN);
+        ESP_ERROR_CHECK(esp_now_add_peer(peer));
+        free(peer);
+
+        radio_inited = true;
     }
-    ESP_ERROR_CHECK(esp_now_init());
-    ESP_ERROR_CHECK(esp_now_register_recv_cb(radio_recv_cb));
-    ESP_ERROR_CHECK(esp_now_set_pmk((uint8_t *)"mpython-2019"));
 }
 
 void radio_disable(void) {
-    if (radio_recv_queue != NULL) {
-        vQueueDelete(radio_recv_queue);
+    if(radio_inited) {
+        if (radio_recv_queue != NULL) {
+            vQueueDelete(radio_recv_queue);
+        }
+        esp_now_deinit();
+        radio_inited = false;
     }
-    esp_now_deinit();
 }
 
 static mp_obj_t radio_send(mp_obj_t msg) {
-    size_t len;
-    const char *data = mp_obj_str_get_data(msg, &len);
-    ESP_ERROR_CHECK(esp_now_send(broadcast_mac, (const uint8_t *)data, len));
+    if (radio_inited) {
+        size_t len;
+        const char *data = mp_obj_str_get_data(msg, &len);
+        ESP_ERROR_CHECK(esp_now_send(broadcast_mac, (const uint8_t *)data, len));
+    }
     return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_1(radio_send_obj, radio_send);
 
-
-STATIC mp_obj_t radio_receive(void) {
-    radio_recv_event_t evt;
-    if (xQueueReceive(radio_recv_queue, &evt, 0)) {
-        mp_obj_t msg[2];
-        msg[0] = mp_obj_new_bytes(evt.mac_address, ESP_NOW_ETH_ALEN);
-        msg[1] = mp_obj_new_str_copy(&mp_type_bytes, evt.data, evt.data_len);
-        // msg[1] = mp_obj_new_str(evt.data, evt.data_len);
-        return mp_obj_new_tuple(2, msg);
+static mp_obj_t radio_send_bytes(mp_obj_t msg) {
+    if (radio_inited) {
+        mp_buffer_info_t bufinfo;
+        mp_get_buffer_raise(msg, &bufinfo, MP_BUFFER_READ);
+        ESP_ERROR_CHECK(esp_now_send(broadcast_mac, (const uint8_t *)bufinfo.buf, bufinfo.len));
     }
     return mp_const_none;
 }
-MP_DEFINE_CONST_FUN_OBJ_0(radio_receive_obj, radio_receive);
+MP_DEFINE_CONST_FUN_OBJ_1(radio_send_bytes_obj, radio_send_bytes);
+
+
+STATIC mp_obj_t radio_receive(mp_uint_t n_args, const mp_obj_t * args) {
+    bool with_address = false;
+    if (n_args == 1) {
+        with_address = mp_obj_is_true(args[0]);
+    }
+
+    if (radio_inited) {
+        radio_recv_event_t evt;
+        if (xQueueReceive(radio_recv_queue, &evt, 0)) {
+            mp_obj_t msg[2];
+            msg[0] = mp_obj_new_str_copy(&mp_type_str, evt.data, evt.data_len);
+
+            if (with_address) {
+                vstr_t vstr;
+                vstr_init(&vstr, 0);
+                //char mac_str[ESP_NOW_ETH_ALEN*2 + 1];
+                vstr_printf(&vstr, "%02X%02X%02X%02X%02X%02X", MAC2STR(evt.mac_address));   
+                msg[1] = mp_obj_new_str_from_vstr(&mp_type_str, &vstr);    
+                return mp_obj_new_tuple(2, msg);         
+            } else {
+                return msg[0];
+            }
+        }
+    }
+    return mp_const_none;
+}
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(radio_receive_obj, 0, 1, radio_receive);
+
+
+STATIC mp_obj_t radio_receive_bytes(mp_uint_t n_args, const mp_obj_t * args) {
+    bool with_address = false;
+    if (n_args == 1) {
+        with_address = mp_obj_is_true(args[0]);
+    }
+
+    if (radio_inited) {
+        radio_recv_event_t evt;
+        if (xQueueReceive(radio_recv_queue, &evt, 0)) {
+            mp_obj_t msg[2];
+            msg[0] = mp_obj_new_str_copy(&mp_type_bytes, evt.data, evt.data_len);
+            if (with_address) { 
+                msg[1] = mp_obj_new_str_copy(&mp_type_bytes, evt.mac_address, ESP_NOW_ETH_ALEN);    
+                return mp_obj_new_tuple(2, msg);         
+            } else {
+                return msg[0];
+            }
+        }
+    }
+    return mp_const_none;}
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(radio_receive_bytes_obj, 0, 1, radio_receive_bytes);
+
+
 
 STATIC mp_obj_t radio_config(mp_uint_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     (void)pos_args;     // unused;
@@ -111,7 +190,15 @@ STATIC mp_obj_t radio_config(mp_uint_t n_args, const mp_obj_t *pos_args, mp_map_
                         esp_wifi_set_channel(radio_channel, 0);
                         break;
                     // 其他参数未使用,保持和micro:bit兼容
+                    case MP_QSTR_length:
+                    case MP_QSTR_queue:
+                    case MP_QSTR_power:
+                    case MP_QSTR_data_rate:
+                    case MP_QSTR_address:
+                    case MP_QSTR_group:
+                        break;
                     default:
+                        nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError, "unknown argument %q", arg_name));
                         break;
                 }
             }
@@ -145,7 +232,9 @@ STATIC const mp_map_elem_t radio_module_locals_dict_table[] = {
     { MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_radio) },
     { MP_OBJ_NEW_QSTR(MP_QSTR___init__), (mp_obj_t)&radio___init___obj },
     { MP_OBJ_NEW_QSTR(MP_QSTR_send), (mp_obj_t)&radio_send_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_send_bytes), (mp_obj_t)&radio_send_bytes_obj },
     { MP_OBJ_NEW_QSTR(MP_QSTR_receive), (mp_obj_t)&radio_receive_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_receive_bytes), (mp_obj_t)&radio_receive_bytes_obj },
     { MP_OBJ_NEW_QSTR(MP_QSTR_config), (mp_obj_t)&radio_config_obj },
     { MP_OBJ_NEW_QSTR(MP_QSTR_on), (mp_obj_t)&radio_on_obj },
     { MP_OBJ_NEW_QSTR(MP_QSTR_off), (mp_obj_t)&radio_off_obj}
