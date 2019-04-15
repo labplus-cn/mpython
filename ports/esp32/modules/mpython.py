@@ -529,9 +529,10 @@ class wifi:
     def __init__(self):
         self.sta=network.WLAN(network.STA_IF)
         self.ap=network.WLAN(network.AP_IF)
+        self.sta.active(True)
+        self.ap.active(True)
 
     def connectWiFi(self,ssid,passwd):
-        self.sta.active(True)
         self.sta.connect(ssid,passwd)
         while(self.sta.ifconfig()[0]=='0.0.0.0'):
             sleep_ms(200)
@@ -544,7 +545,6 @@ class wifi:
         print('disconnect WiFi...')
 
     def enable_APWiFi(self,essid,channel=10):
-        self.ap.active(True)
         self.ap.config(essid=essid,channel=channel)
 
     def disable_APWiFi(self):
