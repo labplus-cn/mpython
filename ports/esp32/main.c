@@ -37,9 +37,9 @@
 #include "esp_task.h"
 #include "soc/cpu.h"
 #include "esp_log.h"
-
 #include "esp_timer.h"		// add by zkh
-#include "labplus/oled.h"
+#include "driver/timer.h"
+#include "startup/oled.h"
 
 #include "py/stackctrl.h"
 #include "py/nlr.h"
@@ -61,8 +61,8 @@
 #define MP_TASK_STACK_SIZE      (16 * 1024)
 #define MP_TASK_STACK_LEN       (MP_TASK_STACK_SIZE / sizeof(StackType_t))
 
-STATIC StaticTask_t mp_task_tcb;
-STATIC StackType_t mp_task_stack[MP_TASK_STACK_LEN] __attribute__((aligned (8)));
+//STATIC StaticTask_t mp_task_tcb;
+//STATIC StackType_t mp_task_stack[MP_TASK_STACK_LEN] __attribute__((aligned (8)));
 
 int vprintf_null(const char *format, va_list ap) {
     // do nothing: this is used as a log target during raw repl mode
@@ -111,7 +111,8 @@ void mp_task(void *pvParameter) {
     #if MICROPY_PY_THREAD
     mp_thread_init(pxTaskGetStackStart(NULL), MP_TASK_STACK_LEN);
     #endif
-    esp_log_level_set("*", ESP_LOG_ERROR);    // only error msg for mpython
+    // esp_log_level_set("*", ESP_LOG_ERROR);    // only error msg for mpython
+    esp_log_level_set("*", ESP_LOG_ERROR);
     uart_init();
 
     // Allocate the uPy heap using malloc and get the largest available region
@@ -158,6 +159,16 @@ soft_reset:
         exit_code = pyexec_file("main.py");
     }
 
+    // disable all timer and thread created by main.py
+    for (timer_group_t g = TIMER_GROUP_0; g < TIMER_GROUP_MAX; g++) {
+        for (timer_idx_t i = TIMER_0; i < TIMER_MAX; i++) {
+            timer_pause(g, i);
+        }
+    }
+    #if MICROPY_PY_THREAD
+    mp_thread_deinit();
+    #endif
+
     for (;;) {
         if (pyexec_mode_kind == PYEXEC_MODE_RAW_REPL) {
             vprintf_like_t vprintf_log = esp_log_set_vprintf(vprintf_null);
@@ -171,10 +182,6 @@ soft_reset:
             }
         }
     }
-
-    #if MICROPY_PY_THREAD
-    mp_thread_deinit();
-    #endif
 
     gc_sweep_all();
 

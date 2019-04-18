@@ -41,3 +41,4 @@ py/makeqstrdata.pyc
 
 ports/esp32/machine_pad.c
 pymakr.conf
+py/makeqstrdata.pyc

@@ -15,7 +15,7 @@ FROZEN_MPY_DIR = modules
 include $(TOP)/py/py.mk
 
 PORT ?= /dev/ttyUSB0
-BAUD ?= 460800
+BAUD ?= 1152000
 FLASH_MODE ?= dio
 FLASH_FREQ ?= 40m
 FLASH_SIZE ?= 4MB
@@ -184,14 +184,8 @@ SRC_C = \
 	machine_rtc.c \
 	modmusic.c \
 	modmusictunes.c \
+	modradio.c \
 	$(SRC_MOD)
-
-Labplus_SRC_C = $(addprefix labplus/, \
-	oled.c \
-	i2c_master.c \
-	panic.c \
-	startup.c \
-	)
 
 EXTMOD_SRC_C = $(addprefix extmod/,\
 	modonewire.c \
@@ -235,6 +229,14 @@ DRIVERS_SRC_C = $(addprefix drivers/,\
 	dht/dht.c \
 	)
 
+# 开机显示和异常打印功能模块
+STARTUP_SRC_C = $(addprefix startup/, \
+	oled.c \
+	i2c_master.c \
+	panic.c \
+	startup.c \
+	)
+# 音频功能模块
 CODEC_SRC_C = $(addprefix codec/,\
 	modcodec.c \
 	http_client.c \
@@ -263,10 +265,11 @@ CODEC_SRC_C = $(addprefix codec/,\
 OBJ_MP =
 OBJ_MP += $(PY_O)
 OBJ_MP += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
-OBJ_MP += $(addprefix $(BUILD)/, $(Labplus_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(EXTMOD_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(LIB_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(DRIVERS_SRC_C:.c=.o))
+
+OBJ_MP += $(addprefix $(BUILD)/, $(STARTUP_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(CODEC_SRC_C:.c=.o))
 
 # List of sources for qstr extraction
@@ -727,14 +730,15 @@ deploy: $(BUILD)/firmware.bin
 	$(ECHO) "Writing $^ to the board"
 	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) write_flash -z --flash_mode $(FLASH_MODE) --flash_freq $(FLASH_FREQ) 0x1000 $^
 
-release: $(BUILD)/firmware.bin
-	$(ECHO) "generate firmware, address = 0"
-	$(Q)$(PYTHON) release.py $^ $(BUILD)/mpython.bin
-	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) write_flash -z --flash_mode $(FLASH_MODE) --flash_freq $(FLASH_FREQ) 0 $(BUILD)/mpython.bin
+$(BUILD)/mpython.bin: $(BUILD)/bootloader.bin $(BUILD)/partitions.bin $(BUILD)/application.bin
+	$(ECHO) "Create $@, with address from 0"
+	$(Q)$(PYTHON) release.py $^ $@
+
+release: $(BUILD)/mpython.bin
 
 font:
 	$(ECHO) "Write $^ to the board"
-	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) write_flash -z --flash_mode $(FLASH_MODE) --flash_freq $(FLASH_FREQ) 0x300000 ../../firmware/Noto_Sans_CJK_SC_Light16.bin
+	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) write_flash -z --flash_mode $(FLASH_MODE) --flash_freq $(FLASH_FREQ) 0x300000 ../../firmware/font/Noto_Sans_CJK_SC_Light16.bin
 	
 erase:
 	$(ECHO) "Erasing flash"
@@ -752,7 +756,7 @@ APP_LD_ARGS += -L$(dir $(LIBGCC_FILE_NAME)) -lgcc
 APP_LD_ARGS += -L$(dir $(LIBSTDCXX_FILE_NAME)) -lstdc++
 APP_LD_ARGS += $(LIBC_LIBM)
 APP_LD_ARGS += $(ESPCOMP)/esp32/libhal.a
-APP_LD_ARGS += -L$(ESPCOMP)/esp32/lib -lcore -lmesh -lnet80211 -lphy -lrtc -lpp -lwpa -lsmartconfig -lcoexist -lwps -lwpa2
+APP_LD_ARGS += -L$(ESPCOMP)/esp32/lib -lcore -lmesh -lnet80211 -lphy -lrtc -lpp -lwpa -lsmartconfig -lcoexist -lwps -lwpa2 -lespnow
 APP_LD_ARGS += $(OBJ)
 APP_LD_ARGS += --end-group
 
