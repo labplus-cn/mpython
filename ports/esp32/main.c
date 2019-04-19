@@ -149,6 +149,7 @@ soft_reset:
 		.name = "music tick timer"
 	};
 	esp_timer_handle_t periodic_timer;
+    ticker_ticks_ms = 0;
 	ESP_ERROR_CHECK(esp_timer_create(&periodic_timer_args, &periodic_timer));
 	ESP_ERROR_CHECK(esp_timer_start_periodic(periodic_timer, 1000));
 
@@ -191,6 +192,7 @@ soft_reset:
     machine_pins_deinit();
     usocket_events_deinit();
 
+    esp_timer_stop(periodic_timer);
     esp_timer_delete(periodic_timer);
     MP_STATE_PORT(music_data) = NULL;
 
