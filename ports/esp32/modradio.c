@@ -16,6 +16,7 @@
 #include "tcpip_adapter.h"
 #include "esp_wifi.h"
 #include "esp_now.h"
+#include "esp_log.h"
 
 #define RADIO_CHANNEL_DEFAULT  10
 #define RADIO_QUEUE_SIZE_DEFUALT 5
@@ -23,6 +24,7 @@
 static const uint8_t broadcast_mac[ESP_NOW_ETH_ALEN] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
 static bool radio_inited = false;
 extern mp_obj_t esp_initialize();
+extern bool wifi_started;
 
 typedef struct {
     uint8_t mac_address[ESP_NOW_ETH_ALEN];
@@ -47,6 +49,14 @@ static void radio_recv_cb(const uint8_t *mac_addr, const uint8_t *data, int len)
 void radio_enable(void) {
     if(!radio_inited) {
         esp_initialize();
+        if(!wifi_started) {
+            wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+            ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+            ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
+            ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+            ESP_ERROR_CHECK(esp_wifi_start());
+            wifi_started = true;
+        }
         ESP_ERROR_CHECK(esp_wifi_set_channel(radio_channel, 0));
         
         // espnow init
