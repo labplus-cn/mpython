@@ -22,7 +22,7 @@
 
 static const uint8_t broadcast_mac[ESP_NOW_ETH_ALEN] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
 static bool radio_inited = false;
-extern bool wifi_started;
+extern mp_obj_t esp_initialize();
 
 typedef struct {
     uint8_t mac_address[ESP_NOW_ETH_ALEN];
@@ -46,17 +46,9 @@ static void radio_recv_cb(const uint8_t *mac_addr, const uint8_t *data, int len)
 
 void radio_enable(void) {
     if(!radio_inited) {
-        if (!wifi_started) {
-            // wifi init
-            tcpip_adapter_init();
-            wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-            ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-            ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
-            ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-            ESP_ERROR_CHECK(esp_wifi_start());
-        }
+        esp_initialize();
         ESP_ERROR_CHECK(esp_wifi_set_channel(radio_channel, 0));
-
+        
         // espnow init
         radio_recv_queue = xQueueCreate(RADIO_QUEUE_SIZE_DEFUALT, sizeof(radio_recv_event_t));
         if (radio_recv_queue == NULL) {
