@@ -25,8 +25,8 @@ else:
     tim1.init(period=1000, mode=Timer.PERIODIC, callback=lambda _:get_time()) 
 
 
-
-
+while True:  # 主体循环
+    pass     # 空指令
 
 
 
