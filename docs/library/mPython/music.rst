@@ -76,24 +76,23 @@ page about scientific pitch notation`_.  例如，middle "C"是 ``c4`` 和concer
     - ``loop`` ：如果 ``loop`` 设置为 ``True`` ，则重复调整直到stop被调用（见下文）或阻塞调用被中断。
    
 
-.. function:: pitch(frequency, duration=-1, pin=6, wait=True)
+.. function:: pitch(frequency, duration=-1, pin=Pin.P6, wait=True)
 
     - ``frequency``, ``duration``:以给定指定毫秒数的整数频率播放频率。例如，如果频率设置为440并且长度设置为1000，那么我们会听到标准A调一秒钟。
 
         如果 ``duration`` 为负，则连续播放频率，直到阻塞或者被中断，或者在后台呼叫的情况下，设置或调用新频率stop（见下文）。
 
-    - ``pin`` 默认是掌控板的P6引脚。
+    - ``pin`` pin=Pin.P6,默认是掌控板的P6引脚。可重定义其他引脚。
 
         请注意，您一次只能在一个引脚上播放频率。
 
     - ``wait`` 阻塞：如果 ``wait`` 设置为 ``True``, 为阻塞,否则未不。
 
 
-.. function:: stop(pin=6)
+.. function:: stop()
     
    停止给定引脚上的所有音乐播放。
 
-    - ``pin`` 默认是掌控板的P6引脚。
 
 .. function:: reset()
 
