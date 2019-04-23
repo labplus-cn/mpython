@@ -225,7 +225,7 @@ class OLED(SSD1106_I2C):
             last = y0
         else:
             last = y1-1
-        for y in range(y0, last+1):
+        for y in range(y0, last+2):
             a = x0 + sa // dy01
             b = x0 + sb // dy02
             sa += dx01
