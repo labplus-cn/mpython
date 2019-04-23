@@ -406,12 +406,13 @@ wifi类
     - sta用于客户端连接路由器来连接网络。
     - ap用于掌控板作为无线AP接入方式。
 
-.. method:: wifi.connectWiFi(ssid,password)
+.. method:: wifi.connectWiFi(ssid,password,timeout=10)
 
 连接wifi网络
 
     - ``ssid`` -WiFi网络名称
     - ``password`` -WiFi密码
+    - ``tiemout`` -链接超时,默认10秒
 
 .. method:: wifi.disconnectWiFi()
 
