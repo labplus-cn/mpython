@@ -50,6 +50,3 @@ c = MQTTClient(CLIENT_ID, SERVER,6002,username,password)
 c.connect()
 print("Connected to %s" % SERVER)
 tim1.init(period=1000, mode=Timer.PERIODIC, callback=lambda _:publishSenser())     #每隔一秒上传数据点
-
-while True:  # 主体循环
-    pass     # 空指令

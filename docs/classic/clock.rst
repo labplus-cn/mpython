@@ -33,9 +33,6 @@
         tim1 = Timer(1) 
 
         tim1.init(period=1000, mode=Timer.PERIODIC, callback=get_time)  
-    
-    while True:  # 主体循环
-        pass     # 空指令
 
 数字时钟是取代模拟表盘而以数字显示的钟表，它用数字显示此时的时间，案例中的数字时钟能同时显示时，分，秒。
 
@@ -120,9 +117,6 @@
         tim1 = Timer(1)
 
         tim1.init(period=1000, mode=Timer.PERIODIC, callback=Refresh) 
-
-    while True:  # 主体循环
-        pass     # 空指令
 
 构建Clock对象：
 ::

@@ -71,8 +71,6 @@
     tim1 = Timer(1)
     tim1.init(period=1800000, mode=Timer.PERIODIC,callback=lambda _:refresh())      #定时，每半个钟刷新一次
 
-    while True:  # 主体循环
-        pass     # 空指令
 
 
 .. image:: /images/classic/weather.jpg
