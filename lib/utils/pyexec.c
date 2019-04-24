@@ -55,6 +55,9 @@ STATIC bool repl_display_debugging_info = 0;
 #define EXEC_FLAG_SOURCE_IS_FILENAME (32)
 
 extern void mpython_display_exception(mp_obj_t exc_in);
+extern void mpython_stop_timer(void);
+extern void mpython_stop_thread(void);
+
 // parses, compiles and executes the code in the lexer
 // frees the lexer before returning
 // EXEC_FLAG_PRINT_EOF prints 2 EOF chars: 1 after normal output, 1 after exception output
@@ -449,6 +452,11 @@ friendly_repl_reset:
         } else if (ret == CHAR_CTRL_C) {
             // break
             mp_hal_stdout_tx_str("\r\n");
+            
+            // disable all timer create by user
+            mpython_stop_timer();
+            // delete all thread create by user
+            mpython_stop_thread();
             continue;
         } else if (ret == CHAR_CTRL_D) {
             // exit for a soft reset
