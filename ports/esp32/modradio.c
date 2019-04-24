@@ -39,10 +39,12 @@ static void radio_recv_cb(const uint8_t *mac_addr, const uint8_t *data, int len)
     radio_recv_event_t evt;
     memcpy(evt.mac_address, mac_addr, ESP_NOW_ETH_ALEN);
     evt.data = malloc(len);
-    memcpy(evt.data, data, len);
-    evt.data_len = len;
-    if (xQueueSend(radio_recv_queue, &evt, 0) == pdFALSE) {
-        free(evt.data);
+    if (evt.data != NULL) {
+        memcpy(evt.data, data, len);
+        evt.data_len = len;
+        if (xQueueSend(radio_recv_queue, &evt, 0) == pdFALSE) {
+            free(evt.data);
+        }
     }
 }
 
@@ -130,11 +132,11 @@ STATIC mp_obj_t radio_receive(mp_uint_t n_args, const mp_obj_t * args) {
         if (xQueueReceive(radio_recv_queue, &evt, 0)) {
             mp_obj_t msg[2];
             msg[0] = mp_obj_new_str_copy(&mp_type_str, evt.data, evt.data_len);
+            free(evt.data);
 
             if (with_address) {
                 vstr_t vstr;
                 vstr_init(&vstr, 0);
-                //char mac_str[ESP_NOW_ETH_ALEN*2 + 1];
                 vstr_printf(&vstr, "%02X%02X%02X%02X%02X%02X", MAC2STR(evt.mac_address));   
                 msg[1] = mp_obj_new_str_from_vstr(&mp_type_str, &vstr);    
                 return mp_obj_new_tuple(2, msg);         
@@ -214,6 +216,7 @@ value_error:
 MP_DEFINE_CONST_FUN_OBJ_KW(radio_config_obj, 0, radio_config);
 
 STATIC mp_obj_t radio_init(void) {
+    radio_channel = RADIO_CHANNEL_DEFAULT;
     return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_0(radio___init___obj, radio_init); 
