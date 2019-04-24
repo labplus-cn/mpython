@@ -11,6 +11,5 @@
     i2c.rst
     thread.rst
     bme280.rst
-    mqtt.rst
     iot/index.rst
     
