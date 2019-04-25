@@ -28,32 +28,15 @@
 设备间通讯
 ++++++++++++
 
-bigiot简单通讯示例::
 
-    from mpython import *
-    import bigiot
-
-    my_wifi = wifi()
-    my_wifi.connectWiFi("youruser", "yourpassword")
-
-    ID = ""                             # 设备ID
-    API_KEY = ""                        # 设备APIKEY
+.. literalinclude:: /../examples/IoT/bigiot.py
+    :caption: bigiot简单通讯示例::
+    :linenos:
 
 
-    
-    def say_cb(msg):                    # 回调函数
-        print(msg)
-        oled.DispChar("%s,%s" %(msg[0],msg[1]),0,10)    # 显示到oled
-        oled.show()
-        oled.fill(0)
 
-
-    device = bigiot.Device(ID, API_KEY)         # 构建bigiot 设备
-
-    device.say_callback(say_cb)                 # 设置say通讯的回调函数
-
-连接贝壳物联平台前,需要确保掌控板已连接到互联网中。在实例设备时 ``Device(id,api_key)`` ,用到贝壳物联的智能设备信息,``ID`` 和 ``API KEY`` 。
-设置say通讯的回调函数 ``say_callback(f)`` 。f(msg,id,name)回调函数,``msg`` 参数为接收消息, ``id`` 参数为发送设备ID, ``name`` 参数为设备名称。
+连接贝壳物联平台前,需要确保掌控板已连接到互联网中。在实例设备时 ``Device(id,api_key)`` ,用到贝壳物联的智能设备信息, ``ID`` 和 ``API KEY`` 。
+设置say通讯的回调函数 ``say_callback(f)`` 。f(msg,id,name)回调函数, ``msg`` 参数为接收消息, ``id`` 参数为发送设备ID, ``name`` 参数为设备名称。
 上示例,设置回调函数并将say通讯接收到的数据打印出来。
 
 客户端向掌控板发送

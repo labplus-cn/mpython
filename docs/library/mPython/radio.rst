@@ -45,6 +45,6 @@ radio 模块提供无线广播功能,支持14 Channel,在相同的Channel内能�
 
 
 
-.. literalinclude:: /../examples/radio.py
+.. literalinclude:: /../examples/radio/radio.py
     :caption: 无线广播示例
     :linenos:
