@@ -106,13 +106,28 @@ void mpython_display_exception(mp_obj_t exc_in)
     }
 }
 
+void mpython_stop_timer(void) {
+    // disable all timer and thread created by main.py
+    for (timer_group_t g = TIMER_GROUP_0; g < TIMER_GROUP_MAX; g++) {
+        for (timer_idx_t i = TIMER_0; i < TIMER_MAX; i++) {
+            timer_pause(g, i);
+        }
+    }
+}
+
+void mpython_stop_thread(void) {
+    #if MICROPY_PY_THREAD
+    mp_thread_deinit();
+    #endif  
+}
+
 void mp_task(void *pvParameter) {
     volatile uint32_t sp = (uint32_t)get_sp();
     #if MICROPY_PY_THREAD
     mp_thread_init(pxTaskGetStackStart(NULL), MP_TASK_STACK_LEN);
     #endif
-    // esp_log_level_set("*", ESP_LOG_ERROR);    // only error msg for mpython
-    esp_log_level_set("*", ESP_LOG_ERROR);
+    esp_log_level_set("*", ESP_LOG_ERROR);    // only error msg for mpython
+    // esp_log_level_set("*", ESP_LOG_INFO);
     uart_init();
 
     // Allocate the uPy heap using malloc and get the largest available region
@@ -149,6 +164,7 @@ soft_reset:
 		.name = "music tick timer"
 	};
 	esp_timer_handle_t periodic_timer;
+    ticker_ticks_ms = 0;
 	ESP_ERROR_CHECK(esp_timer_create(&periodic_timer_args, &periodic_timer));
 	ESP_ERROR_CHECK(esp_timer_start_periodic(periodic_timer, 1000));
 
@@ -158,16 +174,6 @@ soft_reset:
     if (pyexec_mode_kind == PYEXEC_MODE_FRIENDLY_REPL) {
         exit_code = pyexec_file("main.py");
     }
-
-    // disable all timer and thread created by main.py
-    for (timer_group_t g = TIMER_GROUP_0; g < TIMER_GROUP_MAX; g++) {
-        for (timer_idx_t i = TIMER_0; i < TIMER_MAX; i++) {
-            timer_pause(g, i);
-        }
-    }
-    #if MICROPY_PY_THREAD
-    mp_thread_deinit();
-    #endif
 
     for (;;) {
         if (pyexec_mode_kind == PYEXEC_MODE_RAW_REPL) {
@@ -183,6 +189,10 @@ soft_reset:
         }
     }
 
+    #if MICROPY_PY_THREAD
+    mp_thread_deinit();
+    #endif
+
     gc_sweep_all();
 
     mp_hal_stdout_tx_str("mpython soft reboot\r\n");
@@ -191,6 +201,7 @@ soft_reset:
     machine_pins_deinit();
     usocket_events_deinit();
 
+    esp_timer_stop(periodic_timer);
     esp_timer_delete(periodic_timer);
     MP_STATE_PORT(music_data) = NULL;
 
