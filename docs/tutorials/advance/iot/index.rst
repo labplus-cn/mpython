@@ -96,5 +96,7 @@ IoT教程
 .. toctree::
     :maxdepth: 1
 
+    mqtt.rst
     yeelight.rst
+    bigiot.rst
    
