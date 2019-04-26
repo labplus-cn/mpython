@@ -19,3 +19,5 @@ def say_cb(msg):                    # 回调函数
 device = bigiot.Device(ID, API_KEY)         # 构建bigiot 设备
 
 device.say_callback(say_cb)                 # 设置say通讯的回调函数
+
+device.check_in()                           # 登陆
