@@ -104,9 +104,11 @@ static mp_obj_t radio_send(mp_obj_t msg) {
     if (radio_inited) {
         size_t len;
         const char *data = mp_obj_str_get_data(msg, &len);
-        ESP_ERROR_CHECK(esp_now_send(broadcast_mac, (const uint8_t *)data, len));
+        if (esp_now_send(broadcast_mac, (const uint8_t *)data, len) == ESP_OK) {
+            return mp_const_true;
+        }
     }
-    return mp_const_none;
+    return mp_const_false;
 }
 MP_DEFINE_CONST_FUN_OBJ_1(radio_send_obj, radio_send);
 
@@ -114,9 +116,11 @@ static mp_obj_t radio_send_bytes(mp_obj_t msg) {
     if (radio_inited) {
         mp_buffer_info_t bufinfo;
         mp_get_buffer_raise(msg, &bufinfo, MP_BUFFER_READ);
-        ESP_ERROR_CHECK(esp_now_send(broadcast_mac, (const uint8_t *)bufinfo.buf, bufinfo.len));
+        if (esp_now_send(broadcast_mac, (const uint8_t *)bufinfo.buf, bufinfo.len) == ESP_OK) {
+            return mp_const_true;
+        }
     }
-    return mp_const_none;
+    return mp_const_false;
 }
 MP_DEFINE_CONST_FUN_OBJ_1(radio_send_bytes_obj, radio_send_bytes);
 
@@ -161,6 +165,7 @@ STATIC mp_obj_t radio_receive_bytes(mp_uint_t n_args, const mp_obj_t * args) {
         if (xQueueReceive(radio_recv_queue, &evt, 0)) {
             mp_obj_t msg[2];
             msg[0] = mp_obj_new_str_copy(&mp_type_bytes, evt.data, evt.data_len);
+            free(evt.data);
             if (with_address) { 
                 msg[1] = mp_obj_new_str_copy(&mp_type_bytes, evt.mac_address, ESP_NOW_ETH_ALEN);    
                 return mp_obj_new_tuple(2, msg);         
