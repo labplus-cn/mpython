@@ -2,7 +2,7 @@
 radio 模块
 ==========
 
-radio 模块提供无线广播功能,支持14 Channel,在相同的Channel内能接收到成员发出的广播消息。
+radio 模块提供无线广播功能,支持13 Channel,在相同的Channel内能接收到成员发出的广播消息,适合10米范围内的多板组网的通讯。
 
 函数
 ----------
@@ -22,7 +22,7 @@ radio 模块提供无线广播功能,支持14 Channel,在相同的Channel内能�
 
 配置无线参数
 
-- ``channel`` (int): 无线通道,范围1~14
+- ``channel`` (int): 无线通道,范围1~13
 
 
 
@@ -37,30 +37,14 @@ radio 模块提供无线广播功能,支持14 Channel,在相同的Channel内能�
 
 .. py:method:: radio.send()
 
-发送无线广播消息,发送数据类型为字符串
+发送无线广播消息,发送数据类型为字符串。当发送成功后返回True,否则返回False。
 
 .. py:method:: radio.send_bytes()
 
-发送无线广播消息,发送数据类型为字节
+发送无线广播消息,发送数据类型为字节。当发送成功后返回True,否则返回False。
 
 
-radio示例::
 
-    import radio
-    import _thread
-
-    channel=2
-
-    radio.on()
-    radio.config(channel=channel)               # radio通道设置
-
-    def rec_loop():                             # radio接收循环
-        while True:
-            temp=radio.receive(False)           # radio 接收数据,返回(msg,mac)
-            # temp=radio.receive(True)          # radio 接收数据,返回msg
-            if temp:                            # 当接收到数据时打印
-                print(temp)
-
-    _thread.start_new_thread(rec_loop, ())      # radio接收线程
-
-    radio.send("hello mPython!")
+.. literalinclude:: /../examples/radio/radio.py
+    :caption: 无线广播示例
+    :linenos:
