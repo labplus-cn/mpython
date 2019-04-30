@@ -774,6 +774,7 @@ ESPIDF_MBEDTLS_O = $(addprefix $(ESPCOMP)/mbedtls/,\
 	mbedtls/library/xtea.o \
 	port/esp_bignum.o \
 	port/esp_hardware.o \
+	port/net_sockets.o \
 	port/esp_mem.o \
 	port/esp_sha1.o \
 	port/esp_sha256.o \
