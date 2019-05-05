@@ -44,7 +44,7 @@ extern const mp_obj_type_t mp_type_textio;
 
 STATIC const mp_obj_type_t mp_type_iobase;
 
-STATIC mp_obj_base_t iobase_singleton = {&mp_type_iobase};
+STATIC const mp_obj_base_t iobase_singleton = {&mp_type_iobase};
 
 STATIC mp_obj_t iobase_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
     (void)type;
@@ -147,6 +147,7 @@ STATIC mp_uint_t bufwriter_write(mp_obj_t self_in, const void *buf, mp_uint_t si
         buf = (byte*)buf + rem;
         size -= rem;
         mp_uint_t out_sz = mp_stream_write_exactly(self->stream, self->buf, self->alloc, errcode);
+        (void)out_sz;
         if (*errcode != 0) {
             return MP_STREAM_ERROR;
         }
@@ -165,6 +166,7 @@ STATIC mp_obj_t bufwriter_flush(mp_obj_t self_in) {
     if (self->len != 0) {
         int err;
         mp_uint_t out_sz = mp_stream_write_exactly(self->stream, self->buf, self->len, &err);
+        (void)out_sz;
         // TODO: try to recover from a case of non-blocking stream, e.g. move
         // remaining chunk to the beginning of buffer.
         assert(out_sz == self->len);

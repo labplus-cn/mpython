@@ -63,23 +63,9 @@ STATIC void mp_reset(void) {
     pin_init0();
     readline_init0();
     dupterm_task_init();
-#if MICROPY_MODULE_FROZEN
-    pyexec_frozen_module("_boot.py");
-    pyexec_file("boot.py");
-    if (pyexec_mode_kind == PYEXEC_MODE_FRIENDLY_REPL) {
-        pyexec_file("main.py");
-    }
-#endif
 
-    // Check if there are any dupterm objects registered and if not then
-    // activate UART(0), or else there will never be any chance to get a REPL
-    size_t idx;
-    for (idx = 0; idx < MICROPY_PY_OS_DUPTERM; ++idx) {
-        if (MP_STATE_VM(dupterm_objs[idx]) != MP_OBJ_NULL) {
-            break;
-        }
-    }
-    if (idx == MICROPY_PY_OS_DUPTERM) {
+    // Activate UART(0) on dupterm slot 1 for the REPL
+    {
         mp_obj_t args[2];
         args[0] = MP_OBJ_NEW_SMALL_INT(0);
         args[1] = MP_OBJ_NEW_SMALL_INT(115200);
@@ -87,13 +73,20 @@ STATIC void mp_reset(void) {
         args[1] = MP_OBJ_NEW_SMALL_INT(1);
         extern mp_obj_t os_dupterm(size_t n_args, const mp_obj_t *args);
         os_dupterm(2, args);
-        mp_hal_stdout_tx_str("Activated UART(0) for REPL\r\n");
     }
+
+    #if MICROPY_MODULE_FROZEN
+    pyexec_frozen_module("_boot.py");
+    pyexec_file_if_exists("boot.py");
+    if (pyexec_mode_kind == PYEXEC_MODE_FRIENDLY_REPL) {
+        pyexec_file_if_exists("main.py");
+    }
+    #endif
 }
 
 void soft_reset(void) {
     gc_sweep_all();
-    mp_hal_stdout_tx_str("PYB: soft reboot\r\n");
+    mp_hal_stdout_tx_str("MPY: soft reboot\r\n");
     mp_hal_delay_us(10000); // allow UART to flush output
     mp_reset();
     #if MICROPY_REPL_EVENT_DRIVEN

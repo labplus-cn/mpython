@@ -26,6 +26,23 @@
 #ifndef MICROPY_INCLUDED_PY_MPCONFIG_H
 #define MICROPY_INCLUDED_PY_MPCONFIG_H
 
+// Current version of MicroPython
+#define MICROPY_VERSION_MAJOR 1
+#define MICROPY_VERSION_MINOR 10
+#define MICROPY_VERSION_MICRO 0
+
+// Combined version as a 32-bit number for convenience
+#define MICROPY_VERSION ( \
+    MICROPY_VERSION_MAJOR << 16 \
+    | MICROPY_VERSION_MINOR << 8 \
+    | MICROPY_VERSION_MICRO)
+
+// String version
+#define MICROPY_VERSION_STRING \
+    MP_STRINGIFY(MICROPY_VERSION_MAJOR) "." \
+    MP_STRINGIFY(MICROPY_VERSION_MINOR) "." \
+    MP_STRINGIFY(MICROPY_VERSION_MICRO)
+
 // This file contains default configuration settings for MicroPython.
 // You can override any of the options below using mpconfigport.h file
 // located in a directory of your port.
@@ -339,6 +356,11 @@
 #define MICROPY_COMP_CONST_FOLDING (1)
 #endif
 
+// Whether to enable optimisations for constant literals, eg OrderedDict
+#ifndef MICROPY_COMP_CONST_LITERAL
+#define MICROPY_COMP_CONST_LITERAL (1)
+#endif
+
 // Whether to enable lookup of constants in modules; eg module.CONST
 #ifndef MICROPY_COMP_MODULE_CONST
 #define MICROPY_COMP_MODULE_CONST (0)
@@ -392,6 +414,16 @@
 #define MICROPY_DEBUG_VERBOSE (0)
 #endif
 
+// Whether to enable debugging versions of MP_OBJ_NULL/STOP_ITERATION/SENTINEL
+#ifndef MICROPY_DEBUG_MP_OBJ_SENTINELS
+#define MICROPY_DEBUG_MP_OBJ_SENTINELS (0)
+#endif
+
+// Whether to enable a simple VM stack overflow check
+#ifndef MICROPY_DEBUG_VM_STACK_OVERFLOW
+#define MICROPY_DEBUG_VM_STACK_OVERFLOW (0)
+#endif
+
 /*****************************************************************************/
 /* Optimisations                                                             */
 
@@ -440,6 +472,11 @@
 // Whether to use the VFS reader for importing files
 #ifndef MICROPY_READER_VFS
 #define MICROPY_READER_VFS (0)
+#endif
+
+// Whether any readers have been defined
+#ifndef MICROPY_HAS_FILE_READER
+#define MICROPY_HAS_FILE_READER (MICROPY_READER_POSIX || MICROPY_READER_VFS)
 #endif
 
 // Hook for the VM at the start of the opcode loop (can contain variable
@@ -569,6 +606,11 @@ typedef long long mp_longint_impl_t;
 // Whether issue warnings during compiling/execution
 #ifndef MICROPY_WARNINGS
 #define MICROPY_WARNINGS (0)
+#endif
+
+// Whether to support warning categories
+#ifndef MICROPY_WARNINGS_CATEGORY
+#define MICROPY_WARNINGS_CATEGORY (0)
 #endif
 
 // This macro is used when printing runtime warnings and errors
@@ -852,6 +894,11 @@ typedef double mp_float_t;
 // match CPython and ranges are equal if they yield the same sequence of items.
 #ifndef MICROPY_PY_BUILTINS_RANGE_BINOP
 #define MICROPY_PY_BUILTINS_RANGE_BINOP (0)
+#endif
+
+// Support for callling next() with second argument
+#ifndef MICROPY_PY_BUILTINS_NEXT2
+#define MICROPY_PY_BUILTINS_NEXT2 (0)
 #endif
 
 // Whether to support rounding of integers (incl bignum); eg round(123,-1)=120
@@ -1279,8 +1326,8 @@ typedef double mp_float_t;
 #define MICROPY_PY_USSL_FINALISER (0)
 #endif
 
-#ifndef MICROPY_PY_WEBSOCKET
-#define MICROPY_PY_WEBSOCKET (0)
+#ifndef MICROPY_PY_UWEBSOCKET
+#define MICROPY_PY_UWEBSOCKET (0)
 #endif
 
 #ifndef MICROPY_PY_FRAMEBUF
@@ -1294,17 +1341,17 @@ typedef double mp_float_t;
 /*****************************************************************************/
 /* Hooks for a port to add builtins                                          */
 
-// Additional builtin function definitions - see builtintables.c:builtin_object_table for format.
+// Additional builtin function definitions - see modbuiltins.c:mp_module_builtins_globals_table for format.
 #ifndef MICROPY_PORT_BUILTINS
 #define MICROPY_PORT_BUILTINS
 #endif
 
-// Additional builtin module definitions - see builtintables.c:builtin_module_table for format.
+// Additional builtin module definitions - see objmodule.c:mp_builtin_module_table for format.
 #ifndef MICROPY_PORT_BUILTIN_MODULES
 #define MICROPY_PORT_BUILTIN_MODULES
 #endif
 
-// Any module weak links - see builtintables.c:mp_builtin_module_weak_links_table.
+// Any module weak links - see objmodule.c:mp_builtin_module_weak_links_table.
 #ifndef MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS
 #define MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS
 #endif
@@ -1474,6 +1521,17 @@ typedef double mp_float_t;
 # define MP_HTOBE32(x) (x)
 # define MP_BE32TOH(x) (x)
 #endif
+#endif
+
+// Warning categories are by default implemented as strings, though
+// hook is left for a port to define them as something else.
+#if MICROPY_WARNINGS_CATEGORY
+# ifndef MP_WARN_CAT
+# define MP_WARN_CAT(x) #x
+# endif
+#else
+# undef MP_WARN_CAT
+# define MP_WARN_CAT(x) (NULL)
 #endif
 
 #endif // MICROPY_INCLUDED_PY_MPCONFIG_H
