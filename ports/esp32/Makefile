@@ -990,11 +990,14 @@ deploy: $(BUILD)/firmware.bin
 	$(ECHO) "Writing $^ to the board"
 	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) write_flash -z --flash_mode $(FLASH_MODE) --flash_freq $(FLASH_FREQ) 0x1000 $^
 
+
 $(BUILD)/mpython.bin: $(BUILD)/bootloader.bin $(BUILD)/partitions.bin $(BUILD)/application.bin
 	$(ECHO) "Create $@, with address from 0"
 	$(Q)$(PYTHON) release.py $^ $@
 
 release: $(BUILD)/mpython.bin
+	$(ECHO) "Writing $^ to the board"
+	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) write_flash -z --flash_mode $(FLASH_MODE) --flash_freq $(FLASH_FREQ) 0 $^
 
 font:
 	$(ECHO) "Write $^ to the board"
