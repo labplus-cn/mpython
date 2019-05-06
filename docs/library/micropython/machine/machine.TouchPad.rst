@@ -32,6 +32,6 @@
 
 .. method:: TouchPad.config(value)
 
-设置触摸板的标识。
+设置触摸的阈值
 
-  - ``value`` 任意整数值
+  - ``value`` 整数
