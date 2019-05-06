@@ -38,3 +38,4 @@ ports/esp32/build/
 mpy-cross/build/
 mpy-cross/*.map
 py/__pycache__/*
+pymakr.conf
