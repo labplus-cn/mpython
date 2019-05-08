@@ -529,18 +529,18 @@ class wifi:
     def __init__(self):
         self.sta = network.WLAN(network.STA_IF)
         self.ap = network.WLAN(network.AP_IF)
-
+       
     def connectWiFi(self, ssid, passwd, timeout=10):
+        if self.sta.isconnected():
+            self.sta.disconnect()
         self.sta.active(True)
         list = self.sta.scan()
-        for i, wifi in enumerate(list):
-            if wifi[0].decode() == ssid:
-                _wifi = wifi
+        for i, wifi_info in enumerate(list):
+            if wifi_info[0].decode() == ssid:
                 self.sta.connect(ssid, passwd)
                 break
             if i == len(list) - 1:
                 raise OSError("SSID invalid / failed to scan this wifi")
-
         start = time.time()
         print("Connection WiFi", end="")
         while (self.sta.ifconfig()[0] == '0.0.0.0'):
@@ -552,11 +552,12 @@ class wifi:
             print(".", end="")
             time.sleep_ms(500)
         print("")
-        print('WiFi(%s,%ddBm) Connection Successful, Config:%s' %
-              (ssid, _wifi[3], str(self.sta.ifconfig())))
+        print('WiFi(%s,%sdBm) Connection Successful, Config:%s' %
+              (ssid, str(wifi_info[3]), str(self.sta.ifconfig())))
 
     def disconnectWiFi(self):
-        self.sta.disconnect()
+        if self.sta.isconnected():
+            self.sta.disconnect()
         self.sta.active(False)
         print('disconnect WiFi...')
 
