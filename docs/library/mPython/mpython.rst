@@ -293,7 +293,7 @@ oled屏显示文本。
     - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
 
 
-.. method:: oled.Bitmap(x, y, bitmap, w, h,c)
+.. method:: oled.Bitmap(x, y, bitmap, w, h,c=1)
 
 绘制bitmap图案
 
@@ -301,7 +301,7 @@ oled屏显示文本。
     - ``bitmap`` -图案bitmap数组
     - ``w`` -图案宽度
     - ``h`` -图案高度
-    - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
+    - ``c`` -为1时,像素点亮;
 
 
 .. method:: oled.RoundRect( x, y, w, h, r, c)
