@@ -1,8 +1,8 @@
 :mod:`math` -- 数学运算函数
 =====================================
 
-..  :: math
-   :synopsis: 数学运算函数
+.. module:: math
+   :synopsis: mathematical functions
 
 这个模块实现了相应 :term:`CPython` 模块的一个子集，如下所述。有关更多信息，请参阅原始CPython文档:`math <https://docs.python.org/3.5/library/math.html#module-math>`_.
 
@@ -94,7 +94,7 @@ Functions
 .. function:: frexp(x)
 
 将浮点数分解为尾数和指数。返回的值是元组 ``(m, e)`` 这样 ``x == m * 2**e`` 
-完全正确。如果 ``x == 0`` ，则函数返回 ``(0.0,0)`` ，否则``0.5 <= abs(m) < 1``.
+完全正确。如果 ``x == 0`` ，则函数返回 ``(0.0,0)`` ，否则 ``0.5 <= abs(m) < 1`` .
 
 .. function:: gamma(x)
 

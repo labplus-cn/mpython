@@ -72,7 +72,7 @@ M1、M2,正转速度设为80::
 播放本地mp3音频::
 
     import audio                            # 导入audio对象
-
+    audio.player_init()                     # 播放初始化
     audio.play("music_1.mp3")               # 播放"music_1.mp3"音频
 
 .. Hint:: 

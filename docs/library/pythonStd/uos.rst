@@ -1,4 +1,4 @@
-:mod:`os` -- 操作系统
+:mod:`os` -- 基本的操作系统
 ===============================================
 
 .. module:: os
@@ -6,7 +6,7 @@
 
 这个模块实现了相应 :term:`CPython` 模块的一个子集，如下所述。有关更多信息，请参阅原始CPython文档: `os <https://docs.python.org/3.5/library/os.html#module-os>`_
 
-``os`` 模块包含文件系统访问和 ``urandom`` 功能
+该uos模块包含文件系统访问和安装，终端重定向和复制 ``uname`` 以及 ``urandom`` 功能的功能。
 
 一般功能
 ---------
@@ -171,16 +171,52 @@ The 3-tuples have the form *(name, type, inode)*:
 
 同步所有文件系统。
 
+终端重定向和复制
+---------------
+
 .. function:: dupterm(stream_object, index=0)
 
-复制或切换给定类似stream对象上的MicroPython终端（REPL）。该stream_object参数必须实现 ``readinto()`` 和 `` write()`` 方法。
-流应处于非阻塞模式，如果没有可用于读取的数据， ``readinto()`` 则应返回 ``None`` 。
+复制或切换给定类似 ``stream`` 对象上的MicroPython终端（REPL）。所述 `stream_object` 参数必须是一个本地流对象，或从导出 ``uio.IOBase`` 并实施 ``readinto()`` 和 ``write()`` 方法。流应处于非阻塞模式，如果没有可用于读取的数据， ``readinto()`` 则应返回 ``None``。
 
 调用此函数后，将在此流上重复所有终端输出，并且流上可用的任何输入都将传递到终端输入。
 
-所述索引参数应该是哪个复制时隙设置一个非负整数，并且指定。给定端口可以实现多个槽（槽0将始终可用），
-并且在这种情况下，终端输入和输出在所有设置的槽上复制。
+所述索引参数应该是哪个复制时隙设置一个非负整数，并且指定。给定端口可以实现多个槽（槽0将始终可用），并且在这种情况下，终端输入和输出在所有设置的槽上复制。
 
-如果 ``None`` 作为 ``stream_object`` 传递，则在索引给出的槽上取消复制。
+如果 ``None`` 作为 `stream_object` 传递，则在索引给出的槽上取消复制。
 
-该函数返回给定槽中的上一个类似流的对象。
+该函数返回给定槽中的前一个类似流的对象。
+
+
+文件系统安装
+----------
+
+提供虚拟文件系统（VFS）以及在此VFS中安装多个“真实”文件系统的功能。文件系统对象可以安装在VFS的根目录中，也可以安装在根目录中的子目录中。
+这允许Python程序看到的文件系统的动态和灵活配置。提供 ``mount()`` 和 ``umount()`` 功能，以及可能由VFS类表示的各种文件系统实现。
+
+
+.. function:: mount(fsobj, mount_point, \*, readonly)
+
+    将文件系统对象 `fsobj` 挂载到mount_point字符串指定的VFS中的位置。 
+    fsobj可以是具有 ``mount()`` 方法或块设备的VFS对象。如果它是块设备，则会自动检测文件系统类型（如果未识别文件系统，则会引发异常）。
+    `mount_point` 可以是在根目录下'/'挂载 `fsobj` ，也'/<name>'可以将它挂载在根目录下的子目录中。
+
+如果是 `readonly` 为 `True` 则文件系统以只读方式挂载。
+
+在挂载过程中，将 ``mount()`` 在文件系统对象上调用该方法。
+
+``OSError(EPERM)`` 如果 `mount_point` 已经安装，则会引发。
+
+.. function:: umount(mount_point)
+
+    卸载文件系统。`mount_point` 可以是命名安装位置的字符串，也可以是先前安装的文件系统对象。在卸载过程中，将 `umount()` 在文件系统对象上调用该方法。
+
+``OSError(EINVAL)`` 如果找不到 `mount_point` ，则会引发。
+
+.. class:: VfsFat(block_dev)
+
+    创建使用 `FAT` 文件系统格式的文件系统对象。FAT文件系统的存储由 `block_dev` 提供。可以使用此构造函数创建的对象 ``mount()`` 。
+
+    .. staticmethod:: mkfs(block_dev)
+
+        在 `block_dev` 上构建FAT文件系统。
+

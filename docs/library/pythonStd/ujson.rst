@@ -6,10 +6,14 @@
 
 这个模块实现了相应 :term:`CPython` 模块的一个子集，如下所述。有关更多信息，请参阅原始CPython文档: `json <https://docs.python.org/3.5/library/json.html#module-json>`_
 
-该模块提供json数据格式的转换。
+此模块允许在Python对象和JSON数据格式之间进行转换。
 
 函数
 ---------
+
+.. function:: dump(obj, stream)
+
+   将 *obj* 串行化为 *JSON* 字符串，将其写入给定的 *stream* 。
 
 .. function:: dumps(obj)
 
@@ -25,6 +29,15 @@
   >>> jsObj = ujson.dumps(obj) #将dict类型转换成str
   >>> print(type(jsObj), jsObj)
   <class 'str'> {3: 4, 1: 2, "a": 6}
+
+
+.. function:: load(stream)
+
+
+  解析给定的 *stream* ，将其解释为JSON字符串并将数据反序列化为Python对象。返回结果对象。
+
+  解析继续，直到遇到文件结尾。如果未正确形成流中的数据，则引发 :exc:`ValueError`
+
 
 .. function:: loads(str)
 

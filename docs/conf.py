@@ -64,7 +64,7 @@ author = u'tangliufeng'
 # built documents.
 #
 # The short X.Y version.
-version = release = '1.0.8'
+version = release = '1.0.9'
 # The full version, including alpha/beta/rc tags.
 
 

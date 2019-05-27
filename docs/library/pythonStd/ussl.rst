@@ -15,9 +15,9 @@ Functions
 
 
 采用流sock（通常是SOCK_STREAM类型的usocket.socket实例），并返回ssl.SSLSocket的实例，该实例将基础流包装在SSL上下文中。
-返回的对象具有通常的流接口方法，如 read()，write()等。
+返回的对象具有通常的流接口方法，如 ``read()`` ，``write()`` 等。
 在MicroPython中，返回的对象不公开套接字接口和方法，如recv()，send()。
-特别是，应该从accept()非SSL侦听服务器套接字上返回的普通套接字创建服务器端SSL 套接字。
+特别是，应该从 ``accept()`` 非SSL侦听服务器套接字上返回的普通套接字创建服务器端SSL 套接字。
 
 
 

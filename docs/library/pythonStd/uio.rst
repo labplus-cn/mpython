@@ -6,7 +6,7 @@
 
 这个模块实现了相应 :term:`CPython` 模块的一个子集，如下所述。有关更多信息，请参阅原始CPython文档: `io <https://docs.python.org/3.5/library/io.html#module-io>`_
 
-此模块包含其他类型的stream（类文件）对象和帮助程序函数。
+此模块包含其他类型的stream（类文件）对象和辅助函数。
 
 概念层次
 --------------------
@@ -16,68 +16,36 @@
 
    如本节所述，MicroPython中简化了流基类的概念层次结构。
 
-(Abstract) base stream classes, which serve as a foundation for behavior
-of all the concrete classes, adhere to few dichotomies (pair-wise
-classifications) in CPython. In MicroPython, they are somewhat simplified
-and made implicit to achieve higher efficiencies and save resources.
+（摘要）基本流类作为所有具体类行为的基础，在CPython中遵循少量二分法（成对分类）。
+在MicroPython中，它们稍微简化并隐含以实现更高的效率并节省资源。
 
-An important dichotomy in CPython is unbuffered vs buffered streams. In
-MicroPython, all streams are currently unbuffered. This is because all
-modern OSes, and even many RTOSes and filesystem drivers already perform
-buffering on their side. Adding another layer of buffering is counter-
-productive (an issue known as "bufferbloat") and takes precious memory.
-Note that there still cases where buffering may be useful, so we may
-introduce optional buffering support at a later time.
+CPython中的一个重要的二分法是无缓冲流和缓冲流。在MicroPython中，所有流目前都是无缓冲的。这
+是因为所有现代操作系统，甚至许多RTOS和文件系统驱动程序都已经在他们身边执行缓冲。
+添加另一层缓冲是适得其反的（一个称为“bufferbloat”的问题）并占用宝贵的内存。
+请注意，仍然存在缓冲可能有用的情况，因此我们可能会在以后引入可选的缓冲支持。
 
-But in CPython, another important dichotomy is tied with "bufferedness" -
-it's whether a stream may incur short read/writes or not. A short read
-is when a user asks e.g. 10 bytes from a stream, but gets less, similarly
-for writes. In CPython, unbuffered streams are automatically short
-operation susceptible, while buffered are guarantee against them. The
-no short read/writes is an important trait, as it allows to develop
-more concise and efficient programs - something which is highly desirable
-for MicroPython. So, while MicroPython doesn't support buffered streams,
-it still provides for no-short-operations streams. Whether there will
-be short operations or not depends on each particular class' needs, but
-developers are strongly advised to favor no-short-operations behavior
-for the reasons stated above. For example, MicroPython sockets are
-guaranteed to avoid short read/writes. Actually, at this time, there is
-no example of a short-operations stream class in the core, and one would
-be a port-specific class, where such a need is governed by hardware
-peculiarities.
+但是在CPython中，另一个重要的二分法与“缓冲”相关 - 这是一个流是否可能导致短读/写。
+短读取是指用户从流中请求例如10个字节，但是对于写入则类似。在CPython中，无缓冲流自动对短操作敏感，而缓冲是对它们的保证。
+无短读/写是一个重要的特性，因为它允许开发更简洁和有效的程序 - 这是MicroPython非常需要的东西。
+因此，虽然MicroPython不支持缓冲流，但它仍然提供非短操作流。
+是否会有短期操作取决于每个特定类别的需求，但强烈建议开发人员支持非短操作行为，原因如上所述。
+例如，MicroPython套接字保证避免短读/写。实际上，此时，核心中没有短操作流类的示例，并且一个是特定于端口的类，其中这种需求由硬件特性决定。
 
-The no-short-operations behavior gets tricky in case of non-blocking
-streams, blocking vs non-blocking behavior being another CPython dichotomy,
-fully supported by MicroPython. Non-blocking streams never wait for
-data either to arrive or be written - they read/write whatever possible,
-or signal lack of data (or ability to write data). Clearly, this conflicts
-with "no-short-operations" policy, and indeed, a case of non-blocking
-buffered (and this no-short-ops) streams is convoluted in CPython - in
-some places, such combination is prohibited, in some it's undefined or
-just not documented, in some cases it raises verbose exceptions. The
-matter is much simpler in MicroPython: non-blocking stream are important
-for efficient asynchronous operations, so this property prevails on
-the "no-short-ops" one. So, while blocking streams will avoid short
-reads/writes whenever possible (the only case to get a short read is
-if end of file is reached, or in case of error (but errors don't
-return short data, but raise exceptions)), non-blocking streams may
-produce short data to avoid blocking the operation.
+在非阻塞流的情况下，非短操作行为变得棘手，阻塞与非阻塞行为是另一个CPython二分法，完全由MicroPython支持。
+非阻塞流永远不会等待数据到达或被写入 - 它们可能会读/写，或者表示缺少数据（或写入数据的能力）。
+显然，这与“非短操作”策略相冲突，实际上，在CPython中，非阻塞缓冲（以及此非短操作）流的情况令人费解 - 在某些地方，这种组合是禁止的，在某些情况下它是未定义的或只是没有记录，在某些情况下它会引发冗长的异常。这个问题在MicroPython中要简单得多：非阻塞流对于高效的异步操作很重要，因此这个属性在“no-short-ops”上占优势。所以，
 
-The final dichotomy is binary vs text streams. MicroPython of course
-supports these, but while in CPython text streams are inherently
-buffered, they aren't in MicroPython. (Indeed, that's one of the cases
-for which we may introduce buffering support.)
+最后的二分法是二元对文本流。MicroPython当然支持这些，但在CPython中，文本流本身就是缓冲的，它们不在MicroPython中。
+（实际上，这是我们可能会引入缓冲支持的案例之一。）
 
-Note that for efficiency, MicroPython doesn't provide abstract base
-classes corresponding to the hierarchy above, and it's not possible
-to implement, or subclass, a stream class in pure Python.
+请注意，为了提高效率，MicroPython不提供与上面的层次结构相对应的抽象基类，并且不可能在纯Python中实现或子类化流类。
 
 函数
 ---------
 
 .. function:: open(name, mode='r', **kwargs)
 
-   打开一个文件。内置open()函数是此函数的别名。
+   打开一个文件。内置 ``open()`` 函数是此函数的别名。
 
 类
 -------
@@ -104,3 +72,15 @@ to implement, or subclass, a stream class in pure Python.
     .. method:: getvalue()
 
        获取保存数据的底层缓冲区的当前内容。
+
+
+.. class:: StringIO(alloc_size)
+.. class:: BytesIO(alloc_size)
+
+    创建一个空 `StringIO`/ `BytesIO` 对象，预分配以容纳 *alloc_size* 字节数。这意味着写入该字节数不会导致缓冲区的重新分配，因此不会出现内存不足或导致内存碎片的情况。
+    这些构造函数是MicroPython扩展，建议仅用于特殊情况和系统级库，而不是最终用户应用程序。
+
+    .. admonition:: Difference to CPython
+        :class: attention
+
+        这些构造函数是MicroPython扩展。
