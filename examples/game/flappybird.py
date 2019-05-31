@@ -1,4 +1,4 @@
-from mpython_ import *
+from mpython import *
 from framebuf import FrameBuffer
 import framebuf
 import time, uos,urandom
