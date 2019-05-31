@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-mPython帮助文档
+mPython帮助文档测试
 ======================================
 
 欢迎您，使用掌控板！
@@ -34,7 +34,7 @@ mPython掌控板资料
 
 .. toctree::
    :maxdepth: 2
-   
+
    board/index.rst
 
 
@@ -67,14 +67,14 @@ MicroPython类库
    :maxdepth: 1
    :caption: MicroPython类库
    :hidden:
-   
+
    library/pythonStd/index.rst
    library/micropython/index.rst
 
 
 =========================================   ======================================================
  :ref:`Python标准库<pythonStd>`               兼容CPython,内含Python内建函数、常用module
- :ref:`MicroPython类库<microPythonModu>`      MicroPython的ESP32硬件控制层的模块     
+ :ref:`MicroPython类库<microPythonModu>`      MicroPython的ESP32硬件控制层的模块
 =========================================   ======================================================
 
 
@@ -94,16 +94,16 @@ mPython类库
    :maxdepth: 1
    :caption: mPython类库
    :hidden:
-   
+
    library/mPython/index.rst
-                                             
-======================================   ====================================================================  
+
+======================================   ====================================================================
  :ref:`mpython模块<mpython.py>`           提供了mPython掌控板特有拓展类。:ref:`mpython.py源码查看 <mpython_code>`
  :ref:`music模块<music.py>`               兼容micro:bit music 模块
  :ref:`urequests模块<urequests>`          从CPython移植过来的HTTP客户端的第三方库,提供各种HTTP请求方式
- :ref:`umqtt.simple模块<umqtt.simple>`    提供简单MQTT客户端功能 
- :ref:`servo模块<servo_api>`              舵机驱动 
- :ref:`gui模块<gui>`                      提供GUI类的绘制元素 
+ :ref:`umqtt.simple模块<umqtt.simple>`    提供简单MQTT客户端功能
+ :ref:`servo模块<servo_api>`              舵机驱动
+ :ref:`gui模块<gui>`                      提供GUI类的绘制元素
  :ref:`audio模块<audio>`                  音频播放录音
  :ref:`radio模块<radio>`                  无线广播
 ======================================   ====================================================================
@@ -115,14 +115,14 @@ mPython类库
    :caption: MicroPython 语法
 
    reference/index.rst
- 
+
 有关MicroPython特定语言功能的语言参考信息
 
 
 
 .. toctree::
    :hidden:
-   
+
    release.rst
 
 
