@@ -1,11 +1,12 @@
 飞行小鸟
 ======
 
-.. figure:: /images/classic/game/flappybird.gif
-  :align: center
-  :width: 600
+|
+.. raw:: html
 
-  Flappy Bird
+    <iframe width="700" height="400" src="https://showmore.com/zh/embed/0tqplij"   frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+|
 
 .. literalinclude:: /../examples/game/flappybird.py
     :caption: 完整代码

@@ -1,11 +1,12 @@
 贪吃蛇
 ========
 
-.. figure:: /images/classic/game/snake.gif
-  :align: center
-  :width: 600
+|
+.. raw:: html
 
-  贪吃蛇
+    <iframe width="700" height="400" src="https://showmore.com/zh/embed/2gpskbx"   frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+|
 
 .. literalinclude:: /../examples/game/snake.py
     :caption: 完整代码

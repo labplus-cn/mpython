@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+# Snake game for mPython
+# MIT license,Copyright (c) 2019 labplus@Tangliufeng
 
 from mpython import *
 import random, time

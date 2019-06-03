@@ -24,7 +24,6 @@ radio
 
     <iframe width="700" height="400" src="https://showmore.com/zh/embed/j9xqz8v"  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
-
 |
 
 首先我们需要 ``import radio`` ,导入无线模块。然后 ``radio.on()`` ,开启无线功能。配置无线通道 ``radio.config(channel)`` ,channel参数可设置1~13个通道。
