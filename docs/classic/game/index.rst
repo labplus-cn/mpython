@@ -8,6 +8,12 @@
 本章将用掌控板和Python编程,复刻经典黑白游戏、缅怀消逝的童年、致敬经典！
 
 
+.. figure:: /images/classic/game/掌控游戏主题.mp4
+  :align: center
+  :width: 600
+
+  Flappy Bird
+
 .. toctree::
     :maxdepth: 1
 
