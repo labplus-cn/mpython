@@ -254,7 +254,7 @@ codec-v2.3-helix
 	} content_type_t;
   
 	_http_event_handler() 加入：
-	  else if (strcmp(evt->header_value, "text/plain") == 0) player->media_stream.content_type = AUDIO_TEXT;
+	  else if (strcmp(evt->header_value, "text/plain") == 0) http_param_instance->content_type = AUDIO_TEXT;
 	修改http_request_task(),实现对文本和音频的分别处理。
 
 2019.03.20
@@ -292,7 +292,7 @@ codec-v2.5-helix
 		esp_err_t _http_event_handler(esp_http_client_event_t *evt)
 		{
 			...
-				else if (strcmp(evt->header_value, "text/plain") == 0) player->media_stream.content_type = AUDIO_TEXT;
+				else if (strcmp(evt->header_value, "text/plain") == 0) http_param_instance->content_type = AUDIO_TEXT;
 			...
 		}
 	
@@ -372,3 +372,14 @@ github分支提交
 4. 更改用户接口层函数名。
 5. 完善出错处理。
 6. 把对mp3tag处理从http_client移到mp3解码任务,使http_client只处理跟网络相关事务。
+
+2019.05.15
+添加录音模块
+   增加audio_recorder.h/c源文件
+	 增加以下python层面指令：
+	 recorder_init
+	 recorder_deinit
+	 soundness_db
+	 record
+	 xunfei_iat_config
+	 xunfie_iat

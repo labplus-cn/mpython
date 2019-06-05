@@ -39,23 +39,25 @@ void audio_player_begin(void)
     /* 4. 创建播放任务，网络或本地 获取音频数据，数据写入ringbuf*/
     if(strstr(player_instance->url, "http") != NULL){   //web play
         player_instance->file_type = WEB_TYPE;
+        http_param_t *http_param = get_http_param_handle();                                              
+        http_param->url = player_instance->url;       
         xTaskCreate(http_request_task, "http_request_task", 3072, player_instance, ESP_TASK_PRIO_MIN + 1, &http_client_task_handel );
         //http_request(); 
-        ESP_LOGE(TAG, "4. Create http_request task, RAM left: %d", esp_get_free_heap_size());
+        // ESP_LOGE(TAG, "4. Create http_request task, RAM left: %d", esp_get_free_heap_size());
     }
     else { // local play
         player_instance->file_type = LOCAL_TYPE;
         local_file_read(player_instance);
         // xTaskCreate(local_file_read_task, "local_file_read_task", 8192, player_instance, ESP_TASK_PRIO_MIN + 1, NULL );
-        // ESP_LOGE(TAG, "4. Create local file read task, RAM left: %d", esp_get_free_heap_size());
+        //ESP_LOGE(TAG, "4. Create local file read task, RAM left: %d", esp_get_free_heap_size());
     }
 }
 
 int create_decode_task(player_t *player)
 {
     int err = 0;
-
-    switch(player->media_stream.content_type){ //创建不同的解码任务
+    http_param_t *http_param = get_http_param_handle();
+    switch(http_param->content_type){ //创建不同的解码任务
         case OCTET_STREAM:
             err = -1;
         break;
@@ -67,7 +69,7 @@ int create_decode_task(player_t *player)
         break;
         case AUDIO_MPEG:
             xTaskCreate(mp3_decoder_task, "mp3_decoder_task", HELIX_DECODER_TASK_STACK_DEPTH, player, ESP_TASK_PRIO_MIN + 1, &mp3_decode_task_handel );
-            ESP_LOGE(TAG, "4. mp3 decoder task builded, RAM left: %d", esp_get_free_heap_size()); 
+            // ESP_LOGE(TAG, "4. mp3 decoder task builded, RAM left: %d", esp_get_free_heap_size()); 
         break;
         default:
             err = -1;
@@ -78,18 +80,27 @@ int create_decode_task(player_t *player)
 
 void audio_player_destroy()
 {
-    //controls_destroy(config);
-    if(player_instance->buf_handle != NULL)
-        vRingbufferDelete(player_instance->buf_handle);
-    //vSemaphoreDelete(player_instance->ringbuf_sem);
-    // vEventGroupDelete(player_instance->ringbuf_eventGroup);
-    free(player_instance);
-    player_instance = NULL;
+    if(player_instance != NULL)
+    {
+        if(player_instance->buf_handle != NULL)
+        {
+            vRingbufferDelete(player_instance->buf_handle);
+            //vSemaphoreDelete(player_instance->ringbuf_sem);
+            // vEventGroupDelete(player_instance->ringbuf_eventGroup);
+        }
+        free(player_instance);
+        player_instance = NULL;
+    }
+
+    http_param_handle_destroy();
     if(http_head[1].value != NULL)
+    {
         free((char *)http_head[1].value);
+        http_head[1].value = NULL;
+    }
     renderer_destroy();
 
-    ESP_LOGE(TAG, "RAM left %d", esp_get_free_heap_size());
+    // ESP_LOGE(TAG, "RAM left %d", esp_get_free_heap_size());
 }
 
 void init_palyer_handle(player_t *Player)
@@ -113,6 +124,11 @@ void audio_player_stop()
     if( player_instance->player_status == RUNNING ||  player_instance->player_status == PAUSED){
         renderer_stop();
         player_instance->player_status = STOPPED;
+        while(1){
+            vTaskDelay(50 / portTICK_PERIOD_MS);
+            if(player_instance->player_status == INITIALIZED)
+                break;
+        }
     }
 }
 

@@ -21,12 +21,18 @@
 
 #include "esp_http_client.h"
 #include "http_client.h"
+#include "audio_recorder.h"
+#include "local_file.h"
+#include "wav_head.h"
+#include "driver/i2s.h"
+#include "audio_renderer.h"
 
 #define BODY_READ_LEN 64
 
 static const char *TAG = "HTTP_CLIENT";
 extern HTTP_HEAD_VAL http_head[6];
 extern TaskHandle_t mp3_decode_task_handel;
+static http_param_t *http_param_instance = NULL;
 
 /* Root cert for howsmyssl.com, taken from howsmyssl_com_root_cert.pem
 
@@ -68,7 +74,7 @@ KOqkqm57TH2H3eDJAkSnh6/DNFu0Qg== \
 
 static esp_err_t _http_event_handler(esp_http_client_event_t *evt)
 {
-    player_t *player = get_player_handle();
+    // player_t *player = get_player_handle();
 
     switch(evt->event_id) {
         case HTTP_EVENT_ERROR:
@@ -85,14 +91,14 @@ static esp_err_t _http_event_handler(esp_http_client_event_t *evt)
             if(strcmp(evt->header_key, "Content-Type") == 0) 
             {
                 // ESP_LOGE(TAG, "HTTP_EVENT_ON_HEADER, key=%s, value=%s", evt->header_key, evt->header_value);
-                if (strcmp(evt->header_value, "application/octet-stream") == 0) player->media_stream.content_type = OCTET_STREAM;
-                else if (strcmp(evt->header_value, "audio/aac") == 0) player->media_stream.content_type = AUDIO_AAC;
-                else if (strcmp(evt->header_value, "audio/mp4") == 0) player->media_stream.content_type = AUDIO_MP4;
-                else if (strcmp(evt->header_value, "audio/x-m4a") == 0) player->media_stream.content_type = AUDIO_MP4;
-                else if (strcmp(evt->header_value, "audio/mpeg") == 0) player->media_stream.content_type = AUDIO_MPEG;
-                else if (strcmp(evt->header_value, "text/plain") == 0) player->media_stream.content_type = AUDIO_TEXT;
-                else player->media_stream.content_type = MIME_UNKNOWN;
-                ESP_LOGE(TAG, "media type: %x", player->media_stream.content_type);
+                if (strcmp(evt->header_value, "application/octet-stream") == 0) http_param_instance->content_type = AUDIO_WAV;
+                else if (strcmp(evt->header_value, "audio/aac") == 0) http_param_instance->content_type = AUDIO_AAC;
+                else if (strcmp(evt->header_value, "audio/mp4") == 0) http_param_instance->content_type = AUDIO_MP4;
+                else if (strcmp(evt->header_value, "audio/x-m4a") == 0) http_param_instance->content_type = AUDIO_MP4;
+                else if (strcmp(evt->header_value, "audio/mpeg") == 0) http_param_instance->content_type = AUDIO_MPEG;
+                else if (strcmp(evt->header_value, "text/plain") == 0) http_param_instance->content_type = AUDIO_TEXT;
+                else http_param_instance->content_type = MIME_UNKNOWN;
+                // ESP_LOGE(TAG, "media type: %x", http_param_instance->content_type);
             }
             break;
         case HTTP_EVENT_ON_DATA:
@@ -119,31 +125,32 @@ static int http_request(esp_http_client_handle_t client, int *content_length)
     player_t *player = get_player_handle();
     if(client == NULL)
     {
-        ESP_LOGE(TAG, "client is Null.");
+        // ESP_LOGE(TAG, "client is Null.");
          return -1;
     }
 
-    if(player->http_head != NULL){
+    if(http_param_instance->http_head != NULL){
         for(int i = 0; i < 6; i++)
-            esp_http_client_set_header(client, player->http_head[i].key, player->http_head[i].value);
+            esp_http_client_set_header(client, http_param_instance->http_head[i].key, http_param_instance->http_head[i].value);
         free((char *)http_head[3].value);
         free((char *)http_head[0].value);
+        free((char *)http_head[1].value);
     }
 
-    if ((err = esp_http_client_open(client, player->http_body_len)) != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to open HTTP connection");
+    if ((err = esp_http_client_open(client, http_param_instance->http_body_len)) != ESP_OK) {
+        // ESP_LOGE(TAG, "Failed to open HTTP connection");
         return -1;
     }
 
-    if(player->http_body != NULL && player->http_body_len > 0){
-        esp_http_client_write(client, player->http_body, player->http_body_len);
-        free(player->http_body); 
+    if(http_param_instance->http_body != NULL && http_param_instance->http_body_len > 0){
+        esp_http_client_write(client, http_param_instance->http_body, http_param_instance->http_body_len);
+        free(http_param_instance->http_body); 
     }
 
     *content_length =  esp_http_client_fetch_headers(client);
     if(*content_length <= 0){
         player->media_stream.eof = true;
-        ESP_LOGE(TAG, "Failed to get content. content_length = %d", *content_length);
+        // ESP_LOGE(TAG, "Failed to get content. content_length = %d", *content_length);
         return -1;
     }
 
@@ -182,7 +189,7 @@ static int http_get_data(esp_http_client_handle_t client, int *total_read_len, i
                 timeoutCnt++;
                 // ESP_LOGE(TAG, "timeoutCnt = %d", timeoutCnt);  
                 if(timeoutCnt > 500){
-                    ESP_LOGE(TAG, "Http read data timeoutCnt.");
+                    // ESP_LOGE(TAG, "Http read data timeoutCnt.");
                     return -1;
                 }
                 vTaskDelay(50 / portTICK_PERIOD_MS);
@@ -208,15 +215,15 @@ static int http_get_data(esp_http_client_handle_t client, int *total_read_len, i
     return 0;
 }
 
-static int get_conten_type(esp_http_client_handle_t client, int content_length)
+static int get_content_type(esp_http_client_handle_t client, int content_length)
 {
     int total_read_len = 0;
     int read_len;
     uint8_t buffer[BODY_READ_LEN];
-    player_t *player = get_player_handle();
+    // player_t *player = get_player_handle();
 
-    if(player->media_stream.content_type == AUDIO_TEXT){
-        ESP_LOGE(TAG,"Not audio stream!");
+    if(http_param_instance->content_type == AUDIO_TEXT){
+        // ESP_LOGE(TAG,"Not audio stream!");
         while(total_read_len < content_length){
             read_len = esp_http_client_read(client, (char *)buffer, BODY_READ_LEN); 
             total_read_len += read_len;
@@ -234,11 +241,16 @@ void http_request_task(void *pvParameters)
     player_t *player = pvParameters;
     esp_http_client_handle_t client = NULL;
     int http_err = 0;
+    int ringBufRemainBytes = 0;
+    uint8_t *temp = NULL;
+    size_t len;
+    short *output= NULL; 
+    size_t write_bytes;
 
     esp_http_client_config_t config = {
-        .url = player->url, //"http://httpbin.org/get", //
+        .url = http_param_instance->url, //"http://httpbin.org/get", //
         .event_handler = _http_event_handler,
-        .method = player->http_method,
+        .method = http_param_instance->http_method,
     };
 
     if(strstr(player->url, "https") != NULL)
@@ -256,7 +268,7 @@ void http_request_task(void *pvParameters)
         goto abort;
     }
 
-    if(get_conten_type(client,  content_length) != 0)
+    if(get_content_type(client,  content_length) != 0)
     {
         http_err = -1;
         goto abort;
@@ -269,27 +281,85 @@ void http_request_task(void *pvParameters)
     }
 
     audio_player_start();
-    if(create_decode_task(player) != 0)
+    renderer_config_t *renderer = renderer_get();
+    if(http_param_instance->content_type == AUDIO_WAV)
     {
-        http_err = -1;
-        goto abort;
+        wav_info_t *wav_info = calloc(1, sizeof(wav_info_t));
+
+        ringBufRemainBytes = RINGBUF_SIZE - xRingbufferGetCurFreeSize(player->buf_handle); //
+        if(ringBufRemainBytes >= 36)
+        {
+            temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 500 / portTICK_PERIOD_MS, 36);
+            if(temp != NULL)
+            {
+                // ESP_LOGE(TAG, "wav file? : %x %x %x %x", temp[0], temp[1],temp[2],temp[3]);
+                if (strstr((char *)temp, "WAVE") != NULL) //WAV file。
+                { 
+                    wav_head_parser((const uint8_t *)temp, wav_info);
+                    vRingbufferReturnItem(player->buf_handle, (void *)temp);
+                    // ESP_LOGE(TAG, "sampleRate: %d, bits: %d, channel: %d", wav_info->sampleRate, wav_info->bits, wav_info->channels);
+                    i2s_set_clk(renderer->i2s_num, wav_info->sampleRate, wav_info->bits, wav_info->channels);
+                    if(wav_info->fmtSubchunckSize == 16)
+                        temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 500 / portTICK_PERIOD_MS, 8);
+                    else 
+                        temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 500 / portTICK_PERIOD_MS, 10);
+
+                    free(wav_info);
+                    vRingbufferReturnItem(player->buf_handle, (void *)temp);
+
+                    output = calloc(2048, sizeof(uint8_t)); 
+                } 
+                else
+                {
+                    http_err = -1;
+                    goto abort;
+                }      
+            }
+        } 
+    }else if(http_param_instance->content_type == AUDIO_MPEG)
+    {
+        if(create_decode_task(player) != 0)
+        {
+            http_err = -1;
+            goto abort;
+        }
     }
 
     // ESP_LOGE(TAG, "3.1. http request run, RAM left: %d, total_read_len = %d", esp_get_free_heap_size(), total_read_len);
-    /* 3种情况退出循环：1 长时间取不到数据 2 数据读完 3 收到指令 */ 
+    /* 3种情况退出循环：1 长时间取不到数据 2 数据读完 3 收到指令 */
+    int err; 
     while(total_read_len < content_length) 
     {  
         if(player->player_status == RUNNING){
-            if(http_get_data(client, &total_read_len, content_length) == -1){
+            err = http_get_data(client, &total_read_len, content_length);
+            if(http_param_instance->content_type == AUDIO_WAV)
+            {
+                ringBufRemainBytes = RINGBUF_SIZE - xRingbufferGetCurFreeSize(player->buf_handle);
+                if(ringBufRemainBytes > 2048){
+                    temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 500 / portTICK_PERIOD_MS, 2048);   
+                }else{
+                    temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 500 / portTICK_PERIOD_MS, ringBufRemainBytes);   
+                }
+                memcpy((uint8_t *)output, temp, len);
+                vRingbufferReturnItem(player->buf_handle, (void *)temp);
+
+                for (int i = 0; i < len/2; i++)
+                {
+                    output[i] = (short)((output[i] + 32768) * player->volume);
+                    output[i] &= 0xff00;
+                }
+                i2s_write(renderer->i2s_num, output, len, &write_bytes, 1000 / portTICK_RATE_MS); //portMAX_DELAY                
+            }
+            if(err == -1){
                 player->player_status = STOPPED;
                 break;
             }  
-            vTaskDelay(50 / portTICK_PERIOD_MS);
-        }
-        else if(player->player_status == STOPPED)
+        }else if(player->player_status == STOPPED){
             break;
-        else if(player->player_status == PAUSED)
+        }else if(player->player_status == PAUSED){
             vTaskSuspend( NULL );
+        }
+        vTaskDelay(50 / portTICK_PERIOD_MS);
     }
 
     //ESP_LOGE(TAG, "total_read_len = %d", total_read_len);
@@ -303,16 +373,99 @@ void http_request_task(void *pvParameters)
         esp_http_client_cleanup(client);
     }
     //audio_player_destroy();
-    ESP_LOGE(TAG, "5. http_err: %d", http_err); 
+    // ESP_LOGE(TAG, "5. http_err: %d", http_err); 
     // ESP_LOGE(TAG, "http request stack: %d\n", uxTaskGetStackHighWaterMark(NULL));
-    ESP_LOGE(TAG, "5. http request task will delete, RAM left: %d", esp_get_free_heap_size()); 
-    if(http_err == -1){
+    // ESP_LOGE(TAG, "5. http request task will delete, RAM left: %d", esp_get_free_heap_size()); 
+    if((http_err == -1) || (http_param_instance->content_type == AUDIO_WAV)){
+        if(output != NULL)
+            free(output);
+        renderer_zero_dma_buffer();
+        renderer_stop();
+        player->media_stream.eof = true;
         player->player_status = INITIALIZED;
         vTaskDelete(NULL);
     }
     else{
-        ESP_LOGE(TAG, "Http tast suppended."); 
+        // ESP_LOGE(TAG, "Http tast suppended."); 
         vTaskSuspend( NULL );
     }
 }
 
+int http_request_iat(void *data)
+{
+    recorder_t *recorder = data;
+    esp_http_client_handle_t client = NULL;
+
+    esp_http_client_config_t config = {
+        .url = http_param_instance->url, 
+        .event_handler = _http_event_handler,
+        .method = http_param_instance->http_method,
+    };
+
+    if((client = esp_http_client_init(&config)) == NULL){
+        return -1;
+    }
+
+    esp_err_t err;
+    if(http_param_instance->http_head != NULL){
+        for(int i = 0; i < 6; i++)
+            esp_http_client_set_header(client, http_param_instance->http_head[i].key, http_param_instance->http_head[i].value);
+        // esp_http_client_set_header(client, http_param_instance->http_head[5].key, http_param_instance->http_head[5].value);
+        //esp_http_client_set_header(client, "Transfer-Encoding", "chunked");
+        free((char *)http_head[3].value);
+        free((char *)http_head[0].value);
+    }
+
+    if ((err = esp_http_client_open(client, recorder->file_size)) != ESP_OK) { //http_param_instance->http_body_len
+        // ESP_LOGE(TAG, "Failed to open HTTP connection");
+        return -1;
+    }
+    mp_obj_t f = file_open(recorder->file_name, "rb");
+    char *read_buff = calloc(1023, sizeof(char));
+    int read_bytes;
+    int read_err = 0;
+    while(recorder->file_size > 0){
+        read_err = file_read(f, &read_bytes, (uint8_t *)read_buff, 1023);
+        esp_http_client_write(client, read_buff, read_bytes);
+        recorder->file_size -= read_bytes;
+        // ESP_LOGE(TAG, "%s", read_buff);
+        if(read_err == -1)
+            break;
+    }
+    file_close(f);
+    free(read_buff);
+    int content_length =  esp_http_client_fetch_headers(client);
+    http_param_instance->http_read_buffer = calloc(500, sizeof(char));
+    //  ESP_LOGE(TAG, "content_len1: %d, content_type: %d.", content_length, http_param_instance->content_type);
+    if((http_param_instance->content_type == AUDIO_TEXT) && (content_length > 0))
+    {
+        // ESP_LOGE(TAG, "content_len: %d, content_type: %d.", content_length, http_param_instance->content_type);
+        esp_http_client_read(client, (char *)http_param_instance->http_read_buffer, content_length); 
+        printf("%s", (char *)http_param_instance->http_read_buffer);
+        // ESP_LOGE(TAG, "???: %s.", http_param_instance->http_read_buffer);
+    } 
+
+    esp_http_client_close(client);
+    esp_http_client_cleanup(client);
+
+    return 0;
+}
+
+void init_http_param_handle(http_param_t *http_param)
+{
+    http_param_instance = http_param;
+}
+
+http_param_t *get_http_param_handle()
+{
+    return http_param_instance;
+}
+
+void http_param_handle_destroy()
+{
+    if(http_param_instance != NULL)
+    {
+        free(http_param_instance);
+        http_param_instance = NULL;
+    }
+}

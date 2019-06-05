@@ -78,10 +78,11 @@ typedef struct {
     uint16_t bits;                   // bit length 16bit,24bit,32bit
 
     uint32_t dataShift;             // Data shift.
+    uint32_t fmtSubchunckSize;
 } __attribute__((packed)) wav_info_t;
 
-esp_err_t wav_head_parser(const uint8_t *inData, int len, wav_info_t *info);
-void wav_head_init(wav_header_t *wavhead, int sample_ate, int bits, int channels);
+esp_err_t wav_head_parser(const uint8_t *inData, wav_info_t *info);
+void wav_head_init(wav_header_t *wavhead, int sample_ate, int bits, int channels, uint32_t dataSize);
 void wav_head_size(wav_header_t *wavhead, uint32_t dataSize);
 
 #ifdef __cplusplus
