@@ -503,16 +503,7 @@ class MPythonPin():
     def read_analog(self):
         if not self.mode == PinMode.ANALOG:
             raise TypeError('the pin is not in ANALOG mode')
-        # calibration esp32 ADC 
-        calibration_val = 0
-        val = int(sum([self.adc.read() for i in range(50)]) / 50)
-        if 0 < val <= 2855:
-            calibration_val = 1.023 * val + 183.6
-        if 2855 < val <= 3720:
-            calibration_val = 0.9769 * val + 181
-        if 3720 < val <= 4095:
-            calibration_val = 4095 - (4095 - val) * 0.2
-        return calibration_val
+        return self.adc.read()
 
     def write_analog(self, duty, freq=1000):
         if not self.mode == PinMode.PWM:
