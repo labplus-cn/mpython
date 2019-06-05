@@ -108,6 +108,10 @@ FrameBuffer类提供了一个像素缓冲区，可以使用像素，线条，矩
 
     红绿蓝（16bit，5 + 6 + 5）颜色格式
 
+.. data:: framebuf.GS2_HMSB
+
+    灰度（2位bit）颜色格式
+
 .. data:: framebuf.GS4_HMSB
 
     灰度（4位bit）颜色格式
