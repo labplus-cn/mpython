@@ -111,6 +111,14 @@
 
    设置此方法返回的值时 ``None``.
 
+.. method:: Pin.on()
+
+   设置引脚为高电平
+
+.. method:: Pin.off()
+
+   设置引脚为低电平
+
 .. _Pin.irq:
 
 .. method:: Pin.irq(handler=None, trigger=(Pin.IRQ_FALLING | Pin.IRQ_RISING))

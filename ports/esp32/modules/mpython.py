@@ -16,6 +16,7 @@ import ustruct, array
 from neopixel import NeoPixel
 from esp import dht_readinto
 from time import sleep_ms, sleep_us,sleep
+from framebuf import FrameBuffer
 
 i2c = I2C(scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
 
@@ -42,7 +43,7 @@ class Font(object):
             (uni - self.first_char) * 6
         buffer = bytearray(6)
         esp.flash_read(char_info_address, buffer)
-        ptr_char_data, len = ustruct.unpack('IH', buffer)   
+        ptr_char_data, len = ustruct.unpack('IH', buffer)
         if (ptr_char_data) == 0 or (len == 0):
             return None
         buffer = bytearray(len)
@@ -95,7 +96,7 @@ class OLED(SSD1106_I2C):
                                 c = 1
                             if mode == TextMode.rev:
                                 c = 0
-                            if mode == TextMode.xor:                               
+                            if mode == TextMode.xor:
                                 c = self.buffer[page * 128 + px] & bit
                                 if c != 0:
                                     c = 0
@@ -116,33 +117,33 @@ class OLED(SSD1106_I2C):
             x = x + width + 1
 
     def circle(self, x0, y0, radius , c):
-            # Circle drawing function.  Will draw a single pixel wide circle with
-            # center at x0, y0 and the specified radius.
-            f = 1 - radius
-            ddF_x = 1
-            ddF_y = -2 * radius
-            x = 0
-            y = radius
-            super().pixel(x0, y0 + radius, c)
-            super().pixel(x0, y0 - radius, c)
-            super().pixel(x0 + radius, y0, c)
-            super().pixel(x0 - radius, y0, c)
-            while x < y:
-                if f >= 0:
-                    y -= 1
-                    ddF_y += 2
-                    f += ddF_y
-                x += 1
-                ddF_x += 2
-                f += ddF_x
-                super().pixel(x0 + x, y0 + y, c)
-                super().pixel(x0 - x, y0 + y, c)
-                super().pixel(x0 + x, y0 - y, c)
-                super().pixel(x0 - x, y0 - y, c)
-                super().pixel(x0 + y, y0 + x, c)
-                super().pixel(x0 - y, y0 + x, c)
-                super().pixel(x0 + y, y0 - x, c)
-                super().pixel(x0 - y, y0 - x, c)
+        # Circle drawing function.  Will draw a single pixel wide circle with
+        # center at x0, y0 and the specified radius.
+        f = 1 - radius
+        ddF_x = 1
+        ddF_y = -2 * radius
+        x = 0
+        y = radius
+        super().pixel(x0, y0 + radius, c)
+        super().pixel(x0, y0 - radius, c)
+        super().pixel(x0 + radius, y0, c)
+        super().pixel(x0 - radius, y0, c)
+        while x < y:
+            if f >= 0:
+                y -= 1
+                ddF_y += 2
+                f += ddF_y
+            x += 1
+            ddF_x += 2
+            f += ddF_x
+            super().pixel(x0 + x, y0 + y, c)
+            super().pixel(x0 - x, y0 + y, c)
+            super().pixel(x0 + x, y0 - y, c)
+            super().pixel(x0 - x, y0 - y, c)
+            super().pixel(x0 + y, y0 + x, c)
+            super().pixel(x0 - y, y0 + x, c)
+            super().pixel(x0 + y, y0 - x, c)
+            super().pixel(x0 - y, y0 - x, c)
 
 
     def fill_circle(self, x0, y0, radius, c):
@@ -166,14 +167,14 @@ class OLED(SSD1106_I2C):
             super().vline(x0 + y, y0 - x, 2*x + 1, c)
             super().vline(x0 - x, y0 - y, 2*y + 1, c)
             super().vline(x0 - y, y0 - x, 2*x + 1, c)
-            
+
 
     def triangle(self, x0, y0, x1, y1, x2, y2, c):
-            # Triangle drawing function.  Will draw a single pixel wide triangle
-            # around the points (x0, y0), (x1, y1), and (x2, y2).
-            super().line(x0, y0, x1, y1, c)
-            super().line(x1, y1, x2, y2, c)
-            super().line(x2, y2, x0, y0, c)
+        # Triangle drawing function.  Will draw a single pixel wide triangle
+        # around the points (x0, y0), (x1, y1), and (x2, y2).
+        super().line(x0, y0, x1, y1, c)
+        super().line(x1, y1, x2, y2, c)
+        super().line(x2, y2, x0, y0, c)
 
 
     def fill_triangle(self, x0, y0, x1, y1, x2, y2, c):
@@ -244,50 +245,52 @@ class OLED(SSD1106_I2C):
                 a, b = b, a
             super().hline(a, y, b-a+1, c)
             y += 1
-            
 
-    def Bitmap(self, x, y, bitmap, w, h,c):
-        byteWidth = int((w + 7) / 8)
-        for j in range(h):
-            for i in range(w):
-                if bitmap[int(j * byteWidth + i / 8)] & (128 >> (i & 7)):
-                    super().pixel(x+i, y+j, c)
+
+    def Bitmap(self, x, y, bitmap, w, h, c=1):
+        fb = FrameBuffer(bitmap, w, h, 3)          # modification draw way,now use framebuf 
+        super().blit(fb, x, y)
+        # byteWidth = int((w + 7) / 8)
+        # for j in range(h):
+        #     for i in range(w):
+        #         if bitmap[int(j * byteWidth + i / 8)] & (128 >> (i & 7)):
+        #             super().pixel(x+i, y+j, c)
 
 
     def drawCircleHelper(self, x0, y0, r, cornername, c):
-            f = 1 - r
-            ddF_x = 1
-            ddF_y = -2 * r 
-            x = 0
-            y = r
-            while x < y:
-                if (f >= 0):
-                    # y--   y -= 1 below
-                    y -= 1
-                    ddF_y += 2
-                    f += ddF_y      
-                ddF_x += 2
-                f += ddF_x               
-                if (cornername & 0x4):
-                    super().pixel(x0 + x, y0 + y, c)
-                    super().pixel(x0 + y, y0 + x, c)              
-                if (cornername & 0x2):
-                    super().pixel(x0 + x, y0 - y, c)
-                    super().pixel(x0 + y, y0 - x, c)          
-                if (cornername & 0x8):
-                    super().pixel(x0 - y, y0 + x, c)
-                    super().pixel(x0 - x, y0 + y, c)                
-                if (cornername & 0x1):
-                    super().pixel(x0 - y, y0 - x, c)
-                    super().pixel(x0 - x, y0 - y, c)
-                x += 1
+        f = 1 - r
+        ddF_x = 1
+        ddF_y = -2 * r
+        x = 0
+        y = r
+        while x < y:
+            if (f >= 0):
+                # y--   y -= 1 below
+                y -= 1
+                ddF_y += 2
+                f += ddF_y
+            ddF_x += 2
+            f += ddF_x
+            if (cornername & 0x4):
+                super().pixel(x0 + x, y0 + y, c)
+                super().pixel(x0 + y, y0 + x, c)
+            if (cornername & 0x2):
+                super().pixel(x0 + x, y0 - y, c)
+                super().pixel(x0 + y, y0 - x, c)
+            if (cornername & 0x8):
+                super().pixel(x0 - y, y0 + x, c)
+                super().pixel(x0 - x, y0 + y, c)
+            if (cornername & 0x1):
+                super().pixel(x0 - y, y0 - x, c)
+                super().pixel(x0 - x, y0 - y, c)
+            x += 1
 
     def RoundRect( self, x, y, w, h, r, c):
         self.hline(x + r , y , w - 2 * r , c)
         self.hline(x + r , y + h - 1, w - 2 * r , c)
         self.vline(x, y + r, h - 2 * r , c)
         self.vline(x + w - 1, y + r , h - 2 * r , c)
-        
+
         self.drawCircleHelper(x + r  , y + r , r , 1, c)
         self.drawCircleHelper(x + w - r - 1, y + r  , r , 2, c)
         self.drawCircleHelper(x + w - r - 1, y + h - r - 1, r , 4, c)
@@ -346,23 +349,23 @@ class BME280(object):
         self.addr = 119
         # The “ctrl_hum” register sets the humidity data acquisition options of the device
         # 0x01 = [2:0]oversampling ×1
-        i2c.writeto(self.addr, b'\xF2\x01') 
-        # The “ctrl_meas” register sets the pressure and temperature data acquisition options of the device. 
+        i2c.writeto(self.addr, b'\xF2\x01')
+        # The “ctrl_meas” register sets the pressure and temperature data acquisition options of the device.
         # The register needs to be written after changing “ctrl_hum” for the changes to become effective.
         # 0x27 = [7:5]Pressure oversampling ×1 | [4:2]Temperature oversampling ×4 | [1:0]Normal mode
         i2c.writeto(self.addr, b'\xF4\x27')
         # The “config” register sets the rate, filter and interface options of the device. Writes to the “config”
         # register in normal mode may be ignored. In sleep mode writes are not ignored.
         i2c.writeto(self.addr, b'\xF5\x00')
-        
+
         i2c.writeto(self.addr, b'\x88', False)
         bytes = i2c.readfrom(self.addr, 6)
         self.dig_T = ustruct.unpack('Hhh', bytes)
-        
+
         i2c.writeto(self.addr, b'\x8E', False)
         bytes = i2c.readfrom(self.addr, 18)
         self.dig_P = ustruct.unpack('Hhhhhhhhh', bytes)
-        
+
         i2c.writeto(self.addr, b'\xA1', False)
         self.dig_H = array.array('h', [0, 0, 0, 0, 0, 0])
         self.dig_H[0] = i2c.readfrom(self.addr, 1)[0]
@@ -373,7 +376,7 @@ class BME280(object):
         self.dig_H[3] = (buff[3] << 4) | (buff[4] & 0x0F)
         self.dig_H[4] = (buff[5] << 4) | (buff[4] >> 4 & 0x0F)
         self.dig_H[5] = buff[6]
-   
+
     def temperature(self):
         retry = 0
         if (retry < 5):
@@ -382,20 +385,20 @@ class BME280(object):
                 buff = i2c.readfrom(self.addr, 3)
                 T = (((buff[0] << 8) | buff[1]) << 4) | (buff[2] >> 4 & 0x0F)
                 c1 = (T / 16384.0 - self.dig_T[0] / 1024.0) * self.dig_T[1]
-                c2 = ((T / 131072.0 - self.dig_T[0] / 8192.0) * (T / 131072.0 - self.dig_T[0] / 8192.0)) * self.dig_T[2]    
+                c2 = ((T / 131072.0 - self.dig_T[0] / 8192.0) * (T / 131072.0 - self.dig_T[0] / 8192.0)) * self.dig_T[2]
                 self.tFine = c1 + c2
                 return self.tFine / 5120.0
             except:
                 retry = retry + 1
         else:
             raise Exception("i2c read/write error!")
-    
+
     def pressure(self):
         retry = 0
         if (retry < 5):
             try:
                 i2c.writeto(self.addr, b'\xF7', False)
-                buff = i2c.readfrom(self.addr, 3)  
+                buff = i2c.readfrom(self.addr, 3)
                 P = (((buff[0] << 8) | buff[1]) << 4) | (buff[2] >> 4 & 0x0F)
                 c1 = self.tFine / 2.0 - 64000.0
                 c2 = c1 * c1 * self.dig_P[5] / 32768.0
@@ -415,12 +418,12 @@ class BME280(object):
                 retry = retry + 1
         else:
             raise Exception("i2c read/write error!")
-    
+
     def humidity(self):
         retry = 0
         if (retry < 5):
             try:
-                self.temperature()   
+                self.temperature()
                 i2c.writeto(self.addr, b'\xFD', False)
                 buff = i2c.readfrom(self.addr, 2)
                 H = buff[0] << 8 | buff[1]
@@ -445,12 +448,12 @@ class PinMode(object):
     IN = 1
     OUT = 2
     PWM = 3
-    ANALOG = 4 
+    ANALOG = 4
 
-pins_remap_esp32 = (33, 32, 35, 34, 39, 0, 16, 17, 26, 25, 
+pins_remap_esp32 = (33, 32, 35, 34, 39, 0, 16, 17, 26, 25,
                     36,  2, -1, 18, 19, 21, 5, -1, -1, 22, 23,
                     -1, -1,
-                    27, 14, 12, 13, 15, 4)   
+                    27, 14, 12, 13, 15, 4)
 class MPythonPin():
     def __init__(self, pin, mode=PinMode.IN,pull=None):
         if mode not in [PinMode.IN, PinMode.OUT, PinMode.PWM, PinMode.ANALOG]:
@@ -500,11 +503,20 @@ class MPythonPin():
     def read_analog(self):
         if not self.mode == PinMode.ANALOG:
             raise TypeError('the pin is not in ANALOG mode')
-        return self.adc.read()
+        # calibration esp32 ADC 
+        calibration_val = 0
+        val = int(sum([self.adc.read() for i in range(50)]) / 50)
+        if 0 < val <= 2855:
+            calibration_val = 1.023 * val + 183.6
+        if 2855 < val <= 3720:
+            calibration_val = 0.9769 * val + 181
+        if 3720 < val <= 4095:
+            calibration_val = 4095 - (4095 - val) * 0.2
+        return calibration_val
 
     def write_analog(self, duty, freq=1000):
         if not self.mode == PinMode.PWM:
-            raise TypeError('the pin is not in PWM mode')        
+            raise TypeError('the pin is not in PWM mode')
         self.pwm.freq(freq)
         self.pwm.duty(duty)
 

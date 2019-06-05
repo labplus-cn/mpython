@@ -1,6 +1,6 @@
 from mpython import *
-import framebuf
 
+#图片bitmap数组
 bmp = bytearray([\
 0X00,0X00,0X00,0X00,0X03,0XC7,0XFC,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,
 0X00,0X00,0X00,0X00,0X1E,0XFF,0XFC,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,
@@ -68,9 +68,5 @@ bmp = bytearray([\
 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,
 ])
 
-
-
-fb1 = framebuf.FrameBuffer(bmp,128,64, framebuf.MONO_HLSB)
-#oled.invert(1)
-oled.blit(fb1,0,0)
-oled.show()
+oled.Bitmap(0, 0, bmp, 128, 64, 1)
+oled.show()         #刷新显示屏
