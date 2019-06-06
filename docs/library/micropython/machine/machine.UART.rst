@@ -13,7 +13,7 @@ UART实现标准UART / USART双工串行通信协议。在物理层面，它由2
 
 .. class:: UART(id,baudrate, bits, parity, stop, tx, rx, rts, cts,timeout)
 
-   构造UART对象
+    构造UART对象
 
     - ``id`` - 串口号:1、2  
     - ``baudrate`` - 波特率
@@ -24,11 +24,18 @@ UART实现标准UART / USART双工串行通信协议。在物理层面，它由2
     - ``timeout``- 超时时间（单位：毫秒） < timeout ≤ 0x7FFF FFFF (十进制：0 < timeout ≤ 2147483647)
 
 
-.. Attention:: 
+    .. Attention:: 
 
-    * ``UART(id=0)`` 用于REPL。
-    * 所有引脚均可以作为串口的输入RX，除 ``P2``、``P3`` 、``P4`` 、``P10`` 只能作为输入，其余所有的引脚理论上都可以作为输出TX。
-    * ``GPIO 1`` 、``GPIO 3`` 用于掌控板的USB串口，在初始化UART定义 ``tx`` ，``rx`` 引脚一般不使用，除非你要用到掌控板的USB接口作为串口输出。
+        * ``UART(id=0)`` 用于REPL。
+        * 所有引脚均可以作为串口的输入RX，除 ``P2``、``P3`` 、``P4`` 、``P10`` 只能作为输入，其余所有的引脚理论上都可以作为输出TX。
+        * ``GPIO 1`` 、``GPIO 3`` 用于掌控板的USB串口，在初始化UART定义 ``tx`` ，``rx`` 引脚一般不使用，除非你要用到掌控板的USB接口作为串口输出。
+
+    ::
+    
+        from machine import UART
+        from machine import Pin
+
+        uart = UART(1, baudrate=115200, rx=Pin.P15, tx=Pin.P16, timeout=10)
 
 方法
 -------
@@ -79,4 +86,6 @@ UART实现标准UART / USART双工串行通信协议。在物理层面，它由2
 
    返回值：写入或 ``None`` 超时的字节数。
 
+.. method:: UART.sendbreak()
 
+   在总线上发送中断。这使总线驱动的持续时间长于正常传输字符所需的时间。

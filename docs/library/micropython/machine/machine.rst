@@ -39,11 +39,22 @@
 
 .. function:: reset()
 
-   与按下外部 RESET按键效果一样.
+    与按下外部 RESET复位按键效果一样.
 
 .. function:: reset_cause()
 
-   获得重置原因。请参阅  :ref:`常数 <machine_constants>`  以了解可能的返回值。
+    获得重启原因。
+
+    ==================== ======  ====================================  
+     重启原因              数值    定义
+    ==================== ======  ====================================  
+     PWRON_RESET          1      上电重启 
+     HARD_RESET           2      硬重启
+     WDT_RESET            3      看门狗计时器重启 
+     DEEPSLEEP_RESET      4      从休眠重启 
+     SOFT_RESET           5      软重启 
+    ==================== ======  ====================================  
+
 
 
 中断相关函数
@@ -92,7 +103,19 @@
 
 .. function:: wake_reason()
 
-    得到唤醒原因。请参阅  :ref:`常数 <machine_constants>` 以了解可能的返回值。
+    返回唤醒原因。
+        
+    ==================== ======  ====================================  
+    唤醒原因              数值    定义
+    ==================== ======  ====================================  
+    PIN_WAKE/EXT0_WAKE     2      单个RTC_GPIO唤醒
+    EXT1_WAKE              3      多RTC_GPIO唤醒
+    TIMER_WAKE             4      定时器唤醒
+    TOUCHPAD_WAKE          5      触摸唤醒
+    ULP_WAKE               6      协处理器唤醒
+    ==================== ======  ====================================  
+
+
 
 其他函数
 -----------------------
@@ -122,11 +145,19 @@
 常量
 ---------
 
-.. data:: machine.IDLE
-          machine.SLEEP
-          machine.DEEPSLEEP
+IRQ唤醒值
+^^^^^^^^
 
-    IRQ 唤醒值. 
+.. data:: machine.SLEEP
+
+    2
+
+.. data:: machine.DEEPSLEEP
+
+    4
+
+重启原因
+^^^^^^^
 
 .. data:: machine.PWRON_RESET
           machine.HARD_RESET
@@ -134,10 +165,15 @@
           machine.DEEPSLEEP_RESET
           machine.SOFT_RESET
 
-    重置原因.
 
-.. data:: machine.WLAN_WAKE
-          machine.PIN_WAKE
-          machine.RTC_WAKE
+唤醒原因
+^^^^^^^^
 
-    唤醒原因.
+.. data:: machine.PIN_WAKE
+          machine.EXT0_WAKE
+          machine.EXT1_WAKE
+          machine.TIMER_WAKE
+          machine.TOUCHPAD_WAKE
+          machine.ULP_WAKE
+
+

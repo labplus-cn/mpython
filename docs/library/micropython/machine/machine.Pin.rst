@@ -125,7 +125,7 @@
 
 .. _Pin.irq:
 
-.. method:: Pin.irq(handler=None, trigger=(Pin.IRQ_FALLING | Pin.IRQ_RISING))
+.. method:: Pin.irq(handler=None, trigger=(Pin.IRQ_FALLING | Pin.IRQ_RISING), wake=None)
 
   配置在引脚的触发源处于活动状态时调用的中断处理程序。如果引脚模式是， ``Pin.IN`` 则触发源是引脚上的外部值。
   如果引脚模式是， ``Pin.OUT`` 则触发源是引脚的输出缓冲器。
@@ -141,6 +141,8 @@
       - ``Pin.IRQ_RISING`` 上升沿中断
       - ``Pin.IRQ_LOW_LEVEL`` 低电平中断
       - ``Pin.IRQ_HIGH_LEVEL`` 高电平中断
+      - ``Pin.WAKE_HIGH`` 用于唤醒功能,高电平触发
+      - ``Pin.WAKE_LOW`` 用于唤醒功能,低电平触发
 
       这些值可以一起进行 ``OR`` 运算以触发多个事件。
 

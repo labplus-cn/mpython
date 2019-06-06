@@ -20,5 +20,7 @@ MicroPython类库
    ntptime.rst
    dht.rst
    _thread.rst
+   esp.rst
+   esp32.rst
 
 
