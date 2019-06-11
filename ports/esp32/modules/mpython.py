@@ -602,10 +602,11 @@ rgb.write()
 
 # light sensor
 light = ADC(Pin(39))
+light.atten(light.ADC.ATTN_11DB)
 
 # sound sensor
 sound = ADC(Pin(36))
-
+sound.atten(sound.ADC.ATTN_11DB)
 
 # buttons
 button_a = Pin(0, Pin.IN, Pin.PULL_UP)
