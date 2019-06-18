@@ -119,6 +119,11 @@ mPython类库
 有关MicroPython特定语言功能的语言参考信息
 
 
+.. toctree::
+   :hidden:
+   
+   license.rst
+
 
 .. toctree::
    :hidden:

@@ -11,24 +11,15 @@ UART实现标准UART / USART双工串行通信协议。在物理层面，它由2
 构建对象
 ------------
 
-.. class:: UART(id,baudrate, bits, parity, stop, tx, rx, rts, cts,timeout)
+.. class:: UART(id, ...)
 
     构造UART对象
 
     - ``id`` - 串口号:1、2  
-    - ``baudrate`` - 波特率
-    - ``bits``- 每个字符的位数
-    - ``parity``- 奇偶校验:0-偶数,1-奇数
-    - ``rx`` , ``tx`` - UART读、写引脚
-    - ``stop`` - 停止位数量:1、2
-    - ``timeout``- 超时时间（单位：毫秒） < timeout ≤ 0x7FFF FFFF (十进制：0 < timeout ≤ 2147483647)
-
 
     .. Attention:: 
-
-        * ``UART(id=0)`` 用于REPL。
-        * 所有引脚均可以作为串口的输入RX，除 ``P2``、``P3`` 、``P4`` 、``P10`` 只能作为输入，其余所有的引脚理论上都可以作为输出TX。
-        * ``GPIO 1`` 、``GPIO 3`` 用于掌控板的USB串口，在初始化UART定义 ``tx`` ，``rx`` 引脚一般不使用，除非你要用到掌控板的USB接口作为串口输出。
+    
+    ``UART(id=0)`` 用于REPL,不能使用！
 
     ::
     
@@ -40,11 +31,27 @@ UART实现标准UART / USART双工串行通信协议。在物理层面，它由2
 方法
 -------
 
-
-
-.. method:: UART.init(baudrate, bits, parity, stop, tx, rx, rts, cts,timeout)
+.. method:: UART.init(baudrate=9600, bits=8, parity=None, stop=1, \*, ...)
 
 使用给定参数初始化UART总线
+
+
+    - ``baudrate`` - 波特率
+    - ``bits``- 每个字符的位数，7,8或9。
+    - ``parity``- 奇偶校验:0-偶数,1-奇数
+    - ``rx`` , ``tx`` - UART读、写引脚
+    - ``stop`` - 停止位数量:1、2
+    - ``timeout``- 超时时间（单位：毫秒） < timeout ≤ 0x7FFF FFFF (十进制：0 < timeout ≤ 2147483647)
+    - ``txbuf`` - 指定TX缓冲区的字符长度
+    - ``rxbuf`` - 指定RX缓冲区的字符长度
+
+    .. Attention:: 
+
+        * 所有引脚均可以作为串口的输入RX，除 ``P2``、``P3`` 、``P4`` 、``P10`` 只能作为输入，其余所有的引脚理论上都可以作为输出TX。
+        * ``GPIO 1`` 、``GPIO 3`` 用于掌控板的USB串口，在初始化UART定义 ``tx`` ，``rx`` 引脚一般不使用，除非你要用到掌控板的USB接口作为串口输出。
+
+
+
 
 
 .. method:: UART.deinit()

@@ -9,11 +9,15 @@
         在裸机系统上运行时，MicroPython通过命令解释器（REPL）有效地成为面向用户的操作系统。
 
     board
-        A PCB board. Oftentimes, the term is used to denote a particular
-        model of an :term:`MCU` system. Sometimes, it is used to actually
-        refer to :term:`MicroPython port` to a particular board (and then
-        may also refer to "boardless" ports like
-        :term:`Unix port <MicroPython Unix port>`).
+        PCB板。通常，该术语用于表示 :term:`MCU` 系统的特定模型。有时，它用于实际将 :term:`MicroPython port` 引用到特定板
+        (然后也可能指 :term:`Unix port <MicroPython Unix port>`的 boardless ports)。
+   
+    callee-owned tuple
+        由一些内置函数/方法返回的元组，包含在有限时间内有效的数据，通常直到下一次调用相同的函数（或一组相关函数）。
+        下次调用后，可以更改元组中的数据。这导致对被调用者拥有的元组的使用进行以下限制 - 无法存储对它们的引用。
+        唯一有效的操作是从中提取值（包括制作副本）。Callee拥有的元组是特定于MicroPython的构造（在通用Python语言中不可用），用于内存分配优化。
+        这个想法是被调用者拥有的元组被分配一次并存储在被调用方。后续调用不需要分配，允许在无法分配时返回多个值（例如，在中断上下文中）或不可取（因为分配固有地导致内存碎片）。请注意，被调用者拥有的元组实际上是可变的元组，这使得Python的规则例外，即元组是不可变的。（可能有趣的是，为什么元组被用于这样的目的，而不是可变列表 - 原因是列表也可以从用户应用程序端变化，因此用户可以对被调用者拥有的列表执行操作不期望并且可能导致问题;元组受到保护。）而不是可变列表 - 原因是列表也可以从用户应用程序端变化，因此用户可以对被调用者拥有的列表执行操作，被调用者不期望并且可能导致问题; 一个元组受到保护。）而不是可变列表 - 原因是列表也可以从用户应用程序端变化，因此用户可以对被调用者拥有的列表执行操作，被调用者不期望并且可能导致问题; 一个元组受到保护。）
+
 
     CPython
         CPython是Python编程语言的参考实现，也是大多数人运行的最着名的编程语言。
@@ -28,6 +32,13 @@
 
     GPIO port
          一组 :term:`GPIO` 引脚，通常基于引脚的硬件特性（例如：可通过同一寄存器控制）。
+
+    interned string
+
+        由其（唯一）标识引用的字符串，而不是其地址。因此，可以通过标识符快速比较实习字符串，而不是按内容进行比较。
+        实习字符串的缺点是实习操作需要时间（与现有实习字符串的数量成比例，即随时间变得越来越慢），并且用于实习字符串的空间不可回收。
+        字符串实习由MicroPython编译器和runtimer自动完成，当实现需要它时（例如，函数关键字参数由实习字符串id表示）或认为是有益的（例如，对于足够短的字符串，有机会重复，因此实习）他们会在副本上节省内存）。
+        由于上述缺点，大多数字符串和I / O操作不产生实际字符串。
 
     MCU
 
@@ -65,16 +76,13 @@
         :term:`MicroPython port` 或 :term:`GPIO port`。若您尚未理解上文，建议您使用如上述示例的完整规格。
 
     stream
-        Also known as a "file-like object". An object which provides sequential
-        read-write access to the underlying data. A stream object implements
-        a corresponding interface, which consists of methods like ``read()``,
-        ``write()``, ``readinto()``, ``seek()``, ``flush()``, ``close()``, etc.
-        A stream is an important concept in MicroPython, many I/O objects
-        implement the stream interface, and thus can be used consistently and
-        interchangeably in different contexts. For more information on
-        streams in MicroPython, see `uio` module.
+
+        也称为“类文件对象”。一种对象，提供对底层数据的顺序读写访问。
+        甲流对象实现对应的接口，它由类似的方法 ``read()`` ， ``write()`` ，``readinto()`` ，``seek()`` ，``flush()`` ，``close()`` ，等等流是在MicroPython一个重要的概念，
+        许多I / O对象实现了流接口，因此可以在不同的被一致和互换地使用上下文。有关MicroPython中的流的更多信息，请参阅 :mod:`uio` 模块。 
+     
 
     upip
-        （字面意思为"micro pip"）。MicroPython的包管理器，灵感来自 :term:`CPython`的pip，但是更小功能也更少。
-        Upip可在 :term:`Unix port <MicroPython Unix port>` 和
-        :term:`baremetal` 端口上运行（提供文件系统和网络支持）。
+        (字面意思为"micro pip")。MicroPython的包管理器，灵感来自 :term:`CPython` 的pip，但是更小功能也更少。
+        upip可在 :term:`Unix port <MicroPython Unix port>` 和 :term:`baremetal` 端口上运行（提供文件系统和网络支持）。
+      

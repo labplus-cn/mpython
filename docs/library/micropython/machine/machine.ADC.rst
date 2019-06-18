@@ -16,7 +16,7 @@
 
  - ``Pin`` - ADC在专用引脚上可用，ESP32可用引脚有：IO39、IO36、IO35、IO33、IO34、IO32。掌控板的ADC引脚有P0、P1、P2、P3、P4、P10。
 
-详细引脚定义可查阅 `ESP32引脚功能表. <../../../images/pinout_wroom_pinout.png>`_ 和  :ref:`掌控板引脚定义<mpython_pinout>` 章节。
+详细引脚定义可查阅 `ESP32引脚功能表. <../../../_images/pinout_wroom_pinout.png>`_ 和  :ref:`掌控板引脚定义<mpython_pinout>` 章节。
 
 
 示例::

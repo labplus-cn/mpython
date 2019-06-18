@@ -5,6 +5,7 @@
     :maxdepth: 1
     :numbered:
 
+    breathing_light.rst
     musicbox.rst
     lux&sound_Cal.rst
     dht11.rst

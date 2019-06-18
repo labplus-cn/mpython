@@ -6,8 +6,7 @@
    :synopsis: 网络配置
 
 
-该模块提供网络驱动程序和路由配置。要使用此模块，必须烧录具有网络功能的MicroPython固件版本。
-此模块中提供了特定硬件的网络驱动程序，用于配置硬件网络接口。然后，可以通过 :mod:`usocket`
+该模块提供网络驱动程序和路由配置。此模块中提供了特定硬件的网络驱动程序，用于配置硬件网络接口。然后，可以通过 :mod:`usocket`
 模块使用已配置接口提供的网络服务。
 
 构建对象
@@ -19,8 +18,8 @@
 
 - ``interface_id`` 
 
-  - ``network.STA_IF`` 客户端，连接到上游WiFi接入点。
-  - ``network.AP_IF``  接入点，允许其他WiFi客户端连接。
+  - ``network.STA_IF`` 作为站点接入WiFi网络
+  - ``network.AP_IF``  作为热点，允许其他设备接入。热点模式允许用户将自己的设备配置为热点，这让多个设备之间的无线连接在不借助外部路由器网络的情况下成为可能。
 
 
 
@@ -33,8 +32,8 @@
 
 - ``is_active`` 
 
-  -  ``True``  激活（“up”）网络接口。
-  -  ``False``  停用（“down”）网络接口。
+  -  ``True``  激活网络接口
+  -  ``False``  停用网络接口
 
 
 .. method:: WLAN.scan([ssid，bssid，channel，RSSI，authmode，hidden])
@@ -109,7 +108,7 @@
 
 
 
-作为客户端连接WiFi::
+STA模式,接入WiFi网络::
 
   import network
 
@@ -126,7 +125,7 @@
 
 
 
-作为接入开启WiFi::
+热点模式::
 
   import network
 
