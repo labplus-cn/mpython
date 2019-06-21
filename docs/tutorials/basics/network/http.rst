@@ -8,9 +8,6 @@ HTTP是基于客户端/服务端（C/S）的架构模型，通过一个可靠的
 HTTP GET request
 ----------------
 
-
-
-
 以下示例显示了如何下载网页。HTTP使用端口80，您首先需要发送“GET”请求才能下载任何内容。作为请求的一部分，您需要指定要检索的页面。
 
 让我们定义一个可以下载和打印URL的函数::
@@ -43,52 +40,32 @@ HTTP GET request
 此时接收到html网页并打印到终端。
 
 
+urequest 模块
+~~~~~~~~~~~~~
+
+上面是使用socket来实现http的get请求。我们可以使用 :mod:`urequests` 模块,里面已封装HTTP协议一些常用的请求方式,使用更为简便。
+
+::
+
+    import urequests
+    from mpython import *
+
+    my_wifi = wifi()
+    my_wifi.connectWiFi('ssid','psw')
+
+    # http get方法
+    r = urequests.get('http://micropython.org/ks/test.html')
+    # 响应的内容
+    r.contens
+
+有关更多的 :mod:`urequests` 模块使用,请查阅该模块说明。
 
 HTTP Server
 ----------------
 
-以下示例，掌控板作为HTTP服务端，使用浏览器可以访问板载光线传感器::
-
-    import socket
-    import network,time
-    from mpython import *
-
-    mywifi=wifi()     #实例化wifi类
-
-    mywifi.connectWiFi("ssid","password")                  # WiFi连接，设置ssid 和password
-
-    CONTENT = b"""\
-    HTTP/1.0 200 OK
-
-    <meta charset="utf-8">
-    欢迎使用mPython！你的光线传感器值是:%d
-    """
-
-    def main():
-        s = socket.socket()
-        ai = socket.getaddrinfo(mywifi.sta.ifconfig()[0], 80)
-        print("Bind address info:", ai)
-        addr = ai[0][-1]
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind(addr)
-        s.listen(5)
-        print("Listening, connect your browser to http://%s:80/" %addr[0])
-        oled.DispChar('Connect your browser',0,0,)                       #oled显示掌控板ip地址
-        oled.DispChar('http://%s' %addr[0],0,16)
-        oled.show()
-        while True:
-            res = s.accept()
-            client_s = res[0]
-            client_addr = res[1]
-            print("Client address:", client_addr)
-            print("Client socket:", client_s)
-            req = client_s.recv(4096)
-            print("Request:")
-            print(req)
-            client_s.send(CONTENT % light.read())
-            client_s.close()
-
-
+.. literalinclude:: /../examples/06.网络/http_server_simplistic.py
+    :caption: 以下示例，掌控板作为HTTP服务端，使用浏览器可以访问板载光线传感器:
+    :linenos:
 
 
 在REPL中运行main::

@@ -1,45 +1,44 @@
-import network
 import socket
-import time
 from mpython import *
 
-port=5001               # TCP Sever port,range0~65535
-listenSocket=None
+port=5001                   # TCP服务端的端口,range0~65535
+listenSocket=None              
 
-mywifi=wifi()     #实例化wifi类
+mywifi=wifi()               # 创建wifi类
 
-#Catch exceptions,stop program if interrupted accidentally in the 'try'
+# 捕获异常，如果在"try" 代码块中意外中断，则停止关闭套接字
 try:
-    mywifi.connectWiFi("ssid","password")                  # WiFi连接，设置ssid 和password
-    ip= mywifi.sta.ifconfig()[0]                     #get ip addr
-    listenSocket = socket.socket()            #create socket
-    listenSocket.bind((ip,port))              #bind ip and port
-    listenSocket.listen(1)                    #listen message
-    listenSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)    #Set the value of the given socket option
+    mywifi.connectWiFi("ssid","password")                                   # WiFi连接，设置ssid 和password
+    # mywifi.enable_APWiFi("wifi_name",13)                                  # 还可以开启AP模式,自建wifi网络
+    ip= mywifi.sta.ifconfig()[0]                                            # 获取本机IP地址
+    listenSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)        # 创建socket,不给定参数默认为TCP通讯方式
+    listenSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)      # 设置套接字属性参数
+    listenSocket.bind((ip,port))                                            # 绑定ip和端口
+    listenSocket.listen(3)                                                  # 开始监听并设置最大连接数
     print ('tcp waiting...')
-    oled.DispChar("%s:%s" %(ip,port),0,0)
-    oled.DispChar('accepting.....',0,16)
+    oled.DispChar("%s:%s" %(ip,port),0,0)                                   # oled屏显示本机服务端ip和端口            
+    oled.DispChar('accepting.....',0,16)                                            
     oled.show()
 
     while True:
         print("accepting.....")
-
-        conn,addr = listenSocket.accept()       #Accept a connection,conn is a new socket object
-        print(addr,"connected")
-
-
+        conn,addr = listenSocket.accept()                                   # 阻塞,等待客户端的请求连接,如果有新的客户端来连接服務器，那麼会返回一个新的套接字专门为这个客户端服务
+        print(addr,"connected")                                                         
+    
         while True:
-            data = conn.recv(1024)                #Receive 1024 byte of data from the socket
+            data = conn.recv(1024)                                          # 接收对方发送过来的数据,读取字节设为1024字节
             if(len(data) == 0):
                 print("close socket")
-                conn.close()                        #if there is no data,close
+                conn.close()                                                # 如果接收数据为0字节时,关闭套接字
                 break
-            data_utf=data.decode()                  #以utf8编码解码字符串
+            data_utf=data.decode()                                          # 接收到的字节流以utf8编码解码字符串
             print(data_utf)
-            oled.DispChar(data_utf,0,48)         #将接收到文本显示出来
+            oled.DispChar(data_utf,0,48)                                    # 将接收到文本oled显示出来
             oled.show()
-            oled.fill_rect(0,48,128,16,0)        #局部清屏
-            ret = conn.send(data)                    #return data to client
+            oled.fill_rect(0,48,128,16,0)                                   # 局部清屏
+            conn.send(data)                                                 # 返回数据给客户端
+
+# 当捕获异常,关闭套接字、网络
 except:
     if(listenSocket):
         listenSocket.close()

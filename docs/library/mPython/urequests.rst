@@ -1,8 +1,9 @@
 
 .. _urequests:
-:mod:`urequests`
 
-urequests 模块
+.. module:: urequests
+
+:mod:`urequests` 模块
 ================
 
 之前我们用了 socket 库，这个作为入门的工具还是不错的，对了解一些爬虫的基本理念，掌握爬虫爬取的流程有所帮助。
@@ -96,3 +97,8 @@ Response类
     - ``url`` - Request对象的URL
     - ``**kw`` - request方法的参数。
 
+
+
+.. literalinclude:: /../examples/06.网络/example_requests.py
+    :caption: requests示例
+    :linenos:
