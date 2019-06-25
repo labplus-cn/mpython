@@ -1,5 +1,9 @@
 .. _radio:
-radio 模块
+
+.. module:: radio
+   :synopsis: 无线广播相关功能
+
+:mod:`radio` --- radio 无线广播相关功能
 ==========
 
 radio 模块提供无线广播功能,支持13 Channel,在相同的Channel内能接收到成员发出的广播消息,适合10米范围内的多板组网的通讯。

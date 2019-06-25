@@ -1,6 +1,8 @@
 .. currentmodule:: machine
 .. _machine.TouchPad:
 
+.. module:: TouchPad
+
 类 TouchPad -- 触摸
 =============================
 

@@ -1,11 +1,12 @@
 .. _music.py:
 
 .. module:: music
+   :synopsis: 音乐相关功能函数
 
-music 模块
-=======
+:mod:`music` --- 音乐相关功能函数
+=======================================
 
-music模块与microbit的music使用方法相同。
+``music`` 模块与micro:bit的music使用方法相同。
 
 要使用music模块，你需要::
 

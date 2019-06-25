@@ -1,8 +1,10 @@
 
 .. _umqtt.simple:
-:mod:`umqtt.simple`
 
-umqtt.simple 模块
+.. module:: umqtt.simple
+   :synopsis: 简单MQTT客户端功能函数
+
+:mod:`umqtt.simple` --- 简单MQTT客户端功能函数
 =========================================
 
 MQTT是一种基于发布 - 订阅的“轻量级”消息传递协议，用于在TCP / IP协议之上使用。

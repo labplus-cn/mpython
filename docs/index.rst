@@ -96,17 +96,17 @@ mPython类库
    :hidden:
    
    library/mPython/index.rst
-                                             
-======================================   ====================================================================  
- :ref:`mpython模块<mpython.py>`           提供了mPython掌控板特有拓展类。:ref:`mpython.py源码查看 <mpython_code>`
- :ref:`music模块<music.py>`               兼容micro:bit music 模块
- :ref:`urequests模块<urequests>`          从CPython移植过来的HTTP客户端的第三方库,提供各种HTTP请求方式
- :ref:`umqtt.simple模块<umqtt.simple>`    提供简单MQTT客户端功能 
- :ref:`servo模块<servo_api>`              舵机驱动 
- :ref:`gui模块<gui>`                      提供GUI类的绘制元素 
- :ref:`audio模块<audio>`                  音频播放录音
- :ref:`radio模块<radio>`                  无线广播
-======================================   ====================================================================
+
+       
+- :mod:`mpython`  --------- 掌控板板载相关功能函数                                
+- :mod:`music` --------- 音乐相关功能函数,兼容micro:bit music 模块
+- :mod:`urequests` --------- HTTP客户端的相关功能函数
+- :mod:`umqtt.simple` --------- 简单MQTT客户端功能函数
+- :mod:`servo` --------- 舵机驱动
+- :mod:`gui` --------- 提供GUI类的绘制元素
+- :mod:`audio` --------- 提供音频播放录音
+- :mod:`radio` --------- 无线广播
+
 
 ---------
 

@@ -1,11 +1,13 @@
 
 .. _mpython.py:
-:mod:`mpython`
 
-mpython 模块
+.. module:: mpython
+   :synopsis: 掌控板板载相关功能函数
+
+:mod:`mpython` --- 掌控板板载相关功能函数
 ==========================
 
-:ref:`mpython<mpython_code>` 是基于掌控板封装的专用库.
+``mpython`` 是基于掌控板封装的专有模块,内含掌控板板载资源相关功能函数。 详细代码实现可查阅 :ref:`mpython.py源码 <mpython_code>` 。
 
 延时
 -------
@@ -331,12 +333,13 @@ MPythonPin类
 
 - ``pin`` 掌控板定义引脚号，具体定义看查看 :ref:`掌控板引脚定义<mpython_pinout>` 。
 
-- ``mode`` 引脚模式，未设定时默认mode=PinMode
+- ``mode`` 引脚模式。未设定时,默认 `mode` = `PinMode.IN`
 
         - ``PinMode.IN`` 等于1，数字输入模式
         - ``PinMode.OUT`` 等于2，数字输出模式
         - ``PinMode.PWM`` 等于3，模拟输出模式
         - ``PinMode.ANALOG`` 等于4，模拟输入模式
+        - ``PinMode.OUT_DRAIN`` 等于5，开漏输出模式
 
 - ``pull`` 指定引脚是否连接了电阻，可以是以下之一：
 

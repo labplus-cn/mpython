@@ -1,7 +1,9 @@
 .. _gui:
-:mod:`gui`
 
-gui 模块
+.. module:: gui
+   :synopsis: 提供GUI类的绘制的相关功能函数
+
+:mod:`gui` --- 提供GUI类的绘制的相关功能函数
 ==========
 
 
