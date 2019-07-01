@@ -60,6 +60,12 @@ typedef struct _mp_framebuf_p_t {
 #define FRAMEBUF_MHLSB    (3)
 #define FRAMEBUF_MHMSB    (4)
 
+STATIC void _swap(int *x,int *y){
+	int temp=*x;//如果写成int *p=x;x=y;y=p;则还是无法改变实参的值
+	*x=*y;
+	*y=temp;
+}
+
 // Functions for MHLSB and MHMSB
 
 STATIC void mono_horiz_setpixel(const mp_obj_framebuf_t *fb, int x, int y, uint32_t col) {
@@ -467,6 +473,281 @@ STATIC mp_obj_t framebuf_line(size_t n_args, const mp_obj_t *args) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(framebuf_line_obj, 6, 6, framebuf_line);
 
+STATIC mp_obj_t framebuf_circle(size_t n_args, const mp_obj_t *args) {
+    mp_obj_framebuf_t *self = MP_OBJ_TO_PTR(args[0]);
+    mp_int_t x0 = mp_obj_get_int(args[1]);
+    mp_int_t y0 = mp_obj_get_int(args[2]);
+    mp_int_t radius = mp_obj_get_int(args[3]);
+    mp_int_t c = mp_obj_get_int(args[4]);
+
+    mp_int_t f = 1 - radius;
+    mp_int_t ddF_x = 1;
+    mp_int_t ddF_y = -2 * radius;
+    mp_int_t x = 0;
+    mp_int_t y = radius;
+    setpixel(self, x0, y0 + radius, c);
+    setpixel(self, x0, y0 - radius, c);
+    setpixel(self, x0 + radius, y0, c);
+    setpixel(self, x0 - radius, y0, c);
+    while (x < y)
+    {
+        if (f >= 0){
+            y -= 1;
+            ddF_y += 2;
+            f += ddF_y;
+        }
+        x += 1;
+        ddF_x += 2;
+        f += ddF_x;
+        setpixel(self, x0 + x, y0 + y, c);
+        setpixel(self, x0 - x, y0 + y, c);
+        setpixel(self, x0 + x, y0 - y, c);
+        setpixel(self, x0 - x, y0 - y, c);
+        setpixel(self, x0 + y, y0 + x, c);
+        setpixel(self, x0 - y, y0 + x, c);
+        setpixel(self, x0 + y, y0 - x, c);
+        setpixel(self, x0 - y, y0 - x, c);
+    }
+
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(framebuf_circle_obj, 5, 5, framebuf_circle);
+
+STATIC mp_obj_t framebuf_circle_quarter(size_t n_args, const mp_obj_t *args) {
+    mp_obj_framebuf_t *self = MP_OBJ_TO_PTR(args[0]);
+    mp_int_t x0 = mp_obj_get_int(args[1]);
+    mp_int_t y0 = mp_obj_get_int(args[2]);
+    mp_int_t radius = mp_obj_get_int(args[3]);
+    mp_int_t cornername = mp_obj_get_int(args[4]);
+    mp_int_t c = mp_obj_get_int(args[5]);
+
+    mp_int_t f = 1 - radius;
+    mp_int_t ddF_x = 1;
+    mp_int_t ddF_y = -2 * radius;
+    mp_int_t x = 0;
+    mp_int_t y = radius;
+
+    while (x < y){
+        if (f >= 0){
+            y -= 1;
+            ddF_y += 2;
+            f += ddF_y;
+        }
+
+        ddF_x += 2;
+        f += ddF_x;
+        if (cornername & 0x4){
+            setpixel(self, x0 + x, y0 + y, c);
+            setpixel(self, x0 + y, y0 + x, c);
+        }
+        if (cornername & 0x2){
+            setpixel(self, x0 + x, y0 - y, c);
+            setpixel(self, x0 + y, y0 - x, c);           
+        }
+        if (cornername & 0x8){
+            setpixel(self, x0 - y, y0 + x, c);
+            setpixel(self, x0 - x, y0 + y, c); 
+        }
+        if (cornername & 0x1){
+            setpixel(self, x0 - y, y0 - x, c);
+            setpixel(self, x0 - x, y0 - y, c);             
+        }
+        x += 1;
+    }
+
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(framebuf_circle_quarter_obj, 6, 6, framebuf_circle_quarter);
+
+STATIC mp_obj_t framebuf_fill_circle(size_t n_args, const mp_obj_t *args) {
+    mp_obj_framebuf_t *self = MP_OBJ_TO_PTR(args[0]);
+    mp_int_t x0 = mp_obj_get_int(args[1]);
+    mp_int_t y0 = mp_obj_get_int(args[2]);
+    mp_int_t radius = mp_obj_get_int(args[3]);
+    mp_int_t c = mp_obj_get_int(args[4]);
+
+    fill_rect(self, x0, y0 - radius, 1, 2*radius + 1, c);
+    mp_int_t f = 1 - radius;
+    mp_int_t ddF_x = 1;
+    mp_int_t ddF_y = -2 * radius;
+    mp_int_t x = 0;
+    mp_int_t y = radius;
+    while (x < y){
+        if (f >= 0){
+            y -= 1;
+            ddF_y += 2;
+            f += ddF_y;
+        }
+        x += 1;
+        ddF_x += 2;
+        f += ddF_x;
+        fill_rect(self, x0 + x, y0 - y, 1, 2*y + 1, c);
+        fill_rect(self, x0 + y, y0 - x, 1, 2*x + 1, c);
+        fill_rect(self, x0 - x, y0 - y, 1, 2*y + 1, c);
+        fill_rect(self, x0 - y, y0 - x, 1, 2*x + 1, c);
+    }
+
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(framebuf_fill_circle_obj, 5, 5, framebuf_fill_circle);
+
+STATIC mp_obj_t framebuf_triangle(size_t n_args, const mp_obj_t *args) {
+    mp_obj_t _args[6];
+    _args[0] = args[0];
+    _args[1] = args[1];
+    _args[2] = args[2];
+    _args[3] = args[3];
+    _args[4] = args[4];
+    _args[5] = args[7];
+    framebuf_line(6, _args);
+    _args[0] = args[0];
+    _args[1] = args[3];
+    _args[2] = args[4];
+    _args[3] = args[5];
+    _args[4] = args[6];
+    _args[5] = args[7];
+    framebuf_line(6, _args);
+    _args[0] = args[0];
+    _args[1] = args[5];
+    _args[2] = args[6];
+    _args[3] = args[1];
+    _args[4] = args[2];
+    _args[5] = args[7];
+    framebuf_line(6, _args);
+
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(framebuf_triangle_obj, 8, 8, framebuf_triangle);
+
+STATIC mp_obj_t framebuf_fill_triangle(size_t n_args, const mp_obj_t *args) {
+    mp_obj_framebuf_t *self = MP_OBJ_TO_PTR(args[0]);
+    mp_int_t x0 = mp_obj_get_int(args[1]);
+    mp_int_t y0 = mp_obj_get_int(args[2]);
+    mp_int_t x1 = mp_obj_get_int(args[3]);
+    mp_int_t y1 = mp_obj_get_int(args[4]);
+    mp_int_t x2 = mp_obj_get_int(args[5]);
+    mp_int_t y2 = mp_obj_get_int(args[6]);
+    mp_int_t c = mp_obj_get_int(args[7]);
+
+        if (y0 > y1){
+            _swap(&y0, &y1);
+            _swap(&x0, &x1);
+        }
+        if (y1 > y2){
+            _swap(&y1, &y2);
+            _swap(&x1, &x2);
+        }
+        if (y0 > y1){
+            _swap(&y0, &y1);
+            _swap(&x0, &x1);
+        }
+        mp_int_t a, b, y, last;
+        if (y0 == y2){
+            a = b = x0;
+            if (x1 < a)
+                a = x1;
+            else if (x1 > b)
+                b = x1;
+            if (x2 < a)
+                a = x2;
+            else if (x2 > b)
+                b = x2;
+            fill_rect(self, a, y0, b-a+1, 1, c);
+            return mp_const_none;
+        }
+
+        mp_int_t dx01 = x1 - x0;
+        mp_int_t dy01 = y1 - y0;
+        mp_int_t dx02 = x2 - x0;
+        mp_int_t dy02 = y2 - y0;
+        mp_int_t dx12 = x2 - x1;
+        mp_int_t dy12 = y2 - y1;
+        if (dy01 == 0)
+            dy01 = 1;
+        if (dy02 == 0)
+            dy02 = 1;
+        if (dy12 == 0)
+            dy12 = 1;
+        mp_int_t sa = 0;
+        mp_int_t sb = 0;
+
+        if (y1 == y2)
+            last = y1;
+        else if (y0 == y1)
+            last = y0;
+        else
+            last = y1-1;
+        for (y = y0; y < last+1; y++){
+            a = x0 + sa / dy01;
+            b = x0 + sb / dy02;
+            sa += dx01;
+            sb += dx02;
+            if (a > b)
+             _swap(&a, &b);
+            fill_rect(self, a, y, b-a+1, 1, c);
+        }
+
+        sa = dx12 * (y - y1);
+        sb = dx02 * (y - y0);
+        for (; y <= y2; y++){
+            a = x1 + sa / dy12;
+            b = x0 + sb / dy02;
+            sa += dx12;
+            sb += dx02;
+            if (a > b)
+                _swap(&a, &b);
+            fill_rect(self, a, y, b-a+1, 1, c);
+        }
+
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(framebuf_fill_triangle_obj, 8, 8, framebuf_fill_triangle);
+
+STATIC mp_obj_t framebuf_round_rect(size_t n_args, const mp_obj_t *args) {
+    mp_obj_framebuf_t *self = MP_OBJ_TO_PTR(args[0]);
+    mp_int_t x = mp_obj_get_int(args[1]);
+    mp_int_t y = mp_obj_get_int(args[2]);
+    mp_int_t w = mp_obj_get_int(args[3]);
+    mp_int_t h = mp_obj_get_int(args[4]);
+    mp_int_t r = mp_obj_get_int(args[5]);
+    mp_int_t c = mp_obj_get_int(args[4]);
+
+    fill_rect(self, x + r, y, w - 2 * r , 1, c);
+    fill_rect(self, x + r, y + h - 1,  w - 2 * r, 1, c);
+    fill_rect(self, x, y + r, 1, h - 2 * r, c);
+    fill_rect(self, x + w - 1, y + r, 1, h - 2 * r, c);
+
+    mp_obj_t _args[6];
+    _args[0] = args[0];
+    _args[1] = mp_obj_new_int(x + r);
+    _args[2] = mp_obj_new_int(y + r);
+    _args[3] = mp_obj_new_int(r);
+    _args[4] = mp_obj_new_int(1);
+    _args[5] = mp_obj_new_int(c);
+    framebuf_circle_quarter(6, _args);
+    _args[1] = mp_obj_new_int(x + w - r - 1);
+    _args[2] = mp_obj_new_int(y + r);
+    _args[3] = mp_obj_new_int(r);
+    _args[4] = mp_obj_new_int(2);
+    _args[5] = mp_obj_new_int(c);
+    framebuf_circle_quarter(6, _args);
+    _args[1] = mp_obj_new_int(x + w - r - 1);
+    _args[2] = mp_obj_new_int(y + h - r - 1);
+    _args[3] = mp_obj_new_int(r);
+    _args[4] = mp_obj_new_int(4);
+    _args[5] = mp_obj_new_int(c);
+    framebuf_circle_quarter(6, _args);
+    _args[1] = mp_obj_new_int(x + r);
+    _args[2] = mp_obj_new_int(y + h - r - 1);
+    _args[3] = mp_obj_new_int(r);
+    _args[4] = mp_obj_new_int(8);
+    _args[5] = mp_obj_new_int(c);
+    framebuf_circle_quarter(6, _args);
+
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(framebuf_round_rect_obj, 6, 6, framebuf_round_rect);
+
 STATIC mp_obj_t framebuf_blit(size_t n_args, const mp_obj_t *args) {
     mp_obj_framebuf_t *self = MP_OBJ_TO_PTR(args[0]);
     mp_obj_framebuf_t *source = MP_OBJ_TO_PTR(args[1]);
@@ -509,6 +790,26 @@ STATIC mp_obj_t framebuf_blit(size_t n_args, const mp_obj_t *args) {
     return mp_const_none;
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(framebuf_blit_obj, 4, 5, framebuf_blit);
+
+STATIC mp_obj_t framebuf_bitmap(size_t n_args, const mp_obj_t *args) {
+    mp_obj_framebuf_t *self = MP_OBJ_TO_PTR(args[0]);
+    mp_obj_t _args[5];
+    _args[0] = args[3];
+    _args[1] = args[4];
+    _args[2] = args[5];
+    _args[3] = mp_obj_new_int(FRAMEBUF_MHLSB);  
+    mp_obj_t o = framebuf_make_new(self->base.type, 4, 0, _args);
+
+    _args[0] = self;
+    _args[1] = o;
+    _args[2] = args[1];
+    _args[3] = args[2];
+    //_args[4] = args[6];
+    framebuf_blit(4, _args);
+
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(framebuf_bitmap_obj, 7, 7, framebuf_bitmap);
 
 STATIC mp_obj_t framebuf_scroll(mp_obj_t self_in, mp_obj_t xstep_in, mp_obj_t ystep_in) {
     mp_obj_framebuf_t *self = MP_OBJ_TO_PTR(self_in);
@@ -588,7 +889,17 @@ STATIC const mp_rom_map_elem_t framebuf_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_vline), MP_ROM_PTR(&framebuf_vline_obj) },
     { MP_ROM_QSTR(MP_QSTR_rect), MP_ROM_PTR(&framebuf_rect_obj) },
     { MP_ROM_QSTR(MP_QSTR_line), MP_ROM_PTR(&framebuf_line_obj) },
+    { MP_ROM_QSTR(MP_QSTR_circle), MP_ROM_PTR(&framebuf_circle_obj) },
+    { MP_ROM_QSTR(MP_QSTR_drawCircleHelper), MP_ROM_PTR(&framebuf_circle_quarter_obj) },
+    { MP_ROM_QSTR(MP_QSTR_circle_quarter), MP_ROM_PTR(&framebuf_fill_circle_obj) },
+    { MP_ROM_QSTR(MP_QSTR_circle), MP_ROM_PTR(&framebuf_fill_circle_obj) },
+    { MP_ROM_QSTR(MP_QSTR_triangle), MP_ROM_PTR(&framebuf_triangle_obj) },
+    { MP_ROM_QSTR(MP_QSTR_fill_triangle), MP_ROM_PTR(&framebuf_fill_triangle_obj) },
+    { MP_ROM_QSTR(MP_QSTR_RoundRect), MP_ROM_PTR(&framebuf_round_rect_obj) },
+    { MP_ROM_QSTR(MP_QSTR_round_rect), MP_ROM_PTR(&framebuf_round_rect_obj) },
     { MP_ROM_QSTR(MP_QSTR_blit), MP_ROM_PTR(&framebuf_blit_obj) },
+    { MP_ROM_QSTR(MP_QSTR_bitmap), MP_ROM_PTR(&framebuf_bitmap_obj) },
+    { MP_ROM_QSTR(MP_QSTR_Bitmap), MP_ROM_PTR(&framebuf_bitmap_obj) },
     { MP_ROM_QSTR(MP_QSTR_scroll), MP_ROM_PTR(&framebuf_scroll_obj) },
     { MP_ROM_QSTR(MP_QSTR_text), MP_ROM_PTR(&framebuf_text_obj) },
 };
