@@ -52,7 +52,7 @@ void urlencode(char *src, char *des)
         if (    ('0' <= c && c <= '9') ||
                 ('a' <= c && c <= 'z') ||
                 ('A' <= c && c <= 'Z') || 
-                c == '/' || c == '.' || c=='=') 
+                c == '/' || c == '.' || c=='=' || '+') 
         {
             des[res_len++] = c;
         } 
@@ -69,8 +69,34 @@ void urlencode(char *src, char *des)
             des[res_len++] = dec2hex(i0);
         }
     }
-    des[res_len] = '\0';
+   des[res_len] = '\0';
 }
+
+// void urlencode(char *src, char *des) 
+// {
+//     char *p = src;
+//     char *tp = des;
+
+//     for (; *p; p++) 
+//     {
+//         if ((*p > 0x00 && *p < ',') ||
+//                 (*p > '9' && *p < 'A') ||
+//                 (*p > 'Z' && *p < '_') ||
+//                 (*p > '_' && *p < 'a') ||
+//                 (*p > 'z' && *p < 0xA1)) 
+//         {
+//             sprintf((char *)tp, "%%%02X", *p);
+//             tp += 3; 
+//         } 
+//         else 
+//         {
+//             *tp = *p;
+//             tp++;
+//         }
+//     }
+
+//     *tp='\0';
+// }
  
 // 解码url
 void urldecode(char *src, char *des)
