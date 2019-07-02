@@ -9,6 +9,4 @@ GitHub: https://github.com/labplus-cn/mPython    <br/>
 mPython掌控板在线文档: https://mPython.readthedocs.io
 
 
-Hardware License: CERN v 1.2 <br/>
-Software License: GPL v 3 <br/>
-Documentation License: CC0 <br/>
+<img src="https://img.shields.io/badge/License-MIT-green.svg" />
