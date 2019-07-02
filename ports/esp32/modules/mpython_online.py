@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-# @Time     : 2019/06/28
+# @Time     : 2019/06/30
 # @Author   : Wu Wen Jie(6692776@qq.com)
 # @FileName : mpython_online.py
 # @Description : A transfer protocol between mPython board and Labplus software
@@ -102,19 +102,23 @@ except: pass
 try: tim14.deinit()
 except: pass
 
-_is_shaked = False
-_last_x = _last_y = _last_z = _count_shaked = _count_radio = 0
+_is_shaked = _is_thrown = False
+_last_x = _last_y = _last_z = _count_shaked = _count_thrown = _count_radio = 0
 _pind = {}
 _pina = {}
 
 ext  = ADC(Pin(34))
 
 def timer11_tick(_):
-    global _is_shaked, _last_x, _last_y, _last_z, _count_shaked
+    global _is_shaked, _is_thrown, _last_x, _last_y, _last_z, _count_shaked, _count_thrown
     if _is_shaked:
         _count_shaked += 1
         if _count_shaked == 5: _count_shaked = 0
+    if _is_thrown:
+        _count_thrown += 1
+        if _count_thrown == 10: _count_thrown = 0
     x=accelerometer.get_x(); y=accelerometer.get_y(); z=accelerometer.get_z()
+    if _count_thrown == 0: _is_thrown = (x * x + y * y + z * z < 0.25)
     if _last_x == 0 and _last_y == 0 and _last_z == 0:
         _last_x = x; _last_y = y; _last_z = z; return
     diff_x = x - _last_x; diff_y = y - _last_y; diff_z = z - _last_z
@@ -132,7 +136,7 @@ def timer12_tick(_):
     dict["y"] = accelerometer.get_y()
     dict["z"] = accelerometer.get_z()
     dict["d"] = getTouchpad()
-    dict["t"] = 1 if _is_shaked else 0
+    dict["t"] = 2 if _is_thrown else 1 if _is_shaked else 0
     if _count_radio < 5:
         _count_radio += 1
         if _count_radio == 5:
