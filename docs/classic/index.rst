@@ -14,5 +14,8 @@
     clock.rst
     weather.rst
     oneNET/index.rst
+    game/index.rst
+
+
     
  

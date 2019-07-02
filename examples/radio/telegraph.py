@@ -7,7 +7,7 @@ CH = 1                                                  # channel变量
 radio.on()
 radio.config(channel=CH)                                # radio通道设置
 
-btna_stat, btna_stat, touch_stat = [0] * 3              # 按键状态标志
+btna_stat, btnb_stat, touch_stat = [0] * 3              # 按键状态标志
 
 
 def set_channel():                                      # radio 通道设置函数

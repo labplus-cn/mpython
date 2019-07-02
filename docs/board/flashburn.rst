@@ -2,9 +2,8 @@
 ====================
 
 
-烧录工具使用乐鑫官网提供的下载软件 :download:`ESPFlashDownloadTool </../docs/tools/FLASH_DOWNLOAD_TOOLS_V3.6.4.rar>`
-
-掌控板固件可到 :ref:`掌控固件发布<release>` 章节获取。
+* 烧录工具使用乐鑫官网提供的 `flash下载软件 <https://www.espressif.com/zh-hans/support/download/other-tools>`_。
+* 掌控板固件可到 :ref:`掌控固件发布<release>` 章节获取。
 
 ---------
 
@@ -12,10 +11,10 @@
 
 .. image:: /images/flashburn/flashDownload_1.png
 
-选择 **SPIDownload** ，然后浏览并选中刚下载的掌控板固件mpython_firmware_1.0.bin，并设置地址是0x1000。浏览并选中字库Noto_Sans_CJK_SC_Light16.xbf，并设置0x300000。
+选择 **SPIDownload** ，然后浏览并选中刚下载的掌控板固件mpython_v1.3.0.bin，并设置地址是0x00。浏览并选中字库Noto_Sans_CJK_SC_Light16.xbf，并设置0x300000。
 将CrystallFreq设为40M，SPI SPEED 设为40MHz，SPI MODE设为DIO，FLASH SIZE改为64MBit，串口号设置为实际串口，波特率1152000。
 
-.. Caution:: v1.1.1以后的固件版本,烧录起始地址改为0x00!
+.. Caution:: v1.1.1以后的固件版本,firmware烧录起始地址改为0x00!
 
 .. image:: /images/flashburn/flashDownload_2.png
 
