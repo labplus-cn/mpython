@@ -746,7 +746,7 @@ STATIC mp_obj_t framebuf_round_rect(size_t n_args, const mp_obj_t *args) {
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(framebuf_round_rect_obj, 6, 6, framebuf_round_rect);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(framebuf_round_rect_obj, 6, 7, framebuf_round_rect);
 
 STATIC mp_obj_t framebuf_blit(size_t n_args, const mp_obj_t *args) {
     mp_obj_framebuf_t *self = MP_OBJ_TO_PTR(args[0]);
