@@ -13,4 +13,5 @@ mPython类库
     gui.rst   
     audio.rst   
     radio.rst   
+    bluetooth.rst
 
