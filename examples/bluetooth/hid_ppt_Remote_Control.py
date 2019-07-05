@@ -8,6 +8,10 @@ from bluetooth import ble
 import time
 # 按键状态标志
 btn_a_status, btn_b_status = [0, 0]
+
+oled.DispChar('PPT 翻页控制器',20,20)
+oled.show()
+
 # ble初始化
 ble.init('PPT_Remote')
 # 等待蓝牙主机
