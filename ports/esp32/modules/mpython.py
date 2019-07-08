@@ -546,8 +546,14 @@ class wifi:
         self.sta.active(True)
         list = self.sta.scan()
         for i, wifi_info in enumerate(list):
-            if wifi_info[0].decode() == ssid:
+            try:
+                if wifi_info[0].decode() == ssid:
+                    self.sta.connect(ssid, passwd)
+                    wifi_dbm = wifi_info[3]
+                    break
+            except UnicodeError:
                 self.sta.connect(ssid, passwd)
+                wifi_dbm = '?'
                 break
             if i == len(list) - 1:
                 raise OSError("SSID invalid / failed to scan this wifi")
@@ -560,7 +566,7 @@ class wifi:
             print(".", end="")
             time.sleep_ms(500)
         print("")
-        print('WiFi(%s,%sdBm) Connection Successful, Config:%s' % (ssid, str(wifi_info[3]), str(self.sta.ifconfig())))
+        print('WiFi(%s,%sdBm) Connection Successful, Config:%s' % (ssid, str(wifi_dbm), str(self.sta.ifconfig())))
 
     def disconnectWiFi(self):
         if self.sta.isconnected():
