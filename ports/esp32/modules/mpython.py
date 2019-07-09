@@ -21,7 +21,7 @@ i2c = I2C(scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
 
 
 class Font(object):
-    def __init__(self, font_address=0x300000):
+    def __init__(self, font_address=0x400000):
         self.font_address = font_address
         buffer = bytearray(18)
         esp.flash_read(self.font_address, buffer)
