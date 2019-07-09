@@ -26,9 +26,9 @@ class FlashBdev:
             return self.SEC_SIZE
 
 size = esp.flash_size()
-if size < 1024*1024:
+if size < 1024*1024*2:
     # flash too small for a filesystem
     bdev = None
 else:
     # for now we use a fixed size for the filesystem
-    bdev = FlashBdev(1024 * 1024 // FlashBdev.SEC_SIZE)
+    bdev = FlashBdev(1024 * 1024 * 2 // FlashBdev.SEC_SIZE)
