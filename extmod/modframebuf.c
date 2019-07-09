@@ -485,9 +485,13 @@ STATIC mp_obj_t framebuf_circle(size_t n_args, const mp_obj_t *args) {
     mp_int_t ddF_y = -2 * radius;
     mp_int_t x = 0;
     mp_int_t y = radius;
-    setpixel(self, x0, y0 + radius, c);
-    setpixel(self, x0, y0 - radius, c);
-    setpixel(self, x0 + radius, y0, c);
+    if (0 <= x0 && x0 < self->width && 0 <= (y0 + radius) && (y0 + radius) < self->height)
+        setpixel(self, x0, y0 + radius, c);
+    if (0 <= x0 && x0 < self->width && 0 <= (y0 - radius) && (y0 - radius) < self->height)
+        setpixel(self, x0, y0 - radius, c);
+    if (0 <= (x0 + radius) && (x0 + radius) < self->width && 0 <= y0 && y0 < self->height)    
+        setpixel(self, x0 + radius, y0, c);
+    if (0 <= (x0 - radius) && (x0 - radius) < self->width && 0 <= y0 && y0 < self->height)  
     setpixel(self, x0 - radius, y0, c);
     while (x < y)
     {
@@ -499,21 +503,29 @@ STATIC mp_obj_t framebuf_circle(size_t n_args, const mp_obj_t *args) {
         x += 1;
         ddF_x += 2;
         f += ddF_x;
-        setpixel(self, x0 + x, y0 + y, c);
-        setpixel(self, x0 - x, y0 + y, c);
-        setpixel(self, x0 + x, y0 - y, c);
-        setpixel(self, x0 - x, y0 - y, c);
-        setpixel(self, x0 + y, y0 + x, c);
-        setpixel(self, x0 - y, y0 + x, c);
-        setpixel(self, x0 + y, y0 - x, c);
-        setpixel(self, x0 - y, y0 - x, c);
+        if (0 <= (x0 + x) && (x0 + x) < self->width && 0 <= (y0 + y) && (y0 + y) < self->height)
+            setpixel(self, x0 + x, y0 + y, c);
+        if (0 <= (x0 - x) && (x0 - x) < self->width && 0 <= (y0 + y) && (y0 + y) < self->height)
+            setpixel(self, x0 - x, y0 + y, c);
+        if (0 <= (x0 + x) && (x0 + x) < self->width && 0 <= (y0 - y) && (y0 - y) < self->height)
+            setpixel(self, x0 + x, y0 - y, c);
+        if (0 <= (x0 - x) && (x0 - x) < self->width && 0 <= (y0 - y) && (y0 - y) < self->height)
+            setpixel(self, x0 - x, y0 - y, c);
+        if (0 <= (x0 + y) && (x0 + y) < self->width && 0 <= (y0 + x) && (y0 + x) < self->height)
+            setpixel(self, x0 + y, y0 + x, c);
+        if (0 <= (x0 - y) && (x0 - y) < self->width && 0 <= (y0 + x) && (y0 + x) < self->height)
+            setpixel(self, x0 - y, y0 + x, c);
+        if (0 <= (x0 + y) && (x0 + y) < self->width && 0 <= (y0 - x) && (y0 - x) < self->height)
+            setpixel(self, x0 + y, y0 - x, c);
+        if (0 <= (x0 - y) && (x0 - y) < self->width && 0 <= (y0 - x) && (y0 - x) < self->height)
+            setpixel(self, x0 - y, y0 - x, c);
     }
 
     return mp_const_none;
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(framebuf_circle_obj, 5, 5, framebuf_circle);
 
-STATIC mp_obj_t framebuf_circle_quarter(size_t n_args, const mp_obj_t *args) {
+STATIC mp_obj_t framebuf_quarter_circle(size_t n_args, const mp_obj_t *args) {
     mp_obj_framebuf_t *self = MP_OBJ_TO_PTR(args[0]);
     mp_int_t x0 = mp_obj_get_int(args[1]);
     mp_int_t y0 = mp_obj_get_int(args[2]);
@@ -537,27 +549,35 @@ STATIC mp_obj_t framebuf_circle_quarter(size_t n_args, const mp_obj_t *args) {
         ddF_x += 2;
         f += ddF_x;
         if (cornername & 0x4){
-            setpixel(self, x0 + x, y0 + y, c);
-            setpixel(self, x0 + y, y0 + x, c);
+            if (0 <= (x0 + x) && (x0 + x) < self->width && 0 <= (y0 + y) && (y0 + y) < self->height)
+                setpixel(self, x0 + x, y0 + y, c);
+            if (0 <= (x0 + y) && (x0 + y) < self->width && 0 <= (y0 + x) && (y0 + x) < self->height)
+                setpixel(self, x0 + y, y0 + x, c);
         }
         if (cornername & 0x2){
-            setpixel(self, x0 + x, y0 - y, c);
-            setpixel(self, x0 + y, y0 - x, c);           
+            if (0 <= (x0 + x) && (x0 + x) < self->width && 0 <= (y0 - y) && (y0 - y) < self->height)
+                setpixel(self, x0 + x, y0 - y, c);
+            if (0 <= (x0 + y) && (x0 + y) < self->width && 0 <= (y0 - x) && (y0 - x) < self->height)
+                setpixel(self, x0 + y, y0 - x, c);           
         }
         if (cornername & 0x8){
-            setpixel(self, x0 - y, y0 + x, c);
-            setpixel(self, x0 - x, y0 + y, c); 
+            if (0 <= (x0 - y) && (x0 - y) < self->width && 0 <= (y0 + x) && (y0 + x) < self->height)
+                setpixel(self, x0 - y, y0 + x, c);
+            if (0 <= (x0 - x) && (x0 - x) < self->width && 0 <= (y0 + y) && (y0 + y) < self->height)
+                setpixel(self, x0 - x, y0 + y, c); 
         }
         if (cornername & 0x1){
-            setpixel(self, x0 - y, y0 - x, c);
-            setpixel(self, x0 - x, y0 - y, c);             
+            if (0 <= (x0 - y) && (x0 - y) < self->width && 0 <= (y0 - x) && (y0 - x) < self->height)
+                setpixel(self, x0 - y, y0 - x, c);
+            if (0 <= (x0 - x) && (x0 - x) < self->width && 0 <= (y0 - y) && (y0 - y) < self->height)
+                setpixel(self, x0 - x, y0 - y, c);             
         }
         x += 1;
     }
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(framebuf_circle_quarter_obj, 6, 6, framebuf_circle_quarter);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(framebuf_quarter_circle_obj, 6, 6, framebuf_quarter_circle);
 
 STATIC mp_obj_t framebuf_fill_circle(size_t n_args, const mp_obj_t *args) {
     mp_obj_framebuf_t *self = MP_OBJ_TO_PTR(args[0]);
@@ -724,25 +744,25 @@ STATIC mp_obj_t framebuf_round_rect(size_t n_args, const mp_obj_t *args) {
     _args[3] = mp_obj_new_int(r);
     _args[4] = mp_obj_new_int(1);
     _args[5] = mp_obj_new_int(c);
-    framebuf_circle_quarter(6, _args);
+    framebuf_quarter_circle(6, _args);
     _args[1] = mp_obj_new_int(x + w - r - 1);
     _args[2] = mp_obj_new_int(y + r);
     _args[3] = mp_obj_new_int(r);
     _args[4] = mp_obj_new_int(2);
     _args[5] = mp_obj_new_int(c);
-    framebuf_circle_quarter(6, _args);
+    framebuf_quarter_circle(6, _args);
     _args[1] = mp_obj_new_int(x + w - r - 1);
     _args[2] = mp_obj_new_int(y + h - r - 1);
     _args[3] = mp_obj_new_int(r);
     _args[4] = mp_obj_new_int(4);
     _args[5] = mp_obj_new_int(c);
-    framebuf_circle_quarter(6, _args);
+    framebuf_quarter_circle(6, _args);
     _args[1] = mp_obj_new_int(x + r);
     _args[2] = mp_obj_new_int(y + h - r - 1);
     _args[3] = mp_obj_new_int(r);
     _args[4] = mp_obj_new_int(8);
     _args[5] = mp_obj_new_int(c);
-    framebuf_circle_quarter(6, _args);
+    framebuf_quarter_circle(6, _args);
 
     return mp_const_none;
 }
@@ -890,8 +910,8 @@ STATIC const mp_rom_map_elem_t framebuf_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_rect), MP_ROM_PTR(&framebuf_rect_obj) },
     { MP_ROM_QSTR(MP_QSTR_line), MP_ROM_PTR(&framebuf_line_obj) },
     { MP_ROM_QSTR(MP_QSTR_circle), MP_ROM_PTR(&framebuf_circle_obj) },
-    { MP_ROM_QSTR(MP_QSTR_drawCircleHelper), MP_ROM_PTR(&framebuf_circle_quarter_obj) },
-    { MP_ROM_QSTR(MP_QSTR_quarter_circle), MP_ROM_PTR(&framebuf_circle_quarter_obj) },
+    { MP_ROM_QSTR(MP_QSTR_drawCircleHelper), MP_ROM_PTR(&framebuf_quarter_circle_obj) },
+    { MP_ROM_QSTR(MP_QSTR_quarter_circle), MP_ROM_PTR(&framebuf_quarter_circle_obj) },
     { MP_ROM_QSTR(MP_QSTR_fill_circle), MP_ROM_PTR(&framebuf_fill_circle_obj) },
     { MP_ROM_QSTR(MP_QSTR_triangle), MP_ROM_PTR(&framebuf_triangle_obj) },
     { MP_ROM_QSTR(MP_QSTR_fill_triangle), MP_ROM_PTR(&framebuf_fill_triangle_obj) },

@@ -37,7 +37,9 @@ class Font(object):
 
     def GetCharacterData(self, c):
         uni = ord(c)
-        if uni not in range(self.first_char, self.last_char):
+        # if uni not in range(self.first_char, self.last_char):
+        #     return None
+        if (uni < self.first_char or uni > self.last_char):
             return None
         char_info_address = self.first_char_info_address + \
             (uni - self.first_char) * 6
