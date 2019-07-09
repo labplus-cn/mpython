@@ -271,6 +271,12 @@ CODEC_SRC_C = $(addprefix codec/,\
 	decoder/helix_mp3_decoder.c \
 	)
 
+# 蓝牙功能模块
+BLUETOOTH_SRC_C = ble/modbluetooth.c
+INC_ESPCOMP += -I$(ESPCOMP)/bt/include
+INC_ESPCOMP += -I$(ESPCOMP)/bt/bluedroid/api/include/api
+
+
 OBJ_MP =
 OBJ_MP += $(PY_O)
 OBJ_MP += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
@@ -280,9 +286,10 @@ OBJ_MP += $(addprefix $(BUILD)/, $(DRIVERS_SRC_C:.c=.o))
 
 OBJ_MP += $(addprefix $(BUILD)/, $(STARTUP_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(CODEC_SRC_C:.c=.o))
+OBJ_MP += $(addprefix $(BUILD)/, $(BLUETOOTH_SRC_C:.c=.o))
 
 # List of sources for qstr extraction
-SRC_QSTR += $(SRC_C) $(EXTMOD_SRC_C) $(LIB_SRC_C) $(DRIVERS_SRC_C) $(CODEC_SRC_C)
+SRC_QSTR += $(SRC_C) $(EXTMOD_SRC_C) $(LIB_SRC_C) $(DRIVERS_SRC_C) $(CODEC_SRC_C) $(BLUETOOTH_SRC_C)
 # Append any auto-generated sources that are needed by sources listed in SRC_QSTR
 SRC_QSTR_AUTO_DEPS +=
 
@@ -1022,6 +1029,8 @@ APP_LD_ARGS += -L$(dir $(LIBSTDCXX_FILE_NAME)) -lstdc++
 APP_LD_ARGS += $(LIBC_LIBM)
 APP_LD_ARGS += $(ESPCOMP)/esp32/libhal.a
 APP_LD_ARGS += -L$(ESPCOMP)/esp32/lib -lcore -lmesh -lnet80211 -lphy -lrtc -lpp -lwpa -lsmartconfig -lcoexist -lwps -lwpa2 -lespnow
+APP_LD_ARGS += -L$(ESPCOMP)/bt/lib -lbtdm_app
+APP_LD_ARGS += $(shell pwd)/ble/libbt.a $(shell pwd)/ble/libmpython_ble.a
 APP_LD_ARGS += $(OBJ)
 APP_LD_ARGS += $(LIB)
 APP_LD_ARGS += --end-group
