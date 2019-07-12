@@ -12,6 +12,7 @@ mPython类库
     servo.rst   
     gui.rst   
     audio.rst   
-    radio.rst   
+    radio.rst  
+    sdcard.rst 
     bluetooth.rst
 

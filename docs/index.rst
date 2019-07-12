@@ -103,10 +103,12 @@ mPython类库
 - :mod:`urequests` --------- HTTP客户端的相关功能函数
 - :mod:`umqtt.simple` --------- 简单MQTT客户端功能函数
 - :mod:`servo` --------- 舵机驱动
-- :mod:`gui` --------- 提供GUI类的绘制元素
-- :mod:`audio` --------- 提供音频播放录音
+- :mod:`gui` --------- GUI类的绘制元素
+- :mod:`audio` --------- 音频播放录音
 - :mod:`radio` --------- 无线广播
+- :mod:`sdcard` --------- 挂载SD卡
 - :mod:`bluetooth` --------- 提供无线蓝牙功能
+
 
 
 ---------
