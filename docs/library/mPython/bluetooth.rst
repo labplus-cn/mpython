@@ -24,20 +24,20 @@ ble类, 遵循BLE HID 规范。可实现模拟无线蓝牙HID设备(如鼠标，
 
 .. py:method:: ble.bluetooth_start_advertising()
 
-    BLE设备开启广播。开启后,可被蓝牙主机设备搜索。
+    BLE客户端设备开启广播。开启后,可被BLE主机设置搜索。
 
 
 .. py:method:: ble.bluetooth_stop_advertising()
 
-    BLE设备关闭广播
+    BLE客户端设备关闭广播
 
 .. py:method:: ble.board_send(buf)
 
-    发送字节缓存
+    BLE客户端向BLE主机端发送字节缓存
 
 .. py:method:: ble.board_register_output_callback()
 
-    接收数据回调函数
+    BLE客户端接收来自BLE主机端的数据的回调函数
 
 .. py:method:: ble.hidd_send_consumer(ble.HID_CONSUMER_xxx, True)
 
