@@ -91,7 +91,7 @@
     audio.recorder_init()
     rgb[0] = (255, 0, 0)  # 用LED指示录音开始结束 
     rgb.write()
-    audio.xunfei_iat_record(5)
+    audio.xunfei_iat_record('test.wav',5)
     rgb[0] = (0, 0, 0)  
     rgb.write()
     audio.recorder_deinit()
