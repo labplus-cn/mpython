@@ -77,7 +77,7 @@
     :align: center
     :scale: 60 %
 
-使用前，导入mpython、json、urequests、Timer和天气图标seniverse模块（:download:`seniverse模块 </../examples/06.网络/心知天气/seniverse.py>`，将seniverse模块文件导入掌控板文件根目录）::
+使用前，导入mpython、json、urequests、Timer和天气图标seniverse模块（:download:`seniverse模块 </../examples/network/心知天气/seniverse.py>`，将seniverse模块文件导入掌控板文件根目录）::
 
     from mpython import*
     import json

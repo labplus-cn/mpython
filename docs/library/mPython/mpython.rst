@@ -204,6 +204,11 @@ rgb对象
 
 填充所有LED像素。
 
+.. method:: rgb.brightness(brightness)
+
+亮度调节,范围0~1.0
+
+
 .. _oled:
 
 oled对象

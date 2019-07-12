@@ -88,16 +88,10 @@ M1、M2,正转速度设为80::
 
 要播放网络上mp3音频文件，需要知道音频的URL地址。目前，大部分的音乐网受版权保护，并不直接提供音乐的URL，你可以通过一些插件爬取音频的URL地址。
 
-播放网络MP3音频::
 
-    import audio                                    # 导入audio
-    from mpython import wifi                        # 导入wifi
-
-    mywifi=wifi()                                   # 实例wifi类
-    mywifi.connectWiFi('ssid','password')           # 连接 WiFi 网络
-    
-    audio.player_init()                                   # 播放初始化
-    audio.play("http://wiki.labplus.cn/images/4/4e/Music_test.mp3")          # 播放网络音频url
+.. literalinclude:: /../examples/audio/audio_play.py
+    :caption: 播放MP3音频
+    :linenos:
 
 .. Note:: 
 
@@ -143,42 +137,12 @@ TTS是Text To Speech的缩写，即“从文本到语音”，是人机对话的
 
 .. Attention:: TTS功能依赖网络，使用是注意先连接网络并保持网络通畅！
 
-::
 
-    from mpython import *                                       # 导入mpython模块
-    import audio                                                # 导入audio模块
-    import ntptime                                              # 导入授时模块
-
-    my_wifi=wifi()                                              # 实例wifi
-    my_wifi.connectWiFi('','')                                  # 连接 WiFi 网络
-
-    APPID = ""                                                  # 讯飞应用ID
-    API_KEY = ""                                                # 讯飞应用的api key
-
-    while True:                                                 # 授时,并校准RTC
-        try:
-            ntptime.settime()
-        except OSError :
-            pass
-        else:
-            break
+.. literalinclude:: /../examples/audio/tts.py
+    :caption: TTS文字转语音示例
+    :linenos:
 
 
-    # 沁园春·长沙 诗词
-    poem=   "独立寒秋，湘江北去，橘子洲头。  \
-            看万山红遍，层林尽染；漫江碧透，百舸争流。\
-            鹰击长空，鱼翔浅底，万类霜天竞自由。\
-            怅寥廓，问苍茫大地，谁主沉浮？\
-            携来百侣曾游。忆往昔峥嵘岁月稠。\
-            恰同学少年，风华正茂；书生意气，挥斥方遒。\
-            指点江山，激扬文字，粪土当年万户侯。\
-            曾记否，到中流击水，浪遏飞舟？" 
-
-
-    audio.player_init()                                   # 播放初始化
-
-    audio.xunfei_tts_config(API_KEY ,APPID)               # 讯飞配置
-    audio.xunfei_tts(poem)                                # TTS转换
 
 
 首先使用 ``ntptime.settime()`` 校准RTC时钟。然后 ``player_init()`` 初始化。用 ``xunfei_tts_config(api_key, appid )`` , ``appid`` , ``api_key`` 为必选参数,在讯飞平台的应用的APPID、API_KET 。然后使用 ``xunfei_tts(text)``

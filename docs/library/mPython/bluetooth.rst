@@ -5,15 +5,18 @@
 :mod:`bluetooth` --- 提供无线蓝牙功能
 ==================================================
 
-该模块提供ble蓝牙、HID模拟设备功能。
+该模块提供ble蓝牙通讯、HID模拟设备功能。
 
 
 ble类
 -------
 
-ble类, 遵循BLE HID 规范。可实现模拟无线蓝牙HID设备(如鼠标，键盘，游戏手柄等人机交互设备)。
+ble类, 支持客户端与主机端的BLE通讯及HID功能。HID功能,遵循BLE HID规范,可实现模拟无线蓝牙HID设备(如鼠标，键盘，游戏手柄等人机交互设备)。
 
 .. class:: ble
+
+BLE 通讯
+~~~~~~~~~~~~
 
 .. py:method:: ble.init(name="mpython")
 
@@ -22,22 +25,41 @@ ble类, 遵循BLE HID 规范。可实现模拟无线蓝牙HID设备(如鼠标，
         - ``name`` - 客户端设备名称,字符串类型。
 
 
+.. py:method:: ble.board_send(buf)
+
+<<<<<<< Updated upstream
+    BLE客户端设备开启广播。开启后,可被BLE主机设置搜索。
+=======
+    BLE客户端向主机端发送字节缓存。
+>>>>>>> Stashed changes
+
+.. py:method:: ble.board_register_output_callback(f)
+
+    接收BLE主机端的数据的回调函数, `f` 为回调函数,函数定义如下, ``f(bytearray)`` 。
+
+<<<<<<< Updated upstream
+    BLE客户端设备关闭广播
+=======
+HID
+~~~~~~~~~~~~
+>>>>>>> Stashed changes
+
 .. py:method:: ble.bluetooth_start_advertising()
 
-    BLE客户端设备开启广播。开启后,可被BLE主机设置搜索。
+    BLE设备开启广播。开启后,可被蓝牙主机设备搜索。
 
+<<<<<<< Updated upstream
+    BLE客户端向BLE主机端发送字节缓存
+=======
+>>>>>>> Stashed changes
 
 .. py:method:: ble.bluetooth_stop_advertising()
 
-    BLE客户端设备关闭广播
-
-.. py:method:: ble.board_send(buf)
-
-    BLE客户端向BLE主机端发送字节缓存
-
-.. py:method:: ble.board_register_output_callback()
-
+<<<<<<< Updated upstream
     BLE客户端接收来自BLE主机端的数据的回调函数
+=======
+    BLE设备关闭广播
+>>>>>>> Stashed changes
 
 .. py:method:: ble.hidd_send_consumer(ble.HID_CONSUMER_xxx, True)
 

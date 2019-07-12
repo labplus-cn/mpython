@@ -49,7 +49,7 @@ UI类
     - ``frame`` -当frame=1时,显示外框；当frame=0时,不显示外框。
 
 Clock类
-+++++
++++++++++
 
 提供模拟钟表显示功能
 
@@ -62,16 +62,16 @@ Clock类
     - ``radius`` -钟表半径
 
 
-.. method:: settime()
+.. method:: Clock.settime()
 
 获取本地时间并设置模拟钟表时间
 
 
-.. method:: drawClock()
+.. method:: Clock.drawClock()
 
 绘制钟表
 
-.. method:: clear()
+.. method:: Clock.clear()
 
 清除钟表
 
@@ -93,3 +93,34 @@ Clock类
     tim1 = Timer(1)
 
     tim1.init(period=1000, mode=Timer.PERIODIC, callback=lambda _:Refresh())
+
+
+
+Image
++++++++++
+
+支持 `pbm` 和 `bmp` 1bit的图片格式。
+
+.. Class:: Image()
+
+构建Image对象
+
+.. method:: Image.load(path, invert=0)
+
+
+加载 `pbm` 或 `bmp` 图片格式文件,返回该图片的 :class:`framebuf.FrameBuffer` 对象。   
+
+- ``path`` - 图片文件路径
+- ``invert`` - 像素点反转。0表示不反转,1则反转。
+
+
+示例::
+
+    from mpython import *
+    from gui import Image
+
+    image = Image()
+    fb = image.load('clown_1.bmp',1 )
+
+    oled.blit(fb, 0, 0)
+    oled.show()

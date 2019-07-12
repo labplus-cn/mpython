@@ -22,31 +22,11 @@ http协议采用的是请求/响应模型，浏览器或客户端发出请求，
 
 这是一个json数组，包含有IP地址等信息。我们通过访问这个url，获取到这些信息然后返回字符串text，通过ujson.loads(str)把字符串给生成dict字典类型，就可以直接读关键字（key）获取对应的值（value）。
 
-例：将网站中的部分信息显示在OLED显示屏上
-::
-    from mpython import*
-    import json
-    import urequests           # urequests模块是一个用于网络访问的模块
 
-    mywifi=wifi()
-    mywifi.connectWiFi('yourESSID', 'yourpassword')    #连接 WiFi 网络
+.. literalinclude:: /../examples/network/ip_parsing_json.py
+    :caption: 将网站中的部分信息显示在OLED显示屏上
+    :linenos:
 
-    url_ip ="http://ip-api.com/json/"                  #添加请求地址
-
-    rsp=urequests.get(url_ip)                          #发送get请求
-
-    ipJson=rsp.text
-
-    ipDict=json.loads(ipJson)
-
-    oled.DispChar('国家:%s' % ipDict['country'],0,5)     #将国家信息显示到OLED显示屏上
-    oled.show()
-
-    oled.DispChar('城市:%s' % ipDict['city'],0,25)       #将城市信息显示到OLED显示屏上
-    oled.show()
-
-    oled.DispChar('IP:%s' % ipDict['query'],0,45)        #将IP地址信息显示到OLED显示屏上
-    oled.show()
 
 .. image:: /images/tutorials/json.jpg
     :align: center

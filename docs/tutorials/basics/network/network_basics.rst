@@ -43,7 +43,7 @@ STA模式
 
 .. Note:: 返回值4元组: (IP address, netmask, gateway, DNS)
     
-``ifconfig()`` 带参数时，配置静态IP。例如:
+``ifconfig()`` 带参数时，配置静态IP。例如::
 
     mywifi.sta.ifconfig(('192.168.0.4', '255.255.255.0', '192.168.0.1', '192.168.0.1'))
 

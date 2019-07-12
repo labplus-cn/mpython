@@ -8,13 +8,15 @@
 
 该模块提供音频录音播放功能,使用P8和P9引脚作为音频解码输出。
 
-.. Attention:: 目前只实现音频播放功能
 
 函数
 ----------
 
 基础音频函数
 ++++++++++++
+
+播放
+~~~~~~~~~
 
 .. py:method:: audio.player_init()
 
@@ -30,19 +32,10 @@
 
     - ``url`` (str): 音频文件路径,类型为字符串。可以是本地路径地址,也可以是网络上的URL地址。 
 
-::
+.. literalinclude:: /../examples/audio/audio_play.py
+    :caption: 播放MP3音频
+    :linenos:
 
-
-    from mpython import wifi                    # 导入wifi类
-    import audio                                # 导入音频播放
-
-    mywifi=wifi()                               # 实例wifi
-    mywifi.connectWiFi('ssid','password')       # 连接wifi网络到互联网
-
-    player_init()                               # 音频初始化
-
-    play('music.mp3')                           # 本地音频解码
-    play('http://wiki.labplus.cn/images/4/4e/Music_test.mp3')   # 网络音频解码
 
 .. py:method:: audio.set_volume(vol)
 
@@ -72,29 +65,47 @@
 
 音频播放结束后,释放缓存
 
+
+录音
+~~~~~~~~~
+
+.. py:method:: audio.recorder_init()
+
+录音初始化
+
+.. py:method:: audio.record(file_name, record_time = 5)
+
+录制音频,并以 `wav` 格式存储。
+
+- ``file_name`` - wav文件存储路径
+- ``record_time`` - 录音时长,默认5秒。录音时长受文件系统空间限制,最大时长依实际情况而定。
+
+.. py:method:: audio.recorder_deinit()
+
+
 ----------------------------------------------
 
 
 .. _tts:
 
-TTS
-++++++++
+语音合成(TTS)
++++++++++++++
 
 基于讯飞TTS语音合成API的文字转语音功能,将文字信息转化为声音信息，给掌控板配上“嘴巴”。其合成音在音色、自然度等方面的表现均接近甚至超过了人声。目前应用于掌控拓展板。
 
 
 
-.. py:method:: audio.xunfei_tts_config( api_key,appid, voice_name="aisxping")
+.. py:method:: audio.xunfei_tts_config( api_key,app_id, voice_name="aisxping")
 
-| 讯飞tts配置。由于该功能依赖讯飞API,在使用前需要先将掌控板连接至互联网,并设置RTC时钟至准确时间。
+| 讯飞tts配置,使用前须要用 ``audio.player_init()`` 播放初始化。 由于该功能依赖讯飞API,在使用前需要先将掌控板连接至互联网,并设置RTC时钟至准确时间。
 | 讯飞文字转语音功能,使用该功能前需要在讯飞开发平台 https://www.xfyun.cn/ 注册账号,步骤如下：
 |     
 | 1. 注册账号
-| 2. 新建产品,选择“在线语音合成”服务。
+| 2. 在产品中,选择“在线语音合成”服务。
 | 3. 在IP白名单中添加网络的公网IP。
 
     - ``api_key`` (str): 讯飞应用的APIKey
-    - ``appid`` (str): 讯飞应用的APPID
+    - ``app_id`` (str): 讯飞应用的APPID
     - ``voice_name`` (str): 发音人,默认"aisxping";可选有"xiaoyan","aisjiuxu","aisjinger","aisbabyxu"
     
 
@@ -105,40 +116,35 @@ TTS
 
     - ``text`` (str): 转换的文本,支持中英文。
 
-
-::
-
-    from mpython import *                                       # 导入mpython模块
-    import audio                                                # 导入audio模块
-    import ntptime                                              # 导入授时模块
-
-    my_wifi=wifi()                                              # 实例wifi
-    my_wifi.connectWiFi('','')                                  # 连接 WiFi 网络
-
-    APPID = ""                                                  # 讯飞应用ID
-    API_KEY = ""                                                # 讯飞应用的api key
-
-    while True:                                                 # 授时,并校准RTC
-        try:
-            ntptime.settime()
-        except OSError :
-            pass
-        else:
-            break
+.. literalinclude:: /../examples/audio/tts.py
+    :caption: TTS文字转语音示例
+    :linenos:
 
 
-    # 沁园春·长沙 诗词
-    poem=   "独立寒秋，湘江北去，橘子洲头。  \
-            看万山红遍，层林尽染；漫江碧透，百舸争流。\
-            鹰击长空，鱼翔浅底，万类霜天竞自由。\
-            怅寥廓，问苍茫大地，谁主沉浮？\
-            携来百侣曾游。忆往昔峥嵘岁月稠。\
-            恰同学少年，风华正茂；书生意气，挥斥方遒。\
-            指点江山，激扬文字，粪土当年万户侯。\
-            曾记否，到中流击水，浪遏飞舟？" 
+语音听写(IAT)
++++++++++++
+
+基于 `讯飞TTS语音听写 <https://www.xfyun.cn/services/voicedictation>`_ ,将语音(≤60秒)转换成对应的文字信息，让机器能够“听懂”人类语言，相当于给机器安装上“耳朵”，使其具备“能听”的功能。
 
 
-    audio.player_init()                                   # 播放初始化
+.. py:method:: audio.xunfei_iat_config(api_key, app_id)
 
-    audio.xunfei_tts_config(API_KEY ,APPID)               # 讯飞配置
-    audio.xunfei_tts(poem)                                # TTS转换
+| 讯飞iat配置,使用前须要用 ``audio.recorder_init()`` 录音初始化。由于该功能依赖讯飞API,在使用前需要先将掌控板连接至互联网,并设置RTC时钟至准确时间。
+| 讯飞语音听写功能,使用该功能前需要在讯飞开发平台 https://www.xfyun.cn/ 注册账号,步骤如下：
+|     
+| 1. 注册账号(已有账号,略过)
+| 2. 在产品中,选择“语音听写”服务。
+| 3. 在IP白名单中添加网络的公网IP。
+
+    - ``api_key`` (str): 讯飞应用的APIKey
+    - ``app_id`` (str): 讯飞应用的APPID
+   
+.. py:method:: audio.xunfei_iat_record()
+
+IAT录音,如要设置录音时长,带参数传入,单位为秒。不带参数默认为录音5秒。该函数为阻塞型,当录音结束后才释放,执行后续的命令。
+
+.. py:method:: audio.xunfei_iat()
+
+将iat录音传至讯飞平台处理,处理结束后,将返回语音转文字的json内容。
+
+

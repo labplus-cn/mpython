@@ -12,7 +12,7 @@
 文本显示
 -------
 
-.. literalinclude:: /../examples/01.显示屏/helloworld.py
+.. literalinclude:: /../examples/display/helloworld.py
     :caption: 在OLED显示屏上显示hello world的中文或其他语言文本:
     :linenos:
 
@@ -62,7 +62,7 @@ OLED显示屏还支持设置屏幕的亮度::
 基本形状绘制
 -------
 
-.. literalinclude:: /../examples/01.显示屏/drawline.py
+.. literalinclude:: /../examples/display/drawline.py
     :caption: 例：绘制线条。
     :linenos:
 
@@ -141,7 +141,7 @@ OLED可绘制一些点、直线、矩形等形状。
 
 将取模数据赋值给bmp数组中，然后显示在OLED显示屏上。
 
-.. literalinclude:: /../examples/01.显示屏/chinamap.py
+.. literalinclude:: /../examples/display/chinamap.py
     :linenos:
 
 .. image:: /images/tutorials/earth.png
@@ -175,11 +175,11 @@ pbm数据格式::
 pbm数据格式的前三行定于为图像标注。然后才是图像数据。第一行表示图像格式，第二行是注释，通常是用于创建它的程序。第三行是图像尺寸。
 后面的才是我们需要的图像数据。数据存储每像素bit流，``1`` 表示像素点打开，``0`` 表示像素点关闭。
 
-:download:`动态显示素材下载 </../examples/01.显示屏/素材/scatman.zip>`
+:download:`动态显示素材下载 </../examples/display/素材/scatman.zip>`
 
 首先将预先准备好的每帧的pbm图片上传至掌控板的文件系统的根目录下。
 
-.. literalinclude:: /../examples/01.显示屏/scatman.py
+.. literalinclude:: /../examples/display/scatman.py
     :caption: 逐帧读取图像数据流并在OLED显示屏上显示出来:
     :linenos:
 

@@ -147,7 +147,7 @@ page about scientific pitch notation`_.  例如，middle "C"是 ``c4`` 和concer
         Plays a simple tune using the Micropython music module.
         This example requires a speaker/buzzer/headphones connected to P0 and GND.
     """
-    from microbit import *
+    from mpython import *
     import music
 
     # play Prelude in C.

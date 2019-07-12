@@ -46,7 +46,7 @@ UDP编程的客户端一般步骤是：
 UDP客户端的示例:
 
 
-.. literalinclude:: /../examples/06.网络/udp_client.py
+.. literalinclude:: /../examples/network/udp_client.py
     :caption: UDP客户端的示例
     :linenos:
 
@@ -65,7 +65,7 @@ UDP編程的服务器端一般步骤是：
 5. 关闭连接
 
 
-.. literalinclude:: /../examples/06.网络/udp_server.py
+.. literalinclude:: /../examples/network/udp_server.py
     :caption: UDP服务端的示例
     :linenos:
 
