@@ -82,8 +82,22 @@
 
 .. py:method:: audio.recorder_deinit()
 
+录音结束后释放资源
 
 ----------------------------------------------
+
+示例-录音::
+
+    import audio
+
+    audio.recorder_init()
+    rgb[0] = (255, 0, 0)  # 用LED指示录音开始结束 
+    rgb.write()
+    audio.xunfei_iat_record(5)
+    rgb[0] = (0, 0, 0)  
+    rgb.write()
+    audio.recorder_deinit()
+
 
 
 .. _tts:
