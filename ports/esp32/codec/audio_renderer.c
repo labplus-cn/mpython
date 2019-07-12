@@ -59,6 +59,7 @@ static void init_i2s(renderer_config_t *config)
         .communication_format = comm_fmt,
         .dma_buf_count = 16,                     //2,             //32 number of buffers, 128 max.
         .dma_buf_len = 128,                      //1024,          //64 size of each buffer
+        .use_apll = true,
         .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1 // Interrupt level 1 ESP_INTR_FLAG_LEVEL0?
     };
 
