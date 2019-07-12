@@ -134,13 +134,6 @@ Python中通过一个名为的模块提供了这样的功能os。
     import os
     os.remove('filename.txt')
 
-最后，有时在读取文件之前了解文件的大小是有用的。要实现这个size功能。
-与remove函数一样，它采用一个字符串来表示您想知道其大小的文件的文件名。
-它返回一个整数（整数），告诉你文件占用的字节数::
-
-    import os
-    file_size = os.size('a_big_file.txt')
-
 os常用的方法::
 
     os.chdir(path)          #修改路径
