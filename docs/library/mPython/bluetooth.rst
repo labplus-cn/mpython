@@ -24,42 +24,23 @@ BLE 通讯
 
         - ``name`` - 客户端设备名称,字符串类型。
 
+.. py:method:: ble.bluetooth_start_advertising()
+
+    BLE客户端设备开启广播。开启后,可被BLE主机设置搜索。
 
 .. py:method:: ble.board_send(buf)
 
-<<<<<<< Updated upstream
-    BLE客户端设备开启广播。开启后,可被BLE主机设置搜索。
-=======
-    BLE客户端向主机端发送字节缓存。
->>>>>>> Stashed changes
+    BLE客户端向BLE主机端发送字节缓存
+
 
 .. py:method:: ble.board_register_output_callback(f)
 
     接收BLE主机端的数据的回调函数, `f` 为回调函数,函数定义如下, ``f(bytearray)`` 。
 
-<<<<<<< Updated upstream
-    BLE客户端设备关闭广播
-=======
-HID
-~~~~~~~~~~~~
->>>>>>> Stashed changes
-
-.. py:method:: ble.bluetooth_start_advertising()
-
-    BLE设备开启广播。开启后,可被蓝牙主机设备搜索。
-
-<<<<<<< Updated upstream
-    BLE客户端向BLE主机端发送字节缓存
-=======
->>>>>>> Stashed changes
 
 .. py:method:: ble.bluetooth_stop_advertising()
 
-<<<<<<< Updated upstream
-    BLE客户端接收来自BLE主机端的数据的回调函数
-=======
-    BLE设备关闭广播
->>>>>>> Stashed changes
+    BLE客户端设备关闭广播
 
 .. py:method:: ble.hidd_send_consumer(ble.HID_CONSUMER_xxx, True)
 
