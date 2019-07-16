@@ -212,7 +212,8 @@ STATIC mp_obj_t audio_player_init(void)
         renderer_config->sample_rate = 44100;
         renderer_config->sample_rate_modifier = 1.0;
         renderer_config->mode = DAC_BUILT_IN; 
-        renderer_config->i2s_channal_nums = 2;                                                
+        renderer_config->i2s_channal_nums = 2; 
+        renderer_config->use_apll = false;                                               
         renderer_init(renderer_config); //I2S参数配置
         // ESP_LOGE(TAG, "2. Create renderer, RAM left: %d", esp_get_free_heap_size());
         /* 3. Create http raram handle.*/
@@ -470,7 +471,8 @@ STATIC mp_obj_t audio_recorder_init(void)
         renderer_config->sample_rate_modifier = 1.0;
         renderer_config->mode = ADC_BUILT_IN; 
         renderer_config->i2s_channal_nums = 1;    
-        renderer_config->i2s_read_buff_size = 3*1024;                                          
+        renderer_config->i2s_read_buff_size = 3*1024;
+        renderer_config->use_apll = true;                                          
         renderer_init(renderer_config); 
         // ESP_LOGE(TAG, "Create renderer, RAM left: %d", esp_get_free_heap_size());
         renderer_start();

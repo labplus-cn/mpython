@@ -37,6 +37,7 @@ typedef struct
     uint8_t i2s_channal_nums;
 
     uint32_t i2s_read_buff_size;
+    bool use_apll;
 } renderer_config_t;
 
 /* ESP32 is Little Endian, I2S is Big Endian.
