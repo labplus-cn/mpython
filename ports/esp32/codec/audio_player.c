@@ -56,25 +56,37 @@ void audio_player_begin(void)
 int create_decode_task(player_t *player)
 {
     int err = 0;
-    http_param_t *http_param = get_http_param_handle();
-    switch(http_param->content_type){ //创建不同的解码任务
-        case OCTET_STREAM:
-            err = -1;
-        break;
-        case AUDIO_AAC:
-            err = -1;
-        break;
-        case AUDIO_MP4:
-            err = -1;
-        break;
-        case AUDIO_MPEG:
-            xTaskCreate(mp3_decoder_task, "mp3_decoder_task", HELIX_DECODER_TASK_STACK_DEPTH, player, ESP_TASK_PRIO_MIN + 1, &mp3_decode_task_handel );
-            // ESP_LOGE(TAG, "4. mp3 decoder task builded, RAM left: %d", esp_get_free_heap_size()); 
-        break;
-        default:
-            err = -1;
-        break;
+    if( player_instance->file_type == WEB_TYPE)
+    {
+        http_param_t *http_param = get_http_param_handle();
+        switch(http_param->content_type){ //创建不同的解码任务
+            case OCTET_STREAM:
+                err = -1;
+            break;
+            case AUDIO_AAC:
+                err = -1;
+            break;
+            case AUDIO_MP4:
+                err = -1;
+            break;
+            case AUDIO_MPEG:
+                xTaskCreate(mp3_decoder_task, "mp3_decoder_task", HELIX_DECODER_TASK_STACK_DEPTH, player, ESP_TASK_PRIO_MIN + 1, &mp3_decode_task_handel );
+                // ESP_LOGE(TAG, "4. mp3 decoder task builded, RAM left: %d", esp_get_free_heap_size()); 
+            break;
+            default:
+                err = -1;
+            break;
+        }
     }
+    else if(player_instance->file_type == LOCAL_TYPE)
+    {
+        if(player->media_stream.content_type == AUDIO_MPEG){
+                xTaskCreate(mp3_decoder_task, "mp3_decoder_task", HELIX_DECODER_TASK_STACK_DEPTH, player, ESP_TASK_PRIO_MIN + 1, &mp3_decode_task_handel );
+                // ESP_LOGE(TAG, "4. mp3 decoder task builded, RAM left: %d", esp_get_free_heap_size()); 
+        }
+
+    }
+
     return err;
 }
 
