@@ -24,7 +24,7 @@ BLE 通讯
 
         - ``name`` - 客户端设备名称,字符串类型。
 
-.. py:method:: ble.bluetooth_start_advertising()
+.. py:method:: ble.start_advertising()
 
     BLE客户端设备开启广播。开启后,可被BLE主机设置搜索。
 
@@ -38,7 +38,7 @@ BLE 通讯
     接收BLE主机端的数据的回调函数, `f` 为回调函数,函数定义如下, ``f(bytearray)`` 。
 
 
-.. py:method:: ble.bluetooth_stop_advertising()
+.. py:method:: ble.stop_advertising()
 
     BLE客户端设备关闭广播
 
