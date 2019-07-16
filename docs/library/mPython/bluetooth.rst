@@ -82,7 +82,7 @@ BLE 通讯
     模拟HID键盘设备。
 
     - ``keys`` - 一个或多个按键的数组类型。当数组内成员表示为按下的按键,如要释放按键只需将数组内对应位置的值赋值为0。具体的按键常量详见 :ref:`HID Keyboard ID表<HID Keyboard Usage IDs>` 。 
-    -  ``modifier`` - 键盘组合按键,默认为 `KEY_MASK_NONE` 表示为单按键 ,可以为以下值:
+    -  ``modifier`` - 键盘组合按键,默认为 `KEY_MASK_NONE` 表示为单按键 ,可以为以下值。如要用到2个组合按键,可使用 ``|`` 或逻辑运算,像 `Ctrl` + `Alt` 组合按键时为 `KEY_MASK_L_CTRL | KEY_MASK_L_ALT`
 
         - `KEY_MASK_NONE` - 0
         - `KEY_MASK_L_CTRL` - 1
@@ -99,6 +99,11 @@ BLE 通讯
         # Ctrl + F组合按键
         ble.hidd_send_keyboard([ble.HID_KEY_F],ble.KEY_MASK_L_CTRL)
         # 释放按键
+        ble.hidd_send_keyboard([0])
+
+        # Ctrl + Alt + Del 组合按键
+        ble.hidd_send_keyboard([ble.HID_KEYPAD_DOT],ble.KEY_MASK_L_CTRL | ble.KEY_MASK_L_ALT )
+         # 释放按键
         ble.hidd_send_keyboard([0])
 
         # 单按键 A
@@ -283,14 +288,6 @@ HID Keyboard Usage IDs                    数值    定义
 ``ble.HID_KEY_MUTE``                      127    Keyboard Mute
 ``ble.HID_KEY_VOLUME_UP``                 128    Keyboard Volume up
 ``ble.HID_KEY_VOLUME_DOWN``               129    Keyboard Volume down
-``ble.HID_KEY_LEFT_CTRL``                 224    Keyboard LeftContorl
-``ble.HID_KEY_LEFT_SHIFT``                225    Keyboard LeftShift
-``ble.HID_KEY_LEFT_ALT``                  226    Keyboard LeftAlt
-``ble.HID_KEY_LEFT_GUI``                  227    Keyboard LeftGUI
-``ble.HID_KEY_RIGHT_CTRL``                228    Keyboard LeftContorl
-``ble.HID_KEY_RIGHT_SHIFT``               229    Keyboard LeftShift
-``ble.HID_KEY_RIGHT_ALT``                 230    Keyboard LeftAlt
-``ble.HID_KEY_RIGHT_GUI``                 231    Keyboard RightGUI
 ======================================== ====== ====================================                                                                                                                                                                                                                            
 
 
