@@ -87,6 +87,7 @@
 示例-录音::
 
     import audio
+    from mpython import *
 
     audio.recorder_init()
     rgb[0] = (255, 0, 0)  # 用LED指示录音开始结束 
