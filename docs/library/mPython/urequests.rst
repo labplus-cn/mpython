@@ -42,7 +42,7 @@ Response类
 方法
 ---------
 
-.. method:: request(method, url, data=None, json=None, headers={},params=None)
+.. method:: request(method, url, data=None, json=None, headers={},params=None,files=None)
 
 向服务器发送HTTP请求。
 
@@ -52,6 +52,8 @@ Response类
     - ``json`` - json用于附加到请求的主体。
     - ``headers`` - 要发送的标头字典。
     - ``params`` - 附加到URL的URL参数。如果提供字典或元组列表，则将进行表单编码。
+    - ``files`` - 用于文件上传,类型为2元组,其中定义了文件名,文件路径和content类型。如下,{‘name’, (file directory,content-type)}
+
 
 .. method:: head(url, **kw)
 
