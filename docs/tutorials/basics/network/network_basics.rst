@@ -57,9 +57,9 @@ AP模式
     from mpython import wifi                    # 导入mpython模块的wifi类
 
     mywifi=wifi()                               # 实例wifi
-    mywifi.enable_APWiFi("mpython-wifi", 13)    # 配置并打开AP模式,第一参数:wifi名称,使用信道
+    mywifi.enable_APWiFi(essid = "mpython-wifi", password = "mpython123456")    # 配置并打开AP模式
 
-``wifi.enable_APWiFi(essid,channel=10)`` 用于配置并开启AP模式函数, ``essid`` 参数为wifi名称, ``channel`` 参数为wifi信道。AP模式开启后,其他掌控板或网络设备就能连接该网络,进行网络通信。
+``wifi.enable_APWiFi(essid,password)`` 用于配置并开启AP模式函数, ``essid`` 参数为wifi名称, ``password`` 参数为wifi密码设置。AP模式开启后,其他掌控板或网络设备就能连接该网络,进行网络通信。
 
 .. Attention:: AP模式并不是类似手机的热点功能,设备可以通过热点连接至互联网。这点需要注意。
 

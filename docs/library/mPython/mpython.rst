@@ -426,11 +426,12 @@ wifi类
 
 断开wifi网络连接
 
-.. method:: wifi.enable_APWiFi(essid,channel=10)
+.. method:: wifi.enable_APWiFi(essid,password,channel=10)
 
 开启wifi的无线AP模式
 
  - ``essid`` - 创建WiFi网络名称
+ - ``password`` - 密码
  - ``channel`` -设置wifi使用信道,channel 1~13
 
 .. method:: wifi.disable_APWiFi()
