@@ -25,6 +25,7 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
   - 供电方式：Micro USB供电
   - 工作电压：3.3V
   - 最大工作电流:200mA
+  - 最大负载电流:1000mA
   - 掌控板载
 
     - 三轴加速度计MSA300,测量范围:±2G
