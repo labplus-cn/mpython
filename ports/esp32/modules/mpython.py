@@ -409,14 +409,19 @@ class wifi:
         self.sta.active(False)
         print('disconnect WiFi...')
 
-    def enable_APWiFi(self, essid, channel=10):
+    def enable_APWiFi(self, essid, password=b'',channel=10):
         self.ap.active(True)
-        self.ap.config(essid=essid, channel=channel)
+        if password:
+            authmode=4
+        else:
+            authmode=0
+        print(authmode)
+        self.ap.config(essid=essid,password=password,authmode=authmode, channel=channel)
 
     def disable_APWiFi(self):
-        self.ap.disconnect()
         self.ap.active(False)
         print('disable AP WiFi...')
+
 
 
 # display
