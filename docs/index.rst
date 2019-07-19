@@ -107,7 +107,7 @@ mPython类库
 - :mod:`audio` --------- 音频播放录音
 - :mod:`radio` --------- 无线广播
 - :mod:`sdcard` --------- 挂载SD卡
-- :mod:`bluetooth` --------- 提供无线蓝牙功能
+
 
 
 

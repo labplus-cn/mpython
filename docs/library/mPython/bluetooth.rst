@@ -86,7 +86,7 @@ BLE 通讯
 
         - `KEY_MASK_NONE` - 0
         - `KEY_MASK_L_CTRL` - 1
-        - `KEY_MASK_L_SHIFTL` - 2
+        - `KEY_MASK_L_SHIFT` - 2
         - `KEY_MASK_L_ALT` - 4
         - `KEY_MASK_L_GUI` - 8
         - `KEY_MASK_R_CTRL` - 16
