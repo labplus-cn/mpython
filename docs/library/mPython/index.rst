@@ -14,5 +14,6 @@ mPython类库
     radio.rst  
     sdcard.rst 
     bluebit.rst
+    parrot.rst
 
 

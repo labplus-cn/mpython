@@ -104,10 +104,9 @@ RGB光环板
 blue:bit模块
 +++++++++++
 
-有关blue:bit模块的基本的使用方法，可查阅wiki了解。掌控板使用blue:bit模块，首先要将 ``bluebit.py`` 驱动库上传至文件系统。bluebit for mPython library可在下文地址获取。
+有关blue:bit模块的基本的使用方法，可查阅wiki了解。有关 blue:bit 模块说明,请查阅 :mod:`bluebit` 模块 API说明。
 
-| *bluebit套装Wiki*：http://wiki.labplus.cn/index.php?title=Bluebit
-| *bluebit for mPython library*: https://github.com/labplus-cn/mPython_bluebit
+- *bluebit套装Wiki*：http://wiki.labplus.cn/index.php?title=Bluebit
 
 按键模块
 ~~~~~~

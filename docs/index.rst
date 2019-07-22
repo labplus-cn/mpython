@@ -106,6 +106,8 @@ mPython类库
 - :mod:`audio` --------- 音频播放录音
 - :mod:`radio` --------- 无线广播
 - :mod:`sdcard` --------- 挂载SD卡
+- :mod:`bluebit` --------- blue:bit驱动
+- :mod:`parrot` --------- 掌控拓展板驱动
 
 
 

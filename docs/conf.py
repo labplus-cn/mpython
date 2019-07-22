@@ -29,6 +29,14 @@ import datetime
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+
+sys.path.append(os.path.abspath('../ports/esp32/modules'))
+
+autodoc_mock_imports = ["time", "micropython", "machine",
+                        "framebuf", "ubinascii", "neopixel", "mpython", "random",
+                        "_thread","ustruct"
+                        ]
+
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
