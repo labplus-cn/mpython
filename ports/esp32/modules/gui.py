@@ -2,7 +2,7 @@
 # MIT license; Copyright (c) 2019 Zhang Kaihua(apple_eat@126.com)
 import time, math, struct, gc
 from framebuf import FrameBuffer
-
+import adafruit_miniqr,gc
 
 class UI():
     def __init__(self, oled):
@@ -32,6 +32,20 @@ class UI():
             self.display.fill_rect(x, y + (height - Progress), width, Progress, 1)
 
 
+    def qr_code(self,str,x,y,scale=2):
+        qr = adafruit_miniqr.QRCode(qr_type=3, error_correct=adafruit_miniqr.L)
+        qr.add_data(str)
+        qr.make()
+        for _y in range(qr.matrix.height):    # each scanline in the height
+            for _x in range(qr.matrix.width):
+                if qr.matrix[_x, _y]:
+            
+                    self.display.fill_rect(_x*scale + x,_y*scale + y ,scale,scale,0)
+                else:
+              
+                    self.display.fill_rect(_x*scale + x ,_y*scale + y,scale,scale,1)
+        gc.collect()
+        
 class multiScreen():
     def __init__(self, oled, framelist, w, h):
         self.display = oled
@@ -207,3 +221,4 @@ class Image():
                 pixel_arrays[index] = pixel_byte
 
         return FrameBuffer(pixel_arrays, width, height, 3)
+
