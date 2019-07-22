@@ -48,7 +48,21 @@ UI类
     - ``dir`` -柱状条方向。dir=1时水平方向,dir=0时,垂直方向。
     - ``frame`` -当frame=1时,显示外框；当frame=0时,不显示外框。
 
-.. method:: UI.qr_code(x, y, width, height, progress,dir=1,frame=1)
+.. method:: UI.qr_code(str,x,y,scale=2)
+
+    绘制29*29二维码
+
+    - ``str`` - 二维码数据,类型字符串
+    - ``x`` 、 ``y`` -左上角作为起点坐标
+    - ``scale`` -放大倍数:可以为1,2。默认为2倍防呆。
+
+::
+
+    import gui
+    from mpython import *
+    ui=gui.UI()
+    ui.qr_code('https://mpython.readthedocs.io',0,0)
+    oled.show()
 
 Clock类
 +++++++++
