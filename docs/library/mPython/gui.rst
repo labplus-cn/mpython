@@ -60,7 +60,7 @@ UI类
 
     import gui
     from mpython import *
-    ui=gui.UI()
+    ui=gui.UI(oled)
     ui.qr_code('https://mpython.readthedocs.io',0,0)
     oled.show()
 

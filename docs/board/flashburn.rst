@@ -14,7 +14,10 @@
 选择 **SPIDownload** ，然后浏览并选中刚下载的掌控板固件mpython_v1.3.0.bin，并设置地址是0x00。浏览并选中字库Noto_Sans_CJK_SC_Light16.xbf，并设置0x300000。
 将CrystallFreq设为40M，SPI SPEED 设为40MHz，SPI MODE设为DIO，FLASH SIZE改为64MBit，串口号设置为实际串口，波特率1152000。
 
-.. Caution:: v1.1.1以后的固件版本,firmware烧录起始地址改为0x00!
+.. Caution:: 
+
+    * v1.1.1以后的固件版本,firmware烧录起始地址改为0x00!
+    * v1.5.0以后的固件版本,集成Noto字库!
 
 .. image:: /images/flashburn/flashDownload_2.png
 
