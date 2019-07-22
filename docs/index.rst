@@ -102,7 +102,6 @@ mPython类库
 - :mod:`music` --------- 音乐相关功能函数,兼容micro:bit music 模块
 - :mod:`urequests` --------- HTTP客户端的相关功能函数
 - :mod:`umqtt.simple` --------- 简单MQTT客户端功能函数
-- :mod:`servo` --------- 舵机驱动
 - :mod:`gui` --------- GUI类的绘制元素
 - :mod:`audio` --------- 音频播放录音
 - :mod:`radio` --------- 无线广播

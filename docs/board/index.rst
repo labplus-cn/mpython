@@ -8,5 +8,4 @@
    hardware.rst
    drive.rst
    mpythonX.rst
-   mpython2.rst
    flashburn.rst

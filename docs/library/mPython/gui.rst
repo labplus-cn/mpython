@@ -48,6 +48,8 @@ UI类
     - ``dir`` -柱状条方向。dir=1时水平方向,dir=0时,垂直方向。
     - ``frame`` -当frame=1时,显示外框；当frame=0时,不显示外框。
 
+.. method:: UI.qr_code(x, y, width, height, progress,dir=1,frame=1)
+
 Clock类
 +++++++++
 
