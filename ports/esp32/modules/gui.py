@@ -34,7 +34,7 @@ class UI():
 
     def qr_code(self,str,x,y,scale=2):
         qr = adafruit_miniqr.QRCode(qr_type=3, error_correct=adafruit_miniqr.L)
-        qr.add_data(str)
+        qr.add_data(str.encode())
         qr.make()
         for _y in range(qr.matrix.height):    # each scanline in the height
             for _x in range(qr.matrix.width):
