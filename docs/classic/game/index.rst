@@ -7,6 +7,13 @@
 
 本章将用掌控板和Python编程,复刻经典黑白游戏、缅怀消逝的童年、致敬经典！
 
+|
+.. raw:: html
+
+    <iframe width="700" height="400" src="https://showmore.com/zh/embed/hv7fi80"  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+
+|
 
 .. toctree::
     :maxdepth: 1

@@ -8,20 +8,20 @@
 # V1.1 add oled draw function,add buzz.freq().  by tangliufeng
 # V1.2 add servo/ui class,by tangliufeng
 
-
 from machine import I2C, PWM, Pin, ADC, TouchPad, UART
 from ssd1106 import SSD1106_I2C
-import esp,math,time,network
+import esp, math, time, network
 import ustruct, array
 from neopixel import NeoPixel
 from esp import dht_readinto
-from time import sleep_ms, sleep_us,sleep
+from time import sleep_ms, sleep_us, sleep
 from framebuf import FrameBuffer
 
 i2c = I2C(scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
 
+
 class Font(object):
-    def __init__(self, font_address=0x300000):
+    def __init__(self, font_address=0x400000):
         self.font_address = font_address
         buffer = bytearray(18)
         esp.flash_read(self.font_address, buffer)
@@ -37,7 +37,9 @@ class Font(object):
 
     def GetCharacterData(self, c):
         uni = ord(c)
-        if uni not in range(self.first_char, self.last_char):
+        # if uni not in range(self.first_char, self.last_char):
+        #     return None
+        if (uni < self.first_char or uni > self.last_char):
             return None
         char_info_address = self.first_char_info_address + \
             (uni - self.first_char) * 6
@@ -50,14 +52,17 @@ class Font(object):
         esp.flash_read(ptr_char_data + self.font_address, buffer)
         return buffer
 
+
 class TextMode():
     normal = 1
     rev = 2
     trans = 3
     xor = 4
 
+
 class OLED(SSD1106_I2C):
     """ 128x64 oled display """
+
     def __init__(self):
         super().__init__(128, 64, i2c)
         self.f = Font()
@@ -116,194 +121,14 @@ class OLED(SSD1106_I2C):
                     i = i + 1
             x = x + width + 1
 
-    def circle(self, x0, y0, radius , c):
-        # Circle drawing function.  Will draw a single pixel wide circle with
-        # center at x0, y0 and the specified radius.
-        f = 1 - radius
-        ddF_x = 1
-        ddF_y = -2 * radius
-        x = 0
-        y = radius
-        super().pixel(x0, y0 + radius, c)
-        super().pixel(x0, y0 - radius, c)
-        super().pixel(x0 + radius, y0, c)
-        super().pixel(x0 - radius, y0, c)
-        while x < y:
-            if f >= 0:
-                y -= 1
-                ddF_y += 2
-                f += ddF_y
-            x += 1
-            ddF_x += 2
-            f += ddF_x
-            super().pixel(x0 + x, y0 + y, c)
-            super().pixel(x0 - x, y0 + y, c)
-            super().pixel(x0 + x, y0 - y, c)
-            super().pixel(x0 - x, y0 - y, c)
-            super().pixel(x0 + y, y0 + x, c)
-            super().pixel(x0 - y, y0 + x, c)
-            super().pixel(x0 + y, y0 - x, c)
-            super().pixel(x0 - y, y0 - x, c)
-
-
-    def fill_circle(self, x0, y0, radius, c):
-        # Filled circle drawing function.  Will draw a filled circule with
-        # center at x0, y0 and the specified radius.
-        super().vline(x0, y0 - radius, 2*radius + 1, c)
-        f = 1 - radius
-        ddF_x = 1
-        ddF_y = -2 * radius
-        x = 0
-        y = radius
-        while x < y:
-            if f >= 0:
-                y -= 1
-                ddF_y += 2
-                f += ddF_y
-            x += 1
-            ddF_x += 2
-            f += ddF_x
-            super().vline(x0 + x, y0 - y, 2*y + 1, c)
-            super().vline(x0 + y, y0 - x, 2*x + 1, c)
-            super().vline(x0 - x, y0 - y, 2*y + 1, c)
-            super().vline(x0 - y, y0 - x, 2*x + 1, c)
-
-
-    def triangle(self, x0, y0, x1, y1, x2, y2, c):
-        # Triangle drawing function.  Will draw a single pixel wide triangle
-        # around the points (x0, y0), (x1, y1), and (x2, y2).
-        super().line(x0, y0, x1, y1, c)
-        super().line(x1, y1, x2, y2, c)
-        super().line(x2, y2, x0, y0, c)
-
-
-    def fill_triangle(self, x0, y0, x1, y1, x2, y2, c):
-        # Filled triangle drawing function.  Will draw a filled triangle around
-        # the points (x0, y0), (x1, y1), and (x2, y2).
-        if y0 > y1:
-            y0, y1 = y1, y0
-            x0, x1 = x1, x0
-        if y1 > y2:
-            y2, y1 = y1, y2
-            x2, x1 = x1, x2
-        if y0 > y1:
-            y0, y1 = y1, y0
-            x0, x1 = x1, x0
-        a = 0
-        b = 0
-        y = 0
-        last = 0
-        if y0 == y2:
-            a = x0
-            b = x0
-            if x1 < a:
-                a = x1
-            elif x1 > b:
-                b = x1
-            if x2 < a:
-                a = x2
-            elif x2 > b:
-                b = x2
-            super().hline(a, y0, b-a+1, c)
-            return
-        dx01 = x1 - x0
-        dy01 = y1 - y0
-        dx02 = x2 - x0
-        dy02 = y2 - y0
-        dx12 = x2 - x1
-        dy12 = y2 - y1
-        if dy01 == 0:
-            dy01 = 1
-        if dy02 == 0:
-            dy02 = 1
-        if dy12 == 0:
-            dy12 = 1
-        sa = 0
-        sb = 0
-        if y1 == y2:
-            last = y1
-        elif y0 == y1:
-            last = y0
-        else:
-            last = y1-1
-        for y in range(y0, last+2):
-            a = x0 + sa // dy01
-            b = x0 + sb // dy02
-            sa += dx01
-            sb += dx02
-            if a > b:
-                a, b = b, a
-            super().hline(a, y, b-a+1, c)
-        sa = dx12 * (y - y1)
-        sb = dx02 * (y - y0)
-        while y <= y2:
-            a = x1 + sa // dy12
-            b = x0 + sb // dy02
-            sa += dx12
-            sb += dx02
-            if a > b:
-                a, b = b, a
-            super().hline(a, y, b-a+1, c)
-            y += 1
-
-
-    def Bitmap(self, x, y, bitmap, w, h, c=1):
-        fb = FrameBuffer(bitmap, w, h, 3)          # modification draw way,now use framebuf 
-        super().blit(fb, x, y)
-        # byteWidth = int((w + 7) / 8)
-        # for j in range(h):
-        #     for i in range(w):
-        #         if bitmap[int(j * byteWidth + i / 8)] & (128 >> (i & 7)):
-        #             super().pixel(x+i, y+j, c)
-
-
-    def drawCircleHelper(self, x0, y0, r, cornername, c):
-        f = 1 - r
-        ddF_x = 1
-        ddF_y = -2 * r
-        x = 0
-        y = r
-        while x < y:
-            if (f >= 0):
-                # y--   y -= 1 below
-                y -= 1
-                ddF_y += 2
-                f += ddF_y
-            ddF_x += 2
-            f += ddF_x
-            if (cornername & 0x4):
-                super().pixel(x0 + x, y0 + y, c)
-                super().pixel(x0 + y, y0 + x, c)
-            if (cornername & 0x2):
-                super().pixel(x0 + x, y0 - y, c)
-                super().pixel(x0 + y, y0 - x, c)
-            if (cornername & 0x8):
-                super().pixel(x0 - y, y0 + x, c)
-                super().pixel(x0 - x, y0 + y, c)
-            if (cornername & 0x1):
-                super().pixel(x0 - y, y0 - x, c)
-                super().pixel(x0 - x, y0 - y, c)
-            x += 1
-
-    def RoundRect( self, x, y, w, h, r, c):
-        self.hline(x + r , y , w - 2 * r , c)
-        self.hline(x + r , y + h - 1, w - 2 * r , c)
-        self.vline(x, y + r, h - 2 * r , c)
-        self.vline(x + w - 1, y + r , h - 2 * r , c)
-
-        self.drawCircleHelper(x + r  , y + r , r , 1, c)
-        self.drawCircleHelper(x + w - r - 1, y + r  , r , 2, c)
-        self.drawCircleHelper(x + w - r - 1, y + h - r - 1, r , 4, c)
-        self.drawCircleHelper(x + r  , y + h - r - 1, r , 8, c)
-
-
 class Accelerometer():
     """  """
+
     def __init__(self):
         self.addr = 38
         self.i2c = i2c
-        self.i2c.writeto(self.addr, b'\x0F\x08')    # set resolution = 10bit
-        self.i2c.writeto(self.addr, b'\x11\x00')    # set power mode = normal
+        self.i2c.writeto(self.addr, b'\x0F\x08')  # set resolution = 10bit
+        self.i2c.writeto(self.addr, b'\x11\x00')  # set power mode = normal
 
     def get_x(self):
         retry = 0
@@ -343,6 +168,7 @@ class Accelerometer():
                 retry = retry + 1
         else:
             raise Exception("i2c read/write error!")
+
 
 class BME280(object):
     def __init__(self):
@@ -449,15 +275,17 @@ class PinMode(object):
     OUT = 2
     PWM = 3
     ANALOG = 4
+    OUT_DRAIN = 5
 
-pins_remap_esp32 = (33, 32, 35, 34, 39, 0, 16, 17, 26, 25,
-                    36,  2, -1, 18, 19, 21, 5, -1, -1, 22, 23,
-                    -1, -1,
-                    27, 14, 12, 13, 15, 4)
+
+pins_remap_esp32 = (33, 32, 35, 34, 39, 0, 16, 17, 26, 25, 36, 2, -1, 18, 19, 21, 5, -1, -1, 22, 23, -1, -1, 27, 14, 12,
+                    13, 15, 4)
+
+
 class MPythonPin():
-    def __init__(self, pin, mode=PinMode.IN,pull=None):
-        if mode not in [PinMode.IN, PinMode.OUT, PinMode.PWM, PinMode.ANALOG]:
-            raise TypeError("mode must be 'IN, OUT, PWM, ANALOG'")
+    def __init__(self, pin, mode=PinMode.IN, pull=None):
+        if mode not in [PinMode.IN, PinMode.OUT, PinMode.PWM, PinMode.ANALOG, PinMode.OUT_DRAIN]:
+            raise TypeError("mode must be 'IN, OUT, PWM, ANALOG,OUT_DRAIN'")
         if pin == 4:
             raise TypeError("P4 is used for light sensor")
         if pin == 10:
@@ -468,27 +296,31 @@ class MPythonPin():
             raise IndexError("Out of Pin range")
         if mode == PinMode.IN:
             if pin in [3]:
-                raise TypeError('IN not supported on P%d' %pin)
-            self.Pin=Pin(self.id, Pin.IN, pull)
+                raise TypeError('IN not supported on P%d' % pin)
+            self.Pin = Pin(self.id, Pin.IN, pull)
         if mode == PinMode.OUT:
-            if pin in [2,3]:
-                raise TypeError('OUT not supported on P%d' %pin)
-            self.Pin=Pin(self.id, Pin.OUT,pull)
+            if pin in [2, 3]:
+                raise TypeError('OUT not supported on P%d' % pin)
+            self.Pin = Pin(self.id, Pin.OUT, pull)
+        if mode == PinMode.OUT_DRAIN:
+            if pin in [2, 3]:
+                raise TypeError('OUT_DRAIN not supported on P%d' % pin)
+            self.Pin = Pin(self.id, Pin.OPEN_DRAIN, pull)
         if mode == PinMode.PWM:
-            if pin not in [0,1,5,6,7,8,9,11,13,14,15,16,19,20,23,24,25,26,27,28]:
-                raise TypeError('PWM not supported on P%d' %pin)
+            if pin not in [0, 1, 5, 6, 7, 8, 9, 11, 13, 14, 15, 16, 19, 20, 23, 24, 25, 26, 27, 28]:
+                raise TypeError('PWM not supported on P%d' % pin)
             self.pwm = PWM(Pin(self.id), duty=0)
         if mode == PinMode.ANALOG:
             if pin not in [0, 1, 2, 3, 4, 10]:
-                raise TypeError('ANALOG not supported on P%d' %pin)
-            self.adc= ADC(Pin(self.id))
+                raise TypeError('ANALOG not supported on P%d' % pin)
+            self.adc = ADC(Pin(self.id))
             self.adc.atten(ADC.ATTN_11DB)
         self.mode = mode
 
-    def irq(self,handler=None, trigger=Pin.IRQ_RISING):
+    def irq(self, handler=None, trigger=Pin.IRQ_RISING):
         if not self.mode == PinMode.IN:
             raise TypeError('the pin is not in IN mode')
-        return self.Pin.irq(handler,trigger)
+        return self.Pin.irq(handler, trigger)
 
     def read_digital(self):
         if not self.mode == PinMode.IN:
@@ -496,14 +328,23 @@ class MPythonPin():
         return self.Pin.value()
 
     def write_digital(self, value):
-        if not self.mode == PinMode.OUT:
-            raise TypeError('the pin is not in OUT mode')
+        if self.mode not in [PinMode.OUT, PinMode.OUT_DRAIN]:
+            raise TypeError('the pin is not in OUT or OUT_DRAIN mode')
         self.Pin.value(value)
 
     def read_analog(self):
         if not self.mode == PinMode.ANALOG:
             raise TypeError('the pin is not in ANALOG mode')
-        return self.adc.read()
+        # calibration esp32 ADC 
+        calibration_val = 0
+        val = int(sum([self.adc.read() for i in range(50)]) / 50)
+        if 0 < val <= 2855:
+            calibration_val = 1.023 * val + 183.6
+        if 2855 < val <= 3720:
+            calibration_val = 0.9769 * val + 181
+        if 3720 < val <= 4095:
+            calibration_val = 4095 - (4095 - val) * 0.2
+        return calibration_val
 
     def write_analog(self, duty, freq=1000):
         if not self.mode == PinMode.PWM:
@@ -528,19 +369,26 @@ class LightSensor(ADC):
     
 '''
 
+
 class wifi:
     def __init__(self):
         self.sta = network.WLAN(network.STA_IF)
         self.ap = network.WLAN(network.AP_IF)
-       
+
     def connectWiFi(self, ssid, passwd, timeout=10):
         if self.sta.isconnected():
             self.sta.disconnect()
         self.sta.active(True)
         list = self.sta.scan()
         for i, wifi_info in enumerate(list):
-            if wifi_info[0].decode() == ssid:
+            try:
+                if wifi_info[0].decode() == ssid:
+                    self.sta.connect(ssid, passwd)
+                    wifi_dbm = wifi_info[3]
+                    break
+            except UnicodeError:
                 self.sta.connect(ssid, passwd)
+                wifi_dbm = '?'
                 break
             if i == len(list) - 1:
                 raise OSError("SSID invalid / failed to scan this wifi")
@@ -549,14 +397,11 @@ class wifi:
         while (self.sta.ifconfig()[0] == '0.0.0.0'):
             if time.ticks_diff(time.time(), start) > timeout:
                 print("")
-                raise OSError(
-                    "Timeout!,check your wifi password and keep your network unblocked"
-                )
+                raise OSError("Timeout!,check your wifi password and keep your network unblocked")
             print(".", end="")
             time.sleep_ms(500)
         print("")
-        print('WiFi(%s,%sdBm) Connection Successful, Config:%s' %
-              (ssid, str(wifi_info[3]), str(self.sta.ifconfig())))
+        print('WiFi(%s,%sdBm) Connection Successful, Config:%s' % (ssid, str(wifi_dbm), str(self.sta.ifconfig())))
 
     def disconnectWiFi(self):
         if self.sta.isconnected():
@@ -564,14 +409,19 @@ class wifi:
         self.sta.active(False)
         print('disconnect WiFi...')
 
-    def enable_APWiFi(self, essid, channel=10):
+    def enable_APWiFi(self, essid, password=b'',channel=10):
         self.ap.active(True)
-        self.ap.config(essid=essid, channel=channel)
+        if password:
+            authmode=4
+        else:
+            authmode=0
+        print(authmode)
+        self.ap.config(essid=essid,password=password,authmode=authmode, channel=channel)
 
     def disable_APWiFi(self):
-        self.ap.disconnect()
         self.ap.active(False)
         print('disable AP WiFi...')
+
 
 
 # display
@@ -584,8 +434,7 @@ accelerometer = Accelerometer()
 
 # bm280
 if 119 in i2c.scan():
-    bme280=BME280()
-
+    bme280 = BME280()
 
 # 3 rgb leds
 rgb = NeoPixel(Pin(17, Pin.OUT), 3, 3, 1)
@@ -593,10 +442,11 @@ rgb.write()
 
 # light sensor
 light = ADC(Pin(39))
+light.atten(light.ATTN_11DB)
 
 # sound sensor
 sound = ADC(Pin(36))
-
+sound.atten(sound.ATTN_11DB)
 
 # buttons
 button_a = Pin(0, Pin.IN, Pin.PULL_UP)
@@ -612,7 +462,8 @@ touchPad_N = TouchPad(Pin(4))
 
 from gui import *
 
-def numberMap(inputNum,bMin,bMax,cMin,cMax):
+
+def numberMap(inputNum, bMin, bMax, cMin, cMax):
     outputNum = 0
-    outputNum =((cMax - cMin) / (bMax - bMin))*(inputNum - bMin)+cMin
+    outputNum = ((cMax - cMin) / (bMax - bMin)) * (inputNum - bMin) + cMin
     return outputNum

@@ -18,7 +18,7 @@ PORT ?= /dev/ttyUSB0
 BAUD ?= 460800
 FLASH_MODE ?= dio
 FLASH_FREQ ?= 40m
-FLASH_SIZE ?= 4MB
+FLASH_SIZE ?= 8MB
 CROSS_COMPILE ?= xtensa-esp32-elf-
 OBJDUMP = $(CROSS_COMPILE)objdump
 
@@ -251,6 +251,8 @@ CODEC_SRC_C = $(addprefix codec/,\
 	audio_renderer.c \
 	url_codec.c \
 	local_file.c \
+	audio_recorder.c \
+	wav_head.c \
 	codec_lib/helix/src/bitstream.c \
 	codec_lib/helix/src/buffers.c \
 	codec_lib/helix/src/dct32.c \
@@ -278,6 +280,7 @@ OBJ_MP += $(addprefix $(BUILD)/, $(DRIVERS_SRC_C:.c=.o))
 
 OBJ_MP += $(addprefix $(BUILD)/, $(STARTUP_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(CODEC_SRC_C:.c=.o))
+OBJ_MP += $(addprefix $(BUILD)/, $(BLUETOOTH_SRC_C:.c=.o))
 
 # List of sources for qstr extraction
 SRC_QSTR += $(SRC_C) $(EXTMOD_SRC_C) $(LIB_SRC_C) $(DRIVERS_SRC_C) $(CODEC_SRC_C)

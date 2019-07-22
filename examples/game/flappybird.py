@@ -1,4 +1,8 @@
-from mpython_ import *
+# Flappy Bird game for mPython
+# frok from github.com/zelacerda/micropython ,2017 - by zelacerda
+# modify from LabPlus@Tangliufeng
+
+from mpython import *
 from framebuf import FrameBuffer
 import framebuf
 import time, uos,urandom

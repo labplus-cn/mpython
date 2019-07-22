@@ -1,5 +1,5 @@
 import usocket
-
+import time,os
 class Response:
 
   def __init__(self, f):
@@ -33,7 +33,7 @@ class Response:
     dat = self.raw.read(dataLen)
     return dat
 
-def request(method, url, data=None, json=None, headers={}, stream=None,params=None):
+def request(method, url, data=None, json=None, headers={}, stream=None,params=None,files=None):
   try:
     proto, dummy, host, path = url.split("/", 3)
   except ValueError:
@@ -77,9 +77,44 @@ def request(method, url, data=None, json=None, headers={}, stream=None,params=No
     data = ujson.dumps(json)
   if data:
     s.write(b"Content-Length: %d\r\n" % len(data))
+
+  if files:
+    boundary = '------WebKitFormBoundary'+hex(int(time.time()))
+    s.write(b"Content-Type: multipart/form-data; boundary=%s\r\n" % boundary ) 
+    s.write(b"Connection: keep-alives\r\n" )
+    name = list(files.keys())[0]
+    file_dir = files.get(name)[0]
+    file_type = files.get(name)[1]
+    file_size = os.stat(file_dir)[6]
+    file_name = file_dir.split('/')[-1]
+    file = open(file_dir, 'rb')
+    content_disposition = b'Content-Disposition: form-data; name="%s"; filename="%s"\r\n' %(name,file_name)
+    content_type = b"Content-Type: %s\r\n" % file_type
+    content_length = len(boundary*2)+len(content_disposition)+len(content_type)+file_size+16
+    s.write(b"Content-Length: %d\r\n" % content_length)
+   
   s.write(b"\r\n")
+
+# body
   if data:
     s.write(data)
+
+  if files:
+    # first boundary
+    s.write(b"--%s\r\n" % boundary)
+    s.write(b'Content-Disposition: form-data; name="%s"; filename="%s"\r\n' %(name,file_name))
+    s.write(b"Content-Type: %s\r\n" % file_type)
+    s.write(b"\r\n")
+    # file data for hex
+    while True:
+      _read = file.read(1024)
+      if _read !=b'':
+        s.write(_read)
+      else:
+        break
+    # end boundary
+    s.write(b"\r\n--%s--\r\n" % boundary)
+    file.close()
 
   l = s.readline()
   protover, status, msg = l.split(None, 2)

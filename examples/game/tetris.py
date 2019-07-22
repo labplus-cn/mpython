@@ -1,7 +1,9 @@
+# Tetris game for mPython
+# MIT license,Copyright (c) 2019 labplus@Tangliufeng
+
 from mpython import *
 import math
 import random, time
-
 
 class Brick():
     def __init__(self, p_position):

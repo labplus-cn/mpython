@@ -13,7 +13,7 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 .. image:: /images/掌控-动态.gif
 
 
-
+| 掌控板官网: https://www.mpython.cn
 | GitHub开源: https://github.com/labplus-cn/mPython
 | mPython掌控板文档: https://mPython.readthedocs.io
 | mPythonX IDE 软件编程文档: https://mPythonX.readthedocs.io
@@ -34,7 +34,7 @@ mPython掌控板资料
 
 .. toctree::
    :maxdepth: 2
-   
+
    board/index.rst
 
 
@@ -67,14 +67,14 @@ MicroPython类库
    :maxdepth: 1
    :caption: MicroPython类库
    :hidden:
-   
+
    library/pythonStd/index.rst
    library/micropython/index.rst
 
 
 =========================================   ======================================================
  :ref:`Python标准库<pythonStd>`               兼容CPython,内含Python内建函数、常用module
- :ref:`MicroPython类库<microPythonModu>`      MicroPython的ESP32硬件控制层的模块     
+ :ref:`MicroPython类库<microPythonModu>`      MicroPython的ESP32硬件控制层的模块
 =========================================   ======================================================
 
 
@@ -94,7 +94,7 @@ mPython类库
    :maxdepth: 1
    :caption: mPython类库
    :hidden:
-   
+
    library/mPython/index.rst
 
        
@@ -117,7 +117,7 @@ mPython类库
    :caption: MicroPython 语法
 
    reference/index.rst
- 
+
 有关MicroPython特定语言功能的语言参考信息
 
 
@@ -129,7 +129,7 @@ mPython类库
 
 .. toctree::
    :hidden:
-   
+
    release.rst
 
 

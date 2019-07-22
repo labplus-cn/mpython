@@ -109,7 +109,7 @@ static int proccess_tag(mp3_decode_t *decoder)
         temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 500 / portTICK_PERIOD_MS, 10);
         if(temp != NULL)
         {
-            ESP_LOGE(TAG, "mp3 TAG? : %x %x %x %x", temp[0], temp[1],temp[2],temp[3]);
+            // ESP_LOGE(TAG, "mp3 TAG? : %x %x %x %x", temp[0], temp[1],temp[2],temp[3]);
             if (memcmp((char *)temp, "ID3", 3) == 0) //mp3? 有标签头，读取所有标签帧并去掉。
             { 
                 //获取ID3V2标签头长，以确定MP3数据起始位置
@@ -202,10 +202,11 @@ static void mp3_decode(mp3_decode_t *decoder)
         }
         for (int i = 0; i < decoder->mp3FrameInfo.outputSamps; ++i)
         {
-            decoder->output[i] = (short)((decoder->output[i]*255.0/65535+128) * player->volume); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
-            // decoder->output[i] = (short)((decoder->output[i]*255.0/65535)); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
-            decoder->output[i] = decoder->output[i] << 8;
-            // decoder->output[i] *= pow(10, -25 / 20.0);
+            // decoder->output[i] = (short)((decoder->output[i]*255.0/65535) * player->volume); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
+            // // decoder->output[i] = (short)((decoder->output[i]*255.0/65535)); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
+            // decoder->output[i] = decoder->output[i] << 8;
+            decoder->output[i] = (short)((decoder->output[i] + 32768) * player->volume);
+            decoder->output[i] &= 0xff00;
             //ESP_LOGI(TAG, "%d", output[i]);
         }
 
@@ -226,13 +227,13 @@ void mp3_decoder_task(void *pvParameters)
         goto abort;
     decoder->readBuf = malloc(MAINBUF_SIZE1);
     if (decoder->readBuf == NULL){
-        ESP_LOGE(TAG, "readBuf malloc failed");
+        // ESP_LOGE(TAG, "readBuf malloc failed");
         goto abort;
     }
     decoder->output = malloc(1153 * 4);
     if (decoder->output == NULL){
         free(decoder->readBuf);
-        ESP_LOGE(TAG, "OutBuf malloc failed");
+        // ESP_LOGE(TAG, "OutBuf malloc failed");
 		goto abort;
     }
     decoder->HMP3Decoder = MP3InitDecoder();
@@ -283,7 +284,7 @@ void mp3_decoder_task(void *pvParameters)
             player->player_status = INITIALIZED;
             vTaskDelete(http_client_task_handel);
             http_client_task_handel = NULL;
-            ESP_LOGE(TAG, "play status: %d", player->player_status); 
+            // ESP_LOGE(TAG, "play status: %d", player->player_status); 
         }
     }
     else if ( player->file_type == LOCAL_TYPE) {
@@ -291,6 +292,6 @@ void mp3_decoder_task(void *pvParameters)
     }
     
     // ESP_LOGE(TAG, "helix decoder stack: %d\n", uxTaskGetStackHighWaterMark(NULL));
-    ESP_LOGE(TAG, "6. mp3 decode task will delete, RAM left: %d", esp_get_free_heap_size()); 
+    // ESP_LOGE(TAG, "6. mp3 decode task will delete, RAM left: %d", esp_get_free_heap_size()); 
     vTaskDelete(NULL);
 }

@@ -14,7 +14,7 @@
 #include "freertos/semphr.h"
 #include "py/reader.h"
 #include "esp_http_client.h"
-#include "http_client.h"
+// #include "http_client.h"
 // #include "freertos/event_groups.h"
 
 #define BIT_0    ( 1 << 0 )
@@ -45,7 +45,7 @@ typedef enum {
 
 typedef enum
 {
-    MIME_UNKNOWN = 1, OCTET_STREAM, AUDIO_AAC, AUDIO_MP4, AUDIO_MPEG, AUDIO_TEXT
+    MIME_UNKNOWN = 1, OCTET_STREAM, AUDIO_PCM, AUDIO_WAV, AUDIO_AAC, AUDIO_MP4, AUDIO_MPEG, AUDIO_TEXT
 } content_type_t;
 
 typedef struct {
@@ -64,10 +64,6 @@ typedef struct {
     int ringbuf_size;
     //SemaphoreHandle_t ringbuf_sem; /* 互斥信号量句柄 */
     // EventGroupHandle_t ringbuf_eventGroup;
-    HTTP_HEAD_VAL *http_head;
-    char *http_body;
-    int http_body_len;
-    esp_http_client_method_t http_method;
 
     audio_type_t file_type;
     media_stream_t media_stream;

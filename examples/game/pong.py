@@ -1,3 +1,6 @@
+# Pong game for mPython
+# MIT license,Copyright (c) 2019 labplus@Tangliufeng
+
 from mpython import *
 import music
 
