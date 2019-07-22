@@ -8,11 +8,11 @@ mPython类库
     mpython.rst      
     music.rst 
     urequests.rst   
-    umqtt.simple.rst                                                   
-    servo.rst   
+    umqtt.simple.rst                                                     
     gui.rst   
     audio.rst   
     radio.rst  
     sdcard.rst 
+    bluebit.rst
 
 
