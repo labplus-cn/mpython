@@ -1,11 +1,12 @@
 .. _music.py:
 
 .. module:: music
+   :synopsis: 音乐相关功能函数
 
-music 模块
-=======
+:mod:`music` --- 音乐相关功能函数
+=======================================
 
-music模块与microbit的music使用方法相同。
+``music`` 模块与micro:bit的music使用方法相同。
 
 要使用music模块，你需要::
 
@@ -146,7 +147,7 @@ page about scientific pitch notation`_.  例如，middle "C"是 ``c4`` 和concer
         Plays a simple tune using the Micropython music module.
         This example requires a speaker/buzzer/headphones connected to P0 and GND.
     """
-    from microbit import *
+    from mpython import *
     import music
 
     # play Prelude in C.

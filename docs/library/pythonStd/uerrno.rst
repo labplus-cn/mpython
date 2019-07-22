@@ -30,3 +30,6 @@
 
         >>> print(uerrno.errorcode[uerrno.EEXIST])
         EEXIST
+
+
+.. data:: uerrno.

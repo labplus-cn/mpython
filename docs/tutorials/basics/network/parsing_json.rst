@@ -1,4 +1,4 @@
-JSON解析
+解析JSON
 =======
 
 JSON(JavaScript Object Notation, JS 对象简谱) 是一种轻量级的数据交换格式。采用完全独立于编程语言的文本格式来存储和表示数据，易于人阅读和编写，同时也易于机器解析和生成，所以在互联网应用非常广泛。
@@ -9,7 +9,7 @@ JSON(JavaScript Object Notation, JS 对象简谱) 是一种轻量级的数据交
 
 * dict：是一种数据结构，比如列表list、集合set、字符串str、数组array。
 
-网络获取JSON解析
+网络获取解析JSON
 ---------------
 
 http协议采用的是请求/响应模型，浏览器或客户端发出请求，服务器给与响应。
@@ -22,31 +22,11 @@ http协议采用的是请求/响应模型，浏览器或客户端发出请求，
 
 这是一个json数组，包含有IP地址等信息。我们通过访问这个url，获取到这些信息然后返回字符串text，通过ujson.loads(str)把字符串给生成dict字典类型，就可以直接读关键字（key）获取对应的值（value）。
 
-例：将网站中的部分信息显示在OLED显示屏上
-::
-    from mpython import*
-    import json
-    import urequests           # urequests模块是一个用于网络访问的模块
 
-    mywifi=wifi()
-    mywifi.connectWiFi('yourESSID', 'yourpassword')    #连接 WiFi 网络
+.. literalinclude:: /../examples/network/ip_parsing_json.py
+    :caption: 将网站中的部分信息显示在OLED显示屏上
+    :linenos:
 
-    url_ip ="http://ip-api.com/json/"                  #添加请求地址
-
-    rsp=urequests.get(url_ip)                          #发送get请求
-
-    ipJson=rsp.text
-
-    ipDict=json.loads(ipJson)
-
-    oled.DispChar('国家:%s' % ipDict['country'],0,5)     #将国家信息显示到OLED显示屏上
-    oled.show()
-
-    oled.DispChar('城市:%s' % ipDict['city'],0,25)       #将城市信息显示到OLED显示屏上
-    oled.show()
-
-    oled.DispChar('IP:%s' % ipDict['query'],0,45)        #将IP地址信息显示到OLED显示屏上
-    oled.show()
 
 .. image:: /images/tutorials/json.jpg
     :align: center

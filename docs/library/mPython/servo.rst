@@ -1,6 +1,10 @@
 .. _servo_api:
 
-servo 模块
+.. module:: servo
+   :synopsis: 舵机驱动功能函数
+
+
+:mod:`servo` --- 舵机驱动功能函数
 ==========
 
 Servo类

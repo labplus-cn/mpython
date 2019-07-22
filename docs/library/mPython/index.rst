@@ -5,12 +5,15 @@ mPython类库
     :maxdepth: 1
     
 
-    mpython.rst
+    mpython.rst      
     music.rst 
     urequests.rst   
-    umqtt.simple.rst                                                   
-    servo.rst   
+    umqtt.simple.rst                                                     
+    gui.rst   
     audio.rst   
+    radio.rst  
+    sdcard.rst 
+    bluebit.rst
+    parrot.rst
 
 
-    

@@ -19,24 +19,31 @@ MicroPython的Timer类定义了在给定时间段内（或在一段延迟后执�
 
 .. class:: Timer(id, ...)
 
-构造给定id的新计时器对象。Id为-1构造虚拟计时器。
+构造给定id的新计时器对象。
+
+    - ``id`` - 任意正整数
+
+
 
 方法
 -------
 
 .. method:: Timer.init(\*, mode=Timer.PERIODIC, period=-1, callback=None)
 
+
+    - ``mode`` - 定时器模式,可以是以下之一:
+
+        - ``Timer.ONE_SHOT`` - 计时器运行一次，直到配置完毕通道的期限到期。
+        - ``Timer.PERIODIC`` - 定时器以通道的配置频率定期运行。
+    - ``period`` -  定时器执行的周期，单位是ms， 隔period ms 执行一次。 period取值范围： 0 < period <= 3435973836
+    - ``callback`` -  定时器的回调函数
+
+
 初始化计时器，示例::
 
     tim.init(period=100)                         # periodic with 100ms period
     tim.init(mode=Timer.ONE_SHOT, period=1000)   # one shot firing after 1000ms
 
-    关键参数:
-    
-- ``mode`` 可以是以下之一:
-
-    - ``Timer.ONE_SHOT`` - 计时器运行一次，直到配置完毕通道的期限到期。
-    - ``Timer.PERIODIC`` - 定时器以通道的配置频率定期运行。
 
 .. method:: Timer.value()
 
@@ -59,3 +66,7 @@ MicroPython的Timer类定义了在给定时间段内（或在一段延迟后执�
 .. data:: Timer.ONE_SHOT
 .. data:: Timer.PERIODIC
 
+
+.. literalinclude:: /../examples/timer/timer_led_blink.py
+    :caption: 定时器控制LED闪烁
+    :linenos:

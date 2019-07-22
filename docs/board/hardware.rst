@@ -25,6 +25,7 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
   - 供电方式：Micro USB供电
   - 工作电压：3.3V
   - 最大工作电流:200mA
+  - 最大负载电流:1000mA
   - 掌控板载
 
     - 三轴加速度计MSA300,测量范围:±2G
@@ -63,14 +64,29 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
 引脚定义
 --------------
 
-.. image:: /images/掌控板引脚定义-正面.png
+.. figure:: /images/掌控板引脚定义-正面.png
   :width: 800px
+  :align: center
 
-.. image:: /images/掌控板引脚定义-背面.png
-  :width: 800px
+  掌控板正面-触摸引脚
 
-.. image:: /images/掌控板-pinout_wroom.png
+.. figure:: /images/掌控板引脚定义-背面.png
   :width: 800px
+  :align: center
+
+  掌控板背面-IO引脚
+
+.. figure:: /images/掌控板-pinout_wroom.png
+  :width: 800px
+  :align: center
+
+  掌控板ESP32引脚定义
+
+.. figure:: /images/pinout_wroom_pinout.png
+  :width: 800px
+  :align: center
+
+  ESP32-WROOM引脚说明
 
 .. _mPythonPindesc:
 

@@ -14,11 +14,11 @@
 
 创建与设定引脚关联的PWM对象。这样您就可以写该引脚上的模拟值。
 
- - ``pin`` 支持PWM的引脚  ``GPIO0``、``GPIO2``、``GPIO4``、``GPIO5``、``GPIO10``、``GPIO12~19``、``GPIO21``、``GPIO22``、``GPIO23``、``GPIO25~27``。详见 `ESP32引脚功能表. <../../../images/pinout_wroom_pinout.png>`_ 
- - ``freq`` 频率,0 < freq <= 78125
+ - ``pin`` 支持PWM的引脚  ``GPIO0``、``GPIO2``、``GPIO4``、``GPIO5``、``GPIO10``、``GPIO12~19``、``GPIO21``、``GPIO22``、``GPIO23``、``GPIO25~27``。详见 `ESP32引脚功能表. <../../../_images/pinout_wroom_pinout.png>`_ 
+ - ``freq`` 频率,0 < freq <= 78125 Hz
  - ``duty``  占空比, 0 ≤ duty ≤ 0x03FF (十进制：0 ≤ duty ≤ 1023)
 
-.. Important:: 限制条件是它们必须处于相同的频率。
+.. Important:: PWM可在所有输出引脚上启用。但其存在局限：须全部为同一频率，且仅有8个通道。
 
 示例::
 
@@ -44,7 +44,7 @@
 
 当没有参数时，函数获得并返回PWM频率。当设置参数时，函数用来设置PWM频率，无返回值。
 
- - ``freq_val`` PWM波频率,0 < freq ≤ 0x0001312D（十进制：0 < freq ≤ 78125）
+ - ``freq_val`` PWM频率,0 < freq ≤ 0x0001312D（十进制：0 < freq ≤ 78125 Hz）
 
 示例::
 
@@ -67,5 +67,5 @@
 
 .. method:: PWM.deinit( )
 
-关闭PWM。 
+关闭PWM。PWM使用完了之后，需要注销 ``deinit()`` 。
 

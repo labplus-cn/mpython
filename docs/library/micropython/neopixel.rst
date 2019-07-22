@@ -9,7 +9,7 @@ NeoPixels也被称为WS2812 LED彩带，是连接在一起的全彩色led灯串�
 构建对象
 ------------
 
-.. class:: NeoPixel(pin, n,bpp=3,timing=0)
+.. class:: NeoPixel(pin, n,bpp=3,timing=0, brightness=1.0)
 
   - ``pin`` :输出引脚,可使用引脚见下文
   -  ``n`` :LED灯的个数
@@ -19,6 +19,7 @@ NeoPixels也被称为WS2812 LED彩带，是连接在一起的全彩色led灯串�
     - ``4``:对于具有3种以上颜色的LED，例如RGBW像素或RGBY像素,采用4元组RGBY或RGBY像素
 
   - ``timing``:默认等于0,为400KHz速率；等于1，为800KHz速率
+  - ``brightness``:亮度调节,范围0~1,默认为1.0
 
 .. Attention:: 
 
@@ -56,3 +57,8 @@ NeoPixels也被称为WS2812 LED彩带，是连接在一起的全彩色led灯串�
 
   np.fill( (255, 255, 255) )
 
+
+
+.. method:: NeoPixel.brightness(brightness)
+
+亮度调节,范围0~1.0

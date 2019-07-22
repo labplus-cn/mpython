@@ -140,4 +140,4 @@ mPython掌控板载3颗WS2812灯珠，WS2812是一种集成了电流控制芯片
 .. Hint:: 
 
    | mPyhton提供 ``neopixel`` 增强版 ``ledstrip`` 模块，已封装有更丰富的neopixel显示效果，操作简单。详细说明，请到以下链接。
-   | mPython-ledstrip：https://github.com/labplus-cn/mPython_ledstrip
+   | mPython-ledstrip：https://github.com/labplus-cn/mPython-lib/tree/master/ledstrip

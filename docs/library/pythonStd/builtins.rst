@@ -1,9 +1,9 @@
-:mod:`Builtin` -- 内建函数
+:mod:`Builtin` -- 内建函数和异常
 ================================
 
 此处描述了所有内置函数和异常。它们也可通过 ``builtins`` 模块获取。
 
-Functions and types
+函数
 -------------------
 
 .. function:: abs()
@@ -152,7 +152,7 @@ Functions and types
 .. function:: zip()
 
 
-Exceptions
+异常
 ----------
 
 .. exception:: AssertionError

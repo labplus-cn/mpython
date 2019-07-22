@@ -21,11 +21,11 @@ Functions
 
     通过回溯到类文件对象文件（或 ``sys.stdout`` 默认情况下）来打印异常。
 
-   .. admonition:: 与CPython的区别
-      :class: attention
+.. admonition:: 与CPython的区别
+    :class: attention
 
-        这是 ``traceback``  CPython模块中出现的函数的简化版本 。与 ``traceback.print_exception()`` 此不同，此函数仅使用异常值而不是异常类型，异常值和回溯对象; file参数应该是位置的; 不支持其他参数。
-        ``traceback``  可以找到CPython兼容 模块 ``micropython-lib`` 。
+    这是 ``traceback``  CPython模块中出现的函数的简化版本。与 ``traceback.print_exception()`` 此不同，此函数仅使用异常值而不是异常类型，异常值和回溯对象; file参数应该是位置的; 不支持其他参数。
+    ``traceback``  可以找到CPython兼容 模块 ``micropython-lib`` 。
 
 常量
 ---------
@@ -43,7 +43,7 @@ Functions
     包含有关当前Python实现的信息的对象。对于MicroPython，它具有以下属性：
 
     * *name* - 字符串 "micropython"
-    * *version* - 元组 (major, minor, micro), e.g. (1, 7, 0)
+    * *version* - 元组 (主要，次要，微), e.g. (1, 7, 0)
 
     这个方法推荐用来识别不同平台的MicroPython。
 

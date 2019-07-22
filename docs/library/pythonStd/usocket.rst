@@ -12,7 +12,7 @@
 .. admonition:: 与CPython区别
    :class: attention
 
-    为提高效率与一致性，MicroPython中的套接字对象直接实现流（类文件）接口。在CPython中，
+    为提高效率与一致性，MicroPython中的套接字对象直接实现 `stream`（类文件）接口。在CPython中，
     需使用 ``makefile()`` 方法来将socket转换为类文件对象。该方法仍由MicroPython（但是是无操作）支持，
     所以在CPython的兼容性问题上，请一定使用该方法。
 
@@ -94,12 +94,13 @@ socket类
 
 .. method:: socket.close()
 
-关闭socket。一旦关闭后，socket所有的功能都将失效。远端将接收不到任何数据 (清理队列数据后)。
+标记套接字已关闭并释放所有资源。一旦发生这种情况，套接字对象上的所有未来操作都将失败。如果协议支持，远程端将接收EOF指示。
+
 内存碎片回收时socket会自动关闭，但还是推荐在必要时用 close() 去关闭
 
 .. method:: socket.bind(address)
 
-以列表或元组的方式绑定地址和端口号。
+以列表或元组的方式绑定地址和端口号。套接字必须尚未绑定。
 
   - ``address`` ：一个包含地址和端口号的列表或元组。
 
@@ -113,13 +114,12 @@ socket类
 
 .. method:: socket.listen([backlog])
 
-监听socket，使服务器能够接收连接。如果指定了 ``backlog`` ，它不能小于0 (如果小于0将自动设置为0)；
-超出后系统将拒绝新的连接。如果没有指定，将使用默认值。
+监听socket，使服务器能够接收连接。如果指定了 ``backlog`` ，则必须至少为0（如果低，则将其设置为0）; 并指定在拒绝新连接之前系统将允许的未接受连接数。如果未指定，则选择默认的合理值。
 
   -  ``backlog`` ：接受套接字的最大个数，至少为0，如果没有指定，则默认一个合理值。
 
    
-
+  
 .. method:: socket.accept()
 
 
@@ -137,9 +137,9 @@ socket类
 
 .. method:: socket.connect(address)
 
-连接到指定地址的服务器。
+连接到指定地址的远端套接字。
 
-  - ``address``：服务器地址和端口号的元组或列表
+  - ``address``：地址和端口号的元组或列表
 
 示例::
 
@@ -149,21 +149,22 @@ socket类
 
 .. method:: socket.send(bytes)
 
-发送数据，并返回发送的字节数。
+将数据发送到套接字。套接字必须连接到远程套接字。返回发送的字节数，可能小于数据长度 ("short write")。
 
   - ``bytes``：bytes类型数据
 
 .. method:: socket.sendall(bytes)
 
-与send(）函数类似，区别是sendall()函数通过数据块连续发送数据。
+将所有数据发送到套接字。套接字必须连接到远程套接字。与 ``send()`` 此不同，此方法将尝试通过连续发送数据块来发送所有数据。
+
+此方法在非阻塞套接字上的行为未定义。因此，在MicroPython上，建议使用 ``write()`` 方法，它具有相同的“无短写入”策略来阻塞套接字，并将返回在非阻塞套接字上发送的字节数。
 
   - ``bytes``：bytes类型数据
 
 
-
 .. method:: socket.recv(bufsize)
 
-接收数据，返回接收到的数据对象。
+从套接字接收数据。返回值是表示接收数据的字节对象。一次接收的最大数据量由 `bufsize` 指定。
 
   - ``bufsize``：指定一次接收的最大数据量
 
@@ -172,10 +173,9 @@ socket类
   data = conn.recv(1024)
 
 
-
 .. method:: socket.sendto(bytes, address)
 
-发送数据，目标由address决定，用于UDP通信，返回发送的数据大小。
+将数据发送到套接字。套接字不应连接到远程套接字，因为目标套接字由地址指定。用于UDP通信，返回发送的数据大小。
 
   - ``bytes``：bytes类型数据
   - ``address``：目标地址和端口号的元组
@@ -183,13 +183,13 @@ socket类
 
 .. method:: socket.recvfrom(bufsize)
 
-接收数据，用于UDP通信，并返回接收到的数据对象和对象的地址。
+从套接字接收数据。返回值是一对（字节，地址），其中bytes是表示接收数据的字节对象，address是发送数据的套接字的地址。用于UDP通信。
 
   - ``bufsize``：指定一次接收的最大数据量
 
 .. method:: socket.setsockopt(level, optname, value)
 
-根据选项值设置socket。
+设置给定套接字选项的值。所需的符号常量在套接字模块中定义（SO_ *等）。该值可以是整数或表示缓冲区的类字节对象。
 
   - ``level``：套接字选项级别
   - ``optname``：socket 选项
@@ -203,6 +203,9 @@ socket类
 
 设置超时时间，单位：秒。 
 
+设置超时。`value` 参数可以是表示秒的非负浮点数，也可以是 `None` 。如果给出非零值，则OSError如果在操作完成之前已超过超时时间段值，则后续套接字操作将引发异常。
+如果给出零，则套接字处于非阻塞模式。如果给出 `None` ，则套接字处于阻塞模式。
+
 示例::
 
   s.settimeout(2)
@@ -213,13 +216,19 @@ socket类
 
 该方法为某些settimeout()调用的简写:
 
-   * ``sock.setblocking(True)`` is equivalent to ``sock.settimeout(None)``
-   * ``sock.setblocking(False)`` is equivalent to ``sock.settimeout(0)``
+   * ``sock.setblocking(True)`` 相当于 ``sock.settimeout(None)``
+   * ``sock.setblocking(False)`` 相当于 ``sock.settimeout(0)``
+
+  .. admonition:: Difference to CPython
+    :class: attention
+
+    CPython socket.timeout在超时的情况下引发异常，这是一个OSError子类。MicroPython直接引发OSError。
+    如果您用来捕获异常，那么您的代码将在MicroPython和CPython中都有效。
+
 
 .. method:: socket.makefile(mode='rb', buffering=0)
 
-返回一个与socket相关联的文件对象。具体的返回类型取决于给定makefile()的参数。该支持仅限于二进制模式（‘rb’和‘wb’）.
-
+返回一个与socket相关联的文件对象。具体的返回类型取决于给定makefile()的参数。该支持仅限于二进制模式（ 'rb' 和 'wb' ）。
 CPython的参数为：不支持 encoding 、 errors 、 newline 。
 
 Socket须为阻塞模式；允许超时存在，但若出现超时，文件对象的内部缓冲区可能会以不一致状态结束。
@@ -252,8 +261,21 @@ Socket须为阻塞模式；允许超时存在，但若出现超时，文件对�
 .. method:: socket.write(buf)
 
 
-向字节缓冲区写入socket，并返回写入数据的大小。
 
+将字节缓冲区写入套接字。此函数将尝试将所有数据写入套接字（无“短写”）。
+但是，对于非阻塞套接字，这可能是不可能的，并且返回值将小于buf的长度。
+
+返回值：写入的字节数。
+
+
+.. exception:: usocket.error
+
+   MicroPython没有此异常。
+
+   .. admonition:: Difference to CPython
+        :class: attention
+
+        CPython曾经有一个socket.error现已弃用的异常，并且是别名 ``OSError`` 。在MicroPython中，``OSError`` 直接使用。
 
 
 常数

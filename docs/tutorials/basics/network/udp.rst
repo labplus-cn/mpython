@@ -45,30 +45,10 @@ UDP编程的客户端一般步骤是：
 
 UDP客户端的示例:
 
-.. code-block:: python
+
+.. literalinclude:: /../examples/network/udp_client.py
+    :caption: UDP客户端的示例
     :linenos:
-
-    from mpython import *
-    import socket 
-    
-    mywifi=wifi()                                           # 创建wifi对象
-    mywifi.connectWiFi("ssid","password")                   # 连接网络
-    dst = ("192.168.0.3", 6000)                             # 目的ip地址和端口号
-
-    # 捕获异常，如果在"try" 代码块中意外中断，则停止关闭套接字
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)               # 创建UDP的套接字
-        s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)              # 设置套接字属性
-
-        while True:
-            s.sendto(b'hello message from mPython\r\n',dst)                # 发送数据发送至目的ip
-            sleep(2)
-
-    # 当捕获异常,关闭套接字、网络
-    except:
-        if (s):
-            s.close()
-        mywifi.disconnectWiFi()
 
 .. image:: /images/tutorials/udpclient.gif
     :align: center
@@ -84,40 +64,11 @@ UDP編程的服务器端一般步骤是：
 4. 循环接收数据，用函数 ``recvfrom()``
 5. 关闭连接
 
-UDP服务端的示例:
 
-.. code-block:: python
+.. literalinclude:: /../examples/network/udp_server.py
+    :caption: UDP服务端的示例
     :linenos:
 
-    from mpython import *
-    import socket 
-    
-    mywifi=wifi()                                           # 创建wifi对象
-    mywifi.connectWiFi("ssid","password")                   # 连接网络
-
-    # 捕获异常，如果在"try" 代码块中意外中断，则停止关闭套接字
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)               # 创建UDP的套接字
-        s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)              # 设置套接字属性
-        ip=mywifi.sta.ifconfig()[0]                                        # 获取本机ip地址
-        s.bind((ip,6000))                                                  # 绑定ip和端口号
-        print('waiting...')
-        oled.DispChar("%s:6000" %ip,0,0)
-        oled.show()
-        while True:
-            data,addr=s.recvfrom(1024)                           # 接收对方发送过来的数据,读取字节设为1024字节,返回(data,addr)二元组
-            print('received:',data,'from',addr)                  # 打印接收到数据                      
-            oled.fill(0)                                         # 清屏
-            oled.DispChar("%s" %data.decode(),0,15)              # oled显示接收内容
-            oled.DispChar("from%s" %addr[0],0,31)
-            oled.show()                 
-            
-
-    # 当捕获异常,关闭套接字、网络
-    except:
-        if (s):
-            s.close()
-        mywifi.disconnectWiFi()
 
 .. Note:: 
 

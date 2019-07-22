@@ -73,9 +73,9 @@
 
     while True:
         for freq in range(880, 1760, 16):
-            music.pitch(freq, 20)
+            music.pitch(freq, 50)
         for freq in range(1760, 880, -16):
-            music.pitch(freq,20)
+            music.pitch(freq,50)
 
 
 在这个实例中是如何使用 ``music.pitch`` 方法，它需要一个频率。
