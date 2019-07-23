@@ -305,7 +305,7 @@ oled屏显示文本。
 绘制bitmap图案
 
     - ``x`` 、``y`` -左上角作为起点坐标
-    - ``bitmap`` -图案bitmap数组
+    - ``bitmap`` -图案bitmap 的btyearray字节数组
     - ``w`` -图案宽度
     - ``h`` -图案高度
     - ``c`` -为1时,像素点亮;
