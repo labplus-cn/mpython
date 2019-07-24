@@ -300,7 +300,7 @@ oled屏显示文本。
     - ``c`` -为1时,像素点亮；``c`` 为0时,像素点灭。
 
 
-.. method:: oled.Bitmap(x, y, bitmap, w, h,c=1)
+.. method:: oled.bitmap(x, y, bitmap, w, h,c)
 
 绘制bitmap图案
 
