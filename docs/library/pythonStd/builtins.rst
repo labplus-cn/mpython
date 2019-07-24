@@ -3,119 +3,527 @@
 
 此处描述了所有内置函数和异常。它们也可通过 ``builtins`` 模块获取。
 
+
+
 函数
 -------------------
 
 .. function:: abs()
 
+返回一个数的绝对值。实参可以是整数或浮点数。如果实参是一个复数，返回它的模。
+
+
+
+
 .. function:: all()
+
+如果 `iterable` 的所有元素为真（或迭代器为空），返回 `True` 。
+
+等价于::
+
+    def all(iterable):
+        for element in iterable:
+            if not element:
+                return False
+        return True
 
 .. function:: any()
 
+如果 `iterable` 的任一元素为真则返回 `True` 。 如果迭代器为空，返回 `False` 。
+
+等价于::
+
+    def any(iterable):
+        for element in iterable:
+            if element:
+                return True
+        return False
+
 .. function:: bin()
+
+将一个整数转变为一个前缀为“0b”的二进制字符串。
+
+::
+
+    >>> bin(3)
+    '0b11'
+    >>> bin(-10)
+    '-0b1010'
 
 .. class:: bool()
 
+用于将给定参数转换为布尔类型，如果没有参数，返回 `False` 。
+
+::
+
+    >>>bool()
+    False
+    >>> bool(0)
+    False
+    >>> bool(1)
+    True
+    >>> bool(None)
+    False
+
+
 .. class:: bytearray()
+
+返回一个新的 bytes 数组。 bytearray 类是一个可变序列，包含范围为 0 <= x < 256 的整数。
+
+::
+
+    >>>bytearray()
+    bytearray(b'')
+    >>> bytearray([1,2,3])
+    bytearray(b'\x01\x02\x03')
+    >>> bytearray('mpython')
+    bytearray(b'mpython')
+    >>>
 
 .. class:: bytes()
 
-    参见CPython文档： `bytes <https://docs.python.org/3.5/library/functions.html#bytes>`_
+bytes 函数返回一个新的 bytes 对象，该对象是一个 0 <= x < 256 区间内的整数不可变序列。它是 bytearray 的不可变版本。参见CPython文档： `bytes <https://docs.python.org/3.5/library/functions.html#bytes>`_
+
+::
+
+    >>>a = bytes([1,2,3,4])
+    >>> a
+    b'\x01\x02\x03\x04'
+    >>> type(a)
+    <class 'bytes'>
+    >>>
+    >>> a = bytes('hello')
+    >>>
+    >>> a
+    b'hello'
+    >>> type(a)
+    <class 'bytes'>
+    >>>
 
 .. function:: callable()
 
+函数用于检查一个对象是否是可调用的。如果返回 True，object 仍然可能调用失败；但如果返回 False，调用对象 object 绝对不会成功。
+
+::
+
+    >>>callable(0)
+    False
+    >>> callable("mpython")
+    False
+    
+    >>> def add(a, b):
+    ...     return a + b
+    ... 
+    >>> callable(add)             # 函数返回 True
+    True
+    >>> class A:                  # 类
+    ...     def method(self):
+    ...             return 0
+    ... 
+    >>> callable(A)               # 类返回 True
+    True
+    >>> a = A()
+    >>> callable(a)               # 没有实现 __call__, 返回 False
+    False
+    >>> class B:
+    ...     def __call__(self):
+    ...             return 0
+    ... 
+    >>> callable(B)
+    True
+    >>> b = B()
+    >>> callable(b)               # 实现 __call__, 返回 True
+    True
+
 .. function:: chr()
 
-.. function:: classmethod()
+返回 `Unicode` 码为整数 `i` 的字符的字符串格式。
 
-.. function:: compile()
+::
 
-.. class:: complex()
+    >>>chr(0x30)
+    '0'
+    >>> chr(97) 
+    'a'
+    >>> chr(8364)
+    '€'
+
+.. decorator:: classmethod()
+
+把一个方法封装成类方法。
+
+一个类方法把类自己作为第一个实参，就像一个实例方法把实例自己作为第一个实参。请用以下习惯来声明类方法::
+
+    class C:
+        @classmethod
+        def f(cls, arg1, arg2, ...): ...
+
+@classmethod 这样的形式称为函数的 decorator。类方法的调用可以在类上进行 (例如 C.f()) 也可以在实例上进行 (例如 C().f())。 
+其所属类以外的类实例会被忽略。 如果类方法在其所属类的派生类上调用，则该派生类对象会被作为隐含的第一个参数被传入。
+
+.. function:: compile(source, filename, mode[, flags[, dont_inherit]])
+
+将一个字符串编译为字节代码。详细内容参见CPython文档： `compile <https://docs.python.org/zh-cn/3.7/library/functions.html#compile>`_
+
+::
+
+    >>>str = "for i in range(0,10): print(i)" 
+    >>> c = compile(str,'','exec')   # 编译为字节代码对象 
+    >>> c
+    <code object <module> at 0x10141e0b0, file "", line 1>
+    >>> exec(c)
+    0
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+    8
+    9
+    >>> str = "3 * 4 + 5"
+    >>> a = compile(str,'','eval')
+    >>> eval(a)
+    17
+
+.. class:: complex([real[, imag]])
+
+返回值为 real + imag*1j 的复数，或将字符串或数字转换为复数。如果第一个形参是字符串，则它被解释为一个复数，并且函数调用时必须没有第二个形参。第二个形参不能是字符串。每个实参都可以是任意的数值类型（包括复数）。
+如果省略了 imag，则默认值为零，构造函数会像 int 和 float 一样进行数值转换。如果两个实参都省略，则返回 0j。
+
+
+::
+
+    >>>complex(1, 2)
+    (1 + 2j)
+    
+    >>> complex(1)    # 数字
+    (1 + 0j)
+    
+    >>> complex("1")  # 当做字符串处理
+    (1 + 0j)
+    
+    # 注意：这个地方在"+"号两边不能有空格，也就是不能写成"1 + 2j"，应该是"1+2j"，否则会报错
+    >>> complex("1+2j")
+    (1 + 2j)
 
 .. function:: delattr(obj, name)
 
-   参数名应该是一个string，这个函数从obj给出的对象中删除命名属性.
+setattr() 相关的函数。实参是一个对象和一个字符串。该字符串必须是对象的某个属性。如果对象允许，该函数将删除指定的属性。
+例如 delattr(x, 'foobar') 等价于 del x.foobar 。
 
-.. class:: dict()
+::
 
-.. function:: dir()
-
-.. function:: divmod()
-
-.. function:: enumerate()
-
-.. function:: eval()
-
-.. function:: exec()
-
-.. function:: filter()
-
-.. class:: float()
-
-.. class:: frozenset()
-
-.. function:: getattr()
-
-.. function:: globals()
-
-.. function:: hasattr()
-
-.. function:: hash()
-
-.. function:: hex()
-
-.. function:: id()
-
-.. function:: input()
-
-.. class:: int()
+    class Coordinate:
+        x = 10
+        y = -5
+        z = 0
+    
+    point1 = Coordinate() 
+    
+    print('x = ',point1.x)
+    print('y = ',point1.y)
+    print('z = ',point1.z)
+    
+    delattr(Coordinate, 'z')
+    
+    print('--删除 z 属性后--')
+    print('x = ',point1.x)
+    print('y = ',point1.y)
+    
+    # 触发错误
+    print('z = ',point1.z)
 
 
-   .. method:: from_bytes(bytes, byteorder)
+.. function:: isinstance(object, classinfo)
+
+如果 object 实参是 classinfo 实参的实例，或者是（直接、间接或 虚拟）子类的实例，则返回 true。
+如果 object 不是给定类型的对象，函数始终返回 false。如果 classinfo 是对象类型（或多个递归元组）的元组，如果 object 是其中的任何一个的实例则返回 true。 
+如果 classinfo 既不是类型，也不是类型元组或类型的递归元组，那么会触发 TypeError 异常。
+
+.. admonition:: isinstance() 与 type() 区别
+
+    - `type()` 不会认为子类是一种父类类型，不考虑继承关系。
+    - `isinstance()` 会认为子类是一种父类类型，考虑继承关系。
+
+    *如果要判断两个类型是否相同推荐使用 isinstance()。*
 
 
-     在MicroPython中， `byteorder` 参数必须是位置的（这与CPython兼容）
+.. function:: issubclass(class, classinfo)
 
+如果 class 是 classinfo 的子类（直接、间接或 虚拟 的），则返回 true。classinfo 可以是类对象的元组，此时 classinfo 中的每个元素都会被检查。
+其他情况，会触发 TypeError 异常。
 
-   .. method:: to_bytes(size, byteorder)
+::
 
+    class A:
+        pass
+    class B(A):
+        pass
+        
+    print(issubclass(B,A))    # 返回 True
 
-     在MicroPython中， `byteorder` 参数必须是位置的（这与CPython兼容）
-     
+    
 
-.. function:: isinstance()
+.. function:: iter(object[, sentinel])
 
-.. function:: issubclass()
+用来生成迭代器。
 
-.. function:: iter()
+- ``object`` -- 支持迭代的集合对象。
+- ``sentinel`` -- 如果传递了第二个参数，则参数 object 必须是一个可调用的对象（如，函数），此时，iter 创建了一个迭代器对象，每次调用这个迭代器对象的__next__()方法时，都会调用 object。
+
+::
+
+    >>>lst = [1, 2, 3]
+    >>> for i in iter(lst):
+    ...     print(i)
+    ... 
+    1
+    2
+    3
 
 .. function:: len()
 
+返回对象（字符、列表、元组等）长度或项目个数。
+
+::
+
+    >>>str = "runoob"
+    >>> len(str)             # 字符串长度
+    6
+    >>> l = [1,2,3,4,5]
+    >>> len(l)               # 列表元素个数
+    5
+
 .. class:: list()
+
+用于将元组或字符串转换为列表。
+
+::
+
+    aTuple = (123, 'Google', 'baidu', 'Taobao')
+    list1 = list(aTuple)
+    print ("列表元素 : ", list1)
+
+    str="Hello World"
+    list2=list(str)
+    print ("列表元素 : ", list2)
+
+输出结果::
+
+    列表元素 :  [123, 'Google', 'Runoob', 'Taobao']
+    列表元素 :  ['H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd']
 
 .. function:: locals()
 
-.. function:: map()
+以字典类型返回当前位置的全部局部变量。
+
+::
+
+    >>>def runoob(arg):    # 两个局部变量：arg、z
+    ...     z = 1
+    ...     print (locals())
+    ... 
+    >>> runoob(4)
+    {'z': 1, 'arg': 4}      # 返回一个名字/值对的字典
+    >>>
+
+.. function:: map(function, iterable, ...)
+
+map() 会根据提供的函数对指定序列做映射。返回一个将 function 应用于 iterable 中每一项并输出其结果的迭代器。 
+如果传入了额外的 iterable 参数，function 必须接受相同个数的实参并被应用于从所有可迭代对象中并行获取的项。 
+当有多个可迭代对象时，最短的可迭代对象耗尽则整个迭代就将结束。
+
+::
+
+    >>>def square(x) :            # 计算平方数
+    ...     return x ** 2
+    ... 
+    >>> map(square, [1,2,3,4,5])   # 计算列表各个元素的平方
+    [1, 4, 9, 16, 25]
+    >>> map(lambda x: x ** 2, [1, 2, 3, 4, 5])  # 使用 lambda 匿名函数
+    [1, 4, 9, 16, 25]
+    
+    # 提供了两个列表，对相同位置的列表数据进行相加
+    >>> map(lambda x, y: x + y, [1, 3, 5, 7, 9], [2, 4, 6, 8, 10])
+    [3, 7, 11, 15, 19]
+
 
 .. function:: max()
 
+返回给定参数的最大值，参数可以为序列
+
+::
+
+    print ("max(80, 100, 1000) : ", max(80, 100, 1000))
+    print ("max(-20, 100, 400) : ", max(-20, 100, 400))
+    print ("max(-80, -20, -10) : ", max(-80, -20, -10))
+    print ("max(0, 100, -400) : ", max(0, 100, -400))
+
+输出结果::
+
+    max(80, 100, 1000) :  1000
+    max(-20, 100, 400) :  400
+    max(-80, -20, -10) :  -10
+    max(0, 100, -400) :  100
+
 .. class:: memoryview()
+
+返回给定参数的内存查看对象(Momory view)。所谓内存查看对象，是指对支持缓冲区协议的数据进行包装，在不需要复制对象基础上允许Python代码访问。
+
+::
+
+    >>>v = memoryview(bytearray("abcefg"))
+    >>> v[1]
+    98
+    >>> v[-1]
+    103
+    >>> v[1:4]
+    <memoryview>
+    >>> bytes(v[1:4)
+    b'bce'
+    >>>
 
 .. function:: min()
 
-.. function:: next()
+返回给定参数的最小值，参数可以为序列。
+
+::
+
+    print ("min(80, 100, 1000) : ", min(80, 100, 1000))
+    print ("min(-20, 100, 400) : ", min(-20, 100, 400))
+    print ("min(-80, -20, -10) : ", min(-80, -20, -10))
+    print ("min(0, 100, -400) : ", min(0, 100, -400))
+
+输出结果::
+
+    min(80, 100, 1000) :  80
+    min(-20, 100, 400) :  -20
+    min(-80, -20, -10) :  -80
+    min(0, 100, -400) :  -400
+
+
+
+.. function:: next(iterator[, default])
+
+
+返回迭代器的下一个项目。通过调用 iterator 的 __next__() 方法获取下一个元素。如果迭代器耗尽，则返回给定的 default，如果没有默认值则触发 StopIteration。
+
+::
+
+    # 首先获得Iterator对象:
+    it = iter([1, 2, 3, 4, 5])
+    # 循环:
+    while True:
+        try:
+            # 获得下一个值:
+            x = next(it)
+            print(x)
+        except StopIteration:
+            # 遇到StopIteration就退出循环
+            break
 
 .. class:: object()
 
 .. function:: oct()
 
+将一个整数转换成8进制字符串。
+
+::
+
+    >>>oct(10)
+    '012'
+    >>> oct(20)
+    '024'
+    >>> oct(15)
+    '017'
+    >>>
+
 .. function:: open()
 
-.. function:: ord()
+open() 方法用于打开一个文件，并返回文件对象，在对文件进行处理过程都需要使用到这个函数，如果该文件无法被打开，会抛出 OSError。
+注意：使用 open() 方法一定要保证关闭文件对象，即调用 close() 方法
 
-.. function:: pow()
+open() 函数常用形式是接收两个参数：文件名(file)和模式(mode)::
 
-.. function:: print()
+    open(file, mode='r')
+
+mode 是一个可选字符串，用于指定打开文件的模式。默认值是 'r' ，这意味着它以文本模式打开并读取。其他常见模式有：写入 'w' （截断已经存在的文件）；
+排它性创建 'x' ；追加写 'a' （在 一些 Unix 系统上，无论当前的文件指针在什么位置，所有 写入都会追加到文件末尾）。可用的模式有:
+
+=========  =================================
+模式        描述
+'r'        读取（默认）
+'w'        写入，并先截断文件
+'x'        排它性创建，如果文件已存在则失败
+'a'        写入，如果文件存在则在末尾追加
+'a'        写入，如果文件存在则在末尾追加
+'b'        二进制模式
+'t'        文本模式（默认）
+'+'        更新磁盘文件（读取并写入）
+=========  =================================
+
+默认的模式是 'r' （打开并读取文本，同 'rt' ）。对于二进制写入， 'w+b' 模式打开并把文件截断成 0 字节； 'r+b' 则不会截断。
+
+
+.. function:: ord(c)
+
+这是 chr() 的逆函数。。它以一个字符串（Unicode 字符）作为参数,返回代表对应 Unicode 的整数。
+
+::
+
+    >>>ord('a')
+    97
+    >>> ord('€')
+    8364
+    >>>
+
+.. function:: (x, y[, z])
+
+返回 xy（x的y次方） 的值。
+
+::
+
+    print ("pow(100, 2) : ", pow(100, 2))
+    print ("pow(100, -2) : ", pow(100, -2))
+    print ("pow(2, 4) : ", pow(2, 4))
+    print ("pow(3, 0) : ", pow(3, 0))
+
+输出结果::
+
+    pow(100, 2) :  10000
+    pow(100, -2) :  0.0001
+    pow(2, 4) :  16
+    pow(3, 0) :  1
+
+.. function:: print(*objects, sep=' ', end='\n', file=sys.stdout)
+
+用于打印输出，最常见的一个函数。
+
+    - ``objects`` ：复数，表示可以一次输出多个对象。输出多个对象时，需要用 , 分隔。
+    - ``sep`` ：用来间隔多个对象，默认值是一个空格。
+    - ``end`` ：用来设定以什么结尾。默认值是换行符 \n，我们可以换成其他字符串。
+    - ``file`` ：要写入的文件对象。
+
+::
+
+    >>>print(1)
+    1
+    >>> print("Hello World")
+    Hello World
+    >>> a = 1
+    >>> b = 'w3cschool'
+    >>> print(a,b)
+    1 w3cschool
+    >>> print("aaa""bbb")
+    aaabbb
+    >>> print("aaa","bbb")
+    aaa bbb
+    >>>
+    >>> print("www","w3cschool","cn",sep=".") # 设置间隔符
+    www.w3cschool.cn
+
 
 .. function:: property()
 
