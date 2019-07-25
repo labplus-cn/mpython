@@ -12,8 +12,8 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 
 目前支持掌控板的编程软件有:
 
-- ![](http://wiki.labplus.cn/images/2/2d/MPythonX.png)[mPythonX](https://www.mpython.cn/mPython/software) -- 官方推荐编程软件,支持Python代码编程以及主流图形化编程;
-- ![](http://wiki.dfrobot.com.cn/images/thumb/c/ca/Mind%2B_logo.png/128px-Mind%2B_logo.png)[Mind+](http://mindplus.cc/) -- 基于Scratch3.0开发的青少年编程软件，支持arduino、micro:bit、掌控板等各种开源硬件；
+- <img src="http://wiki.labplus.cn/images/2/2d/MPythonX.png"  width="30" />  [mPythonX](https://www.mpython.cn/mPython/software) -- 官方推荐编程软件,支持Python代码编程以及主流图形化编程;
+- <img src="http://wiki.dfrobot.com.cn/images/thumb/c/ca/Mind%2B_logo.png/128px-Mind%2B_logo.png"  width="30" />  [Mind+](http://mindplus.cc/) -- 基于Scratch3.0开发的青少年编程软件，支持arduino、micro:bit、掌控板等各种开源硬件；
 
 
 # 掌控板社区
