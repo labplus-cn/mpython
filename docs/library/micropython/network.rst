@@ -83,9 +83,9 @@ WLAN类
 扫描可用的无线网络（仅在STA接口上进行扫描），返回有关WiFi接入点信息的元组列表。
 
 - ``ssid`` 服务集标识。
-
 - ``bssid`` 接入点的硬件地址，以二进制形式返回为字节对象。您可以使用 ``ubinascii.hexlify()`` 将其转换为ASCII格式。
-
+- ``channel`` 信道
+- ``RSSI`` 信号强度
 - ``authmode``
 
   - ``AUTH_OPEN`` = 0

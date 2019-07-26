@@ -15,5 +15,6 @@ mPython类库
     sdcard.rst 
     bluebit.rst
     parrot.rst
+    ds18x20.rst
 
 

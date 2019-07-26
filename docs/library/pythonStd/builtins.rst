@@ -479,7 +479,7 @@ mode 是一个可选字符串，用于指定打开文件的模式。默认值是
     8364
     >>>
 
-.. function:: (x, y[, z])
+.. function:: pow(x, y[, z])
 
 返回 xy（x的y次方） 的值。
 
@@ -508,7 +508,7 @@ mode 是一个可选字符串，用于指定打开文件的模式。默认值是
 
 ::
 
-    >>>print(1)
+    >>> print(1)
     1
     >>> print("Hello World")
     Hello World
@@ -525,39 +525,377 @@ mode 是一个可选字符串，用于指定打开文件的模式。默认值是
     www.w3cschool.cn
 
 
-.. function:: property()
+.. decorator:: property()
+
+property() 函数的作用是在新式类中返回属性值。将 `property` 函数用作装饰器可以很方便的创建只读属性：
+
+property 的 getter，setter 和 deleter 方法同样可以用作装饰器::
+
+    class C(object):
+        def __init__(self):
+            self._x = None
+    
+        @property
+        def x(self):
+            """I'm the 'x' property."""
+            return self._x
+    
+        @x.setter
+        def x(self, value):
+            self._x = value
+    
+        @x.deleter
+        def x(self):
+            del self._x
+
 
 .. function:: range()
 
+range() 函数返回的是一个可迭代对象（类型是对象），而不是列表类型， 所以打印的时候不会打印列表。
+
+函数语法:
+
+    - ``range(stop)``
+    - ``range(start, stop[, step])``
+
+::
+
+    >>>range(5)
+    range(0, 5)
+    >>> for i in range(5):
+    ...     print(i)
+    ... 
+    0
+    1
+    2
+    3
+    4
+    >>> list(range(5))
+    [0, 1, 2, 3, 4]
+    >>> list(range(0))
+    []
+    >>>
+
+有两个参数或三个参数的情况（第二种构造方法）::
+
+    >>>list(range(0, 30, 5))
+    [0, 5, 10, 15, 20, 25]
+    >>> list(range(0, 10, 2))
+    [0, 2, 4, 6, 8]
+    >>> list(range(0, -10, -1))
+    [0, -1, -2, -3, -4, -5, -6, -7, -8, -9]
+    >>> list(range(1, 0))
+    []
+    >>>
+    >>>
+
+
 .. function:: repr()
 
-.. function:: reversed()
+返回包含一个对象的可打印表示形式的字符串。
 
-.. function:: round()
+::
 
-.. class:: set()
+    >>>s = 'baidu'
+    >>> repr(s)
+    "'baidu'"
+    >>> dict = {'baidu': 'baidu.com', 'google': 'google.com'}
+    >>> repr(dict)
+    "{'google': 'google.com', 'baidu': 'baidu.com'}"
+    >>>
 
-.. function:: setattr()
+.. function:: reversed(seq)
+
+返回一个反转的迭代器。
+
+::
+
+    # 字符串
+    seqString = 'Runoob'
+    print(list(reversed(seqString)))
+    
+    # 元组
+    seqTuple = ('R', 'u', 'n', 'o', 'o', 'b')
+    print(list(reversed(seqTuple)))
+    
+    # range
+    seqRange = range(5, 9)
+    print(list(reversed(seqRange)))
+    
+    # 列表
+    seqList = [1, 2, 4, 3, 5]
+    print(list(reversed(seqList)))
+
+输出结果::
+
+    ['b', 'o', 'o', 'n', 'u', 'R']
+    ['b', 'o', 'o', 'n', 'u', 'R']
+    [8, 7, 6, 5]
+    [5, 3, 4, 2, 1]
+
+
+.. function:: round(x [, n])
+
+返回浮点数x的四舍五入值。
+
+    - ``x`` - 数字表达式。
+    - ``n`` - 表示从小数点位数，其中 x 需要四舍五入，默认值为 0
+
+::
+
+    print ("round(70.23456) : ", round(70.23456))
+    print ("round(56.659,1) : ", round(56.659,1))
+    print ("round(80.264, 2) : ", round(80.264, 2))
+    print ("round(100.000056, 3) : ", round(100.000056, 3))
+    print ("round(-100.000056, 3) : ", round(-100.000056, 3))
+
+输出结果::
+
+    round(70.23456) :  70
+    round(56.659,1) :  56.7
+    round(80.264, 2) :  80.26
+    round(100.000056, 3) :  100.0
+    round(-100.000056, 3) :  -100.0
+
+.. class:: set([iterable])
+
+set() 函数创建一个无序不重复元素集，可进行关系测试，删除重复数据，还可以计算交集、差集、并集等。
+
+    >>> x = set('runoob')
+    >>> y = set('google')
+    >>> x, y
+    ({'b', 'u', 'n', 'o', 'r'}, {'e', 'l', 'g', 'o'})     # 重复的被删除
+    >>> x & y         # 交集
+    {'o'}
+    >>> x | y         # 并集
+    {'e', 'u', 'o', 'n', 'r', 'l', 'g', 'b'}
+    >>> x - y         # 差集
+    {'b', 'u', 'n', 'r'}
+    >
+
+.. function:: setattr(object, name, value)
+
+setattr() 函数对应函数 getattr()，用于设置属性值，该属性不一定是存在的。
+
+对已存在的属性进行赋值::
+
+    >>>class A(object):
+    ...     bar = 1
+    ... 
+    >>> a = A()
+    >>> getattr(a, 'bar')          # 获取属性 bar 值
+    1
+    >>> setattr(a, 'bar', 5)       # 设置属性 bar 值
+    >>> a.bar
+    5
+
+如果属性不存在会创建一个新的对象属性，并对属性赋值::
+
+    >>>class A():
+    ...     name = "runoob"
+    ... 
+    >>> a = A()
+    >>> setattr(a, "age", 28)
+    >>> print(a.age)
+    28
+    >>>
+
+.. function:: getattr(object, name[, default])
+
+用于返回一个对象属性值。
+
+::
+
+    >>>class A(object):
+    ...     bar = 1
+    ... 
+    >>> a = A()
+    >>> getattr(a, 'bar')        # 获取属性 bar 值
+    1
+    >>> getattr(a, 'bar2')       # 属性 bar2 不存在，触发异常
+    Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+    AttributeError: 'A' object has no attribute 'bar2'
+    >>> getattr(a, 'bar2', 3)    # 属性 bar2 不存在，但设置了默认值
+    3
 
 .. class:: slice()
 
-   slice内置函数是slice对象的类型.
+slice内置函数是slice对象的类型.
 
-.. function:: sorted()
 
-.. function:: staticmethod()
+.. function:: sorted(iterable, *, key=None, reverse=False)
+
+对所有可迭代的对象进行排序操作
+
+- ``iterable`` -- 可迭代对象。
+- ``key`` -- 主要是用来进行比较的元素，只有一个参数，具体的函数的参数就是取自于可迭代对象中，指定可迭代对象中的一个元素来进行排序。
+- ``reverse`` -- 排序规则，reverse = True 降序 ， reverse = False 升序（默认）。
+
+sorted 的最简单的使用方法::
+
+    >>>sorted([5, 2, 3, 1, 4])
+    [1, 2, 3, 4, 5]                      # 默认为升序
+
+利用key进行倒序排序::
+
+    >>>example_list = [5, 0, 6, 1, 2, 7, 3, 4]
+    >>> result_list = sorted(example_list, key=lambda x: x*-1)
+    >>> print(result_list)
+    [7, 6, 5, 4, 3, 2, 1, 0]
+    >>>
+
+要进行反向排序，也通过传入第三个参数 reverse=True::
+
+    >>>example_list = [5, 0, 6, 1, 2, 7, 3, 4]
+    >>> sorted(example_list, reverse=True)
+    [7, 6, 5, 4, 3, 2, 1, 0]
+
+.. decorator:: staticmethod()
+
+将方法转换为静态方法。
+
+静态方法不会接收隐式的第一个参数。要声明一个静态方法，请使用此语法::
+
+    class C:
+        @staticmethod
+        def f(arg1, arg2, ...): ...
+
+静态方法的调用可以在类上进行 (例如 C.f()) 也可以在实例上进行 (例如 C().f())。
+
 
 .. class:: str()
 
-.. function:: sum()
+函数将对象转化为适于人阅读的形式。
+
+::
+
+    >>>s = 'w3cschool'
+    >>> str(s)
+    'W3Cschool'
+    >>> dict = {'w3cschool': 'w3cschool', 'google': 'google.com'};
+    >>> str(dict)
+    "{'google': 'google.com', 'w3cschool': 'w3cschool.cn'}"
+    >>>
+
+
+.. function:: sum(iterable[, start])
+
+::
+
+    >>>sum([0,1,2])
+    3
+    >>> sum((2, 3, 4), 1) # 元组计算总和后再加 1
+    10
+    >>> sum([0,1,2,3,4], 2) # 列表计算总和后再加 2
+    12
+
 
 .. function:: super()
 
+super() 函数是用于调用父类(超类)的一个方法。
+
+::
+
+    class A:
+        def add(self, x):
+            y = x+1
+            print(y)
+    class B(A):
+        def add(self, x):
+            super().add(x)
+    b = B()
+    b.add(2)  # 3
+
 .. class:: tuple()
+
+将列表转换为元组。
+
+::
+
+    >>>list1= ['Google', 'Taobao', 'Runoob', 'Baidu']
+    >>> tuple1=tuple(list1)
+    >>> tuple1
+    ('Google', 'Taobao', 'Runoob', 'Baidu')
+
 
 .. function:: type()
 
-.. function:: zip()
+type() 函数如果你只有第一个参数则返回对象的类型，三个参数返回新的类型对象。
+
+- ``type(object)``
+- ``type(name, bases, dict)``
+
+    - ``name`` -- 类的名称。
+    - ``bases`` -- 基类的元组。
+    - ``dict`` -- 字典，类内定义的命名空间变量。
+
+.. Hint:: isinstance() 与 type() 区别
+
+    - type() 不会认为子类是一种父类类型，不考虑继承关系。
+    - isinstance() 会认为子类是一种父类类型，考虑继承关系。
+
+    **如果要判断两个类型是否相同推荐使用 isinstance()。**
+
+::
+
+    >>> type(1)
+    <type 'int'>
+    >>> type('runoob')
+    <type 'str'>
+    >>> type([2])
+    <type 'list'>
+    >>> type({0:'zero'})
+    <type 'dict'>
+    >>> x = 1          
+    >>> type( x ) == int    # 判断类型是否相等
+    True
+    
+    # 三个参数
+    >>> class X(object):
+    ...     a = 1
+    ...
+    >>> X = type('X', (object,), dict(a=1))  # 产生一个新的类型 X
+    >>> X
+    <class '__main__.X'>
+
+type() 与 isinstance()区别::
+
+    class A:
+        pass
+    s
+    class B(A):
+        pass
+    
+    isinstance(A(), A)    # returns True
+    type(A()) == A        # returns True
+    isinstance(B(), A)    # returns True
+    type(B()) == A        # returns False
+
+
+.. function:: zip([iterable, ...])
+
+zip() 函数用于将可迭代的对象作为参数，将对象中对应的元素打包成一个个元组，然后返回由这些元组组成的对象，这样做的好处是节约了不少的内存。
+
+我们可以使用 list() 转换来输出列表。如果各个迭代器的元素个数不一致，则返回列表长度与最短的对象相同，利用 * 号操作符，可以将元组解压为列表。
+
+    >>>a = [1,2,3]
+    >>> b = [4,5,6]
+    >>> c = [4,5,6,7,8]
+    >>> zipped = zip(a,b)     # 返回一个对象
+    >>> zipped
+    <zip object at 0x103abc288>
+    >>> list(zipped)  # list() 转换为列表
+    [(1, 4), (2, 5), (3, 6)]
+    >>> list(zip(a,c))              # 元素个数与最短的列表一致
+    [(1, 4), (2, 5), (3, 6)]
+    
+    >>> a1, a2 = zip(*zip(a,b))          # 与 zip 相反，zip(*) 可理解为解压，返回二维矩阵式
+    >>> list(a1)
+    [1, 2, 3]
+    >>> list(a2)
+    [4, 5, 6]
+    >>>
 
 
 异常
