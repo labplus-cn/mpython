@@ -415,7 +415,6 @@ class wifi:
             authmode=4
         else:
             authmode=0
-        print(authmode)
         self.ap.config(essid=essid,password=password,authmode=authmode, channel=channel)
 
     def disable_APWiFi(self):

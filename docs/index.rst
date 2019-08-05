@@ -108,6 +108,7 @@ mPython类库
 - :mod:`sdcard` --------- 挂载SD卡
 - :mod:`bluebit` --------- blue:bit驱动
 - :mod:`parrot` --------- 掌控拓展板驱动
+- :mod:`ds18x20` --------- ds18b20温度传感器驱动
 
 
 

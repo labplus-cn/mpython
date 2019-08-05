@@ -150,12 +150,12 @@ OLED可绘制一些点、直线、矩形等形状。
 
 将取模数据赋值给bmp数组后，绘制图片至OLED显示屏上::
 
-  oled.Bitmap(0, 0, bmp, 128, 64, 1)
+  oled.bitmap(0, 0, bmp, 128, 64, 1)
   oled.show()
 
 .. Note::
 
-  oled.Bitmap(x, y, bitmap, w, h, c) 可以绘制bitmap图案，``x`` 、``y`` 为左上角起点的坐标x、y，``bitmap`` 为图案bitmap数组名称，``w`` 为图案宽度，``h`` 为图案高度，``c`` 为颜色值，``1`` 时像素点亮，``0`` 时像素点灭。
+  oled.bitmap(x, y, bitmap, w, h, c) 可以绘制bitmap图案，``x`` 、``y`` 为左上角起点的坐标x、y，``bitmap`` 为图案btyearray字节数组名称，``w`` 为图案宽度，``h`` 为图案高度，``c`` 为颜色值，``1`` 时像素点亮，``0`` 时像素点灭。
 
 
 动态显示
