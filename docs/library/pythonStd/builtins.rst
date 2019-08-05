@@ -235,6 +235,265 @@ setattr() 相关的函数。实参是一个对象和一个字符串。该字符�
     # 触发错误
     print('z = ',point1.z)
 
+----------------------------------------------------------------
+
+.. class:: dict(**kwarg)
+.. class:: dict(mapping, **kwarg)
+.. class:: dict(iterable, **kwarg)
+
+- ``**kwargs`` -- 关键字
+- ``mapping`` -- 元素的容器。
+- ``iterable`` -- 可迭代对象。
+
+dict() 函数用于创建一个字典
+
+::
+
+    >>>dict()                        # 创建空字典
+    {}
+    >>> dict(a='a', b='b', t='t')     # 传入关键字
+    {'a': 'a', 'b': 'b', 't': 't'}
+    >>> dict(zip(['one', 'two', 'three'], [1, 2, 3]))   # 映射函数方式来构造字典
+    {'three': 3, 'two': 2, 'one': 1} 
+    >>> dict([('one', 1), ('two', 2), ('three', 3)])    # 可迭代对象方式来构造字典
+    {'three': 3, 'two': 2, 'one': 1}
+    >>>
+
+
+.. function:: dir(object)
+
+dir() 函数不带参数时，返回当前范围内的变量、方法和定义的类型列表；带参数时，返回参数的属性、方法列表。
+如果参数包含方法__dir__()，该方法将被调用。如果参数不包含__dir__()，该方法将最大限度地收集参数信息。
+
+- ``object`` -- 对象、变量、类型。
+
+
+.. function:: divmod()
+
+它将两个（非复数）数字作为实参，并在执行整数除法时返回一对商和余数。对于混合操作数类型，适用双目算术运算符的规则。
+对于整数，结果和 (a // b, a % b) 一致。对于浮点数，结果是 (q, a % b) ，q 通常是 math.floor(a / b) 但可能会比 1 小。
+在任何情况下， q * b + a % b 和 a 基本相等；如果 a % b 非零，它的符号和 b 一样，并且 0 <= abs(a % b) < abs(b) 。
+
+::
+
+    >>> divmod(7, 2)
+    (3, 1)
+    >>> divmod(8, 2)
+    (4, 0)
+    >>> divmod(8, -2)
+    (-4, 0)
+    >>> divmod(3, 1.3)
+    (2.0, 0.4000001)
+
+.. function:: enumerate(sequence, [start=0])
+
+enumerate() 函数用于将一个可遍历的数据对象(如列表、元组或字符串)组合为一个索引序列，同时列出数据和数据下标，一般用在 for 循环当中。
+
+- ``sequence`` -- 一个序列、迭代器或其他支持迭代对象。
+- ``start`` -- 下标起始位置。
+
+::
+
+    >>>seq = ['one', 'two', 'three']
+    >>> for i, element in enumerate(seq):
+    ...     print i, element
+    ... 
+    0 one
+    1 two
+    2 three
+
+.. function:: eval(expression[, globals[, locals]])
+
+eval() 函数用来执行一个字符串表达式，并返回表达式的值。
+
+- ``expression`` -- 表达式。
+- ``globals`` -- 变量作用域，全局命名空间，如果被提供，则必须是一个字典对象。
+- ``locals`` -- 变量作用域，局部命名空间，如果被提供，可以是任何映射对象。
+
+
+::
+
+    >>>x = 7
+    >>> eval( '3 * x' )
+    21
+    >>> eval('pow(2,2)')
+    4
+    >>> eval('2 + 2')
+    4
+    >>> n=81
+    >>> eval("n + 4")
+    85
+
+.. function:: exec(object[, globals[, locals]])
+
+exec 执行储存在字符串或文件中的 Python 语句，相比于 eval，exec可以执行更复杂的 Python 代码。
+
+- ``object``：必选参数，表示需要被指定的Python代码。它必须是字符串或code对象。如果object是一个字符串，该字符串会先被解析为一组Python语句，然后在执行（除非发生语法错误）。如果object是一个code对象，那么它只是被简单的执行。
+- ``globals``：可选参数，表示全局命名空间（存放全局变量），如果被提供，则必须是一个字典对象。
+- ``locals``：可选参数，表示当前局部命名空间（存放局部变量），如果被提供，可以是任何映射对象。如果该参数被忽略，那么它将会取与globals相同的值。
+
+::
+
+    >>>exec('print("Hello World")')
+    Hello World
+    # 单行语句字符串
+    >>> exec("print ('runoob.com')")
+    runoob.com
+    
+    #  多行语句字符串
+    >>> exec ("""for i in range(5):
+    ...     print ("iter time: %d" % i)
+    ... """)
+    iter time: 0
+    iter time: 1
+    iter time: 2
+    iter time: 3
+    iter time: 4
+
+.. function:: filter(function, iterable)
+
+用于过滤序列，过滤掉不符合条件的元素，返回一个迭代器对象，如果要转换为列表，可以使用 list() 来转换
+
+- ``function`` -- 判断函数。
+- ``iterable`` -- 可迭代对象。
+
+过滤出列表中的所有奇数::
+ 
+    def is_odd(n):
+        return n % 2 == 1
+    
+    tmplist = filter(is_odd, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    newlist = list(tmplist)
+    print(newlist)
+
+
+.. class:: float([x])
+
+float() 函数用于将整数和字符串转换成浮点数。
+
+::
+
+    >>>float(1)
+    1.0
+    >>> float(112)
+    112.0
+    >>> float(-123.6)
+    -123.6
+    >>> float('123')     # 字符串
+    123.0
+
+.. function:: format(value[, format_spec])
+
+格式化字符串的函数 str.format()，它增强了字符串格式化的功能。format 函数可以接受不限个参数，位置可以不按顺序。基本语法是通过 {} 和 : 来代替以前的 % 。更详细的语法,请查阅CPython `格式字符串语法 <https://docs.python.org/zh-cn/3.7/library/string.html#format-specification-mini-language>`_
+
+::
+
+    >>>"{} {}".format("hello", "world")    # 不设置指定位置，按默认顺序
+    'hello world'
+    
+    >>> "{0} {1}".format("hello", "world")  # 设置指定位置
+    'hello world'
+    
+    >>> "{1} {0} {1}".format("hello", "world")  # 设置指定位置
+    'world hello world
+
+.. class:: frozenset([iterable])
+
+返回一个冻结的集合，冻结后集合不能再添加或删除任何元素。
+
+- ``iterable`` -- 可迭代的对象，比如列表、字典、元组等等。
+
+
+.. function:: getattr(object, name[, default])
+
+用于返回一个对象属性值。
+
+::
+
+    >>>class A(object):
+    ...     bar = 1
+    ... 
+    >>> a = A()
+    >>> getattr(a, 'bar')        # 获取属性 bar 值
+    1
+    >>> getattr(a, 'bar2')       # 属性 bar2 不存在，触发异常
+    Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+    AttributeError: 'A' object has no attribute 'bar2'
+    >>> getattr(a, 'bar2', 3)    # 属性 bar2 不存在，但设置了默认值
+
+
+.. function:: globals()
+
+globals() 函数会以字典类型返回当前位置的全部全局变量。
+
+.. function:: hasattr(object, name)
+
+判断对象是否包含对应的属性。
+
+- ``object`` -- 对象。
+- ``name`` -- 字符串，属性名。
+
+::
+
+    class Coordinate:
+        x = 10
+        y = -5
+        z = 0
+    
+    point1 = Coordinate() 
+    print(hasattr(point1, 'x'))
+    print(hasattr(point1, 'y'))
+    print(hasattr(point1, 'z'))
+    print(hasattr(point1, 'no'))  # 没有该属性
+
+输出结果::
+
+    True
+    True
+    True
+    False
+
+.. function:: hash(object)
+
+返回该对象的哈希值（如果它有的话）。哈希值是整数。它们在字典查找元素时用来快速比较字典的键。相同大小的数字变量有相同的哈希值
+
+
+----------------------------------------------------------------
+
+
+..function:: help([object])
+
+查看函数或模块用途的详细说明
+
+
+..function:: hex(x)
+
+将整数转换为以“0x”为前缀的小写十六进制字符串。
+
+::
+
+    >>> hex(255)
+    '0xff'
+    >>> hex(-42)
+    '-0x2a'
+
+..function:: id([object])
+
+获取对象的内存地址。
+
+..function:: input([prompt])
+
+接收一个标准输入数据，返回为 string 类型
+
+
+.. class:: int([x])
+.. class:: int(x,base=10)
+
+将一个字符串或数字转换为整型。
+
+- ``x`` -- 字符串或数字。
+- ``base`` -- 进制数，默认十进制
 
 .. function:: isinstance(object, classinfo)
 
@@ -384,6 +643,9 @@ map() 会根据提供的函数对指定序列做映射。返回一个将 functio
     >>> bytes(v[1:4)
     b'bce'
     >>>
+
+
+---------------------------------------------------------
 
 .. function:: min()
 
@@ -673,6 +935,10 @@ set() 函数创建一个无序不重复元素集，可进行关系测试，删�
     {'b', 'u', 'n', 'r'}
     >
 
+
+------------------------------------------------
+
+
 .. function:: setattr(object, name, value)
 
 setattr() 函数对应函数 getattr()，用于设置属性值，该属性不一定是存在的。
@@ -700,28 +966,8 @@ setattr() 函数对应函数 getattr()，用于设置属性值，该属性不一
     28
     >>>
 
-.. function:: getattr(object, name[, default])
-
-用于返回一个对象属性值。
-
-::
-
-    >>>class A(object):
-    ...     bar = 1
-    ... 
-    >>> a = A()
-    >>> getattr(a, 'bar')        # 获取属性 bar 值
-    1
-    >>> getattr(a, 'bar2')       # 属性 bar2 不存在，触发异常
-    Traceback (most recent call last):
-    File "<stdin>", line 1, in <module>
-    AttributeError: 'A' object has no attribute 'bar2'
-    >>> getattr(a, 'bar2', 3)    # 属性 bar2 不存在，但设置了默认值
-    3
 
 .. class:: slice()
-
-slice内置函数是slice对象的类型.
 
 
 .. function:: sorted(iterable, *, key=None, reverse=False)
@@ -766,7 +1012,7 @@ sorted 的最简单的使用方法::
 
 .. class:: str()
 
-函数将对象转化为适于人阅读的形式。
+函数将对象转化为str对象。
 
 ::
 
@@ -879,6 +1125,8 @@ zip() 函数用于将可迭代的对象作为参数，将对象中对应的元�
 
 我们可以使用 list() 转换来输出列表。如果各个迭代器的元素个数不一致，则返回列表长度与最短的对象相同，利用 * 号操作符，可以将元组解压为列表。
 
+::
+
     >>>a = [1,2,3]
     >>> b = [4,5,6]
     >>> c = [4,5,6,7,8]
@@ -897,70 +1145,6 @@ zip() 函数用于将可迭代的对象作为参数，将对象中对应的元�
     [4, 5, 6]
     >>>
 
- .. function:: enumerate(sequence, [start=0])
-
-enumerate() 函数用于将一个可遍历的数据对象(如列表、元组或字符串)组合为一个索引序列，同时列出数据和数据下标，一般用在 for 循环当中。
-
-- ``sequence`` -- 一个序列、迭代器或其他支持迭代对象。
-- ``start`` -- 下标起始位置。
-
-::
-
-    >>>seq = ['one', 'two', 'three']
-    >>> for i, element in enumerate(seq):
-    ...     print i, element
-    ... 
-    0 one
-    1 two
-    2 three
-
-.. function:: eval(expression[, globals[, locals]])
-
-eval() 函数用来执行一个字符串表达式，并返回表达式的值。
-
-- ``expression`` -- 表达式。
-- ``globals`` -- 变量作用域，全局命名空间，如果被提供，则必须是一个字典对象。
-- ``locals`` -- 变量作用域，局部命名空间，如果被提供，可以是任何映射对象。
-
-
-::
-
-    >>>x = 7
-    >>> eval( '3 * x' )
-    21
-    >>> eval('pow(2,2)')
-    4
-    >>> eval('2 + 2')
-    4
-    >>> n=81
-    >>> eval("n + 4")
-    85
-
-.. function:: exec(object[, globals[, locals]])
-
-exec 执行储存在字符串或文件中的 Python 语句，相比于 eval，exec可以执行更复杂的 Python 代码。
-
-- ``object``：必选参数，表示需要被指定的Python代码。它必须是字符串或code对象。如果object是一个字符串，该字符串会先被解析为一组Python语句，然后在执行（除非发生语法错误）。如果object是一个code对象，那么它只是被简单的执行。
-- ``globals``：可选参数，表示全局命名空间（存放全局变量），如果被提供，则必须是一个字典对象。
-- ``locals``：可选参数，表示当前局部命名空间（存放局部变量），如果被提供，可以是任何映射对象。如果该参数被忽略，那么它将会取与globals相同的值。
-
-::
-
-    >>>exec('print("Hello World")')
-    Hello World
-    # 单行语句字符串
-    >>> exec("print ('runoob.com')")
-    runoob.com
-    
-    #  多行语句字符串
-    >>> exec ("""for i in range(5):
-    ...     print ("iter time: %d" % i)
-    ... """)
-    iter time: 0
-    iter time: 1
-    iter time: 2
-    iter time: 3
-    iter time: 4
 
 异常
 ----------
