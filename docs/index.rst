@@ -136,17 +136,22 @@ mPython类库
    release.rst
 
 
-掌控拓展板
+掌控系列
 ----------
 
 .. toctree::
    :hidden:
 
    extboard/index.rst
+   mPythonBox/index.rst
 
 .. image:: /images/extboard/extboard_250.png
   :scale: 80 %
   :target: extboard/index.html
+
+.. image:: /images/mpythonbox/mpythonbox_250.png
+  :scale: 80 %
+  :target: mPythonBox/index.html
 
 
 ------------------
