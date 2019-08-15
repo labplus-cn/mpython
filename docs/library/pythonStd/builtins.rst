@@ -462,12 +462,12 @@ globals() 函数会以字典类型返回当前位置的全部全局变量。
 ----------------------------------------------------------------
 
 
-..function:: help([object])
+.. function:: help([object])
 
 查看函数或模块用途的详细说明
 
 
-..function:: hex(x)
+.. function:: hex(x)
 
 将整数转换为以“0x”为前缀的小写十六进制字符串。
 
@@ -478,11 +478,11 @@ globals() 函数会以字典类型返回当前位置的全部全局变量。
     >>> hex(-42)
     '-0x2a'
 
-..function:: id([object])
+.. function:: id([object])
 
 获取对象的内存地址。
 
-..function:: input([prompt])
+.. function:: input([prompt])
 
 接收一个标准输入数据，返回为 string 类型
 
