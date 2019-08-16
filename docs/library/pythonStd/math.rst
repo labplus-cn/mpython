@@ -138,7 +138,7 @@ Functions
 
 .. function:: pow(x, y)
 
-   返回  ``x `` 的 ``y`` 次方.
+   返回  ``x`` 的 ``y`` 次方.
 
 .. function:: radians(x)
 
