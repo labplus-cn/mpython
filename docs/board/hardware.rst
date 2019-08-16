@@ -91,7 +91,7 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
 .. _mPythonPindesc:
 
 掌控板接口引脚说明
-++++++++++++++++
++++++++++++++++++++++++++
 
 
 
@@ -137,7 +137,7 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
 * :download:`mPython掌控板V0.9原理图 </../docs/hardware/labplus_mPython_V0.9.pdf>`
 
 主要数据手册
-+++++++
+++++++++++++++++
 
 * :download:`USB-to-UART Bridge：cp2104 </../docs/hardware/CP2104-SiliconLaboratories.pdf>`
 * :download:`ESP32-WROOM </../docs/hardware/esp32-wroom-32_datasheet_cn.pdf>`
@@ -146,6 +146,6 @@ mPython掌控是一块MicroPython微控制器板，很好的支持MicroPython/Py
 * :download:`OLED：128x64 </../docs/hardware/1.30-SPEC QG-2864KSWLG01 VER A.pdf>`
 
 外观规格图
-+++++++
++++++++++++++++++
 
 * :download:`mPython掌控板外观规格图 </../docs/hardware/掌控-外观规格图20190218..rar>`
