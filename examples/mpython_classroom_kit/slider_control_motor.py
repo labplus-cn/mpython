@@ -1,5 +1,5 @@
 # 滑杆控制马达转速 
-from mpython_box import *
+from mpython_classroom_kit import *
 from mpython import *
 
 while True:

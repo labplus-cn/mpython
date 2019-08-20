@@ -1,4 +1,4 @@
-.. _mpythonbox_introduce:
+.. _mpython_classroom_kit_introduce:
 
 掌控板实验箱介绍
 ================
@@ -6,12 +6,12 @@
 概述
 ----
 
-掌控板实验箱是创客教育大班的人工智能教学装备，非常适合初级入门认知、学习最前沿的神经网络、深度学习等人工智能技术。
+掌控板实验箱 mPython Classroom Kit 是创客教育大班的人工智能教学装备，非常适合初级入门认知、学习最前沿的神经网络、深度学习等人工智能技术。
 
 掌控板实验箱内置掌控板, 一体式外壳。集合丰富的电子器件,含(超声波、摄像头、九轴、气象等多种传感器)和5X5 RGB全彩矩阵、320*240液晶彩屏、马达等输出设备。
 此外,还集成性能强劲的AI处理器,具备卷积人工神经网络运算和机器视听觉能力。可实现人脸追踪和人脸识别等视觉识别应用。
 
-.. image:: /images/mpythonbox/mpythonbox.png
+.. image:: /images/mpython_classroom_kit/mpython_classroom_kit.png
     :width: 700
 
 

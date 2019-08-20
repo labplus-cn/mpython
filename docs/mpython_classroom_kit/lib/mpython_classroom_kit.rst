@@ -1,10 +1,10 @@
-.. module:: mpython_box
+.. module:: mpython_classroom_kit
    :synopsis: 掌控板实验箱模块
 
-:mod:`mpython_box` --- 掌控板实验箱模块
-===========================================
+:mod:`mpython_classroom_kit` --- 掌控板实验箱模块
+==========================================================
 
-``mpython_box`` 模块提供实验箱上的传感器和输出设备的驱动函数,及人工智能应用的相关函数。
+``mpython_classroom_kit`` 模块提供实验箱上的传感器和输出设备的驱动函数,及人工智能应用的相关函数。
 
 函数
 ---------
@@ -29,7 +29,7 @@
 集合所有元素如下: 
 `{'left', 'right', 'up', 'down', 'ok'}`
 
-.. literalinclude:: /../examples/mpython_box/key_control_motor.py
+.. literalinclude:: /../examples/mpython_classroom_kit/key_control_motor.py
     :caption: 方向按键控制马达
     :linenos:
 
@@ -42,7 +42,7 @@
 
 返回滑杆电阻采样值。范围0~4095。
 
-.. literalinclude:: /../examples/mpython_box/slider_control_motor.py
+.. literalinclude:: /../examples/mpython_classroom_kit/slider_control_motor.py
     :caption: 滑杆控制马达
     :linenos:
 

@@ -1,4 +1,4 @@
-from mpython_box import *
+from mpython_classroom_kit import *
 import music
 
 while True:

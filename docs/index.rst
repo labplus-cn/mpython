@@ -143,15 +143,15 @@ mPython类库
    :hidden:
 
    extboard/index.rst
-   mPythonBox/index.rst
+   mpython_classroom_kit/index.rst
 
 .. image:: /images/extboard/extboard_250.png
   :scale: 80 %
   :target: extboard/index.html
 
-.. image:: /images/mpythonbox/mpythonbox_250.png
+.. image:: /images/mpython_classroom_kit/mpython_classroom_kit_250.png
   :scale: 80 %
-  :target: mPythonBox/index.html
+  :target: mpython_classroom_kit/index.html
 
 
 ------------------
