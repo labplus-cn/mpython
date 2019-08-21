@@ -15,27 +15,28 @@
 音符
 ++++
 
-以下是音符格式::
+以下是音符格式:
 
     NOTE[octave][:duration]
 
-- ``NOTE`` - 表示音符c、d、e、f、g、a、b。注意,“#”表示将基本音级升高半音；“b”表示将基本音级降低半音。音符 ``R`` ，则将其视为休息（静音）。例如，c#为C-升半音,ab为A-降半音
-- ``octave`` - 表示音高,默认为4，为中音
-- ``duration`` - 表示为节拍,默认为4节拍
+    - ``NOTE`` - 表示音符c、d、e、f、g、a、b。注意,“#”表示将基本音级升高半音；“b”表示将基本音级降低半音。音符 ``R`` ，则将其视为休息（静音）。例如，c#为C-升半音,ab为A-降半音
+    - ``octave`` - 表示音高,默认为4，为中音
+    - ``duration`` - 表示音符持续时长的节拍,默认为4节拍
+
+|
 
 例如，``A1:4`` 音高为1的"A"音符，持续4个节拍（节拍也可以由 ``set_tempo`` 函数设定 - 见下文）。
-
-
 
 
 贝多芬第五交响曲的开头::
 
     ['r4:2', 'g', 'g', 'g', 'eb:8', 'r:2', 'f', 'f', 'f', 'd:8']
 
-八度音阶的定义和范围符合本页列出的关于科学音高表示法的表格 `on this
-page about scientific pitch notation`_.  例如，middle "C"是 ``c4`` 和concert “A”（440）是 ``a4`` 。八度音符从音符"C"开始。
+|
 
-.. _on this page about scientific pitch notation: https://en.wikipedia.org/wiki/Scientific_pitch_notation#Table_of_note_frequencies
+八度音阶的定义和范围符合本页列出的关于科学音高表示法的表格 `科学音调记号法`_.  例如，middle "C"是 ``c4`` 和concert “A”（440）是 ``a4`` 。八度音符从音符"C"开始。
+
+.. _科学音调记号法: https://en.wikipedia.org/wiki/Scientific_pitch_notation#Table_of_note_frequencies
 
 
 函数
@@ -43,16 +44,25 @@ page about scientific pitch notation`_.  例如，middle "C"是 ``c4`` 和concer
 
 .. function:: set_tempo(ticks=4, bpm=120)
 
-    设置播放节拍。一定数量的ticks(整数)构成单个节拍。每个节拍以每分钟特定频率播放（每分钟节拍 - 整数）。
+    设置播放节奏。
+    
+    - ``ticks`` - 音符时值,整数。默认为4,即为四分音符为一拍。
+  
+    - ``bpm`` - 节拍速度,整数。单位,bmp(每分钟节拍数)。
+ 
+|
 
-    可参考以下设置播放节拍:
+    可参考以下设置播放节奏:
 
-    * ``music.set_tempo()`` - 将节拍设置恢复为 ticks = 4, bpm = 120
-    * ``music.set_tempo(ticks=8)`` - 只改变单节拍速度
-    * ``music.set_tempo(bpm=180)`` - 只改变节拍频率
+    * ``music.set_tempo()`` - 将播放节奏设置恢复为 ticks = 4, bpm = 120
+    * ``music.set_tempo(ticks=8)`` - 只改变音符时值,八分音符为一拍
+    * ``music.set_tempo(bpm=180)`` - 只改变节拍速度
 
-    计算滴答的长度（以毫秒为单位）是非常简单的算术： ``60000/bpm/ticks_per_beat`` 。
-    对于那些是默认的值或。 ``60000/120/4 = 125 milliseconds`` or ``1 beat = 500 milliseconds``。
+|
+
+    计算节拍时长（以毫秒为单位）的计算方式： `60000/bpm/ticks_per_beat` ::
+    
+        对于默认的值, 60000/120/4 = 125 milliseconds or 1 beat = 500 milliseconds
 
 .. function:: get_tempo()
 
