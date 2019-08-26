@@ -161,6 +161,82 @@ T(power_up,
 T(power_down,
     N(g5_colon_1), N(d_hash_), N(c), N(g4_colon_2), N(b_colon_1), N(c5_colon_3), );
 
+T(ge_chang_zu_guo,
+    N(r_colon_2),N(g_colon_1),N(g_colon_1),N(g_colon_6),N(g_colon_1),N(g_colon_1),N(g_colon_6),N(g_colon_1),N(g_colon_1),
+    N(g_colon_2),N(f_colon_2),N(e_colon_2),N(d_colon_2),N(c_colon_4),N(g3_colon_3),N(g3_colon_1),N(c4_colon_4),N(g3_colon_4),
+    N(e4_colon_4),N(c_colon_4),N(g_colon_6),N(a_colon_2),N(g_colon_4),N(g_colon_3),N(g_colon_1),N(c5_colon_4),N(c5_colon_4),
+    N(a4_colon_3),N(g_colon_1),N(f_colon_2),N(a_colon_2),N(g_colon_12),N(g_colon_3),N(g_colon_1),N(a_colon_4),N(a),N(d),
+    N(d_colon_3),N(d_colon_1),N(g_colon_6),N(f_colon_2),N(e_colon_4),N(g3_colon_3),N(g3_colon_1),N(g4_colon_4),N(g_colon_2),
+    N(a_colon_2),N(g_colon_2),N(f_colon_2),N(e_colon_2),N(d_colon_2),N(c_colon_12),N(g_colon_3),N(g_colon_1),N(c5_colon_4),
+    N(c5),N(a4_colon_4),N(a_colon_3),N(g_colon_1),N(f_colon_6),N(g_colon_2),N(a_colon_4),N(d_colon_3),N(d_colon_1),N(g_colon_4),
+    N(g_colon_2),N(a_colon_2),N(g_colon_2),N(f_colon_2),N(e_colon_2),N(d_colon_2),N(c_colon_14),N(c_colon_3),N(g3_colon_1),N(e4_colon_4),
+    N(e_colon_6),N(r_colon_2),N(e4_colon_3),N(c_colon_1),N(a_colon_4),N(a_colon_6),N(r_colon_2),N(a3_colon_6),N(a_colon_2),N(d4_colon_4),
+    N(d_colon_3),N(e_colon_1),N(d_colon_2),N(c_colon_2),N(b3_colon_2),N(a3_colon_2),N(g3_colon_8),N(c4_colon_4),N(g3_colon_4),N(a3_colon_2),
+    N(a3_colon_4),N(g3_colon_2),N(c4_colon_4),N(d),N(e_colon_6),N(r_colon_2),N(d_colon_4),N(a_colon_2),N(a_colon_2),N(g_colon_2),N(g_colon_4),
+    N(e_colon_2),N(d_colon_4),N(a_colon_4),N(g_colon_4),N(r_colon_2),N(c5_colon_2),N(c5_colon_3),N(c5_colon_1),N(c5_colon_2),N(g4_colon_2),
+    N(a_colon_6),N(c5_colon_2),N(a4_colon_3),N(g_colon_1),N(f_colon_2),N(a_colon_2),N(g_colon_6),N(r_colon_2),N(c5_colon_3),N(c5_colon_1),
+    N(c5_colon_2),N(c5_colon_2),N(g4_colon_4),N(g_colon_2),N(a_colon_2),N(g_colon_2),N(f_colon_2),N(e_colon_2),N(d_colon_2),N(c_colon_4),
+    N(g3_colon_3),N(g3_colon_1),N(c4_colon_4),N(g3_colon_4),N(e4_colon_4),N(c_colon_4),N(g_colon_6),N(a_colon_2),N(g_colon_4),N(g_colon_3),
+    N(g_colon_1),N(c5_colon_4),N(c5_colon_4),N(a4_colon_3),N(g_colon_1),N(f_colon_2),N(a_colon_2),N(g_colon_12),N(g_colon_3),N(g_colon_1),
+    N(a_colon_4),N(a),N(d),N(d_colon_3),N(d_colon_1),N(g_colon_6),N(f_colon_2),N(e_colon_4),N(g3_colon_3),N(g3_colon_1),N(g4_colon_4),
+    N(g_colon_2),N(a_colon_2),N(g_colon_2),N(f_colon_2),N(e_colon_2),N(d_colon_2),N(c_colon_12),N(g_colon_3),N(g_colon_1),N(c5_colon_4),
+    N(c5),N(a4_colon_4),N(a_colon_3),N(g_colon_1),N(f_colon_6),N(g_colon_2),N(a_colon_4),N(d_colon_3),N(d_colon_1),N(g_colon_4),N(g_colon_2),
+    N(a_colon_2),N(b_colon_2),N(g_colon_2),N(a_colon_2),N(b_colon_2),N(c5_colon_14),
+);
+
+T(dong_fang_hong,
+    N(g_colon_4),N(g_colon_2),N(a_colon_2),N(d_colon_8),N(c_colon_4),N(c_colon_2),N(a3_colon_2),N(d4_colon_8),N(g_colon_4),N(g_colon_4),
+    N(a_colon_2),N(c5_colon_2),N(a4_colon_2),N(g_colon_2),N(c_colon_4),N(c_colon_2),N(a3_colon_2),N(d4_colon_8),N(g_colon_4),N(d_colon_4),
+    N(c),N(b3_colon_2),N(a),N(g_colon_4),N(g4_colon_4),N(d_colon_4),N(e_colon_2),N(d_colon_2),N(c_colon_4),N(c_colon_2),N(a3_colon_2),
+    N(d4_colon_2),N(e_colon_2),N(d_colon_2),N(c_colon_2),N(d4_colon_2),N(c_colon_2),N(b3_colon_2),N(a_colon_2),N(g_colon_12),
+);
+
+T(cai_yun_zhui_yue,
+    N(g3_colon_6),N(a3_colon_2),N(c4_colon_2),N(d_colon_2),N(e_colon_2),N(g_colon_2),N(a_colon_16),N(a_colon_2),N(c5_colon_4),
+    N(a4_colon_2),N(g_colon_2),N(e_colon_2),N(g_colon_4),N(a_colon_2),N(c5_colon_4),N(a4_colon_2),N(g_colon_2),N(e_colon_2),
+    N(g_colon_4),N(a_colon_2),N(c5_colon_4),N(a4_colon_2),N(g_colon_2),N(e_colon_2),N(g_colon_2),N(a_colon_2),N(e_colon_16),
+    N(e_colon_2),N(g_colon_4),N(e_colon_2),N(d_colon_2),N(c_colon_2),N(d_colon_4),N(e_colon_2),N(g_colon_4),N(e_colon_2),N(d_colon_2),
+    N(c_colon_2),N(d_colon_4),N(e_colon_2),N(g_colon_4),N(e_colon_2),N(d_colon_2),N(c_colon_2),N(g3_colon_2),N(a_colon_2),N(c4_colon_16),
+    N(c_colon_2),N(d_colon_4),N(e_colon_2),N(a_colon_2),N(g_colon_2),N(e_colon_2),N(e_colon_2),N(a_colon_2),N(c5_colon_4),N(g4_colon_2),
+    N(a_colon_6),N(a_colon_2),N(c5_colon_2),N(g4_colon_4),N(b_colon_2),N(a_colon_4),N(g_colon_2),N(a_colon_1),N(g_colon_1),N(e_colon_16),
+    N(d_colon_2),N(e_colon_2),N(g_colon_2),N(d_colon_2),N(e_colon_6),N(g_colon_2),N(e_colon_6),N(d_colon_1),N(c_colon_1),N(a3_colon_8),
+    N(g4_colon_2),N(a_colon_2),N(g_colon_2),N(f_colon_2),N(e_colon_3),N(g_colon_1),N(d_colon_2),N(e_colon_1),N(d_colon_1),N(c_colon_16),
+);
+
+T(zou_jin_xin_shi_dai,
+    N(a4_colon_1),N(c5_colon_5),N(a4_colon_2),N(g_colon_2),N(e_colon_2),N(d_colon_2),N(e_colon_1),N(d_colon_1),N(c_colon_12),N(e_colon_2),
+    N(g_colon_2),N(c5_colon_2),N(c_colon_4),N(c_colon_2),N(d_colon_2),N(e_colon_2),N(d_colon_2),N(a4_colon_2),N(g_colon_16),N(c5_colon_6),
+    N(d_colon_2),N(d_colon_2),N(c_colon_2),N(a4_colon_2),N(g_colon_2),N(g_colon_2),N(a_colon_10),N(g_colon_2),N(a_colon_2),N(c5_colon_2),
+    N(e4_colon_4),N(g_colon_2),N(d_colon_3),N(e_colon_1),N(d_colon_2),N(c_colon_2),N(d_colon_16),N(e_colon_6),N(g_colon_2),N(a_colon_4),
+    N(g_colon_2),N(a_colon_2),N(g_colon_2),N(e_colon_2),N(d_colon_2),N(e_colon_1),N(d_colon_1),N(c_colon_4),N(e_colon_2),N(g_colon_2),
+    N(c5_colon_3),N(c_colon_1),N(c_colon_2),N(c),N(d),N(e),N(d),N(c),N(c),N(a4_colon_14),N(a_colon_4),N(d5_colon_2),N(e),N(c_colon_4),
+    N(b4_colon_2),N(a),N(g_colon_3),N(a_colon_1),N(a_colon_2),N(g_colon_2),N(g_colon_2),N(e_colon_6),N(d_colon_2),N(d_colon_4),N(a_colon_2),
+    N(g),N(e),N(d),N(e_colon_1),N(d),N(c_colon_16),N(g_colon_2),N(a),N(c5),N(a4),N(c5_colon_4),N(d_colon_2),N(e_colon_2),N(e_colon_12),
+    N(d_colon_2),N(e),N(d_colon_6),N(g4_colon_2),N(a_colon_4),N(c5_colon_2),N(e),N(d_colon_16),N(g4_colon_2),N(a),N(c5),N(a4),N(c5_colon_4),
+    N(d_colon_2),N(e),N(d_colon_6),N(c_colon_2),N(a4_colon_8),N(c5_colon_3),N(c_colon_1),N(a4_colon_2),N(c5_colon_2),N(d),N(e),N(e),N(a4_colon_2),
+    N(g_colon_12),N(g_colon_2),N(a),N(c5_colon_2),N(c_colon_4),N(a4_colon_2),N(c5_colon_4),N(d_colon_2),N(e),N(e_colon_12),N(d_colon_2),N(e),
+    N(g_colon_6),N(e_colon_2),N(d_colon_4),N(d_colon_2),N(e),N(d),N(e),N(d),N(c),N(c),N(a4_colon_6),N(g_colon_6),N(e_colon_2),N(g_colon_4),
+    N(a),N(e5_colon_4),N(d_colon_8),N(c_colon_2),N(a4_colon_2),N(c5_colon_16),
+);
+
+T(mo_li_hua,
+    N(e4_colon_4),N(e_colon_2),N(g_colon_2),N(a_colon_2),N(c5_colon_2),N(c5_colon_2),N(a4_colon_2),N(g_colon_4),N(g_colon_2),N(a_colon_2),
+    N(g_colon_8),N(e_colon_4),N(e_colon_2),N(g_colon_2),N(a_colon_2),N(c5_colon_2),N(c5_colon_2),N(a4_colon_2),N(g_colon_4),N(g_colon_2),
+    N(a_colon_2),N(g_colon_8),N(g_colon_4),N(g),N(g),N(e_colon_2),N(g_colon_2),N(a_colon_4),N(a_colon_4),N(g_colon_8),N(e_colon_4),N(d_colon_2),
+    N(e_colon_2),N(g_colon_4),N(e_colon_2),N(d_colon_2),N(c_colon_4),N(c_colon_2),N(d_colon_2),N(c_colon_8),N(e_colon_2),N(d_colon_2),
+    N(c_colon_2),N(e_colon_2),N(d_colon_6),N(e_colon_2),N(g_colon_4),N(a_colon_2),N(c5_colon_2),N(g4_colon_8),N(d_colon_4),N(e_colon_2),
+    N(g_colon_2),N(d_colon_2),N(e_colon_2),N(c_colon_2),N(a3_colon_2),N(g3_colon_8),N(a3_colon_4),N(c4_colon_4),N(d_colon_6),N(e_colon_2),
+    N(c_colon_2),N(d_colon_2),N(c_colon_2),N(a3_colon_2),N(g3_colon_12),
+);
+
+T(yi_meng_shan_xiao_diao,
+    N(d5_colon_4),N(g),N(e_colon_2),N(d_colon_2),N(e_colon_4),N(g_colon_2),N(e_colon_2),N(d_colon_2),N(c_colon_2),N(d_colon_12),N(d5_colon_4),
+    N(g),N(d),N(e_colon_2),N(g_colon_2),N(e_colon_2),N(d_colon_2),N(c_colon_2),N(a4_colon_2),N(c5_colon_12),N(c5_colon_4),N(e),N(d_colon_2),
+    N(e_colon_2),N(g4_colon_4),N(d5_colon_2),N(b4_colon_2),N(a4_colon_2),N(g4_colon_2),N(a4_colon_12),N(c5_colon_6),N(d_colon_2),N(b4_colon_2),
+    N(a4_colon_2),N(g4_colon_2),N(e4_colon_2),N(g4_colon_12),
+);
+
+
 #undef N
 #undef T
 
