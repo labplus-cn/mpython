@@ -8,7 +8,7 @@
 # V1.1 add oled draw function,add buzz.freq().  by tangliufeng
 # V1.2 add servo/ui class,by tangliufeng
 
-from machine import I2C, PWM, Pin, ADC, TouchPad, UART
+from machine import I2C, PWM, Pin, ADC, TouchPad
 from ssd1106 import SSD1106_I2C
 import esp, math, time, network
 import ustruct, array

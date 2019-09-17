@@ -27,7 +27,6 @@ from mpython import i2c, sleep_ms, MPythonPin, PinMode
 from micropython import const
 from machine import UART
 import framebuf
-from machine import UART
 import ubinascii
 import ustruct
 import math
