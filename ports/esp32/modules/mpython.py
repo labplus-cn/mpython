@@ -436,7 +436,7 @@ if 119 in i2c.scan():
     bme280 = BME280()
 
 # 3 rgb leds
-rgb = NeoPixel(Pin(17, Pin.OUT), 3, 3, 1)
+rgb = NeoPixel(Pin(17, Pin.OUT), 3, 3, 1, brightness=0.3)
 rgb.write()
 
 # light sensor
