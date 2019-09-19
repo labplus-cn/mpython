@@ -9,7 +9,7 @@ mpython_v1.5.0
 
 ===============  ====================================
  **发布日期**：    2019/7/22
- **固件下载**:     :download:`mpython_firmware_1.5.0 </../firmware/mpython_firmware_1.5.0.zip>`
+ **固件下载**:     :download:`mpython_firmware_1.5.0-23 </../firmware/mpython_firmware_v1.5.0-23.bin>`
 ===============  ====================================
 
 **日志**：
