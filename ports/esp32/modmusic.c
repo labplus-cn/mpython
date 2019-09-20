@@ -506,6 +506,12 @@ STATIC const mp_map_elem_t mpython_music_locals_dict_table[] = {
     { MP_OBJ_NEW_QSTR(MP_QSTR_POWER_UP), (mp_obj_t)&mpython_music_tune_power_up_obj },
     { MP_OBJ_NEW_QSTR(MP_QSTR_POWER_DOWN), (mp_obj_t)&mpython_music_tune_power_down_obj },
     
+    { MP_OBJ_NEW_QSTR(MP_QSTR_GE_CHANG_ZU_GUO), (mp_obj_t)&mpython_music_tune_ge_chang_zu_guo_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_DONG_FANG_HONG), (mp_obj_t)&mpython_music_tune_dong_fang_hong_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_CAI_YUN_ZHUI_YUE), (mp_obj_t)&mpython_music_tune_cai_yun_zhui_yue_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_ZOU_JIN_XIN_SHI_DAI), (mp_obj_t)&mpython_music_tune_zou_jin_xin_shi_dai_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_MO_LI_HUA), (mp_obj_t)&mpython_music_tune_mo_li_hua_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_YI_MENG_SHAN_XIAO_DIAO), (mp_obj_t)&mpython_music_tune_yi_meng_shan_xiao_diao_obj },
 };
 
 STATIC MP_DEFINE_CONST_DICT(mpython_music_locals_dict, mpython_music_locals_dict_table);

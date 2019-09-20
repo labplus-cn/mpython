@@ -50,6 +50,13 @@ extern const struct _mp_obj_tuple_t mpython_music_tune_jump_down_obj;
 extern const struct _mp_obj_tuple_t mpython_music_tune_power_up_obj;
 extern const struct _mp_obj_tuple_t mpython_music_tune_power_down_obj;
 
+extern const struct _mp_obj_tuple_t mpython_music_tune_ge_chang_zu_guo_obj;
+extern const struct _mp_obj_tuple_t mpython_music_tune_dong_fang_hong_obj;
+extern const struct _mp_obj_tuple_t mpython_music_tune_cai_yun_zhui_yue_obj;
+extern const struct _mp_obj_tuple_t mpython_music_tune_zou_jin_xin_shi_dai_obj;
+extern const struct _mp_obj_tuple_t mpython_music_tune_mo_li_hua_obj;
+extern const struct _mp_obj_tuple_t mpython_music_tune_yi_meng_shan_xiao_diao_obj;
+
 void mpython_music_tick(void);
 
 #endif // MICROPY_INCLUDED_MICROBIT_MUSIC_H
