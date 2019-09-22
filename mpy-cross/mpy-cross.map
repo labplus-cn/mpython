@@ -1,19 +1,19 @@
-Archive member included to satisfy reference by file (symbol)
+由于文件 (符号) 而包含了归档成员
 
 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
                               /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o (__libc_csu_init)
 
-As-needed library included to satisfy reference by file (symbol)
+按需库被包含以满足文件 (符号) 引用
 
 libm.so.6                     build/py/objfloat.o (fmod@@GLIBC_2.2.5)
 libc.so.6                     build/main.o (__printf_chk@@GLIBC_2.3.4)
 
-Allocating common symbols
-Common symbol       size              file
+分配公共符号
+公共符号            大小              文件
 
 mp_state_ctx        0x340             build/py/mpstate.o
 
-Discarded input sections
+舍弃的输入节
 
  .rodata.cst4   0x0000000000000000        0x4 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o
  .data          0x0000000000000000        0x4 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o
@@ -41,7 +41,7 @@ Discarded input sections
  .text          0x0000000000000000        0x0 build/py/nlrx86.o
  .data          0x0000000000000000        0x0 build/py/nlrx86.o
  .bss           0x0000000000000000        0x0 build/py/nlrx86.o
- .comment       0x0000000000000000       0x2b build/py/nlrx86.o
+ .comment       0x0000000000000000       0x2c build/py/nlrx86.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/nlrx86.o
  .text          0x0000000000000000        0x0 build/py/nlrx64.o
@@ -52,19 +52,19 @@ Discarded input sections
  .text          0x0000000000000000        0x0 build/py/nlrthumb.o
  .data          0x0000000000000000        0x0 build/py/nlrthumb.o
  .bss           0x0000000000000000        0x0 build/py/nlrthumb.o
- .comment       0x0000000000000000       0x2b build/py/nlrthumb.o
+ .comment       0x0000000000000000       0x2c build/py/nlrthumb.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/nlrthumb.o
  .text          0x0000000000000000        0x0 build/py/nlrxtensa.o
  .data          0x0000000000000000        0x0 build/py/nlrxtensa.o
  .bss           0x0000000000000000        0x0 build/py/nlrxtensa.o
- .comment       0x0000000000000000       0x2b build/py/nlrxtensa.o
+ .comment       0x0000000000000000       0x2c build/py/nlrxtensa.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/nlrxtensa.o
  .text          0x0000000000000000        0x0 build/py/nlrsetjmp.o
  .data          0x0000000000000000        0x0 build/py/nlrsetjmp.o
  .bss           0x0000000000000000        0x0 build/py/nlrsetjmp.o
- .comment       0x0000000000000000       0x2b build/py/nlrsetjmp.o
+ .comment       0x0000000000000000       0x2c build/py/nlrsetjmp.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/nlrsetjmp.o
  .text          0x0000000000000000        0x0 build/py/malloc.o
@@ -93,7 +93,7 @@ Discarded input sections
  .text          0x0000000000000000        0x0 build/py/pystack.o
  .data          0x0000000000000000        0x0 build/py/pystack.o
  .bss           0x0000000000000000        0x0 build/py/pystack.o
- .comment       0x0000000000000000       0x2b build/py/pystack.o
+ .comment       0x0000000000000000       0x2c build/py/pystack.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/pystack.o
  .text          0x0000000000000000        0x0 build/py/qstr.o
@@ -302,7 +302,7 @@ Discarded input sections
                 0x0000000000000000       0x77 build/py/runtime_utils.o
  .text.mp_call_function_2_protected
                 0x0000000000000000       0x7d build/py/runtime_utils.o
- .comment       0x0000000000000000       0x2b build/py/runtime_utils.o
+ .comment       0x0000000000000000       0x2c build/py/runtime_utils.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/runtime_utils.o
  .text          0x0000000000000000        0x0 build/py/scheduler.o
@@ -310,7 +310,7 @@ Discarded input sections
  .bss           0x0000000000000000        0x0 build/py/scheduler.o
  .text.mp_handle_pending
                 0x0000000000000000       0x28 build/py/scheduler.o
- .comment       0x0000000000000000       0x2b build/py/scheduler.o
+ .comment       0x0000000000000000       0x2c build/py/scheduler.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/scheduler.o
  .text          0x0000000000000000        0x0 build/py/nativeglue.o
@@ -373,7 +373,7 @@ Discarded input sections
  .text          0x0000000000000000        0x0 build/py/objattrtuple.o
  .data          0x0000000000000000        0x0 build/py/objattrtuple.o
  .bss           0x0000000000000000        0x0 build/py/objattrtuple.o
- .comment       0x0000000000000000       0x2b build/py/objattrtuple.o
+ .comment       0x0000000000000000       0x2c build/py/objattrtuple.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/objattrtuple.o
  .text          0x0000000000000000        0x0 build/py/objbool.o
@@ -404,7 +404,7 @@ Discarded input sections
  .text          0x0000000000000000        0x0 build/py/objdeque.o
  .data          0x0000000000000000        0x0 build/py/objdeque.o
  .bss           0x0000000000000000        0x0 build/py/objdeque.o
- .comment       0x0000000000000000       0x2b build/py/objdeque.o
+ .comment       0x0000000000000000       0x2c build/py/objdeque.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/objdeque.o
  .text          0x0000000000000000        0x0 build/py/objdict.o
@@ -463,7 +463,7 @@ Discarded input sections
  .text          0x0000000000000000        0x0 build/py/objint_longlong.o
  .data          0x0000000000000000        0x0 build/py/objint_longlong.o
  .bss           0x0000000000000000        0x0 build/py/objint_longlong.o
- .comment       0x0000000000000000       0x2b build/py/objint_longlong.o
+ .comment       0x0000000000000000       0x2c build/py/objint_longlong.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/objint_longlong.o
  .text          0x0000000000000000        0x0 build/py/objint_mpz.o
@@ -511,7 +511,7 @@ Discarded input sections
  .text          0x0000000000000000        0x0 build/py/objnamedtuple.o
  .data          0x0000000000000000        0x0 build/py/objnamedtuple.o
  .bss           0x0000000000000000        0x0 build/py/objnamedtuple.o
- .comment       0x0000000000000000       0x2b build/py/objnamedtuple.o
+ .comment       0x0000000000000000       0x2c build/py/objnamedtuple.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/objnamedtuple.o
  .text          0x0000000000000000        0x0 build/py/objrange.o
@@ -554,7 +554,7 @@ Discarded input sections
  .text          0x0000000000000000        0x0 build/py/objstringio.o
  .data          0x0000000000000000        0x0 build/py/objstringio.o
  .bss           0x0000000000000000        0x0 build/py/objstringio.o
- .comment       0x0000000000000000       0x2b build/py/objstringio.o
+ .comment       0x0000000000000000       0x2c build/py/objstringio.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/objstringio.o
  .text          0x0000000000000000        0x0 build/py/objtuple.o
@@ -647,7 +647,7 @@ Discarded input sections
                 0x0000000000000000       0x18 build/py/stream.o
  .data.rel.ro.mp_stream_read_obj
                 0x0000000000000000       0x18 build/py/stream.o
- .comment       0x0000000000000000       0x2b build/py/stream.o
+ .comment       0x0000000000000000       0x2c build/py/stream.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/stream.o
  .text          0x0000000000000000        0x0 build/py/binary.o
@@ -668,13 +668,13 @@ Discarded input sections
  .text          0x0000000000000000        0x0 build/py/builtinhelp.o
  .data          0x0000000000000000        0x0 build/py/builtinhelp.o
  .bss           0x0000000000000000        0x0 build/py/builtinhelp.o
- .comment       0x0000000000000000       0x2b build/py/builtinhelp.o
+ .comment       0x0000000000000000       0x2c build/py/builtinhelp.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/builtinhelp.o
  .text          0x0000000000000000        0x0 build/py/modarray.o
  .data          0x0000000000000000        0x0 build/py/modarray.o
  .bss           0x0000000000000000        0x0 build/py/modarray.o
- .comment       0x0000000000000000       0x2b build/py/modarray.o
+ .comment       0x0000000000000000       0x2c build/py/modarray.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/modarray.o
  .text          0x0000000000000000        0x0 build/py/modbuiltins.o
@@ -685,31 +685,31 @@ Discarded input sections
  .text          0x0000000000000000        0x0 build/py/modcollections.o
  .data          0x0000000000000000        0x0 build/py/modcollections.o
  .bss           0x0000000000000000        0x0 build/py/modcollections.o
- .comment       0x0000000000000000       0x2b build/py/modcollections.o
+ .comment       0x0000000000000000       0x2c build/py/modcollections.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/modcollections.o
  .text          0x0000000000000000        0x0 build/py/modgc.o
  .data          0x0000000000000000        0x0 build/py/modgc.o
  .bss           0x0000000000000000        0x0 build/py/modgc.o
- .comment       0x0000000000000000       0x2b build/py/modgc.o
+ .comment       0x0000000000000000       0x2c build/py/modgc.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/modgc.o
  .text          0x0000000000000000        0x0 build/py/modio.o
  .data          0x0000000000000000        0x0 build/py/modio.o
  .bss           0x0000000000000000        0x0 build/py/modio.o
- .comment       0x0000000000000000       0x2b build/py/modio.o
+ .comment       0x0000000000000000       0x2c build/py/modio.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/modio.o
  .text          0x0000000000000000        0x0 build/py/modmath.o
  .data          0x0000000000000000        0x0 build/py/modmath.o
  .bss           0x0000000000000000        0x0 build/py/modmath.o
- .comment       0x0000000000000000       0x2b build/py/modmath.o
+ .comment       0x0000000000000000       0x2c build/py/modmath.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/modmath.o
  .text          0x0000000000000000        0x0 build/py/modcmath.o
  .data          0x0000000000000000        0x0 build/py/modcmath.o
  .bss           0x0000000000000000        0x0 build/py/modcmath.o
- .comment       0x0000000000000000       0x2b build/py/modcmath.o
+ .comment       0x0000000000000000       0x2c build/py/modcmath.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/modcmath.o
  .text          0x0000000000000000        0x0 build/py/modmicropython.o
@@ -725,19 +725,19 @@ Discarded input sections
  .text          0x0000000000000000        0x0 build/py/modsys.o
  .data          0x0000000000000000        0x0 build/py/modsys.o
  .bss           0x0000000000000000        0x0 build/py/modsys.o
- .comment       0x0000000000000000       0x2b build/py/modsys.o
+ .comment       0x0000000000000000       0x2c build/py/modsys.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/modsys.o
  .text          0x0000000000000000        0x0 build/py/moduerrno.o
  .data          0x0000000000000000        0x0 build/py/moduerrno.o
  .bss           0x0000000000000000        0x0 build/py/moduerrno.o
- .comment       0x0000000000000000       0x2b build/py/moduerrno.o
+ .comment       0x0000000000000000       0x2c build/py/moduerrno.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/moduerrno.o
  .text          0x0000000000000000        0x0 build/py/modthread.o
  .data          0x0000000000000000        0x0 build/py/modthread.o
  .bss           0x0000000000000000        0x0 build/py/modthread.o
- .comment       0x0000000000000000       0x2b build/py/modthread.o
+ .comment       0x0000000000000000       0x2c build/py/modthread.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/modthread.o
  .text          0x0000000000000000        0x0 build/py/vm.o
@@ -753,13 +753,13 @@ Discarded input sections
  .text          0x0000000000000000        0x0 build/py/showbc.o
  .data          0x0000000000000000        0x0 build/py/showbc.o
  .bss           0x0000000000000000        0x0 build/py/showbc.o
- .comment       0x0000000000000000       0x2b build/py/showbc.o
+ .comment       0x0000000000000000       0x2c build/py/showbc.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/showbc.o
  .text          0x0000000000000000        0x0 build/py/repl.o
  .data          0x0000000000000000        0x0 build/py/repl.o
  .bss           0x0000000000000000        0x0 build/py/repl.o
- .comment       0x0000000000000000       0x2b build/py/repl.o
+ .comment       0x0000000000000000       0x2c build/py/repl.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/repl.o
  .text          0x0000000000000000        0x0 build/py/smallint.o
@@ -770,7 +770,7 @@ Discarded input sections
  .text          0x0000000000000000        0x0 build/py/frozenmod.o
  .data          0x0000000000000000        0x0 build/py/frozenmod.o
  .bss           0x0000000000000000        0x0 build/py/frozenmod.o
- .comment       0x0000000000000000       0x2b build/py/frozenmod.o
+ .comment       0x0000000000000000       0x2c build/py/frozenmod.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/py/frozenmod.o
  .text          0x0000000000000000        0x0 build/main.o
@@ -798,12 +798,12 @@ Discarded input sections
  .note.GNU-stack
                 0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
 
-Memory Configuration
+内存配置
 
-Name             Origin             Length             Attributes
+名称           来源             长度             属性
 *default*        0x0000000000000000 0xffffffffffffffff
 
-Linker script and memory map
+链结器命令稿和内存映射
 
 LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o
 LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o
@@ -5211,10 +5211,10 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x0000000000047c98        0xe build/py/vstr.o
  .rodata.mp_print_mp_int.str1.1
                 0x0000000000047ca6       0x43 build/py/mpprint.o
-                                         0x44 (size before relaxing)
+                                         0x44 (松开之前的大小)
  .rodata.mp_vprintf.str1.1
                 0x0000000000047ce9       0x33 build/py/mpprint.o
-                                         0x39 (size before relaxing)
+                                         0x39 (松开之前的大小)
  *fill*         0x0000000000047d1c        0x4 
  .rodata.__PRETTY_FUNCTION__.4798
                 0x0000000000047d20        0xb build/py/mpprint.o
@@ -5263,7 +5263,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x0000000000047f00       0x56 build/py/lexer.o
  .rodata.str1.1
                 0x0000000000047f56       0x82 build/py/lexer.o
-                                         0xc8 (size before relaxing)
+                                         0xc8 (松开之前的大小)
  *fill*         0x0000000000047fd8        0x8 
  .rodata.tok_enc_kind
                 0x0000000000047fe0       0x2a build/py/lexer.o
@@ -5331,17 +5331,17 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x0000000000048a5f       0x69 build/py/compile.o
  .rodata.compile_viper_type_annotation.str1.1
                 0x0000000000048ac8       0x12 build/py/compile.o
-                                         0x33 (size before relaxing)
+                                         0x33 (松开之前的大小)
  .rodata.compile_scope_func_lambda_param.str1.1
                 0x0000000000048ada       0x7a build/py/compile.o
-                                         0xa5 (size before relaxing)
+                                         0xa5 (松开之前的大小)
  .rodata.compile_import_from.str1.1
                 0x0000000000048b54       0x66 build/py/compile.o
  .rodata.compile_node.str1.1
                 0x0000000000048bba       0x32 build/py/compile.o
  .rodata.c_assign.str1.1
                 0x0000000000048bec       0xc6 build/py/compile.o
-                                         0xea (size before relaxing)
+                                         0xea (松开之前的大小)
  .rodata.c_assign_tuple.str1.1
                 0x0000000000048cb2       0x1a build/py/compile.o
  .rodata.compile_yield_expr.str1.1
@@ -5511,7 +5511,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x00000000000498b0       0x15 build/py/compile.o
  .rodata.mp_emit_common_id_op.str1.1
                 0x00000000000498c5       0x52 build/py/emitcommon.o
-                                         0x5d (size before relaxing)
+                                         0x5d (松开之前的大小)
  *fill*         0x0000000000049917        0x9 
  .rodata.__PRETTY_FUNCTION__.4022
                 0x0000000000049920       0x15 build/py/emitcommon.o
@@ -5641,7 +5641,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004a11c       0x16 build/py/emitnx64.o
  .rodata.emit_native_end_pass.str1.1
                 0x000000000004a132       0x77 build/py/emitnx64.o
-                                         0xa1 (size before relaxing)
+                                         0xa1 (松开之前的大小)
  .rodata.emit_native_start_pass.str1.1
                 0x000000000004a1a9       0x28 build/py/emitnx64.o
  .rodata.emit_native_unpack_ex.str1.1
@@ -5762,7 +5762,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004a85d        0x3 build/py/emitnx64.o
  .rodata.get_label_dest.part.4.str1.1
                 0x000000000004a860        0xf build/py/asmx86.o
-                                         0x2f (size before relaxing)
+                                         0x2f (松开之前的大小)
  .rodata.asm_x86_entry.str1.1
                 0x000000000004a86f       0x10 build/py/asmx86.o
  .rodata.asm_x86_call_ind.str1.1
@@ -5912,7 +5912,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004ac20       0x32 build/py/emitnx86.o
  .rodata.get_label_dest.str1.1
                 0x000000000004ac52       0x11 build/py/asmthumb.o
-                                         0x31 (size before relaxing)
+                                         0x31 (松开之前的大小)
  .rodata.asm_thumb_entry.str1.1
                 0x000000000004ac63       0x10 build/py/asmthumb.o
  .rodata.asm_thumb_format_4.str1.1
@@ -5947,7 +5947,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004adb0       0x19 build/py/emitnthumb.o
  .rodata.asm_thumb_add_rlo_rlo_rlo.str1.1
                 0x000000000004adb0       0x11 build/py/emitnthumb.o
-                                         0x48 (size before relaxing)
+                                         0x48 (松开之前的大小)
  .rodata.emit_native_load_fast.str1.1
                 0x000000000004adc1       0x22 build/py/emitnthumb.o
  .rodata.load_reg_stack_imm.str1.1
@@ -6096,12 +6096,12 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004b1ed       0x18 build/py/emitinlinethumb.o
  .rodata.get_arg_reglist.str1.1
                 0x000000000004b205       0x5c build/py/emitinlinethumb.o
-                                         0x83 (size before relaxing)
+                                         0x83 (松开之前的大小)
  .rodata.get_arg_i.str1.1
                 0x000000000004b261       0x43 build/py/emitinlinethumb.o
  .rodata.emit_inline_thumb_op.str1.1
                 0x000000000004b2a4       0x90 build/py/emitinlinethumb.o
-                                         0xd8 (size before relaxing)
+                                         0xd8 (松开之前的大小)
  .rodata.emit_inline_thumb_label.str1.1
                 0x000000000004b334       0x21 build/py/emitinlinethumb.o
  .rodata.emit_inline_thumb_count_params.str1.1
@@ -6139,7 +6139,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004b520       0x54 build/py/emitinlinethumb.o
  .rodata.asm_arm_entry.str1.1
                 0x000000000004b574        0xf build/py/asmarm.o
-                                         0x1f (size before relaxing)
+                                         0x1f (松开之前的大小)
  .rodata.asm_arm_mul_reg_reg_reg.str1.1
                 0x000000000004b583        0x9 build/py/asmarm.o
  .rodata.asm_arm_mov_reg_pcrel.str1.1
@@ -6300,7 +6300,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004b9bd        0x3 build/py/emitnarm.o
  .rodata.get_label_dest.str1.1
                 0x000000000004b9c0       0x12 build/py/asmxtensa.o
-                                         0x32 (size before relaxing)
+                                         0x32 (松开之前的大小)
  .rodata.asm_xtensa_bccz_reg_label.str1.1
                 0x000000000004b9d2       0x20 build/py/asmxtensa.o
  .rodata.asm_xtensa_bcc_reg_reg_label.str1.1
@@ -6448,12 +6448,12 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004bd80       0x2c build/py/emitinlinextensa.o
  .rodata.get_arg_i.str1.1
                 0x000000000004bd80       0x2a build/py/emitinlinextensa.o
-                                         0x42 (size before relaxing)
+                                         0x42 (松开之前的大小)
  .rodata.emit_inline_xtensa_op.str1.1
                 0x000000000004bdaa       0x36 build/py/emitinlinextensa.o
  .rodata.emit_inline_xtensa_label.str1.1
                 0x000000000004bde0       0x19 build/py/emitinlinextensa.o
-                                         0x3a (size before relaxing)
+                                         0x3a (松开之前的大小)
  .rodata.emit_inline_xtensa_count_params.str1.1
                 0x000000000004bdf9       0x66 build/py/emitinlinextensa.o
  *fill*         0x000000000004be5f        0x1 
@@ -6479,14 +6479,14 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
  .rodata.cst8   0x000000000004c048       0x30 build/py/formatfloat.o
  *fill*         0x000000000004c078        0x8 
  .rodata.cst16  0x000000000004c080       0x10 build/py/formatfloat.o
-                                         0x20 (size before relaxing)
+                                         0x20 (松开之前的大小)
  .rodata.mp_parse_num_integer.str1.1
                 0x000000000004c090       0x4d build/py/parsenum.o
  .rodata.mp_parse_num_decimal.str1.1
                 0x000000000004c0dd       0x1a build/py/parsenum.o
  *fill*         0x000000000004c0f7        0x1 
  .rodata.cst8   0x000000000004c0f8       0x20 build/py/parsenum.o
-                                         0x28 (size before relaxing)
+                                         0x28 (松开之前的大小)
  .rodata.cst16  0x000000000004c118       0x10 build/py/parsenum.o
  .rodata.mp_emit_glue_assign_native.str1.1
                 0x000000000004c118       0x69 build/py/emitglue.o
@@ -6535,7 +6535,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004c54b       0x57 build/py/runtime.o
  .rodata.mp_binary_op.str1.1
                 0x000000000004c5a2       0x3a build/py/runtime.o
-                                         0x49 (size before relaxing)
+                                         0x49 (松开之前的大小)
  .rodata.mp_binary_op
                 0x000000000004c5dc       0x88 build/py/runtime.o
  *fill*         0x000000000004c664        0x4 
@@ -6569,7 +6569,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004c8e0       0x11 build/py/argcheck.o
  .rodata.mp_warning.str1.1
                 0x000000000004c8f1        0x8 build/py/warning.o
-                                          0xd (size before relaxing)
+                                          0xd (松开之前的大小)
  .rodata.mp_map_lookup.str1.1
                 0x000000000004c8f9       0x3b build/py/map.o
  *fill*         0x000000000004c934        0x4 
@@ -6582,7 +6582,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004c9a4        0xb build/py/obj.o
  .rodata.mp_obj_print_exception.str1.1
                 0x000000000004c9af       0x59 build/py/obj.o
-                                         0x5b (size before relaxing)
+                                         0x5b (松开之前的大小)
  .rodata.mp_obj_get_float.str1.1
                 0x000000000004ca08       0x1a build/py/obj.o
  .rodata.mp_obj_get_complex.str1.1
@@ -6605,7 +6605,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004cb77       0xa1 build/py/objarray.o
  .rodata.array_print.str1.1
                 0x000000000004cc18       0x1e build/py/objarray.o
-                                         0x22 (size before relaxing)
+                                         0x22 (松开之前的大小)
  .rodata.array_subscr.str1.1
                 0x000000000004cc36       0x38 build/py/objarray.o
  *fill*         0x000000000004cc6e        0x2 
@@ -6621,13 +6621,13 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004cc9d        0xb build/py/objbool.o
  .rodata.bound_meth_print.str1.1
                 0x000000000004cc9d       0x12 build/py/objboundmeth.o
-                                         0x16 (size before relaxing)
+                                         0x16 (松开之前的大小)
  .rodata.cell_print.str1.1
                 0x000000000004ccaf        0xa build/py/objcell.o
-                                         0x12 (size before relaxing)
+                                         0x12 (松开之前的大小)
  .rodata.closure_print.str1.1
                 0x000000000004ccb9       0x1f build/py/objclosure.o
-                                         0x29 (size before relaxing)
+                                         0x29 (松开之前的大小)
  .rodata.complex_print.str1.1
                 0x000000000004ccd8        0xf build/py/objcomplex.o
  *fill*         0x000000000004cce7        0x1 
@@ -6647,10 +6647,10 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
  .rodata.cst8   0x000000000004ce33        0x8 build/py/objcomplex.o
  .rodata.dict_view_print.str1.1
                 0x000000000004ce33        0x3 build/py/objdict.o
-                                          0x9 (size before relaxing)
+                                          0x9 (松开之前的大小)
  .rodata.dict_print.str1.1
                 0x000000000004ce36        0x2 build/py/objdict.o
-                                          0x7 (size before relaxing)
+                                          0x7 (松开之前的大小)
  .rodata.dict_update.str1.1
                 0x000000000004ce38       0x26 build/py/objdict.o
  .rodata.dict_popitem.str1.1
@@ -6703,7 +6703,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
  .rodata.cst16  0x000000000004d111       0x20 build/py/objfloat.o
  *fill*         0x000000000004d111        0x7 
  .rodata.cst8   0x000000000004d118        0x8 build/py/objfloat.o
-                                         0x18 (size before relaxing)
+                                         0x18 (松开之前的大小)
  .rodata.fun_bc_call.str1.1
                 0x000000000004d120       0x38 build/py/objfun.o
  .rodata.fun_builtin_0_call.str1.1
@@ -6770,7 +6770,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004d510       0x10 build/py/objint.o
  .rodata.mp_obj_int_formatted_impl.str1.1
                 0x000000000004d520       0x13 build/py/objint_mpz.o
-                                         0x39 (size before relaxing)
+                                         0x39 (松开之前的大小)
  *fill*         0x000000000004d533        0x1 
  .rodata.mp_obj_int_unary_op
                 0x000000000004d534       0x20 build/py/objint_mpz.o
@@ -6778,7 +6778,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004d554       0x2d build/py/objint_mpz.o
  .rodata.mp_obj_int_binary_op.str1.1
                 0x000000000004d581       0x3f build/py/objint_mpz.o
-                                         0x63 (size before relaxing)
+                                         0x63 (松开之前的大小)
  .rodata.mp_obj_int_binary_op
                 0x000000000004d5c0       0x74 build/py/objint_mpz.o
  *fill*         0x000000000004d634        0xc 
@@ -6797,7 +6797,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004d6ba       0x14 build/py/objlist.o
  .rodata.list_print.str1.1
                 0x000000000004d6ce       0x14 build/py/objlist.o
-                                          0x7 (size before relaxing)
+                                          0x7 (松开之前的大小)
  .rodata.list_subscr.str1.1
                 0x000000000004d6ce       0x1d build/py/objlist.o
  *fill*         0x000000000004d6eb        0x5 
@@ -6805,7 +6805,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004d6f0        0xc build/py/objlist.o
  .rodata.module_print.str1.1
                 0x000000000004d6fc        0xe build/py/objmodule.o
-                                          0xf (size before relaxing)
+                                          0xf (松开之前的大小)
  .rodata.object___new__.str1.1
                 0x000000000004d70a       0x20 build/py/objobject.o
  .rodata.none_print.str1.1
@@ -6814,21 +6814,21 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004d72a        0xa build/py/objrange.o
  .rodata.range_print.str1.1
                 0x000000000004d734       0x16 build/py/objrange.o
-                                         0x18 (size before relaxing)
+                                         0x18 (松开之前的大小)
  .rodata.set_pop.str1.1
                 0x000000000004d74a       0x16 build/py/objset.o
  .rodata.set_print.str1.1
                 0x000000000004d760        0x6 build/py/objset.o
-                                          0xd (size before relaxing)
+                                          0xd (松开之前的大小)
  *fill*         0x000000000004d766        0x2 
  .rodata.set_binary_op
                 0x000000000004d768       0x70 build/py/objset.o
  .rodata.singleton_print.str1.1
                 0x000000000004d7d8        0x6 build/py/objsingleton.o
-                                          0x3 (size before relaxing)
+                                          0x3 (松开之前的大小)
  .rodata.slice_print.str1.1
                 0x000000000004d7d8        0x7 build/py/objslice.o
-                                          0xc (size before relaxing)
+                                          0xc (松开之前的大小)
  .rodata.mp_obj_slice_get.str1.1
                 0x000000000004d7df       0x39 build/py/objslice.o
  *fill*         0x000000000004d818        0x8 
@@ -6838,10 +6838,10 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004d831       0x2b build/py/objstr.o
  .rodata.mp_str_print_quoted.str1.1
                 0x000000000004d85c       0x17 build/py/objstr.o
-                                         0x1a (size before relaxing)
+                                         0x1a (松开之前的大小)
  .rodata.str_print.str1.1
                 0x000000000004d873        0x5 build/py/objstr.o
-                                          0x7 (size before relaxing)
+                                          0x7 (松开之前的大小)
  .rodata.str_finder.str1.1
                 0x000000000004d878       0x14 build/py/objstr.o
  .rodata.str_join.str1.1
@@ -6880,18 +6880,18 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
  .rodata.cst8   0x000000000004dd48        0x8 build/py/objstr.o
  .rodata.uni_print.str1.1
                 0x000000000004dd50        0xe build/py/objstrunicode.o
-                                         0x2d (size before relaxing)
+                                         0x2d (松开之前的大小)
  .rodata.str_index_to_ptr.str1.1
                 0x000000000004dd5e       0x42 build/py/objstrunicode.o
  .rodata.str_subscr.str1.1
                 0x000000000004dda0       0x2b build/py/objstrunicode.o
-                                         0x5c (size before relaxing)
+                                         0x5c (松开之前的大小)
  *fill*         0x000000000004ddcb        0x5 
  .rodata.__PRETTY_FUNCTION__.3985
                 0x000000000004ddd0        0xb build/py/objstrunicode.o
  .rodata.mp_obj_tuple_print.str1.1
                 0x000000000004dddb        0x2 build/py/objtuple.o
-                                          0x9 (size before relaxing)
+                                          0x9 (松开之前的大小)
  .rodata.mp_obj_tuple_subscr.str1.1
                 0x000000000004dddd       0x31 build/py/objtuple.o
  .rodata.mp_obj_tuple_get.str1.1
@@ -6906,14 +6906,14 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004de51        0xd build/py/objtype.o
  .rodata.super_print.str1.1
                 0x000000000004de5e        0x9 build/py/objtype.o
-                                          0xe (size before relaxing)
+                                          0xe (松开之前的大小)
  .rodata.instance_count_native_bases.str1.1
                 0x000000000004de67       0x35 build/py/objtype.o
  .rodata.type_call.str1.1
                 0x000000000004de9c       0x1d build/py/objtype.o
  .rodata.mp_obj_class_lookup.str1.1
                 0x000000000004deb9       0x3e build/py/objtype.o
-                                         0x6c (size before relaxing)
+                                         0x6c (松开之前的大小)
  .rodata.super_attr.str1.1
                 0x000000000004def7       0x7a build/py/objtype.o
  .rodata.mp_obj_instance_attr.str1.1
@@ -6978,7 +6978,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004e303        0xd build/py/binary.o
  .rodata.stat_dir_or_file.str1.1
                 0x000000000004e310        0xd build/py/builtinimport.o
-                                          0x4 (size before relaxing)
+                                          0x4 (松开之前的大小)
  .rodata.mp_builtin___import__.str1.1
                 0x000000000004e310       0x71 build/py/builtinimport.o
  *fill*         0x000000000004e381        0xf 
@@ -7009,7 +7009,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
  *fill*         0x000000000004e4cc        0x4 
  .rodata.mp_execute_bytecode.str1.8
                 0x000000000004e4d0       0xc8 build/py/vm.o
-                                         0xc7 (size before relaxing)
+                                         0xc7 (松开之前的大小)
  .rodata.mp_execute_bytecode.str1.1
                 0x000000000004e598       0x51 build/py/vm.o
  *fill*         0x000000000004e5e9        0x3 
@@ -7029,7 +7029,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
                 0x000000000004e8e0      0x30c build/main.o
  .rodata.main_.str1.1
                 0x000000000004ebec       0xd4 build/main.o
-                                         0xdb (size before relaxing)
+                                         0xdb (松开之前的大小)
  .rodata.nlr_jump_fail.str1.1
                 0x000000000004ecc0       0x18 build/main.o
 
@@ -7045,13 +7045,13 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
 .eh_frame       0x000000000004ed10       0xe8
  *(.eh_frame)
  .eh_frame      0x000000000004ed10       0x30 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o
-                                         0x2c (size before relaxing)
+                                         0x2c (松开之前的大小)
  *fill*         0x000000000004ed40        0x0 
  .eh_frame      0x000000000004ed40       0x40 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o
  .eh_frame      0x000000000004ed80       0x18 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o
-                                         0x30 (size before relaxing)
+                                         0x30 (松开之前的大小)
  .eh_frame      0x000000000004ed98       0x5c /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
-                                         0x78 (size before relaxing)
+                                         0x78 (松开之前的大小)
  .eh_frame      0x000000000004edf4        0x4 /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o
  *(.eh_frame.*)
 
@@ -8060,99 +8060,99 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
 .stab.indexstr
  *(.stab.indexstr)
 
-.comment        0x0000000000000000       0x2a
+.comment        0x0000000000000000       0x2b
  *(.comment)
- .comment       0x0000000000000000       0x2a /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o
-                                         0x2b (size before relaxing)
- .comment       0x000000000000002a       0x2b build/py/mpstate.o
- .comment       0x000000000000002a       0x2b build/py/nlr.o
- .comment       0x000000000000002a       0x2b build/py/nlrx64.o
- .comment       0x000000000000002a       0x2b build/py/malloc.o
- .comment       0x000000000000002a       0x2b build/py/gc.o
- .comment       0x000000000000002a       0x2b build/py/qstr.o
- .comment       0x000000000000002a       0x2b build/py/vstr.o
- .comment       0x000000000000002a       0x2b build/py/mpprint.o
- .comment       0x000000000000002a       0x2b build/py/unicode.o
- .comment       0x000000000000002a       0x2b build/py/mpz.o
- .comment       0x000000000000002a       0x2b build/py/reader.o
- .comment       0x000000000000002a       0x2b build/py/lexer.o
- .comment       0x000000000000002a       0x2b build/py/parse.o
- .comment       0x000000000000002a       0x2b build/py/scope.o
- .comment       0x000000000000002a       0x2b build/py/compile.o
- .comment       0x000000000000002a       0x2b build/py/emitcommon.o
- .comment       0x000000000000002a       0x2b build/py/emitbc.o
- .comment       0x000000000000002a       0x2b build/py/asmbase.o
- .comment       0x000000000000002a       0x2b build/py/asmx64.o
- .comment       0x000000000000002a       0x2b build/py/emitnx64.o
- .comment       0x000000000000002a       0x2b build/py/asmx86.o
- .comment       0x000000000000002a       0x2b build/py/emitnx86.o
- .comment       0x000000000000002a       0x2b build/py/asmthumb.o
- .comment       0x000000000000002a       0x2b build/py/emitnthumb.o
- .comment       0x000000000000002a       0x2b build/py/emitinlinethumb.o
- .comment       0x000000000000002a       0x2b build/py/asmarm.o
- .comment       0x000000000000002a       0x2b build/py/emitnarm.o
- .comment       0x000000000000002a       0x2b build/py/asmxtensa.o
- .comment       0x000000000000002a       0x2b build/py/emitnxtensa.o
- .comment       0x000000000000002a       0x2b build/py/emitinlinextensa.o
- .comment       0x000000000000002a       0x2b build/py/formatfloat.o
- .comment       0x000000000000002a       0x2b build/py/parsenumbase.o
- .comment       0x000000000000002a       0x2b build/py/parsenum.o
- .comment       0x000000000000002a       0x2b build/py/emitglue.o
- .comment       0x000000000000002a       0x2b build/py/persistentcode.o
- .comment       0x000000000000002a       0x2b build/py/runtime.o
- .comment       0x000000000000002a       0x2b build/py/nativeglue.o
- .comment       0x000000000000002a       0x2b build/py/stackctrl.o
- .comment       0x000000000000002a       0x2b build/py/argcheck.o
- .comment       0x000000000000002a       0x2b build/py/warning.o
- .comment       0x000000000000002a       0x2b build/py/map.o
- .comment       0x000000000000002a       0x2b build/py/obj.o
- .comment       0x000000000000002a       0x2b build/py/objarray.o
- .comment       0x000000000000002a       0x2b build/py/objbool.o
- .comment       0x000000000000002a       0x2b build/py/objboundmeth.o
- .comment       0x000000000000002a       0x2b build/py/objcell.o
- .comment       0x000000000000002a       0x2b build/py/objclosure.o
- .comment       0x000000000000002a       0x2b build/py/objcomplex.o
- .comment       0x000000000000002a       0x2b build/py/objdict.o
- .comment       0x000000000000002a       0x2b build/py/objenumerate.o
- .comment       0x000000000000002a       0x2b build/py/objexcept.o
- .comment       0x000000000000002a       0x2b build/py/objfilter.o
- .comment       0x000000000000002a       0x2b build/py/objfloat.o
- .comment       0x000000000000002a       0x2b build/py/objfun.o
- .comment       0x000000000000002a       0x2b build/py/objgenerator.o
- .comment       0x000000000000002a       0x2b build/py/objgetitemiter.o
- .comment       0x000000000000002a       0x2b build/py/objint.o
- .comment       0x000000000000002a       0x2b build/py/objint_mpz.o
- .comment       0x000000000000002a       0x2b build/py/objlist.o
- .comment       0x000000000000002a       0x2b build/py/objmap.o
- .comment       0x000000000000002a       0x2b build/py/objmodule.o
- .comment       0x000000000000002a       0x2b build/py/objobject.o
- .comment       0x000000000000002a       0x2b build/py/objpolyiter.o
- .comment       0x000000000000002a       0x2b build/py/objproperty.o
- .comment       0x000000000000002a       0x2b build/py/objnone.o
- .comment       0x000000000000002a       0x2b build/py/objrange.o
- .comment       0x000000000000002a       0x2b build/py/objreversed.o
- .comment       0x000000000000002a       0x2b build/py/objset.o
- .comment       0x000000000000002a       0x2b build/py/objsingleton.o
- .comment       0x000000000000002a       0x2b build/py/objslice.o
- .comment       0x000000000000002a       0x2b build/py/objstr.o
- .comment       0x000000000000002a       0x2b build/py/objstrunicode.o
- .comment       0x000000000000002a       0x2b build/py/objtuple.o
- .comment       0x000000000000002a       0x2b build/py/objtype.o
- .comment       0x000000000000002a       0x2b build/py/objzip.o
- .comment       0x000000000000002a       0x2b build/py/opmethods.o
- .comment       0x000000000000002a       0x2b build/py/sequence.o
- .comment       0x000000000000002a       0x2b build/py/binary.o
- .comment       0x000000000000002a       0x2b build/py/builtinimport.o
- .comment       0x000000000000002a       0x2b build/py/builtinevex.o
- .comment       0x000000000000002a       0x2b build/py/modbuiltins.o
- .comment       0x000000000000002a       0x2b build/py/modmicropython.o
- .comment       0x000000000000002a       0x2b build/py/modstruct.o
- .comment       0x000000000000002a       0x2b build/py/vm.o
- .comment       0x000000000000002a       0x2b build/py/bc.o
- .comment       0x000000000000002a       0x2b build/py/smallint.o
- .comment       0x000000000000002a       0x2b build/main.o
- .comment       0x000000000000002a       0x2b build/gccollect.o
- .comment       0x000000000000002a       0x2b /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o
+ .comment       0x0000000000000000       0x2b /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o
+                                         0x2c (松开之前的大小)
+ .comment       0x000000000000002b       0x2c build/py/mpstate.o
+ .comment       0x000000000000002b       0x2c build/py/nlr.o
+ .comment       0x000000000000002b       0x2c build/py/nlrx64.o
+ .comment       0x000000000000002b       0x2c build/py/malloc.o
+ .comment       0x000000000000002b       0x2c build/py/gc.o
+ .comment       0x000000000000002b       0x2c build/py/qstr.o
+ .comment       0x000000000000002b       0x2c build/py/vstr.o
+ .comment       0x000000000000002b       0x2c build/py/mpprint.o
+ .comment       0x000000000000002b       0x2c build/py/unicode.o
+ .comment       0x000000000000002b       0x2c build/py/mpz.o
+ .comment       0x000000000000002b       0x2c build/py/reader.o
+ .comment       0x000000000000002b       0x2c build/py/lexer.o
+ .comment       0x000000000000002b       0x2c build/py/parse.o
+ .comment       0x000000000000002b       0x2c build/py/scope.o
+ .comment       0x000000000000002b       0x2c build/py/compile.o
+ .comment       0x000000000000002b       0x2c build/py/emitcommon.o
+ .comment       0x000000000000002b       0x2c build/py/emitbc.o
+ .comment       0x000000000000002b       0x2c build/py/asmbase.o
+ .comment       0x000000000000002b       0x2c build/py/asmx64.o
+ .comment       0x000000000000002b       0x2c build/py/emitnx64.o
+ .comment       0x000000000000002b       0x2c build/py/asmx86.o
+ .comment       0x000000000000002b       0x2c build/py/emitnx86.o
+ .comment       0x000000000000002b       0x2c build/py/asmthumb.o
+ .comment       0x000000000000002b       0x2c build/py/emitnthumb.o
+ .comment       0x000000000000002b       0x2c build/py/emitinlinethumb.o
+ .comment       0x000000000000002b       0x2c build/py/asmarm.o
+ .comment       0x000000000000002b       0x2c build/py/emitnarm.o
+ .comment       0x000000000000002b       0x2c build/py/asmxtensa.o
+ .comment       0x000000000000002b       0x2c build/py/emitnxtensa.o
+ .comment       0x000000000000002b       0x2c build/py/emitinlinextensa.o
+ .comment       0x000000000000002b       0x2c build/py/formatfloat.o
+ .comment       0x000000000000002b       0x2c build/py/parsenumbase.o
+ .comment       0x000000000000002b       0x2c build/py/parsenum.o
+ .comment       0x000000000000002b       0x2c build/py/emitglue.o
+ .comment       0x000000000000002b       0x2c build/py/persistentcode.o
+ .comment       0x000000000000002b       0x2c build/py/runtime.o
+ .comment       0x000000000000002b       0x2c build/py/nativeglue.o
+ .comment       0x000000000000002b       0x2c build/py/stackctrl.o
+ .comment       0x000000000000002b       0x2c build/py/argcheck.o
+ .comment       0x000000000000002b       0x2c build/py/warning.o
+ .comment       0x000000000000002b       0x2c build/py/map.o
+ .comment       0x000000000000002b       0x2c build/py/obj.o
+ .comment       0x000000000000002b       0x2c build/py/objarray.o
+ .comment       0x000000000000002b       0x2c build/py/objbool.o
+ .comment       0x000000000000002b       0x2c build/py/objboundmeth.o
+ .comment       0x000000000000002b       0x2c build/py/objcell.o
+ .comment       0x000000000000002b       0x2c build/py/objclosure.o
+ .comment       0x000000000000002b       0x2c build/py/objcomplex.o
+ .comment       0x000000000000002b       0x2c build/py/objdict.o
+ .comment       0x000000000000002b       0x2c build/py/objenumerate.o
+ .comment       0x000000000000002b       0x2c build/py/objexcept.o
+ .comment       0x000000000000002b       0x2c build/py/objfilter.o
+ .comment       0x000000000000002b       0x2c build/py/objfloat.o
+ .comment       0x000000000000002b       0x2c build/py/objfun.o
+ .comment       0x000000000000002b       0x2c build/py/objgenerator.o
+ .comment       0x000000000000002b       0x2c build/py/objgetitemiter.o
+ .comment       0x000000000000002b       0x2c build/py/objint.o
+ .comment       0x000000000000002b       0x2c build/py/objint_mpz.o
+ .comment       0x000000000000002b       0x2c build/py/objlist.o
+ .comment       0x000000000000002b       0x2c build/py/objmap.o
+ .comment       0x000000000000002b       0x2c build/py/objmodule.o
+ .comment       0x000000000000002b       0x2c build/py/objobject.o
+ .comment       0x000000000000002b       0x2c build/py/objpolyiter.o
+ .comment       0x000000000000002b       0x2c build/py/objproperty.o
+ .comment       0x000000000000002b       0x2c build/py/objnone.o
+ .comment       0x000000000000002b       0x2c build/py/objrange.o
+ .comment       0x000000000000002b       0x2c build/py/objreversed.o
+ .comment       0x000000000000002b       0x2c build/py/objset.o
+ .comment       0x000000000000002b       0x2c build/py/objsingleton.o
+ .comment       0x000000000000002b       0x2c build/py/objslice.o
+ .comment       0x000000000000002b       0x2c build/py/objstr.o
+ .comment       0x000000000000002b       0x2c build/py/objstrunicode.o
+ .comment       0x000000000000002b       0x2c build/py/objtuple.o
+ .comment       0x000000000000002b       0x2c build/py/objtype.o
+ .comment       0x000000000000002b       0x2c build/py/objzip.o
+ .comment       0x000000000000002b       0x2c build/py/opmethods.o
+ .comment       0x000000000000002b       0x2c build/py/sequence.o
+ .comment       0x000000000000002b       0x2c build/py/binary.o
+ .comment       0x000000000000002b       0x2c build/py/builtinimport.o
+ .comment       0x000000000000002b       0x2c build/py/builtinevex.o
+ .comment       0x000000000000002b       0x2c build/py/modbuiltins.o
+ .comment       0x000000000000002b       0x2c build/py/modmicropython.o
+ .comment       0x000000000000002b       0x2c build/py/modstruct.o
+ .comment       0x000000000000002b       0x2c build/py/vm.o
+ .comment       0x000000000000002b       0x2c build/py/bc.o
+ .comment       0x000000000000002b       0x2c build/py/smallint.o
+ .comment       0x000000000000002b       0x2c build/main.o
+ .comment       0x000000000000002b       0x2c build/gccollect.o
+ .comment       0x000000000000002b       0x2c /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o
 
 .debug
  *(.debug)
@@ -8226,9 +8226,9 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
  *(.gnu.lto_*)
 OUTPUT(mpy-cross elf64-x86-64)
 
-Cross Reference Table
+交叉引用表
 
-Symbol                                            File
+符号                                            文件
 GLIBC_2.10                                        /lib/x86_64-linux-gnu/libc.so.6
 GLIBC_2.11                                        /lib/x86_64-linux-gnu/libc.so.6
 GLIBC_2.12                                        /lib/x86_64-linux-gnu/libc.so.6
