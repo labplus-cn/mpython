@@ -145,6 +145,12 @@
     * ``JUMP_DOWN`` - 用于游戏，表示向下移动。
     * ``POWER_UP`` - 一种炫耀，表明一项成就被释放。
     * ``POWER_DOWN`` - 一种悲伤，表示一项成就已经失去。
+    * ``GE_CHANG_ZU_GUO`` - 歌唱祖国
+    * ``DONG_FANG_HONG`` - 东方红
+    * ``CAI_YUN_ZHUI_YUE`` - 彩云追月
+    * ``ZOU_JIN_XIN_SHI_DAI`` - 走进新时代
+    * ``MO_LI_HUA`` - 茉莉花
+    * ``YI_MENG_SHAN_XIAO_DIAO`` - 沂蒙山小调
 
 示例::
 
