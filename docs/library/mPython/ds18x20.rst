@@ -33,11 +33,11 @@ one wire总线是一种串行总线，仅使用一根电线进行通信（除了
 |
 
 
-.. figure:: http://www.muyu.info/wp-content/uploads/2018/11/1471247227119424.png
-    :width: 450
+.. figure:: /images/tutorials/ds18x20_res.jpeg
+    :width: 300
     :align: center
 
-    如果你使用的ds18b20单个器件,为保证数据传输稳定，信号OUT引脚需接10K的上拉电阻。
+    如果你使用的ds18b20单个器件,为保证数据传输稳定，信号OUT引脚需接4.7K的上拉电阻。
 
 --------------------------------------------
 

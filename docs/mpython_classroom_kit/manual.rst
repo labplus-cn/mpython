@@ -15,7 +15,7 @@
     :maxdepth: 1
 
     lib/mpython.rst
-    lib/machine.display.rst
+    lib/display_image.rst
     lib/mpython_classroom_kit.rst
 
 
