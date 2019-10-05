@@ -6,5 +6,5 @@
 
    introduce.rst
    manual.rst
-   tutorials.rst
-   ai_case.rst
+   basic_tutorials.rst
+   ai_tutorials.rst
