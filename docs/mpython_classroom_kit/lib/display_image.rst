@@ -21,9 +21,9 @@ display
 获取LED点阵 `x` 列 `y` 行像素点颜色值
 
 
-.. method:: machine.display.set_pixel(x, y, value, color)
+.. method:: machine.display.set_pixel(x, y, value)
 
-设置LED点阵 `x` 列 `y` 行像素点, `value` 为1表示点亮,0则熄灭。当带 `color` 参数将以指定颜色点亮,类型元组。
+设置LED点阵 `x` 列 `y` 行像素点。当 `value` 为整形时,为1表示点亮,0则熄灭。当为元组类型时,格式(r,g,b)将以指定颜色点亮。
 
 
 .. method:: machine.display.clear()
