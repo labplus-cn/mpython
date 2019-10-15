@@ -1266,7 +1266,7 @@ typedef double mp_float_t;
 #endif
 
 #ifndef MICROPY_PY_UHASHLIB_MD5
-#define MICROPY_PY_UHASHLIB_MD5 (0)
+#define MICROPY_PY_UHASHLIB_MD5 (1)
 #endif
 
 #ifndef MICROPY_PY_UHASHLIB_SHA1
