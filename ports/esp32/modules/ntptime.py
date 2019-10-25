@@ -26,9 +26,18 @@ def time(host):
 # utime.localtime() will return UTC time (as if it was .gmtime())
 # add timezone org,default 8
 def settime(timezone=8, server='ntp.ntsc.ac.cn'):
-    t = time(server)
     import machine
     import utime
+    t1= utime.ticks_ms()
+    while True:
+        if utime.ticks_diff(utime.ticks_ms(), t1) > 5000:
+            raise OSError('Timeout,ntp server not response.')
+        try:
+            t = time(server)
+        except OSError:
+            pass
+        else:
+            break
     t = t + (timezone * 60 * 60)
     tm = utime.localtime(t)
     tm = tm[0:3] + (0, ) + tm[3:6] + (0, )
