@@ -1,7 +1,7 @@
 显示
 ======================================
 
-掌控板板载1.3英寸OLED显示屏，分辨率128x64。采用Google Noto Sans CJK 16x16字体，支持简体中文，繁体中文，日文和韩文语言。
+掌控板板载1.3英寸OLED显示屏，分辨率128x64。采用 `Google Noto Sans CJK <http://www.google.cn/get/noto/help/cjk/>`_ 开源无衬线字体字体，支持简体中文，繁体中文，日文和韩文语言。
 
 
 .. Hint::
