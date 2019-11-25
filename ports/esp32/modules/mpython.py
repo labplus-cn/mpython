@@ -298,7 +298,7 @@ class Compass(object):
 
     def get_z(self):
         self.get_all()
-        return self.z
+        return -(self.z)
 
     def get_temperature(self):
         retry = 0
@@ -322,7 +322,7 @@ class Compass(object):
             raise Exception("i2c read/write error!")    
 
     def get_angle(self):
-        angle= math.atan2(c.get_y(), c.get_x()) * (180 / 3.14159265) + 180
+        angle= math.atan2(self.get_y(), -(self.get_x())) * (180 / 3.14159265) + 180
         return angle
 
     def get_id(self):
