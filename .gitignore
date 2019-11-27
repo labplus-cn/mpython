@@ -39,7 +39,4 @@ mpy-cross/build/
 mpy-cross/*.map
 py/__pycache__/*
 pymakr.conf
-
-ports\esp32\ble\libbt.a
-ports\esp32\ble\libmpython_ble.a
 **/__pycache__/
