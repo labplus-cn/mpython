@@ -1,5 +1,6 @@
 
-from machine import SERVO_PWM, Pin
+from machine import Pin
+import servo_pwm
 
 pin_remap_esp32 = (33, 32, 35, 34, 39, 0, 16, 17, 26, 25, 36, 2, -1, 18, 19, 21, 5, -1, -1, 22, 23, -1, -1, 27, 14, 12,
                     13, 15, 4)
@@ -12,7 +13,7 @@ class Servo():
         self.actuation_range = actuation_range
         self.servoPin_id = pin_remap_esp32[pin]
         print(self.servoPin_id)
-        self.pwm = SERVO_PWM(Pin(self.servoPin_id), duty = 0, freq = 50)
+        self.pwm = servo_pwm(Pin(self.servoPin_id), duty = 0, freq = 50)
         
     def write_us(self, us):
         if us < self.min_us or us > self.max_us:
