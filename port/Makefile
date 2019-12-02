@@ -409,6 +409,7 @@ BUILTIN_C ?= $(addprefix builtins/, \
 	modnetwork.c \
 	modradio.c \
 	modxunfeiAI.c \
+	modframebuf.c \
 	)
 
 # mpython project builtin modules source files 
@@ -422,6 +423,8 @@ SRC_C := $(addprefix ports/esp32/, $(filter-out $(notdir $(BOARD_C)) $(notdir $(
 
 # mpython项目中的源文件
 # the source files of mpython
+PY_O := $(filter-out $(BUILD)/extmod/modframebuf.o, $(PY_O))
+
 SRC_C += $(BOARD_C) $(BUILTIN_C) $(SRC_MOD)
 
 OBJ_MP =
