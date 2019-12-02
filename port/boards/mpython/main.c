@@ -129,8 +129,8 @@ void mp_task(void *pvParameter) {
     mp_thread_init(pxTaskGetStackStart(NULL), MP_TASK_STACK_LEN);
     #endif
 
-    esp_log_level_set("*", ESP_LOG_ERROR);    // only error msg for mpython
-    // esp_log_level_set("*", ESP_LOG_INFO);
+    // esp_log_level_set("*", ESP_LOG_ERROR);    // only error msg for mpython
+    esp_log_level_set("*", ESP_LOG_INFO);
 
     uart_init();
 

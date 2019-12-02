@@ -59,6 +59,7 @@ void radio_enable(void) {
             ESP_ERROR_CHECK(esp_wifi_start());
             wifi_started = true;
         }
+        ESP_ERROR_CHECK(esp_wifi_set_promiscuous(true));
         ESP_ERROR_CHECK(esp_wifi_set_channel(radio_channel, 0));
         
         // espnow init
@@ -96,6 +97,7 @@ void radio_disable(void) {
             vQueueDelete(radio_recv_queue);
         }
         esp_now_deinit();
+        esp_wifi_set_promiscuous(false);
         radio_inited = false;
     }
 }
