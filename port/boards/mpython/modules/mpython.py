@@ -137,7 +137,7 @@ class Accelerometer():
                 self.i2c.writeto(self.addr, b'\x02', False)
                 buf = self.i2c.readfrom(self.addr, 2)
                 x = ustruct.unpack('h', buf)[0]
-                return x / 4 / 4096
+                return round(x / 4 / 4096,3)
             except:
                 retry = retry + 1
         else:
@@ -150,7 +150,7 @@ class Accelerometer():
                 self.i2c.writeto(self.addr, b'\x04', False)
                 buf = self.i2c.readfrom(self.addr, 2)
                 y = ustruct.unpack('h', buf)[0]
-                return y / 4 / 4096
+                return round(y / 4 / 4096,3)
             except:
                 retry = retry + 1
         else:
@@ -163,7 +163,7 @@ class Accelerometer():
                 self.i2c.writeto(self.addr, b'\x06', False)
                 buf = self.i2c.readfrom(self.addr, 2)
                 z = ustruct.unpack('h', buf)[0]
-                return z / 4 / 4096
+                return round(z / 4 / 4096,3)
             except:
                 retry = retry + 1
         else:

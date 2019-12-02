@@ -799,6 +799,23 @@ erase:
 	$(ECHO) "Erasing flash"
 	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) erase_flash
 
+$(BUILD)/mpython.bin: $(BUILD)/bootloader.bin $(BUILD)/partitions.bin $(BUILD)/application.bin
+	$(ECHO) "Create $@, with address from 0"
+	$(Q)$(PYTHON) release.py $^ $@
+
+release: $(BUILD)/mpython.bin
+	$(ECHO) "Writing $^ to the board"
+	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) write_flash -z --flash_mode $(FLASH_MODE) --flash_freq $(FLASH_FREQ) 0x00 $^
+
+
+
+font:
+	$(ECHO) "Write $^ to the board"
+	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) write_flash -z --flash_mode $(FLASH_MODE) --flash_freq $(FLASH_FREQ) 0x400000  Noto_Sans_CJK_SC_Light16.bin
+
+
+
+
 ################################################################################
 # Declarations to build the application
 
