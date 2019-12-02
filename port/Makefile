@@ -339,10 +339,12 @@ LIB_SRC_C = $(addprefix lib/,\
 	mp-readline/readline.c \
 	netutils/netutils.c \
 	timeutils/timeutils.c \
-	utils/pyexec.c \
 	utils/interrupt_char.c \
 	utils/sys_stdio_mphal.c \
 	)
+
+# 增加运行时的异常屏幕显示功能;CTRL+C中断停止所有线程和定时器
+LIB_SRC_C += lib/utils/pyexec.c
 
 ifeq ($(MICROPY_FATFS), 1)
 LIB_SRC_C += \
