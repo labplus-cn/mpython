@@ -70,56 +70,66 @@ class OLED(SSD1106_I2C):
             raise Exception('font load failed')
 
     def DispChar(self, s, x, y, mode=TextMode.normal):
-        if self.f is None:
-            return
-        for c in s:
-            data = self.f.GetCharacterData(c)
-            if data is None:
-                x = x + self.width
-                continue
-            width, bytes_per_line = ustruct.unpack('HH', data[:4])
-            # print('character [%d]: width = %d, bytes_per_line = %d' % (ord(c)
-            # , width, bytes_per_line))
-            for h in range(0, self.f.height):
-                w = 0
-                i = 0
-                while w < width:
-                    mask = data[4 + h * bytes_per_line + i]
-                    if (width - w) >= 8:
-                        n = 8
-                    else:
-                        n = width - w
-                    py = y + h
-                    page = py >> 3
-                    bit = 0x80 >> (py % 8)
-                    for p in range(0, n):
-                        px = x + w + p
-                        c = 0
-                        if (mask & 0x80) != 0:
-                            if mode == TextMode.normal or \
-                               mode == TextMode.trans:
-                                c = 1
-                            if mode == TextMode.rev:
-                                c = 0
-                            if mode == TextMode.xor:
-                                c = self.buffer[page * 128 + px] & bit
-                                if c != 0:
-                                    c = 0
-                                else:
-                                    c = 1
-                                # print("px = %d, py = %d, c = %d" % (px, py, c))
-                            super().pixel(px, py, c)
+            row = 0
+            str_width = 0
+            if self.f is None:
+                return
+            for c in s:
+                data = self.f.GetCharacterData(c)
+                if data is None:
+                    x = x + self.f.width
+                    continue
+                width, bytes_per_line = ustruct.unpack('HH', data[:4])
+                # print('character [%d]: width = %d, bytes_per_line = %d' % (ord(c)
+                # , width, bytes_per_line))
+                if x > self.width - width:
+                    str_width +=self.width -x
+                    x = 0
+                    row += 1
+                    y += self.f.height
+                    if y > (self.height - self.f.height)+0: y, row = 0, 0
+                for h in range(0, self.f.height):
+                    w = 0
+                    i = 0
+                    while w < width:
+                        mask = data[4 + h * bytes_per_line + i]
+                        if (width - w) >= 8:
+                            n = 8
                         else:
-                            if mode == TextMode.normal:
-                                c = 0
+                            n = width - w
+                        py = y + h
+                        page = py >> 3
+                        bit = 0x80 >> (py % 8)
+                        for p in range(0, n):
+                            px = x + w + p
+                            c = 0
+                            if (mask & 0x80) != 0:
+                                if mode == TextMode.normal or \
+                                        mode == TextMode.trans:
+                                    c = 1
+                                if mode == TextMode.rev:
+                                    c = 0
+                                if mode == TextMode.xor:
+                                    c = self.buffer[page *
+                                                    self.width + px] & bit
+                                    if c != 0:
+                                        c = 0
+                                    else:
+                                        c = 1
                                 super().pixel(px, py, c)
-                            if mode == TextMode.rev:
-                                c = 1
-                                super().pixel(px, py, c)
-                        mask = mask << 1
-                    w = w + 8
-                    i = i + 1
-            x = x + width + 1
+                            else:
+                                if mode == TextMode.normal:
+                                    c = 0
+                                    super().pixel(px, py, c)
+                                if mode == TextMode.rev:
+                                    c = 1
+                                    super().pixel(px, py, c)
+                            mask = mask << 1
+                        w = w + 8
+                        i = i + 1
+                x = x + width + 1
+                str_width += width + 1
+            return (str_width-1,(x-1, y))
 
 class Accelerometer():
     """  """
