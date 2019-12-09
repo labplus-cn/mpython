@@ -133,21 +133,59 @@ class OLED(SSD1106_I2C):
 
 class Accelerometer():
     """  """
+    RANGE_2G = 0
+    RANGE_4G = 1
+    RANGE_8G = 2
+    RANGE_16G = 3
+    RES_14_BIT = 0
+    RES_12_BIT = 1
+    RES_10_BIT = 2
 
     def __init__(self):
         self.addr = 38
         self.i2c = i2c
-        self.i2c.writeto(self.addr, b'\x0F\x08')  # set resolution = 10bit
-        self.i2c.writeto(self.addr, b'\x11\x00')  # set power mode = normal
+        self.set_resolustion(Accelerometer.RES_10_BIT)
+        self.set_range(Accelerometer.RANGE_2G)
+        self._writeReg(0x11,0)                  # set power mode = normal
+
+    def _readReg(self, reg, nbytes=1):
+        return self.i2c.readfrom_mem(self.addr, reg, nbytes)
+
+    def _writeReg(self, reg, value):
+        self.i2c.writeto_mem(self.addr, reg, value.to_bytes(1, 'little'))
+
+    def set_resolustion(self,resolution):
+        format = self._readReg(0x0f,1)
+        format = format[0] & ~0xC
+        format |= (resolution<<2)
+        self._writeReg(0x0f,format)
+ 
+    def set_range(self, range):
+        self.range = range
+        format = self._readReg(0x0f,1)
+        format = format[0] & ~0x3
+        format |= range
+        self._writeReg(0x0f,format)
+
+    def set_offset(self, x=None, y=None, z=None):
+        for i in (x, y, z):
+            if i != None:
+                if i < -1 or i > 1:
+                    raise ValueError("out of range,only offset 1 gravity")
+        if x != None:
+            self._writeReg(0x39, int(round(x/0.0039)))
+        elif y != None:
+            self._writeReg(0x38, int(round(y/0.0039)))
+        elif z != None:
+            self._writeReg(0x3A, int(round(z/0.0039)))
 
     def get_x(self):
         retry = 0
         if (retry < 5):
             try:
-                self.i2c.writeto(self.addr, b'\x02', False)
-                buf = self.i2c.readfrom(self.addr, 2)
+                buf = self._readReg(0x02, 2)
                 x = ustruct.unpack('h', buf)[0]
-                return round(x / 4 / 4096,3)
+                return x / 4 / 4096 * 2**self.range
             except:
                 retry = retry + 1
         else:
@@ -157,10 +195,9 @@ class Accelerometer():
         retry = 0
         if (retry < 5):
             try:
-                self.i2c.writeto(self.addr, b'\x04', False)
-                buf = self.i2c.readfrom(self.addr, 2)
+                buf = self._readReg(0x04, 2)
                 y = ustruct.unpack('h', buf)[0]
-                return round(y / 4 / 4096,3)
+                return y / 4 / 4096 * 2**self.range
             except:
                 retry = retry + 1
         else:
@@ -170,14 +207,148 @@ class Accelerometer():
         retry = 0
         if (retry < 5):
             try:
-                self.i2c.writeto(self.addr, b'\x06', False)
-                buf = self.i2c.readfrom(self.addr, 2)
+                buf = self._readReg(0x06, 2)
                 z = ustruct.unpack('h', buf)[0]
-                return round(z / 4 / 4096,3)
+                return z / 4 / 4096 * 2**self.range
             except:
                 retry = retry + 1
         else:
             raise Exception("i2c read/write error!")
+
+
+class Compass(object):
+    """ MMC5983MA driver """
+
+    def __init__(self):
+        self.addr = 48
+        self.i2c = i2c
+
+        self.i2c.writeto(self.addr, b'\x09\x20\xbd\x00', True)
+        # self.i2c.writeto(self.addr, b'\x09\x21', True)
+
+    def set_offset(self):
+        self.i2c.writeto(self.addr, b'\x09\x08', True)  #set
+
+        self.i2c.writeto(self.addr, b'\x09\x01', True)
+        while True:
+            self.i2c.writeto(self.addr, b'\x08', False)
+            buf = self.i2c.readfrom(self.addr, 1)
+            status = ustruct.unpack('B', buf)[0]
+            if(status & 0x01):
+                break
+        self.i2c.writeto(self.addr, b'\x00', False)
+        buf = self.i2c.readfrom(self.addr, 6)
+        data = ustruct.unpack('>3H', buf)
+
+        self.i2c.writeto(self.addr, b'\x09\x10', True)  #reset
+
+        self.i2c.writeto(self.addr, b'\x09\x01', True)
+        while True:
+            self.i2c.writeto(self.addr, b'\x08', False)
+            buf = self.i2c.readfrom(self.addr, 1)
+            status = ustruct.unpack('B', buf)[0]
+            if(status & 0x01):
+                break
+        self.i2c.writeto(self.addr, b'\x00', False)
+        buf = self.i2c.readfrom(self.addr, 6)
+        data1 = ustruct.unpack('>3H', buf)
+
+        self.x_offset = (data[0] + data1[0])/2
+        self.y_offset = (data[1] + data1[1])/2
+        self.z_offset = (data[2] + data1[2])/2
+        # print(self.x_offset)
+        # print(self.y_offset)
+        # print(self.z_offset)
+
+    def get_all(self):
+        retry = 0
+        if (retry < 5):
+            try:
+                self.i2c.writeto(self.addr, b'\x09\x08', True)  #set
+
+                self.i2c.writeto(self.addr, b'\x09\x01', True)
+                while True:
+                    self.i2c.writeto(self.addr, b'\x08', False)
+                    buf = self.i2c.readfrom(self.addr, 1)
+                    status = ustruct.unpack('B', buf)[0]
+                    if(status & 0x01):
+                        break
+                self.i2c.writeto(self.addr, b'\x00', False)
+                buf = self.i2c.readfrom(self.addr, 6)
+                data = ustruct.unpack('>3H', buf)
+
+                self.i2c.writeto(self.addr, b'\x09\x10', True)  #reset
+
+                self.i2c.writeto(self.addr, b'\x09\x01', True)
+                while True:
+                    self.i2c.writeto(self.addr, b'\x08', False)
+                    buf = self.i2c.readfrom(self.addr, 1)
+                    status = ustruct.unpack('B', buf)[0]
+                    if(status & 0x01):
+                        break
+                self.i2c.writeto(self.addr, b'\x00', False)
+                buf = self.i2c.readfrom(self.addr, 6)
+                data1 = ustruct.unpack('>3H', buf)
+
+                self.x = ((data[0] - data1[0])/2)*0.25
+                self.y = ((data[1] - data1[1])/2)*0.25
+                self.z = ((data[2] - data1[2])/2)*0.25
+                # print(str(self.x) + "   " + str(self.y) + "  " + str(self.z))
+            except:
+                retry = retry + 1
+        else:
+            raise Exception("i2c read/write error!")     
+
+    def get_x(self):
+        self.get_all()
+        return self.x
+
+    def get_y(self):
+        self.get_all()
+        return self.y
+
+    def get_z(self):
+        self.get_all()
+        return -(self.z)
+
+    def get_temperature(self):
+        retry = 0
+        if (retry < 5):
+            try:
+                self.i2c.writeto(self.addr, b'\x09\x02', True)
+                while True:
+                    self.i2c.writeto(self.addr, b'\x08', False)
+                    buf = self.i2c.readfrom(self.addr, 1)
+                    status = ustruct.unpack('B', buf)[0]
+                    if(status & 0x02):
+                        break
+                self.i2c.writeto(self.addr, b'\x07', False)
+                buf = self.i2c.readfrom(self.addr, 1)
+                temp = (ustruct.unpack('B', buf)[0])*0.8 -75
+                # print(data)
+                return temp
+            except:
+                retry = retry + 1
+        else:
+            raise Exception("i2c read/write error!")    
+
+    def get_angle(self):
+        angle= math.atan2(self.get_y(), -(self.get_x())) * (180 / 3.14159265) + 180
+        return angle
+
+    def get_id(self):
+        retry = 0
+        if (retry < 5):
+            try:
+                self.i2c.writeto(self.addr, bytearray([0x2f]), False)
+                buf = self.i2c.readfrom(self.addr, 1, True)
+                print(buf)
+                id = ustruct.unpack('B', buf)[0]
+                return id
+            except:
+                retry = retry + 1
+        else:
+            raise Exception("i2c read/write error!")    
 
 
 class BME280(object):
@@ -440,6 +611,10 @@ if 60 in i2c.scan():
 
 # 3 axis accelerometer
 accelerometer = Accelerometer()
+
+# compass
+if 48 in i2c.scan():
+    compass = Compass()
 
 # bm280
 if 119 in i2c.scan():
