@@ -131,7 +131,7 @@ def request(method, url, data=None, json=None, headers={}, stream=None, params=N
     s.write(b"\r\n")
     # file data for hex
     while True:
-      _read = file.read()
+      _read = memoryview(file.read(1024*3))
       if _read != b'':
         s.write(_read)
       else:
