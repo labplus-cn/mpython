@@ -27,71 +27,51 @@
 #define TAG "helix_decoder"
 
 #define MAINBUF_SIZE1 2880 //2880 //1940
+#define OUTP_SIZE (1152 * 4)
+#define output MP_STATE_PORT(mp3DecOutBuf)
+#define readBuf MP_STATE_PORT(mp3DecReadBuf)
 extern TaskHandle_t http_client_task_handel;
 
 typedef struct{
     HMP3Decoder HMP3Decoder;
     MP3FrameInfo mp3FrameInfo;
     int samplerate;
-    short *output;
-    unsigned char *readBuf;
-    int supply_bytes;
     int bytesleft;
-    unsigned char *readPtr;
 }mp3_decode_t;
 
+/* before use this function, need move the left bytes to the buff head, and the left bytes num. */
 static int read_ringbuf(mp3_decode_t *decoder)
 {
     int ringBufRemainBytes = 0;
-    size_t len;
+    size_t len = 0;
     void *temp = NULL;
+    int supply_bytes;
     player_t *player = get_player_handle();
 
-    //xSemaphoreTake(player->ringbuf_sem, portMAX_DELAY);
-    ringBufRemainBytes = RINGBUF_SIZE - xRingbufferGetCurFreeSize(player->buf_handle); //
-    //xSemaphoreGive(player->ringbuf_sem);
+    supply_bytes = MAINBUF_SIZE1 - decoder->bytesleft;
+    ringBufRemainBytes = RINGBUF_SIZE - xRingbufferGetCurFreeSize(player->buf_handle); 
 
-    // ESP_LOGE(TAG, "ringBufRemainBytes = %d, supply_bytes = %d", ringBufRemainBytes, Supply_bytes);
-    if(ringBufRemainBytes >= decoder->supply_bytes)  //ring buffer remain data enough for decoder need
-    { 
-        if(decoder->supply_bytes != 0){
-            //xSemaphoreTake(player->ringbuf_sem, portMAX_DELAY);
-            temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 500 / portTICK_PERIOD_MS, decoder->supply_bytes);
-            //xSemaphoreGive(player->ringbuf_sem);
-        }
-    }
-    else{ 
-        if(player->media_stream.eof){ //Stream end
-            if(ringBufRemainBytes != 0){
-                //xSemaphoreTake(player->ringbuf_sem, portMAX_DELAY);
-                temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 50 / portTICK_PERIOD_MS, ringBufRemainBytes);
-                //xSemaphoreGive(player->ringbuf_sem);
-            }       
-        }  
-        else{ 
-            renderer_zero_dma_buffer();
-            return -1; //ring buffer中数据不够解码器请求，退出等数据补够
-        }
-    }  
-
-    if (decoder->bytesleft > 0)  //解码缓存中还有数据没处理完，把它移到缓存头部
+    /* 1 从ringbuf中读解码器需要的数据量 */
+    if (ringBufRemainBytes > 0)
     {
-        memmove(decoder->readBuf, decoder->readPtr, decoder->bytesleft); //数据移动缓存头部，补充进来的数据接到后面
-        decoder->readPtr = decoder->readBuf + decoder->bytesleft;
-    }
+        if(ringBufRemainBytes >= supply_bytes)  //ring buffer remain data enough for decoder need
+        { 
+            if(supply_bytes != 0){
+                temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 500 / portTICK_PERIOD_MS, supply_bytes);
+            }
+        }
+        else{ 
+            temp = xRingbufferReceiveUpTo(player->buf_handle,  &len, 50 / portTICK_PERIOD_MS, ringBufRemainBytes);     
+        }  
 
-    if(temp != NULL){
-        memcpy(decoder->readPtr, temp, len);
-        decoder->bytesleft += len;
-        //xSemaphoreTake(player->ringbuf_sem, portMAX_DELAY);
-        vRingbufferReturnItem(player->buf_handle, (void *)temp);
-        //xSemaphoreGive(player->ringbuf_sem);
+        if(temp != NULL){
+            memcpy(readBuf + decoder->bytesleft, temp, len);
+            decoder->bytesleft += len;
+            vRingbufferReturnItem(player->buf_handle, (void *)temp);
+        }
     }
-
-    if(ringBufRemainBytes == 0){ //结束的时机选这，保证所有数据可被解码
-        return 1;
-    }
-    return 0;
+    // ESP_LOGE(TAG, "ringBufRemainBytes = %d, supply_bytes = %d, left bytes: %d", ringBufRemainBytes, supply_bytes, decoder->bytesleft);
+    return decoder->bytesleft;
 }
 
 static int proccess_tag(mp3_decode_t *decoder)
@@ -141,10 +121,9 @@ static int proccess_tag(mp3_decode_t *decoder)
             } 
             else //无tag头 把前面读到的10字节加入解码buff
             {
-                memcpy(decoder->readPtr, (char *)temp, 10);
-                decoder->bytesleft += len;
+                memcpy(readBuf, (char *)temp, len);
+                decoder->bytesleft = len;
                 vRingbufferReturnItem(player->buf_handle, (void *)temp);
-                decoder->supply_bytes = MAINBUF_SIZE1 - 10;
             }      
         }
     }  
@@ -155,143 +134,158 @@ static void mp3_decode(mp3_decode_t *decoder)
 {
     renderer_config_t *renderer = renderer_get();
     player_t *player = get_player_handle();
+    int len;
 
-    int offset = MP3FindSyncWord(decoder->readBuf, decoder->bytesleft); //搜索缓存中第一个有效数据帧
-    //ESP_LOGE(TAG, "offset is %d ", offset);
+    len = read_ringbuf(decoder);
+    // ESP_LOGE(TAG, "ringbuf len %d", len);
+    if(len == 0) //ringbuf has no data
+    {
+        renderer_zero_dma_buffer();
+        vTaskDelay(5 / portTICK_PERIOD_MS);
+        return;
+    }
+
+    int offset = MP3FindSyncWord(readBuf, decoder->bytesleft); //搜索缓存中第一个有效数据帧
     if (offset < 0)
     {
-        //ESP_LOGE(TAG, "MP3FindSyncWord not find");
+        ESP_LOGE(TAG, "MP3FindSyncWord not find");
         decoder->bytesleft = 0; // All data not avalible, clear the buffer.
-        decoder->supply_bytes = MAINBUF_SIZE1;
-        decoder->readPtr = decoder->readBuf;
         return; 
     }
-    else
-    {
-        decoder->readPtr = decoder->readBuf + offset;   //此位置读到有效数据帧
-        decoder->bytesleft -= offset; 
-        //ESP_LOGE(TAG, "begin decode......");
-        //以下解码n帧，readPtr会递增，bytesleft递减
-        int errs = MP3Decode(decoder->HMP3Decoder, &(decoder->readPtr), &(decoder->bytesleft), (short *)decoder->output, 0);
-        decoder->supply_bytes = decoder->readPtr - decoder->readBuf; //需要补充的数据量
-        if (errs != 0)
+    if (offset >= 0) {
+        if (offset > 0)
         {
-            renderer_zero_dma_buffer();
-            if(decoder->supply_bytes == 0){
-                decoder->bytesleft -= 10;
-                decoder->readPtr += 10;
-                if(decoder->bytesleft <= 0)
-                {
-                    decoder->bytesleft = 0;
-                    decoder->readPtr = decoder->readBuf;
-                }
+            //去除头部无效数据
+            decoder->bytesleft -= offset; 
+            memmove(readBuf, readBuf + offset,  decoder->bytesleft);
+            len = read_ringbuf(decoder);
+            // ESP_LOGE(TAG, "ringbuf len 1 %d", len);
+            if(len == 0) //ringbuf has no data
+            {
+                renderer_zero_dma_buffer();
+                vTaskDelay(5 / portTICK_PERIOD_MS);
+                return;
+            }   
+        }   
+        // ESP_LOGE(TAG, "begin decode......");
+        //以下解码n帧，readPtr会递增，bytesleft递减
+        unsigned char *readPtr;
+        readPtr = readBuf;
+        int ret = MP3Decode(decoder->HMP3Decoder, &readPtr, &(decoder->bytesleft), (short *)output, 0);
+        if (ret == ERR_MP3_NONE) 
+        {
+            // ESP_LOGE(TAG, "decode successed......");
+            MP3GetLastFrameInfo(decoder->HMP3Decoder, &(decoder->mp3FrameInfo));
+            if(decoder->samplerate != decoder->mp3FrameInfo.samprate)
+            {
+                decoder->samplerate = decoder->mp3FrameInfo.samprate;
+                renderer_set_clk(decoder->samplerate, 16, decoder->mp3FrameInfo.nChans);
+                // ESP_LOGE(TAG,"mp3file info---bitrate=%d, layer=%d, nChans=%d, samprate=%d, outputSamps=%d",
+                //     decoder->mp3FrameInfo.bitrate, decoder->mp3FrameInfo.layer, decoder->mp3FrameInfo.nChans, 
+                //     decoder->mp3FrameInfo.samprate, decoder->mp3FrameInfo.outputSamps);
+            }
+            for (int i = 0; i < decoder->mp3FrameInfo.outputSamps; ++i)
+            {
+                // output[i] = (short)((output[i]*255.0/65535) * player->volume); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
+                // // output[i] = (short)((output[i]*255.0/65535)); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
+                // output[i] = output[i] << 8;
+                output[i] = (short)((output[i] + 32768) * player->volume);
+                output[i] &= 0xff00;
+                //ESP_LOGI(TAG, "%d", output[i]);
             }
 
-            //ESP_LOGE(TAG, "MP3Decode failed ,code is %d ", errs);
-            return;
+            uint16_t bytesWritten;
+            renderer_write((unsigned char *)output, decoder->mp3FrameInfo.outputSamps * 2, (size_t *)(&bytesWritten), 1000 / portTICK_RATE_MS);
+            memmove(readBuf, readPtr, decoder->bytesleft);
         }
-        //ESP_LOGE(TAG, "decode successed......");
-        MP3GetLastFrameInfo(decoder->HMP3Decoder, &(decoder->mp3FrameInfo));
-        if(decoder->samplerate != decoder->mp3FrameInfo.samprate)
+        else
         {
-            decoder->samplerate = decoder->mp3FrameInfo.samprate;
-            i2s_set_clk(renderer->i2s_num, decoder->samplerate, 16, decoder->mp3FrameInfo.nChans);
-            // ESP_LOGE(TAG,"mp3file info---bitrate=%d, layer=%d, nChans=%d, samprate=%d, outputSamps=%d",
-            //     decoder->mp3FrameInfo.bitrate, decoder->mp3FrameInfo.layer, decoder->mp3FrameInfo.nChans, 
-            //     decoder->mp3FrameInfo.samprate, decoder->mp3FrameInfo.outputSamps);
+            ESP_LOGE(TAG, "decode err: %d", ret);  
+            renderer_zero_dma_buffer();
+            if (ret == ERR_MP3_INDATA_UNDERFLOW) {
+                //printf("ERR_MP3_INDATA_UNDERFLOW\n");
+                decoder->bytesleft = 0; // All data not avalible, clear the buffer.
+            } else if (ret == ERR_MP3_MAINDATA_UNDERFLOW) {
+                /* do nothing - next call to decode will provide more mainData */
+                //printf("ERR_MP3_MAINDATA_UNDERFLOW, continue to find sys words, left: %d\n", left);
+                if (decoder->bytesleft > 0) {
+                    memmove(readBuf, readPtr,  decoder->bytesleft);
+                }
+            } else {
+                //printf("unknown error: %d, left: %d\n", ret, left);
+                // skip this frame
+                if (decoder->bytesleft > 0) {
+                    readPtr++;
+                    decoder->bytesleft--;
+                    memmove(readBuf, readPtr,  decoder->bytesleft);
+                }
+            }
         }
-        for (int i = 0; i < decoder->mp3FrameInfo.outputSamps; ++i)
-        {
-            // decoder->output[i] = (short)((decoder->output[i]*255.0/65535) * player->volume); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
-            // // decoder->output[i] = (short)((decoder->output[i]*255.0/65535)); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
-            // decoder->output[i] = decoder->output[i] << 8;
-            decoder->output[i] = (short)((decoder->output[i] + 32768) * player->volume);
-            decoder->output[i] &= 0xff00;
-            //ESP_LOGI(TAG, "%d", output[i]);
-        }
-
-        uint16_t bytesWritten;
-        i2s_write(renderer->i2s_num, (unsigned char *)decoder->output, decoder->mp3FrameInfo.outputSamps * 2, (size_t *)(&bytesWritten), 1000 / portTICK_RATE_MS);
-    }     
+    }  
 }
 
 void mp3_decoder_task(void *pvParameters)
 {
     player_t *player = pvParameters;
     mp3_decode_t *decoder;
-    int state;
 
-    // ESP_LOGE(TAG, "Enter mp3 decode task.");
     decoder = calloc(1, sizeof(mp3_decode_t));
-    if(decoder == NULL)
-        goto abort;
-    decoder->readBuf = malloc(MAINBUF_SIZE1);
-    if (decoder->readBuf == NULL){
-        // ESP_LOGE(TAG, "readBuf malloc failed");
-        goto abort;
-    }
-    decoder->output = malloc(1153 * 4);
-    if (decoder->output == NULL){
-        free(decoder->readBuf);
-        // ESP_LOGE(TAG, "OutBuf malloc failed");
-		goto abort;
-    }
-    decoder->HMP3Decoder = MP3InitDecoder();
-    if (decoder->HMP3Decoder == 0)
+    if(decoder)
     {
-        free(decoder->readBuf);
-        free(decoder->output);
-        mp_raise_ValueError("Memory not enough for mp3 decode");
-        // ESP_LOGE(TAG, "Memory not enough for mp3 decode.");
-		goto abort;
+        readBuf = (unsigned char *)m_new(char, MAINBUF_SIZE1); //(MAINBUF_SIZE1, sizeof(char));
+        output = (short *)m_new(char, OUTP_SIZE);
+        decoder->HMP3Decoder = MP3InitDecoder();
+    }
+    if(!decoder || !readBuf || !output || !decoder->HMP3Decoder)
+    {
+        mp_raise_ValueError("No enought memory for decoder.");
     }
 
-    decoder->supply_bytes = MAINBUF_SIZE1;
     decoder->bytesleft = 0;
-    decoder->readPtr = decoder->readBuf;
     decoder->samplerate = 0;
 
     proccess_tag(decoder);
+    ESP_LOGE(TAG, "mp3 decode task has created, RAM left: %d", esp_get_free_heap_size());
+    int decode_status = 0;
     while(1)
     {
-        state = read_ringbuf(decoder);
-        if(state == -1){ //ringbuf remain bytes < decode need bytes
-            vTaskDelay(1 / portTICK_PERIOD_MS);
-            continue;
+        switch (player->player_status)
+        {
+        case RUNNING:
+            mp3_decode(decoder);
+            break;
+        case STOPPED:
+            decode_status = -1;
+            break;
+        case PAUSED:
+            vTaskSuspend( NULL );
+            break;
+        default:
+            break;
         }
 
-        mp3_decode(decoder);
-        
-        if((player->player_status == STOPPED) || ((player->media_stream.eof) && (state == 1) && (decoder->bytesleft == 0)))
+        if(decode_status == -1)
+        {
+            if (decoder->bytesleft > 0) //正常结束，需把缓存剩余的数据解码完
+              mp3_decode(decoder); 
+            renderer_zero_dma_buffer();
             break;
-        else if(player->player_status == PAUSED){
-            vTaskSuspend( NULL );
         }
     } 
 
-    //vTaskDelay(10 / portTICK_PERIOD_MS);
-    free(decoder->readBuf);
-    free(decoder->output);
+    if (readBuf){
+        m_del(char, readBuf, MAINBUF_SIZE1);
+    }
+    if (output){
+        m_del(char, output, OUTP_SIZE);
+    }    
     MP3FreeDecoder(decoder->HMP3Decoder);
-    free(decoder);
+    if (decoder){
+        free(decoder);
+        decoder = NULL;
+    } 
 
-    abort:
-    renderer_zero_dma_buffer();
-    renderer_stop();
-    if(player->file_type == WEB_TYPE)
-    {
-        if(http_client_task_handel != NULL){
-            player->player_status = INITIALIZED;
-            vTaskDelete(http_client_task_handel);
-            http_client_task_handel = NULL;
-            // ESP_LOGE(TAG, "play status: %d", player->player_status); 
-        }
-    }
-    else if ( player->file_type == LOCAL_TYPE) {
-        player->player_status = INITIALIZED;
-    }
-    
-    // ESP_LOGE(TAG, "helix decoder stack: %d\n", uxTaskGetStackHighWaterMark(NULL));
-    // ESP_LOGE(TAG, "6. mp3 decode task will delete, RAM left: %d", esp_get_free_heap_size()); 
+    ESP_LOGE(TAG, "helix decoder stack: %d", uxTaskGetStackHighWaterMark(NULL));
+    ESP_LOGE(TAG, "10. mp3 decode task will delete, RAM left: %d", esp_get_free_heap_size()); 
     vTaskDelete(NULL);
 }

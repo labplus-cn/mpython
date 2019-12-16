@@ -159,7 +159,7 @@ mp3解码支持
 	|  |--audio_render.h  
 	|  |--board.h
 	|  |--http_client.h  
-	|  |--local_file.h  
+	|  |--local_play.h  
 	|  |--modcodec.h
 	|  |--urlcodec.h
 	|  |--wav_head.h
@@ -236,9 +236,7 @@ mp3解码支持
 codec-v2.3-helix
 
 1. 修改player,
-   media_stream_t *media_stream; 改为：
-	 media_stream_t media_stream;
-	 代码其它部分修改对此变量的操作
+
 
 2. 修正对total_read_len的处理，body中的数据都要计入content-lenght, 而不仅是mp3数据，之前有误。
    修改：proccess_tag()
@@ -321,7 +319,7 @@ codec-v2.5-helix-2019-03-22.tar.xz
 
 1. 增加分配给urlencode编码时的缓存大小，避免溢出。
 2. helix-mp3_decode()播放结束判断做修改，避免最后一小段音频不能播放。
-			if((player->media_stream.eof || player->player_status == STOPPED) && (ringBufRemainBytes == 0) && (bytesLeft == 0)){
+			if((player->eof || player->player_status == STOPPED) && (ringBufRemainBytes == 0) && (bytesLeft == 0)){
 			renderer_zero_dma_buffer();
 			break;
 	
@@ -406,7 +404,7 @@ github分支提交
 	|  |--audio_render.h  
 	|  |--board.h
 	|  |--http_client.h  
-	|  |--local_file.h  
+	|  |--local_play.h  
 	|  |--modcodec.h
 	|  |--urlcodec.h
 	|  |--wav_head.h

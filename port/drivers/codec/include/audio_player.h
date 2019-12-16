@@ -20,7 +20,7 @@
 #define BIT_0    ( 1 << 0 )
 #define BIT_1    ( 1 << 1 )
 
-#define RINGBUF_SIZE 5000
+#define RINGBUF_SIZE 3880
 #define FILE_DATA_READ_LEN 100
 #define MIN_VOL_OFFSET -50 //50
 
@@ -48,47 +48,29 @@ typedef enum
     MIME_UNKNOWN = 1, OCTET_STREAM, AUDIO_PCM, AUDIO_WAV, AUDIO_AAC, AUDIO_MP4, AUDIO_MPEG, AUDIO_TEXT
 } content_type_t;
 
-typedef struct {
+typedef struct { 
+    player_status_t player_status;
+    const char *url;
+    audio_type_t file_type;
     content_type_t content_type;
     bool eof;
-} media_stream_t;
-
-typedef struct {
-    player_command_t command; 
-    player_status_t player_status;
-
-    buffer_pref_t buffer_pref;
-    const char *url;
-    
-    RingbufHandle_t *buf_handle;    //环形缓存结构
-    int ringbuf_size;
-    //SemaphoreHandle_t ringbuf_sem; /* 互斥信号量句柄 */
-    // EventGroupHandle_t ringbuf_eventGroup;
-
-    audio_type_t file_type;
-    media_stream_t media_stream;
     double volume;
     bool webtts_config_flag;
+    RingbufHandle_t *buf_handle;    //环形缓存结构
+    int ringbuf_size;
 } player_t;
 
-typedef struct {
-
-} radio_controls_t;
-
-typedef struct {
-    char *url;
-    player_t *player_config;
-} web_radio_t;
-
 player_status_t get_player_status();
-void init_palyer_handle(player_t *Player);
 player_t *get_player_handle();
 
-void audio_player_begin(void);
-void audio_player_start();
-void audio_player_stop();
-void audio_player_pause();
-void audio_player_destroy();
+void player_init(void);
+void player_deinit(void);
+void player_play(const char *url);
+void player_start();
+void player_stop();
+void player_pause();
+void player_resume();
+void player_set_volume(int _vol);
 int create_decode_task(player_t *player);
 
 #endif /* INCLUDE_AUDIO_PLAYER_H_ */
