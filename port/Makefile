@@ -306,21 +306,7 @@ SRC_C = \
 	modutime.c \
 	moduos.c \
 	machine_timer.c \
-	ma#define MICROPY_BUILDIN_ADC                 (1)
-#define MICROPY_BUILDIN_DAC                 (1)
-
-#define MPYTHON_PORT_ROOT_POINTER \
-        struct _MP3DecInfo  *mp3DecInfo; \
-        struct _FrameHeader  *fh; \
-        struct _SideInfo  *si; \
-        struct _ScaleFactorInfo  *sfi; \
-        struct _HuffmanInfo  *hi; \
-        struct _DequantInfo  *di; \
-        struct _IMDCTInfo  *mi; \
-        struct _SubbandInfo  *sbi; \
-        unsigned char *mp3DecReadBuf; \
-        short *mp3DecOutBuf;
-chine_pin.c \
+	machine_pin.c \
 	machine_touchpad.c \
 	machine_adc.c \
 	machine_dac.c \
