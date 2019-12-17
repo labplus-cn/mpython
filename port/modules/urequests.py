@@ -1,5 +1,9 @@
 import usocket
-import time,os
+import time
+import os
+from urllib.parse import quote, urlencode
+
+
 class Response:
 
   def __init__(self, f):
@@ -28,16 +32,23 @@ class Response:
   def json(self):
     import ujson
     return ujson.loads(self.content)
-    
+
   def recv(self, dataLen):
     dat = self.raw.read(dataLen)
     return dat
 
-def request(method, url, data=None, json=None, headers={}, stream=None,params=None,files=None):
+
+def request(method, url, data=None, json=None, headers={}, stream=None, params=None, files=None):
+  _headers = {}
+  _headers.update(headers)
+  # url parse
   try:
     proto, dummy, host, path = url.split("/", 3)
   except ValueError:
-    proto, dummy, host = url.split("/", 2)
+    try:
+      proto, dummy, host = url.split("/", 2)
+    except ValueError:
+      raise ValueError("Invalid URL")
     path = ""
   if proto == "http:":
     port = 80
@@ -46,69 +57,82 @@ def request(method, url, data=None, json=None, headers={}, stream=None,params=No
     port = 443
   else:
     raise ValueError("Unsupported protocol: " + proto)
-
   if ":" in host:
     host, port = host.split(":", 1)
     port = int(port)
-    
+
+  path = quote(path, safe='?,=,/,&')
+  # if have params,urlencoded to URL
   if params:
     path = path + "?"
-    for k in params:
-      path = path + '&'+k+'='+params[k]
+    path = path + urlencode(params)
 
   ai = usocket.getaddrinfo(host, port)
   addr = ai[0][4]
   s = usocket.socket()
+  s.settimeout(5)
   s.connect(addr)
   if proto == "https:":
     s = ussl.wrap_socket(s)
-  s.write(b"%s /%s HTTP/1.0\r\n" % (method, path))
-  if not "Host" in headers:
-    s.write(b"Host: %s\r\n" % host)
-  # Iterate over keys to avoid tuple alloc
-  for k in headers:
-    s.write(k)
-    s.write(b": ")
-    s.write(headers[k])
-    s.write(b"\r\n")
+  _headers['Host'] = host
+
+  if data is not None:
+    if isinstance(data, tuple):
+      data = dict(data)
+    if isinstance(data, dict):
+      if not 'ujson' in globals():
+        import ujson
+      data = urlencode(data)
+      _headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8'
+
   if json is not None:
     assert data is None
-    import ujson
+    if not 'ujson' in globals():
+      import ujson
+    _headers['Content-Type'] = 'application/json'
     data = ujson.dumps(json)
-  if data:
-    s.write(b"Content-Length: %d\r\n" % len(data))
 
   if files:
-    boundary = '------WebKitFormBoundary'+hex(int(time.time()))
-    s.write(b"Content-Type: multipart/form-data; boundary=%s\r\n" % boundary ) 
-    s.write(b"Connection: keep-alives\r\n" )
+    boundary = '----WebKitFormBoundary'+hex(int(time.time()))
+    _headers['Content-Type'] = "multipart/form-data; boundary=%s" % boundary
+    _headers['Connection'] = "keep-alives"
     name = list(files.keys())[0]
     file_dir = files.get(name)[0]
     file_type = files.get(name)[1]
     file_size = os.stat(file_dir)[6]
     file_name = file_dir.split('/')[-1]
     file = open(file_dir, 'rb')
-    content_disposition = b'Content-Disposition: form-data; name="%s"; filename="%s"\r\n' %(name,file_name)
+    content_disposition = b'Content-Disposition: form-data; name="%s"; filename="%s"\r\n' % (
+        name, file_name)
     content_type = b"Content-Type: %s\r\n" % file_type
-    content_length = len(boundary*2)+len(content_disposition)+len(content_type)+file_size+16
-    s.write(b"Content-Length: %d\r\n" % content_length)
-   
+    content_length = len(boundary)+4+len(content_disposition) + \
+        len(content_type)+2+file_size+len(boundary)+8
+    _headers['Content-Length'] = str(content_length)
+  if data:
+    _headers['Content-Length'] = str(len(data))
+
+  # Send Request Header
+  s.write(b"%s /%s HTTP/1.0\r\n" % (method, path))
+  for k, v in _headers.items():
+      s.write('%s: %s\r\n' % (k, v))
+      # print('%s: %s\r\n' % (k, v), end='')
+  # Partition
   s.write(b"\r\n")
 
-# body
+# Body
   if data:
     s.write(data)
 
   if files:
     # first boundary
     s.write(b"--%s\r\n" % boundary)
-    s.write(b'Content-Disposition: form-data; name="%s"; filename="%s"\r\n' %(name,file_name))
-    s.write(b"Content-Type: %s\r\n" % file_type)
+    s.write(content_disposition)
+    s.write(content_type)
     s.write(b"\r\n")
     # file data for hex
     while True:
-      _read = file.read(1024)
-      if _read !=b'':
+      _read = memoryview(file.read(1024*3))
+      if _read != b'':
         s.write(_read)
       else:
         break
@@ -124,7 +148,7 @@ def request(method, url, data=None, json=None, headers={}, stream=None,params=No
     l = s.readline()
     if not l or l == b"\r\n":
       break
-        #print(l)
+      #print(l)
     if l.startswith(b"Transfer-Encoding:"):
       if b"chunked" in l:
         raise ValueError("Unsupported " + l)
@@ -140,21 +164,22 @@ def request(method, url, data=None, json=None, headers={}, stream=None,params=No
 def head(url, **kw):
   return request("HEAD", url, **kw)
 
+
 def get(url, **kw):
   return request("GET", url, **kw)
+
 
 def post(url, **kw):
   return request("POST", url, **kw)
 
+
 def put(url, **kw):
   return request("PUT", url, **kw)
+
 
 def patch(url, **kw):
   return request("PATCH", url, **kw)
 
+
 def delete(url, **kw):
   return request("DELETE", url, **kw)
-
-
-
-
