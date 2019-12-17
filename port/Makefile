@@ -373,12 +373,11 @@ INC += -Idrivers/codec/include
 CFLAGS += -DARM -DCONFIG_AUDIO_HELIX 
 CFLAGS += -Wno-unused-but-set-variable
 CODEC_SRC_C = $(addprefix drivers/codec/,\
-	modcodec.c \
-	http_client.c \
 	audio_player.c \
-	audio_renderer.c \
 	url_codec.c \
-	local_file.c \
+	local_play.c \
+	http_client.c \
+	audio_renderer.c \
 	audio_recorder.c \
 	wav_head.c \
 	codec_lib/helix/src/bitstream.c \
@@ -410,6 +409,7 @@ BUILTIN_C ?= $(addprefix builtins/, \
 	modradio.c \
 	modxunfeiAI.c \
 	modframebuf.c \
+	modcodec.c \
 	)
 
 # mpython project builtin modules source files 
