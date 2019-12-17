@@ -306,7 +306,21 @@ SRC_C = \
 	modutime.c \
 	moduos.c \
 	machine_timer.c \
-	machine_pin.c \
+	ma#define MICROPY_BUILDIN_ADC                 (1)
+#define MICROPY_BUILDIN_DAC                 (1)
+
+#define MPYTHON_PORT_ROOT_POINTER \
+        struct _MP3DecInfo  *mp3DecInfo; \
+        struct _FrameHeader  *fh; \
+        struct _SideInfo  *si; \
+        struct _ScaleFactorInfo  *sfi; \
+        struct _HuffmanInfo  *hi; \
+        struct _DequantInfo  *di; \
+        struct _IMDCTInfo  *mi; \
+        struct _SubbandInfo  *sbi; \
+        unsigned char *mp3DecReadBuf; \
+        short *mp3DecOutBuf;
+chine_pin.c \
 	machine_touchpad.c \
 	machine_adc.c \
 	machine_dac.c \
@@ -339,10 +353,12 @@ LIB_SRC_C = $(addprefix lib/,\
 	mp-readline/readline.c \
 	netutils/netutils.c \
 	timeutils/timeutils.c \
-	utils/pyexec.c \
 	utils/interrupt_char.c \
 	utils/sys_stdio_mphal.c \
 	)
+
+# 增加运行时的异常屏幕显示功能;CTRL+C中断停止所有线程和定时器
+LIB_SRC_C += lib/utils/pyexec.c
 
 ifeq ($(MICROPY_FATFS), 1)
 LIB_SRC_C += \

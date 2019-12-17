@@ -82,16 +82,16 @@
  *
  * Notes:       slow, platform-independent equivalent to memset(buf, 0, nBytes)
  **************************************************************************************/
-static void ClearBuffer(void *buf, int nBytes)
-{
-	int i;
-	unsigned char *cbuf = (unsigned char *)buf;
+// static void ClearBuffer(void *buf, int nBytes)
+// {
+// 	int i;
+// 	unsigned char *cbuf = (unsigned char *)buf;
 
-	for (i = 0; i < nBytes; i++)
-		cbuf[i] = 0;
+// 	for (i = 0; i < nBytes; i++)
+// 		cbuf[i] = 0;
 
-	return;
-}
+// 	return;
+// }
 
 /**************************************************************************************
  * Function:    AllocateBuffers
