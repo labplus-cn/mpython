@@ -95,7 +95,7 @@ void recorder_init()
     renderer_config.channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT; //I2S_CHANNEL_FMT_ONLY_RIGHT I2S_CHANNEL_FMT_RIGHT_LEFT
     renderer_config.sample_rate = 8000;
     renderer_config.mode = I2S_MODE_RX;    
-    renderer_config.use_apll = true; 
+    renderer_config.use_apll = false; 
     // renderer_config.i2s_channal_nums = 1;                                         
     renderer_init(&renderer_config); 
     renderer_start();
@@ -107,6 +107,7 @@ void recorder_init()
 
 void recorder_record(const char *filename, int time)
 {
+    #define read_buff MP_STATE_PORT(record_buf)
     if (recorder_instance)
     {
         renderer_config_t *renderer = renderer_get();
@@ -132,12 +133,12 @@ void recorder_record(const char *filename, int time)
         file_write(F, &write_bytes, (uint8_t *)wav_header, sizeof(wav_header_t));
         free(wav_header);
 
-        uint8_t *read_buff = (uint8_t *)m_new(uint8_t, data_len);
+        read_buff = (uint8_t *)m_new(uint8_t, data_len);
         if (!read_buff)
             mp_raise_ValueError("Can not alloc enough memory to record.");
         renderer_adc_enable();   
         renderer_read_raw(read_buff, data_len);
-        // example_disp_buf((uint8_t*) read_buff, 64);
+        example_disp_buf((uint8_t*) read_buff, 64);
         adc_data_scale( read_buff, data_len);
         file_write(F, &write_bytes, read_buff, data_len);
         file_close(F);
@@ -149,12 +150,12 @@ void recorder_record(const char *filename, int time)
     else{
         mp_warning(NULL, "Please init recorder first.");
     }
-   
+    #undef read_buff
 }
 
 uint32_t recorder_loudness()
 {
-    renderer_config_t *renderer = renderer_get();
+    // renderer_config_t *renderer = renderer_get();
     uint32_t len = 32; //320bytes: record 10ms
     uint16_t *d_buff = calloc(len/2, sizeof(uint16_t));
     uint8_t *read_buff = calloc(len, sizeof(uint8_t)); 

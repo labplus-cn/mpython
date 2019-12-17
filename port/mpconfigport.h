@@ -231,7 +231,8 @@ struct mp_bluetooth_nimble_root_pointers_t;
     mp_obj_t machine_pin_irq_handler[40]; \
     struct _machine_timer_obj_t *machine_timer_obj_head; \
     struct _music_data_t * music_data;\
-    MICROPY_PORT_ROOT_POINTER_BLUETOOTH_NIMBLE
+    MICROPY_PORT_ROOT_POINTER_BLUETOOTH_NIMBLE \
+    MPYTHON_PORT_ROOT_POINTER
 
 // type definitions for the specific machine
 

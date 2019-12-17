@@ -132,7 +132,6 @@ static int proccess_tag(mp3_decode_t *decoder)
 
 static void mp3_decode(mp3_decode_t *decoder)
 {
-    renderer_config_t *renderer = renderer_get();
     player_t *player = get_player_handle();
     int len;
 
