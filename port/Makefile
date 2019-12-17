@@ -375,11 +375,11 @@ INC += -Idrivers/codec/include
 CFLAGS += -DARM -DCONFIG_AUDIO_HELIX 
 CFLAGS += -Wno-unused-but-set-variable
 CODEC_SRC_C = $(addprefix drivers/codec/,\
-	http_client.c \
 	audio_player.c \
-	audio_renderer.c \
 	url_codec.c \
 	local_play.c \
+	http_client.c \
+	audio_renderer.c \
 	audio_recorder.c \
 	wav_head.c \
 	codec_lib/helix/src/bitstream.c \
