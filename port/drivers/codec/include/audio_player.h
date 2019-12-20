@@ -60,9 +60,6 @@ typedef struct {
     int ringbuf_size;
 } player_t;
 
-player_status_t get_player_status();
-player_t *get_player_handle();
-
 void player_init(void);
 void player_deinit(void);
 void player_play(const char *url);
@@ -71,6 +68,9 @@ void player_stop();
 void player_pause();
 void player_resume();
 void player_set_volume(int _vol);
+player_status_t player_get_status();
+
+player_t *get_player_handle();
 int create_decode_task(player_t *player);
 
 #endif /* INCLUDE_AUDIO_PLAYER_H_ */

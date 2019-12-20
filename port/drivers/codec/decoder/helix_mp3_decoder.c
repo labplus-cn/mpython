@@ -12,7 +12,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
-// #include "freertos/event_groups.h"
+#include "freertos/event_groups.h"
 #include "freertos/ringbuf.h"
 #include "py/runtime.h"
 
@@ -31,6 +31,7 @@
 #define output MP_STATE_PORT(mp3DecOutBuf)
 #define readBuf MP_STATE_PORT(mp3DecReadBuf)
 extern TaskHandle_t http_client_task_handel;
+extern EventGroupHandle_t xEventGroup;
 
 typedef struct{
     HMP3Decoder HMP3Decoder;
@@ -283,7 +284,9 @@ void mp3_decoder_task(void *pvParameters)
         free(decoder);
         decoder = NULL;
     } 
-
+    xEventGroupSetBits(
+            xEventGroup,    // The event group being updated.
+            BIT_1);// The bits being set.
     ESP_LOGE(TAG, "helix decoder stack: %d", uxTaskGetStackHighWaterMark(NULL));
     ESP_LOGE(TAG, "10. mp3 decode task will delete, RAM left: %d", esp_get_free_heap_size()); 
     vTaskDelete(NULL);

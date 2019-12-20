@@ -12,7 +12,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
-// #include "freertos/event_groups.h"
+#include "freertos/event_groups.h"
 #include "freertos/ringbuf.h"
 #include "esp_log.h"
 #include "esp_system.h"
@@ -44,6 +44,7 @@ static const char *api_key;
 esp_http_client_handle_t client = NULL;
 extern TaskHandle_t mp3_decode_task_handel;
 static http_param_t *http_param_instance = NULL;
+extern EventGroupHandle_t xEventGroup;
 
 static void http_param_init()
 {
@@ -361,7 +362,7 @@ void http_request_task(void *pvParameters)
     }
 
     abort:
-    player->player_status = STOPPED; 
+    player->player_status = STOPPED;  //stop会触发decode任务结束
     if(client){
         esp_http_client_close(client);
         esp_http_client_cleanup(client);
@@ -374,6 +375,9 @@ void http_request_task(void *pvParameters)
     if(output != NULL)
         free(output);
 
+    xEventGroupSetBits(
+            xEventGroup,    // The event group being updated.
+            BIT_0);// The bits being set.
     ESP_LOGE(TAG, "http request stack: %d\n", uxTaskGetStackHighWaterMark(NULL));
     ESP_LOGE(TAG, "5. http request task will delete, RAM left: %d", esp_get_free_heap_size());
     vTaskDelete(NULL); 

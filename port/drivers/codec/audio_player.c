@@ -12,6 +12,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/ringbuf.h"
+#include "freertos/event_groups.h"
 
 #include "esp_system.h"
 #include "esp_log.h"
@@ -34,6 +35,7 @@ static player_t *player_instance = NULL;
 double volume;
 int player_status;
 extern HTTP_HEAD_VAL http_head[6];
+EventGroupHandle_t xEventGroup;
 
 STATIC void clear_ringbuf(player_t *player)
 {
@@ -64,7 +66,8 @@ void player_init(void)
 {
     ESP_LOGE(TAG, "1. begin create player, RAM left  %d", esp_get_free_heap_size());
     if(!player_instance){ 
-        player_instance = calloc(1, sizeof(player_t));  /* 1. Create player.*/                
+        player_instance = calloc(1, sizeof(player_t));  /* 1. Create player.*/ 
+        xEventGroup = xEventGroupCreate();               
     }   
     player_instance->player_status = INITIALIZED;                                          
     player_instance->content_type = MIME_UNKNOWN;                                                                                
@@ -99,7 +102,11 @@ void player_deinit(void)
         {
             free((char *)http_head[1].value);
             http_head[1].value = NULL;
-        }         
+        } 
+        if(xEventGroup)
+        {
+            vEventGroupDelete(xEventGroup);
+        }        
         // ESP_LOGE(TAG, "RAM left %d", esp_get_free_heap_size());
     }
     else{
@@ -110,9 +117,9 @@ void player_deinit(void)
 void player_play(const char *url)
 { 
     if(player_instance){
-        if(player_instance->player_status != INITIALIZED){
+        if(player_instance->player_status == RUNNING || player_instance->player_status == PAUSED){
             player_stop();
-        }                                                                           
+        }                                                                          
         player_instance->url = url;
         clear_ringbuf(player_instance);
 
@@ -170,18 +177,39 @@ player_t *get_player_handle()
 
 void player_start()
 {
-    player_instance->player_status = RUNNING;
+    if(player_instance)
+    {
+        player_instance->player_status = RUNNING;
+    }
+    else
+    {
+       mp_warning(NULL, "No player.");
+    }    
 }
 
 void player_stop()
 {
+    EventBits_t uxBits;
     if(player_instance)
     {
         if( player_instance->player_status == RUNNING ||  player_instance->player_status == PAUSED){
             renderer_stop();
             player_instance->player_status = STOPPED;
 
-            vTaskDelay(50 / portTICK_PERIOD_MS);
+            while(1) //等待任务结束
+            {
+                uxBits = xEventGroupWaitBits(
+                            xEventGroup,    // The event group being tested.
+                            BIT_0 | BIT_1,  // The bits within the event group to wait for.
+                            pdTRUE,         // BIT_0 and BIT_4 should be cleared before returning.
+                            pdTRUE,         // wait for both bits, either bit will do.
+                            100 / portTICK_PERIOD_MS ); // Wait a maximum of 100ms for either bit to be set.
+                if( ( uxBits & ( BIT_0 | BIT_1 ) ) == ( BIT_0 | BIT_1 ) )
+                {
+                    break;
+                }
+                vTaskDelay(10 / portTICK_PERIOD_MS);
+            }
         }
     }
     else
@@ -233,9 +261,16 @@ void player_set_volume(int _vol)
     }
 }
 
-player_status_t get_player_status()
+player_status_t player_get_status()
 {
-    return player_instance->player_status;
+    if(player_instance){
+        return player_instance->player_status;
+    }
+    else
+    {
+        mp_warning(NULL, "No player.");
+    }
+    
 }
 
 int create_decode_task(player_t *player)
