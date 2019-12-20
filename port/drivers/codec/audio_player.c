@@ -270,7 +270,7 @@ player_status_t player_get_status()
     {
         mp_warning(NULL, "No player.");
     }
-    
+    return 0;
 }
 
 int create_decode_task(player_t *player)
