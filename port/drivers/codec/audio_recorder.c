@@ -122,8 +122,8 @@ void recorder_record(const char *filename, int time)
             time = 5;
         }
         uint32_t data_len = renderer->sample_rate * (renderer->bit_depth / 8) * renderer->i2s_channal_nums * time;
-        ESP_LOGE(TAG, "renderer info: samplerate:%d, bitdepth:%d,ch nums:%d, rec datasize:%d", renderer->sample_rate, renderer->bit_depth, \
-                 renderer->i2s_channal_nums, data_len); 
+        /* ESP_LOGE(TAG, "renderer info: samplerate:%d, bitdepth:%d,ch nums:%d, rec datasize:%d", renderer->sample_rate, renderer->bit_depth, \
+                  renderer->i2s_channal_nums, data_len); */
 
         /* make wav head */
         wav_header_t *wav_header = calloc(1, sizeof(wav_header_t));
@@ -138,7 +138,7 @@ void recorder_record(const char *filename, int time)
             mp_raise_ValueError("Can not alloc enough memory to record.");
         renderer_adc_enable();   
         renderer_read_raw(read_buff, data_len);
-        example_disp_buf((uint8_t*) read_buff, 64);
+        // example_disp_buf((uint8_t*) read_buff, 64);
         adc_data_scale( read_buff, data_len);
         file_write(F, &write_bytes, read_buff, data_len);
         file_close(F);

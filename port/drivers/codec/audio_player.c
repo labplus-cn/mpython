@@ -64,7 +64,7 @@ STATIC void clear_ringbuf(player_t *player)
 
 void player_init(void)
 {
-    ESP_LOGE(TAG, "1. begin create player, RAM left  %d", esp_get_free_heap_size());
+    // ESP_LOGE(TAG, "1. begin create player, RAM left  %d", esp_get_free_heap_size());
     if(!player_instance){ 
         player_instance = calloc(1, sizeof(player_t));  /* 1. Create player.*/ 
         xEventGroup = xEventGroupCreate();               
@@ -134,9 +134,7 @@ void player_play(const char *url)
             renderer_cfg.sample_rate = 22050;  
             renderer_cfg.i2s_channal_nums = 2; 
             renderer_cfg.channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT;
-            ESP_LOGE(TAG, "4 begine create renderer, RAM left: %d", esp_get_free_heap_size());
             renderer_init(&renderer_cfg);
-            ESP_LOGE(TAG, "4 renderer is create, RAM left: %d", esp_get_free_heap_size());
             renderer_start();
             player_start();
             xTaskCreate(http_request_task, "http_request_task", 2800, player_instance, ESP_TASK_PRIO_MIN + 1, &http_client_task_handel );
@@ -293,7 +291,7 @@ int create_decode_task(player_t *player)
                 xTaskCreate(mp3_decoder_task, "mp3_decoder_task", DECODER_TASK_STACK_DEPTH, player, ESP_TASK_PRIO_MIN + 1, &mp3_decode_task_handel );
                 if (!mp3_decode_task_handel)
                     err = -1;
-                ESP_LOGE(TAG, "4. mp3 decoder task builded, RAM left: %d", esp_get_free_heap_size()); 
+                // ESP_LOGE(TAG, "4. mp3 decoder task builded, RAM left: %d", esp_get_free_heap_size()); 
             break;
             default:
                 err = -1;

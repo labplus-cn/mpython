@@ -141,7 +141,7 @@ void local_play(void *pvParameters)
         renderer_cfg.i2s_channal_nums = 2; 
         renderer_cfg.channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT;
         renderer_init(&renderer_cfg);
-        ESP_LOGE(TAG, "3. ringbuf and renderer is create, RAM left: %d", esp_get_free_heap_size());
+        // ESP_LOGE(TAG, "3. ringbuf and renderer is create, RAM left: %d", esp_get_free_heap_size());
 
         if(data_read(file, buffer) == -1) //read mp3 data to ringbuff before mp3 decode task build
         {
@@ -166,7 +166,7 @@ void local_play(void *pvParameters)
             wav_info_t *wav_info = calloc(1, sizeof(wav_info_t));
             file_read(file, &read_bytes, read_buff,  36);
             wav_head_parser((const uint8_t *)read_buff, wav_info);
-            ESP_LOGE(TAG, "sampleRate: %d, bits: %d, channel: %d", wav_info->sampleRate, wav_info->bits, wav_info->channels);
+            // ESP_LOGE(TAG, "sampleRate: %d, bits: %d, channel: %d", wav_info->sampleRate, wav_info->bits, wav_info->channels);
 
             renderer_cfg.bit_depth  = wav_info->bits;
             renderer_cfg.sample_rate = wav_info->sampleRate;  
@@ -188,7 +188,7 @@ void local_play(void *pvParameters)
 
     player_start();
     renderer_start();
-    ESP_LOGE(TAG, "9. Create renderer, RAM left: %d", esp_get_free_heap_size());
+    // ESP_LOGE(TAG, "9. Create renderer, RAM left: %d", esp_get_free_heap_size());
     while(1) 
     {     
         if(player->player_status == RUNNING)
@@ -244,7 +244,7 @@ void local_play(void *pvParameters)
         free(buffer);
     // renderer_deinit();
 
-    ESP_LOGE(TAG, "local play end, RAM left: %d", esp_get_free_heap_size());
+    // ESP_LOGE(TAG, "local play end, RAM left: %d", esp_get_free_heap_size());
     vTaskDelay(1 / portTICK_PERIOD_MS); 
 }
 

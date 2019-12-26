@@ -309,6 +309,7 @@ STATIC mp_obj_t esp_active(size_t n_args, const mp_obj_t *args) {
             ESP_EXCEPTIONS(esp_wifi_set_mode(mode));
             if (!wifi_started) {
                 ESP_EXCEPTIONS(esp_wifi_start());
+                ESP_EXCEPTIONS(esp_wifi_set_ps(WIFI_PS_NONE));
                 wifi_started = true;
             }
         }

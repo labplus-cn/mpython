@@ -378,8 +378,8 @@ void http_request_task(void *pvParameters)
     xEventGroupSetBits(
             xEventGroup,    // The event group being updated.
             BIT_0);// The bits being set.
-    ESP_LOGE(TAG, "http request stack: %d\n", uxTaskGetStackHighWaterMark(NULL));
-    ESP_LOGE(TAG, "5. http request task will delete, RAM left: %d", esp_get_free_heap_size());
+    // ESP_LOGE(TAG, "http request stack: %d\n", uxTaskGetStackHighWaterMark(NULL));
+    // ESP_LOGE(TAG, "5. http request task will delete, RAM left: %d", esp_get_free_heap_size());
     vTaskDelete(NULL); 
 }
 

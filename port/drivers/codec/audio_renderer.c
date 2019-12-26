@@ -42,7 +42,7 @@ static void init_i2s(renderer_config_t *config)
         mode = mode | I2S_MODE_TX;
         #if MICROPY_BUILDIN_DAC 
         mode = mode | I2S_MODE_DAC_BUILT_IN;
-        ESP_LOGE(TAG, "I2S MODE IS DAC BUILT IN");
+        // ESP_LOGE(TAG, "I2S MODE IS DAC BUILT IN");
         #endif
     }
     if (config->mode == I2S_MODE_RX)
@@ -50,7 +50,7 @@ static void init_i2s(renderer_config_t *config)
         mode = mode | I2S_MODE_RX;
         #if MICROPY_BUILDIN_ADC
         mode = mode | I2S_MODE_ADC_BUILT_IN;
-        ESP_LOGE(TAG, "I2S MODE IS ADC BUILT IN");
+        // ESP_LOGE(TAG, "I2S MODE IS ADC BUILT IN");
         #endif
     }
 
@@ -77,28 +77,24 @@ static void init_i2s(renderer_config_t *config)
 
     // i2s_driver_uninstall(I2S_USE_NUM);
     i2s_driver_install(I2S_USE_NUM, &i2s_config, 0, NULL);
-    ESP_LOGE(TAG, "4 i2s driver intalled, RAM left: %d", esp_get_free_heap_size());
+    // ESP_LOGE(TAG, "4 i2s driver intalled, RAM left: %d", esp_get_free_heap_size());
 
     if(config->mode == I2S_MODE_TX) 
     {
         #if MICROPY_BUILDIN_DAC
         i2s_set_dac_mode(I2S_DAC_CHANNEL_BOTH_EN);
-        ESP_LOGE(TAG, "I2S I2S_DAC_CHANNEL_BOTH_EN");
         // #else
         // i2s_set_pin(I2S_USE_NUM, NULL);
         #endif
         i2s_zero_dma_buffer(0);
-        ESP_LOGE(TAG, "4 i2s set dat mode: %d", esp_get_free_heap_size());
     }
     else if(config->mode == I2S_MODE_RX)
     {
         #if MICROPY_BUILDIN_ADC
         i2s_set_adc_mode(ADC_UNIT_1, ADC1_CHANNEL_2); //renderer_instance->adc1_channel );
-        ESP_LOGE(TAG, "I2S set BUILT IN adc");
         // #else
         // i2s_set_pin(I2S_USE_NUM, NULL);
         #endif
-        ESP_LOGE(TAG, "4 i2s set adc mode, RAM left: %d", esp_get_free_heap_size());
     }
 
     // i2s_stop(I2S_USE_NUM);
@@ -130,7 +126,7 @@ void renderer_init(renderer_config_t *config)
     renderer_instance->i2s_channal_nums = (renderer_instance->channel_format < I2S_CHANNEL_FMT_ONLY_RIGHT) ? (2) : (1);
     renderer_instance->adc1_channel = config->adc1_channel;
 
-    ESP_LOGE(TAG, "init I2S mode %d, %d bit, %d Hz", renderer_instance->mode, renderer_instance->bit_depth, renderer_instance->sample_rate);
+    // ESP_LOGE(TAG, "init I2S mode %d, %d bit, %d Hz", renderer_instance->mode, renderer_instance->bit_depth, renderer_instance->sample_rate);
     init_i2s(config);
 }
 
@@ -176,7 +172,6 @@ void renderer_set_clk(uint32_t rate, i2s_bits_per_sample_t bits, i2s_channel_t c
 void renderer_read_raw(uint8_t *buff, uint32_t len)
 {
     size_t bytes_read;
-    ESP_LOGE(TAG, "buff len......., %d", len);
     i2s_read(I2S_USE_NUM, (void *)buff, len, &bytes_read, portMAX_DELAY);
 }
 

@@ -148,7 +148,7 @@ static void mp3_decode(mp3_decode_t *decoder)
     int offset = MP3FindSyncWord(readBuf, decoder->bytesleft); //搜索缓存中第一个有效数据帧
     if (offset < 0)
     {
-        ESP_LOGE(TAG, "MP3FindSyncWord not find");
+        // ESP_LOGE(TAG, "MP3FindSyncWord not find");
         decoder->bytesleft = 0; // All data not avalible, clear the buffer.
         return; 
     }
@@ -200,7 +200,7 @@ static void mp3_decode(mp3_decode_t *decoder)
         }
         else
         {
-            ESP_LOGE(TAG, "decode err: %d", ret);  
+            // ESP_LOGE(TAG, "decode err: %d", ret);  
             renderer_zero_dma_buffer();
             if (ret == ERR_MP3_INDATA_UNDERFLOW) {
                 //printf("ERR_MP3_INDATA_UNDERFLOW\n");
@@ -245,7 +245,7 @@ void mp3_decoder_task(void *pvParameters)
     decoder->samplerate = 0;
 
     proccess_tag(decoder);
-    ESP_LOGE(TAG, "mp3 decode task has created, RAM left: %d", esp_get_free_heap_size());
+    // ESP_LOGE(TAG, "mp3 decode task has created, RAM left: %d", esp_get_free_heap_size());
     int decode_status = 0;
     while(1)
     {
@@ -287,7 +287,7 @@ void mp3_decoder_task(void *pvParameters)
     xEventGroupSetBits(
             xEventGroup,    // The event group being updated.
             BIT_1);// The bits being set.
-    ESP_LOGE(TAG, "helix decoder stack: %d", uxTaskGetStackHighWaterMark(NULL));
-    ESP_LOGE(TAG, "10. mp3 decode task will delete, RAM left: %d", esp_get_free_heap_size()); 
+    // ESP_LOGE(TAG, "helix decoder stack: %d", uxTaskGetStackHighWaterMark(NULL));
+    // ESP_LOGE(TAG, "10. mp3 decode task will delete, RAM left: %d", esp_get_free_heap_size()); 
     vTaskDelete(NULL);
 }
