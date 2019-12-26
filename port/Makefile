@@ -403,7 +403,7 @@ CODEC_SRC_C = $(addprefix drivers/codec/,\
 INC += -Ibuiltins
 BUILTIN_C ?= $(addprefix builtins/, \
 	machine_pin.c \
-	machine_servo_pwm.c \
+	machine_servo.c \
 	machine_touchpad.c \
 	modmusic.c \
 	modmusictunes.c \
