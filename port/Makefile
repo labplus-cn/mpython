@@ -27,7 +27,7 @@ QSTR_DEFS = qstrdefsport.h
 QSTR_GLOBAL_DEPENDENCIES = $(BOARD_DIR)/mpconfigboard.h
 QSTR_GLOBAL_REQUIREMENTS = $(SDKCONFIG_H)
 
-MICROPY_PY_USSL = 0
+# MICROPY_PY_USSL = 0
 MICROPY_SSL_AXTLS = 0
 MICROPY_FATFS = 1
 MICROPY_PY_BTREE = 1
@@ -345,6 +345,9 @@ LIB_SRC_C = $(addprefix lib/,\
 
 # 增加运行时的异常屏幕显示功能;CTRL+C中断停止所有线程和定时器
 LIB_SRC_C += lib/utils/pyexec.c
+# 增加websocket操作
+INC += -Ilib/websocket
+LIB_SRC_C += lib/websocket/websocket_client.c
 
 ifeq ($(MICROPY_FATFS), 1)
 LIB_SRC_C += \

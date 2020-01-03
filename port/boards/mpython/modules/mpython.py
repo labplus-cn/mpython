@@ -16,6 +16,7 @@ from neopixel import NeoPixel
 from esp import dht_readinto
 from time import sleep_ms, sleep_us, sleep
 from framebuf import FrameBuffer
+import calibrate_img
 
 i2c = I2C(scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
 
@@ -131,6 +132,11 @@ class OLED(SSD1106_I2C):
                 str_width += width + 1
             return (str_width-1,(x-1, y))
 
+# display
+if 60 in i2c.scan():
+    oled = OLED()
+    display = oled
+
 class Accelerometer():
     """  """
     RANGE_2G = 0
@@ -215,18 +221,33 @@ class Accelerometer():
         else:
             raise Exception("i2c read/write error!")
 
+# 3 axis accelerometer
+accelerometer = Accelerometer()
 
-class Compass(object):
+class Magnetic(object):
     """ MMC5983MA driver """
 
     def __init__(self):
         self.addr = 48
         self.i2c = i2c
+        # 传量器裸数据，乘0.25后转化为mGS
+        self.raw_x = 0.0
+        self.raw_y = 0.0
+        self.raw_z = 0.0
+        # 校准后的偏移量, 基于裸数据
+        self.cali_offset_x = 0.0 
+        self.cali_offset_y = 0.0
+        self.cali_offset_z = 0.0
+        # 去皮偏移量，类似电子秤去皮功能，基于裸数据。
+        self.peeling_x = 0.0
+        self.peeling_y = 0.0
+        self.peeling_z = 0.0
+        self.is_peeling = 0
 
         self.i2c.writeto(self.addr, b'\x09\x20\xbd\x00', True)
         # self.i2c.writeto(self.addr, b'\x09\x21', True)
 
-    def set_offset(self):
+    def _set_offset(self):
         self.i2c.writeto(self.addr, b'\x09\x08', True)  #set
 
         self.i2c.writeto(self.addr, b'\x09\x01', True)
@@ -260,7 +281,7 @@ class Compass(object):
         # print(self.y_offset)
         # print(self.z_offset)
 
-    def get_all(self):
+    def _get_raw(self):
         retry = 0
         if (retry < 5):
             try:
@@ -290,28 +311,116 @@ class Compass(object):
                 buf = self.i2c.readfrom(self.addr, 6)
                 data1 = ustruct.unpack('>3H', buf)
 
-                self.x = ((data[0] - data1[0])/2)*0.25
-                self.y = ((data[1] - data1[1])/2)*0.25
-                self.z = ((data[2] - data1[2])/2)*0.25
+                self.raw_x = -((data[0] - data1[0])/2)
+                self.raw_y = -((data[1] - data1[1])/2)
+                self.raw_z = -((data[2] - data1[2])/2)
                 # print(str(self.x) + "   " + str(self.y) + "  " + str(self.z))
             except:
                 retry = retry + 1
         else:
             raise Exception("i2c read/write error!")     
 
+    def peeling(self):
+        self._get_raw()
+        self.peeling_x = self.raw_x
+        self.peeling_y = self.raw_y
+        self.peeling_z = self.raw_z
+        self.is_peeling = 1
+
+    def clear_peeling(self):
+        self.peeling_x = 0.0
+        self.peeling_y = 0.0
+        self.peeling_z = 0.0
+        self.is_peeling = 0
+
     def get_x(self):
-        self.get_all()
-        return self.x
+        self._get_raw()
+        return self.raw_x * 0.25
 
     def get_y(self):
-        self.get_all()
-        return self.y
+        self._get_raw()
+        return self.raw_y * 0.25
 
     def get_z(self):
-        self.get_all()
-        return -(self.z)
+        self._get_raw()
+        return self.raw_z * 0.25 
 
-    def get_temperature(self):
+    def get_field_strength(self):
+        self._get_raw()
+        if self.is_peeling == 1:
+            return (math.sqrt((self.raw_x - self.peeling_x)*(self.raw_x - self.peeling_x) + (self.raw_y - self.peeling_y)*(self.raw_y - self.peeling_y) + (self.raw_z - self.peeling_z)*(self.raw_z - self.peeling_z)))*0.25
+        return (math.sqrt(self.raw_x * self.raw_x + self.raw_y * self.raw_y + self.raw_z * self.raw_z))*0.25
+
+    def calibrate(self):
+        oled.fill(0)
+        oled.DispChar("步骤1:", 0,0,1)
+        oled.DispChar("如图",0,26,1)
+        oled.DispChar("转几周",0,43,1)
+        oled.bitmap(64,0,calibrate_img.rotate,64,64,1)
+        oled.show()
+        self._get_raw()
+        min_x = max_x = self.raw_x
+        min_y = max_y = self.raw_y
+        min_z = max_z = self.raw_z
+        ticks_start = time.ticks_ms()
+        while (time.ticks_diff(time.ticks_ms(), ticks_start) < 15000) :
+            self._get_raw()
+            min_x = min(self.raw_x, min_x)
+            min_y = min(self.raw_y, min_y)
+            max_x = max(self.raw_x, max_x)
+            max_y = max(self.raw_y, max_y)
+            time.sleep_ms(100)
+        self.cali_offset_x = (max_x + min_x) / 2
+        self.cali_offset_y = (max_y + min_y) / 2
+        print('cali_offset_x: ' + str(self.cali_offset_x) + '  cali_offset_y: ' + str(self.cali_offset_y))
+        oled.fill(0)
+        oled.DispChar("步骤2:", 85,0,1)
+        oled.DispChar("如图",85,26,1)
+        oled.DispChar("转几周",85,43,1)
+        oled.bitmap(0,0,calibrate_img.rotate1,64,64,1)
+        oled.show()
+        ticks_start = time.ticks_ms()
+        while (time.ticks_diff(time.ticks_ms(), ticks_start) < 15000) :
+            self._get_raw()
+            min_z = min(self.raw_z, min_z)
+            # min_y = min(self.raw_y, min_y)
+            max_z = max(self.raw_z, max_z)
+            # max_y = max(self.raw_y, max_y)
+            time.sleep_ms(100)
+        self.cali_offset_z = (max_z + min_z) / 2
+        # self.cali_offset_y = (max_y + min_y) / 2
+        print('cali_offset_z: ' + str(self.cali_offset_z))
+        # print('cali_offset_y: ' + str(self.cali_offset_y))
+
+        oled.fill(0)
+        oled.DispChar("校准完成。", 40,24,1)
+        oled.show()
+
+    def get_heading(self):
+        self._get_raw()
+
+        # if (accelerometer):
+        #     # use accelerometer get inclination   
+        #     x = accelerometer.get_x()
+        #     y = accelerometer.get_y()
+        #     z = accelerometer.get_z()
+
+        #     phi = math.atan2(x, -z)
+        #     theta = math.atan2(y, (x*math.sin(phi) - z*math.cos(phi)))
+        #     sinPhi = math.sin(phi)
+        #     cosPhi = math.cos(phi)
+        #     sinTheta = math.sin(theta)
+        #     cosTheta = math.cos(theta)
+        #     heading = (math.atan2(x*cosTheta + y*sinTheta*sinPhi + z*sinTheta*cosPhi, z*sinPhi - y*cosPhi)) * (180 / 3.14159265) + 180
+        #     return heading
+
+        temp_x = self.raw_x - self.cali_offset_x
+        temp_y = self.raw_y - self.cali_offset_y
+        temp_z = self.raw_z - self.cali_offset_z
+        heading = math.atan2(temp_y, -temp_x) * (180 / 3.14159265) + 180
+        return heading
+
+    def _get_temperature(self):
         retry = 0
         if (retry < 5):
             try:
@@ -330,13 +439,9 @@ class Compass(object):
             except:
                 retry = retry + 1
         else:
-            raise Exception("i2c read/write error!")    
+            raise Exception("i2c read/write error!")   
 
-    def get_angle(self):
-        angle= math.atan2(self.get_y(), -(self.get_x())) * (180 / 3.14159265) + 180
-        return angle
-
-    def get_id(self):
+    def _get_id(self):
         retry = 0
         if (retry < 5):
             try:
@@ -350,6 +455,9 @@ class Compass(object):
         else:
             raise Exception("i2c read/write error!")    
 
+# Magnetic
+if 48 in i2c.scan():
+    magnetic = Magnetic()
 
 class BME280(object):
     def __init__(self):
@@ -450,6 +558,9 @@ class BME280(object):
         else:
             raise Exception("i2c read/write error!")
 
+# bm280
+if 119 in i2c.scan():
+    bme280 = BME280()
 
 class PinMode(object):
     IN = 1
@@ -602,23 +713,6 @@ class wifi:
         self.ap.active(False)
         print('disable AP WiFi...')
 
-
-
-# display
-if 60 in i2c.scan():
-    oled = OLED()
-    display = oled
-
-# 3 axis accelerometer
-accelerometer = Accelerometer()
-
-# compass
-if 48 in i2c.scan():
-    compass = Compass()
-
-# bm280
-if 119 in i2c.scan():
-    bme280 = BME280()
 
 # 3 rgb leds
 rgb = NeoPixel(Pin(17, Pin.OUT), 3, 3, 1, brightness=0.3)

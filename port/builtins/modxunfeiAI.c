@@ -47,6 +47,7 @@
 #include "url_codec.h"
 // #include "cJSON.h"
 #include "esp_websocket_client.h"
+#include "websocket_client.h"
 
 
 static const char *TAG = "xunfeiAI";
@@ -194,8 +195,7 @@ STATIC mp_obj_t xunfei_iat_init(size_t n_args, const mp_obj_t *pos_args, mp_map_
     free(date);
     free(p);
 
-    esp_websocket_client_config_t ws_client_cfg;
-    ws_client_handle = esp_websocket_client_init(&ws_client_cfg);
+    websocket_client_start(v);
 
     return mp_const_none;
 }
