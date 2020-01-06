@@ -1,7 +1,7 @@
 import usocket
 import time
 import os
-from urllib.parse import quote, urlencode
+from urllib.parse import quote
 
 
 class Response:
@@ -64,6 +64,7 @@ def request(method, url, data=None, json=None, headers={}, stream=None, params=N
   path = quote(path, safe='?,=,/,&')
   # if have params,urlencoded to URL
   if params:
+    from urllib.parse import urlencode
     path = path + "?"
     path = path + urlencode(params)
 
@@ -73,7 +74,7 @@ def request(method, url, data=None, json=None, headers={}, stream=None, params=N
   s.settimeout(5)
   s.connect(addr)
   if proto == "https:":
-    s = ussl.wrap_socket(s)
+    s = ussl.wrap_socket(s,do_handshake=False)
   _headers['Host'] = host
 
   if data is not None:
