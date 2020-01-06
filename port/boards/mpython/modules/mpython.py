@@ -393,8 +393,9 @@ class Magnetic(object):
         # print('cali_offset_y: ' + str(self.cali_offset_y))
 
         oled.fill(0)
-        oled.DispChar("校准完成。", 40,24,1)
+        oled.DispChar("校准完成", 40,24,1)
         oled.show()
+        oled.fill(0)
 
     def get_heading(self):
         self._get_raw()
