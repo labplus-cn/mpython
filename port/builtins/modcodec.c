@@ -127,7 +127,7 @@ STATIC mp_obj_t audio_record(size_t n_args, const mp_obj_t *pos_args, mp_map_t *
     enum { ARG_file_name, ARG_record_time};
     static const mp_arg_t allowed_args[] = {
         { MP_QSTR_file_name,    MP_ARG_REQUIRED | MP_ARG_OBJ },
-        { MP_QSTR_record_time,  MP_ARG_INT, {.u_int = 5} },
+        { MP_QSTR_record_time,  MP_ARG_INT, {.u_int = 4} },
     };
     // parse args
     mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];

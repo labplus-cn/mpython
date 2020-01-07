@@ -28,7 +28,8 @@
 
 #define TAG "audio_recorder"
 
-// #define REC_BUF_SIZE  (60*1024)
+#define REC_BLOCK_LEN (4096)
+#define REC_BLOCKS_PER_SECOND (4)
 
 static recorder_t *recorder_instance = NULL;
 extern HTTP_HEAD_VAL http_head[6];
@@ -93,7 +94,7 @@ void recorder_init()
     renderer_config.bit_depth  = I2S_BITS_PER_SAMPLE_16BIT; //I2S_BITS_PER_SAMPLE_8BIT; //I2S_BITS_PER_SAMPLE_16BIT;
     renderer_config.adc1_channel = ADC1_CHANNEL_2;
     renderer_config.channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT; //I2S_CHANNEL_FMT_ONLY_RIGHT I2S_CHANNEL_FMT_RIGHT_LEFT
-    renderer_config.sample_rate = 8000;
+    renderer_config.sample_rate = 8000; //8000;
     renderer_config.mode = I2S_MODE_RX;    
     renderer_config.use_apll = true; 
     // renderer_config.i2s_channal_nums = 1;                                         
@@ -107,7 +108,7 @@ void recorder_init()
 
 void recorder_record(const char *filename, int time)
 {
-    #define read_buff MP_STATE_PORT(record_buf)
+    // #define read_buff MP_STATE_PORT(record_buf)
     if (recorder_instance)
     {
         renderer_config_t *renderer = renderer_get();
@@ -116,12 +117,15 @@ void recorder_record(const char *filename, int time)
         mp_obj_t F = file_open(recorder_instance->file_name, "w");
         int write_bytes;
 
-        if ( time > 5)
+        if ( time > 4)
         {
             mp_warning(NULL, "Record time too long, will limit to 5s.");
-            time = 5;
+            time = 4;
         }
-        uint32_t data_len = renderer->sample_rate * (renderer->bit_depth / 8) * renderer->i2s_channal_nums * time;
+        // uint32_t data_len = renderer->sample_rate * (renderer->bit_depth / 8) * renderer->i2s_channal_nums * time;
+        uint8_t blocks = time * REC_BLOCKS_PER_SECOND;
+        uint32_t data_len = REC_BLOCK_LEN * blocks;
+        
         /* ESP_LOGE(TAG, "renderer info: samplerate:%d, bitdepth:%d,ch nums:%d, rec datasize:%d", renderer->sample_rate, renderer->bit_depth, \
                   renderer->i2s_channal_nums, data_len); */
 
@@ -133,19 +137,59 @@ void recorder_record(const char *filename, int time)
         file_write(F, &write_bytes, (uint8_t *)wav_header, sizeof(wav_header_t));
         free(wav_header);
 
-        read_buff = (uint8_t *)m_new(uint8_t, data_len);
-        if (!read_buff)
-            mp_raise_ValueError("Can not alloc enough memory to record.");
-        renderer_adc_enable();   
-        renderer_read_raw(read_buff, data_len);
-        // example_disp_buf((uint8_t*) read_buff, 64);
-        adc_data_scale( read_buff, data_len);
-        file_write(F, &write_bytes, read_buff, data_len);
+        uint8_t *read_buff[blocks];
+        for (int i = 0; i < blocks; i++){
+            read_buff[i] = (uint8_t *)m_new(uint8_t, REC_BLOCK_LEN);
+            if (!read_buff[i])
+                mp_raise_ValueError("Can not alloc enough memory to record.");
+        }
+
+        renderer_adc_enable(); 
+        for(int i = 0; i < blocks; i++){
+            renderer_read_raw(read_buff[i], REC_BLOCK_LEN);
+            // example_disp_buf((uint8_t*) read_buff[i], 64);
+            adc_data_scale( read_buff[i], REC_BLOCK_LEN);
+        }  
+        for(int i = 0; i < blocks; i++)
+            file_write(F, &write_bytes, read_buff[i], REC_BLOCK_LEN);
         file_close(F);
         renderer_adc_disable();
 
-        if(read_buff)
-            m_del(uint8_t, read_buff, data_len); 
+        for(int i = 0; i < blocks; i++)
+        {
+            if(read_buff[i])
+                m_del(uint8_t, read_buff[i], REC_BLOCK_LEN); 
+        }
+
+        // uint32_t data_len = renderer->sample_rate * (renderer->bit_depth / 8) * renderer->i2s_channal_nums * time;
+        // uint16_t read_buf_len = 1024*3;
+        // read_buff = (uint8_t *)m_new(uint8_t, read_buf_len); 
+        // if (!read_buff)
+        //     mp_raise_ValueError("Can not alloc enough memory to record.");
+        // // uint8_t *write_buff = calloc(renderer->i2s_read_buff_size, sizeof(uint8_t));
+        // wav_header_t *wav_header = calloc(1, sizeof(wav_header_t));
+        // if (!wav_header)
+        //     mp_raise_ValueError("Can not alloc enough memory to make wav head.");
+        // wav_head_init(wav_header, renderer->sample_rate, renderer->bit_depth, renderer->i2s_channal_nums, data_len);
+        // file_write(F, &write_bytes, (uint8_t *)wav_header, sizeof(wav_header_t));
+        // // ESP_LOGE(TAG, "i2s_read_buff_size: %d, datasize:%d", renderer->i2s_read_buff_size, 32 * recorder->recorde_time); //samplerate:16000 32byts/ms
+        // free(wav_header);
+        // int i = 0;
+        // uint16_t record_times = data_len / read_buf_len; //caculate record loops
+        // ESP_LOGE(TAG, "i2s_read times: %d", record_times); 
+        // renderer_adc_enable();    
+        // while(i < record_times)
+        // {
+        //     renderer_read_raw(read_buff, read_buf_len);
+        //     // example_disp_buf((uint8_t*) read_buff, 64);
+        //     adc_data_scale(read_buff, read_buf_len);
+        //     file_write(F, &write_bytes, read_buff, read_buf_len);
+        //     i++;
+        // }
+        // renderer_adc_disable();
+        // if(read_buff)
+        //     m_del(uint8_t, read_buff, data_len); 
+        // file_close(F);
     }
     else{
         mp_warning(NULL, "Please init recorder first.");

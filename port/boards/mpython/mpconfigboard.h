@@ -15,7 +15,6 @@
         struct _SubbandInfo  *sbi; \
         unsigned char *mp3DecReadBuf; \
         short *mp3DecOutBuf; \
-        uint8_t *record_buf;
 
 #define BOARD_PORT_BUILTIN_MODULES \
 

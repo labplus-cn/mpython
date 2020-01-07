@@ -69,11 +69,12 @@ static void init_i2s(renderer_config_t *config)
         .bits_per_sample = config->bit_depth,         //16bit default
         .channel_format = config->channel_format,     
         .communication_format = I2S_COMM_FORMAT_I2S_MSB,
-        .dma_buf_count = 4,                           //32 number of buffers, 128 max.
-        .dma_buf_len = 256,                          //64 size of each buffer
+        .dma_buf_count = 16,                           //16 32 number of buffers, 128 max.
+        .dma_buf_len = 64,                          //128 64 size of each buffer
         .use_apll = config->use_apll,
         .intr_alloc_flags =0 // ESP_INTR_FLAG_LEVEL1 // Interrupt level 1 ESP_INTR_FLAG_LEVEL0?
     };
+
 
     // i2s_driver_uninstall(I2S_USE_NUM);
     i2s_driver_install(I2S_USE_NUM, &i2s_config, 0, NULL);

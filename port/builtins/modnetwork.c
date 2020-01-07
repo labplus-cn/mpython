@@ -309,9 +309,9 @@ STATIC mp_obj_t esp_active(size_t n_args, const mp_obj_t *args) {
             ESP_EXCEPTIONS(esp_wifi_set_mode(mode));
             if (!wifi_started) {
                 ESP_EXCEPTIONS(esp_wifi_start());
-                ESP_EXCEPTIONS(esp_wifi_set_ps(WIFI_PS_NONE));
                 wifi_started = true;
             }
+            ESP_EXCEPTIONS(esp_wifi_set_ps(WIFI_PS_NONE));
         }
     }
 
@@ -362,6 +362,9 @@ STATIC mp_obj_t esp_connect(size_t n_args, const mp_obj_t *pos_args, mp_map_t *k
     ESP_EXCEPTIONS( esp_wifi_connect() );
     MP_THREAD_GIL_ENTER();
     wifi_sta_connect_requested = true;
+    wifi_ps_type_t wifi_ps;
+    esp_wifi_get_ps(&wifi_ps);
+    // mp_warning(NULL, "wifi ps type: %d", wifi_ps);
 
     return mp_const_none;
 }
