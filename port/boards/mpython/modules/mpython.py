@@ -13,9 +13,9 @@ from ssd1106 import SSD1106_I2C
 import esp, math, time, network
 import ustruct, array
 from neopixel import NeoPixel
-from esp import dht_readinto
+# from esp import dht_readinto
 from time import sleep_ms, sleep_us, sleep
-from framebuf import FrameBuffer
+import framebuf 
 import calibrate_img
 
 i2c = I2C(scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
@@ -131,6 +131,39 @@ class OLED(SSD1106_I2C):
                 x = x + width + 1
                 str_width += width + 1
             return (str_width-1,(x-1, y))
+
+    def DispChar_font(self, font, s, x, y, invert=False):
+        """
+        custom font display.Ref by , https://github.com/peterhinch/micropython-font-to-py
+        :param font:  use font_to_py.py script convert to `py` from `ttf` or `otf`.
+        """
+        screen_width = self.width
+        screen_height = self.height
+        text_row = x
+        text_col = y
+        text_length = 0
+        if font.hmap():
+            font_map = framebuf.MONO_HMSB if font.reverse() else framebuf.MONO_HLSB
+        else:
+            raise ValueError('Font must be horizontally mapped.')
+        for c in s:
+            glyph, char_height, char_width = font.get_ch(c)
+            buf = bytearray(glyph)
+            if invert:
+                for i, v in enumerate(buf):
+                    buf[i] = 0xFF & ~ v
+            fbc = framebuf.FrameBuffer(buf, char_width, char_height, font_map)
+            if text_row + char_width > screen_width - 1:
+                text_length += screen_width-text_row
+                text_row = 0
+                text_col += char_height
+            if text_col + char_height > screen_height + 2:
+                text_col = 0
+
+            super().blit(fbc, text_row, text_col)
+            text_row = text_row + char_width+1
+            text_length += char_width+1
+        return (text_length-1, (text_row-1, text_col))
 
 # display
 if 60 in i2c.scan():
