@@ -402,6 +402,39 @@ CODEC_SRC_C = $(addprefix drivers/codec/,\
 	decoder/helix_mp3_decoder.c \
 	)
 
+# mpu6050驱动
+# mpu6050 driver
+INC += -I drivers/mpu6050/driver/include
+INC += -I drivers/mpu6050/driver/eMPL
+INC += -I drivers/mpu6050/driver/esp32
+INC += -I drivers/mpu6050/eMPL-hal
+INC += -I drivers/mpu6050/mpl
+INC += -I drivers/mpu6050/mllite
+DRIVERS_SRC_C += $(addprefix drivers/,\
+	mpu6050/driver/eMPL/inv_mpu_dmp_motion_driver.c \
+	mpu6050/driver/eMPL/inv_mpu.c \
+	mpu6050/driver/esp32/log_esp32.c \
+	mpu6050/eMPL-hal/eMPL_outputs.c \
+	mpu6050/mllite/data_builder.c \
+	mpu6050/mllite/hal_outputs.c \
+	mpu6050/mllite/message_layer.c \
+	mpu6050/mllite/ml_math_func.c \
+	mpu6050/mllite/mlmath.c \
+	mpu6050/mllite/mpl.c \
+	mpu6050/mllite/results_holder.c \
+	mpu6050/mllite/start_manager.c \
+	mpu6050/mllite/storage_manager.c \
+	)	
+
+# 5x5 RGB点阵图形库
+# 5x5 RGB matrix graphic lib
+INC += -Idrivers/rgbLED5x5
+DRIVERS_SRC_C += $(addprefix drivers/,\
+	rgbLED5x5/constimage.c \
+	rgbLED5x5/image.c \
+	rgbLED5x5/rgb_display.c \
+	)	
+
 # rfid driver
 INC += -Idrivers/rfid
 DRIVERS_SRC_C += $(addprefix drivers/,\
@@ -420,6 +453,8 @@ BUILTIN_C ?= $(addprefix builtins/, \
 	modxunfeiAI.c \
 	modframebuf.c \
 	modcodec.c \
+	modmotion.c \
+	modrgbLED5x5.c \
 	modrfid.c \
 	)
 
@@ -447,6 +482,11 @@ OBJ_MP += $(addprefix $(BUILD)/, $(DRIVERS_SRC_C:.c=.o))
 
 OBJ_MP += $(addprefix $(BUILD)/, $(STARTUP_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(CODEC_SRC_C:.c=.o))
+
+# 去除编译mpu6050官方库时一些警告信息
+# add compile flags to disable some warnings.
+$(BUILD)/drivers/mpu6050/%.o: CFLAGS += -Wno-unused-but-set-variable -Wno-unused-local-typedefs
+
 
 # List of sources for qstr extraction
 SRC_QSTR += $(SRC_C) $(EXTMOD_SRC_C) $(LIB_SRC_C) $(DRIVERS_SRC_C) $(CODEC_SRC_C)
@@ -520,7 +560,7 @@ ifeq ($(ESPIDF_CURHASH),$(ESPIDF_SUPHASH_V4))
 CFLAGS_ASM = -I$(BUILD) -I$(ESPCOMP)/esp32/include -I$(ESPCOMP)/soc/esp32/include -I$(ESPCOMP)/freertos/include/freertos -I. -I$(ESPCOMP)/xtensa/include -I$(ESPCOMP)/xtensa/esp32/include -I$(ESPCOMP)/esp_common/include
 else
 CFLAGS_ASM = -I$(BUILD) -I$(ESPCOMP)/esp32/include -I$(ESPCOMP)/soc/esp32/include -I$(ESPCOMP)/freertos/include/freertos -I.
-endif#################BUILD######
+endif
 $(BUILD)/$(ESPCOMP)/freertos/portasm.o: CFLAGS = $(CFLAGS_ASM)
 $(BUILD)/$(ESPCOMP)/freertos/xtensa_context.o: CFLAGS = $(CFLAGS_ASM)
 $(BUILD)/$(ESPCOMP)/freertos/xtensa_intr_asm.o: CFLAGS = $(CFLAGS_ASM)
