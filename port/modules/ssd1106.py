@@ -82,9 +82,9 @@ class SSD1106(framebuf.FrameBuffer):
 
     def show(self):
         for i in range(0, 8):
-            self.write_cmd(SET_PAGE_ADDR1 + i);
-            self.write_cmd(SET_COL_ADDR_L + 0);     # offset 2 pixels for 128x64 panel
-            self.write_cmd(SET_COL_ADDR_H + 0);
+            self.write_cmd(SET_PAGE_ADDR1 + i)
+            self.write_cmd(SET_COL_ADDR_L + 0)     # offset 2 pixels for 128x64 panel
+            self.write_cmd(SET_COL_ADDR_H + 0)
             self.write_data(self.buffer[i*128:(i+1)*128])   # send one page display data
 
 
@@ -102,12 +102,14 @@ class SSD1106_I2C(SSD1106):
         self.i2c.writeto(self.addr, self.temp)
 
     def write_data(self, buf):
-        self.temp[0] = self.addr << 1
-        self.temp[1] = 0x40 # Co=0, D/C#=1
-        self.i2c.start()
-        self.i2c.write(self.temp)
-        self.i2c.write(buf)
-        self.i2c.stop()
+        # self.temp[0] = self.addr << 1
+        # self.temp[1] = 0x40 # Co=0, D/C#=1
+        # self.i2c.start()
+        # self.i2c.write(self.temp)
+        # self.i2c.write(buf)
+        # self.i2c.stop()
+        tmp = bytearray([0x40]) # Co=0, D/C#=1
+        self.i2c.writeto(self.addr, tmp+buf)
 
 
 class SSD1106_SPI(SSD1106):
