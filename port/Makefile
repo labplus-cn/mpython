@@ -293,7 +293,7 @@ endif
 LIBC_LIBM = $(ESPCOMP)/newlib/lib/libc.a $(ESPCOMP)/newlib/lib/libm.a
 endif
 
-################################################################################
+#################BUILD###############################################################
 # List of MicroPython source and object files
 
 SRC_C = \
@@ -375,8 +375,7 @@ STARTUP_SRC_C = $(addprefix drivers/startup/, \
 INC += -Idrivers/codec/codec_lib/helix/include
 INC += -Idrivers/codec/decoder/include
 INC += -Idrivers/codec/include
-CFLAGS += -DARM -DCONFIG_AUDIO_HELIX 
-CFLAGS += -Wno-unused-but-set-variable
+CFLAGS += -DARM -DCONFIG_AUDIO_HELIX
 CODEC_SRC_C = $(addprefix drivers/codec/,\
 	audio_player.c \
 	url_codec.c \
@@ -402,6 +401,12 @@ CODEC_SRC_C = $(addprefix drivers/codec/,\
 	codec_lib/helix/src/trigtabs.c \
 	decoder/helix_mp3_decoder.c \
 	)
+
+# rfid driver
+INC += -Idrivers/rfid
+DRIVERS_SRC_C += $(addprefix drivers/,\
+	rfid/mfrc522.c \
+	)
 # mpython builtin modules
 INC += -Ibuiltins
 BUILTIN_C ?= $(addprefix builtins/, \
@@ -415,6 +420,7 @@ BUILTIN_C ?= $(addprefix builtins/, \
 	modxunfeiAI.c \
 	modframebuf.c \
 	modcodec.c \
+	modrfid.c \
 	)
 
 # mpython project builtin modules source files 
@@ -514,7 +520,7 @@ ifeq ($(ESPIDF_CURHASH),$(ESPIDF_SUPHASH_V4))
 CFLAGS_ASM = -I$(BUILD) -I$(ESPCOMP)/esp32/include -I$(ESPCOMP)/soc/esp32/include -I$(ESPCOMP)/freertos/include/freertos -I. -I$(ESPCOMP)/xtensa/include -I$(ESPCOMP)/xtensa/esp32/include -I$(ESPCOMP)/esp_common/include
 else
 CFLAGS_ASM = -I$(BUILD) -I$(ESPCOMP)/esp32/include -I$(ESPCOMP)/soc/esp32/include -I$(ESPCOMP)/freertos/include/freertos -I.
-endif
+endif#################BUILD######
 $(BUILD)/$(ESPCOMP)/freertos/portasm.o: CFLAGS = $(CFLAGS_ASM)
 $(BUILD)/$(ESPCOMP)/freertos/xtensa_context.o: CFLAGS = $(CFLAGS_ASM)
 $(BUILD)/$(ESPCOMP)/freertos/xtensa_intr_asm.o: CFLAGS = $(CFLAGS_ASM)
