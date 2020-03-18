@@ -18,7 +18,7 @@ from time import sleep_ms, sleep_us, sleep
 import framebuf 
 import calibrate_img
 
-i2c = I2C(0，scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
+i2c = I2C(0, scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
 
 
 class Font(object):
