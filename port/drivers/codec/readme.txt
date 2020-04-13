@@ -420,3 +420,22 @@ github分支提交
 	|--audio_recorder.c
 2019.06.22
 test
+
+2020.04.13
+调整codec模块
+1、升级到IDF4及新的项目框架后，需处理不同项目可能使用内置ADC/DAC外置CODEC解码芯片
+改动：
+1、audio_renderer.c
+   修改init_i2s()：
+     communication_format内置和外置的配置是不一样的。
+	 内、外置的引脚，ADC/DAC配置不一样。
+
+2、audio_recorder.c
+	采样率调整为8000，减少数据量。
+	内置需enable dac。
+	内置需对采样数据做处理。
+
+3、 local_play.c
+    内置DAC需把音频数据转为正数，且加入音量处理。
+
+4、

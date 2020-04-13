@@ -25,6 +25,7 @@
 #include "driver/i2s.h"
 
 #define TAG "helix_decoder"
+#include "mpconfigboard.h"
 
 #define MAINBUF_SIZE1 2880 //2880 //1940
 #define OUTP_SIZE (1152 * 4)
@@ -184,6 +185,7 @@ static void mp3_decode(mp3_decode_t *decoder)
                 //     decoder->mp3FrameInfo.bitrate, decoder->mp3FrameInfo.layer, decoder->mp3FrameInfo.nChans, 
                 //     decoder->mp3FrameInfo.samprate, decoder->mp3FrameInfo.outputSamps);
             }
+            #if MICROPY_BUILDIN_DAC //内置DAC需转正数，加上间量处理
             for (int i = 0; i < decoder->mp3FrameInfo.outputSamps; ++i)
             {
                 // output[i] = (short)((output[i]*255.0/65535) * player->volume); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
@@ -193,6 +195,7 @@ static void mp3_decode(mp3_decode_t *decoder)
                 output[i] &= 0xff00;
                 //ESP_LOGI(TAG, "%d", output[i]);
             }
+            #endif
 
             uint16_t bytesWritten;
             renderer_write((unsigned char *)output, decoder->mp3FrameInfo.outputSamps * 2, (size_t *)(&bytesWritten), 1000 / portTICK_RATE_MS);

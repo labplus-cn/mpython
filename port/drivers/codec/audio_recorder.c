@@ -25,6 +25,7 @@
 #include "driver/adc.h"
 #include "local_play.h"
 #include "wav_head.h"
+#include "mpconfigboard.h"
 
 #define TAG "audio_recorder"
 
@@ -94,16 +95,13 @@ void recorder_init()
     renderer_config.bit_depth  = I2S_BITS_PER_SAMPLE_16BIT; //I2S_BITS_PER_SAMPLE_8BIT; //I2S_BITS_PER_SAMPLE_16BIT;
     renderer_config.adc1_channel = ADC1_CHANNEL_2;
     renderer_config.channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT; //I2S_CHANNEL_FMT_ONLY_RIGHT I2S_CHANNEL_FMT_RIGHT_LEFT
-    renderer_config.sample_rate = 8000; //8000;
+     renderer_config.sample_rate = 8000;
     renderer_config.mode = I2S_MODE_RX;    
     renderer_config.use_apll = true; 
     // renderer_config.i2s_channal_nums = 1;                                         
     renderer_init(&renderer_config); 
     renderer_start();
-    // ESP_LOGE(TAG, "Create renderer, RAM left: %d", esp_get_free_heap_size());
-    // /* 3. Create http param handle.*/
-    // http_param_t *http_param = calloc(1, sizeof(http_param_t));
-    // init_http_param_handle(http_param);  
+    // ESP_LOGE(TAG, "Create renderer, RAM left: %d", esp_get_free_heap_size()); 
 }
 
 void recorder_record(const char *filename, int time)
@@ -144,16 +142,22 @@ void recorder_record(const char *filename, int time)
                 mp_raise_ValueError("Can not alloc enough memory to record.");
         }
 
-        renderer_adc_enable(); 
+        #if MICROPY_BUILDIN_ADC
+        renderer_adc_enable();
+        #endif 
         for(int i = 0; i < blocks; i++){
             renderer_read_raw(read_buff[i], REC_BLOCK_LEN);
             // example_disp_buf((uint8_t*) read_buff[i], 64);
+            #if MICROPY_BUILDIN_ADC
             adc_data_scale( read_buff[i], REC_BLOCK_LEN);
+            #endif
         }  
         for(int i = 0; i < blocks; i++)
             file_write(F, &write_bytes, read_buff[i], REC_BLOCK_LEN);
         file_close(F);
+        #if MICROPY_BUILDIN_ADC
         renderer_adc_disable();
+        #endif
 
         for(int i = 0; i < blocks; i++)
         {
@@ -210,17 +214,7 @@ uint32_t recorder_loudness()
 
     i2s_adc_data_scale1(d_buff, read_buff, len);
     audio_recorder_quicksort(d_buff, len/2, 0, len/2 - 1);
-    // for(int i = 0; i < len/2; i++)
-    //     printf("%d\n", d_buff[i]);
-    // int i;
-    // uint32_t sum1 = 0;
-    // uint32_t sum2 = 0;
-    // for(i = 0; i < 10; i++){
-    //     sum1 += d_buff[i+1];
-    //     sum2 += d_buff[len/2 - 2 - i];
-    // }
 
-    // uint32_t sum = (sum2 -sum1)/10;
     uint32_t sum = d_buff[len/2-2] - d_buff[1];
     free(read_buff);
     free(d_buff);

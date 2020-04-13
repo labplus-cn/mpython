@@ -25,9 +25,9 @@
 #define TAG "renderer"
 
 #define I2S_USE_NUM I2S_NUM_0
-#define USE_I2S_FORMAT        I2S_CHANNEL_FMT_ONLY_RIGHT //(I2S_CHANNEL_FMT_RIGHT_LEFT)
-//I2S channel number
-#define USE_I2S_CHANNEL_NUM   ((USE_I2S_FORMAT < I2S_CHANNEL_FMT_ONLY_RIGHT) ? (2) : (1))
+// #define USE_I2S_FORMAT        I2S_CHANNEL_FMT_ONLY_RIGHT //(I2S_CHANNEL_FMT_RIGHT_LEFT)
+// //I2S channel number
+// #define USE_I2S_CHANNEL_NUM   ((USE_I2S_FORMAT < I2S_CHANNEL_FMT_ONLY_RIGHT) ? (2) : (1))
 
 renderer_config_t *renderer_instance = NULL;
 // static QueueHandle_t i2s_event_queue;
@@ -67,8 +67,12 @@ static void init_i2s(renderer_config_t *config)
         .mode = mode,                                 // I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_DAC_BUILT_IN,
         .sample_rate = config->sample_rate,           //16000 default
         .bits_per_sample = config->bit_depth,         //16bit default
-        .channel_format = config->channel_format,     
+        .channel_format = config->channel_format,   
+        #if MICROPY_BUILDIN_DAC || MICROPY_BUILDIN_ADC
         .communication_format = I2S_COMM_FORMAT_I2S_MSB,
+        #else          
+        .communication_format = I2S_COMM_FORMAT_I2S,
+        #endif
         .dma_buf_count = 16,                           //16 32 number of buffers, 128 max.
         .dma_buf_len = 64,                          //128 64 size of each buffer
         .use_apll = config->use_apll,
@@ -84,8 +88,8 @@ static void init_i2s(renderer_config_t *config)
     {
         #if MICROPY_BUILDIN_DAC
         i2s_set_dac_mode(I2S_DAC_CHANNEL_BOTH_EN);
-        // #else
-        // i2s_set_pin(I2S_USE_NUM, NULL);
+        #else
+        i2s_set_clk(I2S_USE_NUM, config->sample_rate, config->bit_depth, config->i2s_channal_nums);
         #endif
         i2s_zero_dma_buffer(0);
     }
@@ -93,10 +97,20 @@ static void init_i2s(renderer_config_t *config)
     {
         #if MICROPY_BUILDIN_ADC
         i2s_set_adc_mode(ADC_UNIT_1, ADC1_CHANNEL_2); //renderer_instance->adc1_channel );
-        // #else
-        // i2s_set_pin(I2S_USE_NUM, NULL);
         #endif
     }
+
+    #if !MICROPY_BUILDIN_DAC || !MICROPY_BUILDIN_ADC
+    i2s_pin_config_t i2s_pin_cfg;
+    i2s_pin_cfg.bck_io_num = GPIO_NUM_18; //5;
+    i2s_pin_cfg.ws_io_num = GPIO_NUM_5; //25;
+    i2s_pin_cfg.data_out_num = GPIO_NUM_32; //26;
+    i2s_pin_cfg.data_in_num = GPIO_NUM_35; //35;
+    i2s_set_pin(I2S_USE_NUM, &i2s_pin_cfg);
+    // i2s_mclk_gpio_select(config->i2s_num, GPIO_NUM_0);
+    PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);
+    WRITE_PERI_REG(PIN_CTRL, 0xFFF0);
+    #endif
 
     // i2s_stop(I2S_USE_NUM);
     // ESP_LOGE(TAG, "1.1 Create after i2s driver install: RAM left 1 %d", esp_get_free_heap_size());

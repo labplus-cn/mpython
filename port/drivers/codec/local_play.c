@@ -28,6 +28,7 @@
 #include "wav_head.h"
 
 #include "local_play.h"
+#include "mpconfigboard.h"
 
 #define BODY_READ_LEN 64
 #define READ_BUFF_LEN 2048
@@ -205,6 +206,7 @@ void local_play(void *pvParameters)
             {
                 flag = file_read(file, &read_bytes, read_buff, READ_BUFF_LEN);
                 memcpy((uint8_t *)output, read_buff, read_bytes);
+                #if MICROPY_BUILDIN_DAC //使用内建DAC，要把数据转为正数，音量调节只能用软件方法
                 for (int i = 0; i < read_bytes/2; i++)
                 {
                     // output[i] = (short)((output[i]*255.0/65535) * player->volume); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
@@ -212,8 +214,9 @@ void local_play(void *pvParameters)
                     // // output[i] = ((output[i] >> 8) + 128) * player->volume;
                     // // printf("%d", output[i]);
                     output[i] = (short)((output[i] + 32768) * player->volume);  //内置DAC需处理正数
-                    output[i] &= 0xff00;
+                    output[i] &= 0xff00; //只处理高8位
                 }
+                #endif 
 
                 renderer_write(output, read_bytes, &write_bytes, 1000 / portTICK_RATE_MS); //portMAX_DELAY
                 if(flag == -1)
