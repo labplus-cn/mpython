@@ -244,7 +244,7 @@ esp_err_t es8388_deinit(void)
 esp_err_t es8388_init(audio_hal_codec_config_t cfg)
 {
     int res = 0;
-es8388_set_voice_mute(1);
+    es8388_set_voice_mute(1);
     // res |= es_write_reg(ES8388_DACCONTROL3, 0x04);  // 0x04 mute/0x00 unmute&ramp;DAC unmute and  disabled digital volume control soft ramp
     /* Chip Control and Power Management */
     res |= es_write_reg(ES8388_CONTROL2, 0x40);  //?  0x50 !!!
@@ -272,7 +272,7 @@ es8388_set_voice_mute(1);
     } else {
         tmp = DAC_OUTPUT_LOUT1 | DAC_OUTPUT_LOUT2 | DAC_OUTPUT_ROUT1 | DAC_OUTPUT_ROUT2;
     }
-    res |= es_write_reg(ES8388_DACPOWER, 0x3c); //tmp);  //0x3c Enable DAC and Enable Lout/Rout/1/2
+    res |= es_write_reg(ES8388_DACPOWER, tmp); //0x3c);  //0x3c Enable DAC and Enable Lout/Rout/1/2
 
     /* adc */
     res |= es_write_reg(ES8388_ADCPOWER, 0xFF);
@@ -292,10 +292,10 @@ es8388_set_voice_mute(1);
     //ALC for Microphone
     res |= es8388_set_adc_dac_volume(ES_MODULE_ADC, 0, 0);      // 0db
     res |= es_write_reg(ES8388_ADCPOWER, 0x00); //Power on ADC, Enable LIN&RIN, Power off MICBIAS, set int1lp to low power mode
-    es8388_set_voice_volume(65);
+    es8388_set_voice_volume(50);
     es8388_set_voice_mute(0);
-    ESP_LOGE(ES_TAG, "init,out:%02x, in:%02x", cfg.dac_output, cfg.adc_input);
-    es8388_read_all();
+    // ESP_LOGE(ES_TAG, "init,out:%02x, in:%02x", cfg.dac_output, cfg.adc_input);
+    // es8388_read_all();
     return res;
 }
 

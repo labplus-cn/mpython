@@ -435,7 +435,11 @@ test
 	内置需enable dac。
 	内置需对采样数据做处理。
 
-3、 local_play.c
+3、 local_play.c helix_mp3_decoder.c
     内置DAC需把音频数据转为正数，且加入音量处理。
 
-4、
+2020.04.13
+es8388驱动以c代码实现，解音量控制问题。
+1、修改makefile加入对es8388.c/h编译。
+2、修改modcodec.c，加入es8388 init/deinit
+3、mpython-classroom-kit下面的的mpython.py注释掉es8388 python驱动实例化。

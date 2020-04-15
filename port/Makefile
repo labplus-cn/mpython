@@ -374,6 +374,7 @@ STARTUP_SRC_C = $(addprefix drivers/startup/, \
 # 音频功能模块
 INC += -Idrivers/codec/codec_lib/helix/include
 INC += -Idrivers/codec/decoder/include
+INC += -Idrivers/codec/es8388
 INC += -Idrivers/codec/include
 CFLAGS += -DARM -DCONFIG_AUDIO_HELIX
 CODEC_SRC_C = $(addprefix drivers/codec/,\
@@ -400,6 +401,7 @@ CODEC_SRC_C = $(addprefix drivers/codec/,\
 	codec_lib/helix/src/subband.c \
 	codec_lib/helix/src/trigtabs.c \
 	decoder/helix_mp3_decoder.c \
+	es8388/es8388.c \
 	)
 
 # mpu6050驱动

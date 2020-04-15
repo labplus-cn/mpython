@@ -22,7 +22,7 @@ from mpython_classroom_kit_driver import BS8112A,Es8388
 i2c = I2C(0, scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
 
 bs8112a = BS8112A(i2c)
-es8388 = Es8388(i2c)
+# es8388 = Es8388(i2c)
 
 
 class Font(object):

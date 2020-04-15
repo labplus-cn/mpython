@@ -39,16 +39,32 @@
 #include "modcodec.h"
 #include "audio_recorder.h"
 #include "local_play.h"
+#include "es8388.h"
 
 static const char *TAG = "audio";
 
 /* ---------------player ------------------------*/
-STATIC mp_obj_t audio_player_init(void)
+STATIC mp_obj_t audio_player_init(size_t n_args, const mp_obj_t *args)
 {
+    assert(0 <= n_args);
+
+    #if !MICROPY_BUILDIN_DAC
+    if (n_args == 1)
+    {
+        if(!es_i2c_obj){
+            es_i2c_obj = (mp_obj_base_t *)args[0];
+            audio_hal_codec_config_t cfg = AUDIO_CODEC_DEFAULT_CONFIG();
+            es8388_init(cfg);
+        }
+    }
+    else
+        mp_raise_ValueError("Need a i2c object param.");  
+    #endif
+
     player_init();
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(audio_player_init_obj, audio_player_init);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(audio_player_init_obj, 0, 1, audio_player_init);
 
 STATIC mp_obj_t audio_player_deinit(void)
 {
@@ -91,7 +107,11 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_0(audio_pause_obj, audio_pause);
 STATIC mp_obj_t audio_volume(mp_obj_t Volume)
 {
     mp_int_t vol =  mp_obj_get_int(Volume);
+    #if MICROPY_BUILDIN_DAC 
     player_set_volume(vol);
+    #else
+    es8388_set_voice_volume(vol);
+    #endif
     return mp_const_none;   
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(audio_volume_obj, audio_volume);
@@ -108,12 +128,27 @@ STATIC mp_obj_t audio_get_status(void)
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(audio_get_status_obj, audio_get_status);
 
 /* ------------------------recorder--------------------------*/
-STATIC mp_obj_t audio_recorder_init(void)
+STATIC mp_obj_t audio_recorder_init(size_t n_args, const mp_obj_t *args)
 {
+    assert(0 <= n_args);
+
+    #if !MICROPY_BUILDIN_DAC
+    if (n_args == 1)
+    {
+        if(!es_i2c_obj){
+            es_i2c_obj = (mp_obj_base_t *)args[0];
+            audio_hal_codec_config_t cfg = AUDIO_CODEC_DEFAULT_CONFIG();
+            es8388_init(cfg);
+        }
+    }
+    else
+        mp_raise_ValueError("Need a i2c object param.");  
+    #endif
+    
     recorder_init();
     return mp_const_none; 
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(audio_recorder_init_obj, audio_recorder_init);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(audio_recorder_init_obj, 0, 1, audio_recorder_init);
 
 STATIC mp_obj_t audio_loudness(void)
 {
