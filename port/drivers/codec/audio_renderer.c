@@ -118,7 +118,10 @@ static void init_i2s(renderer_config_t *config)
 
 void renderer_zero_dma_buffer()
 {
-    i2s_zero_dma_buffer(I2S_USE_NUM);
+    if(renderer_instance != NULL)
+    {
+        i2s_zero_dma_buffer(I2S_USE_NUM);
+    }
 }
 
 renderer_config_t *renderer_get()
@@ -147,15 +150,21 @@ void renderer_init(renderer_config_t *config)
 
 void renderer_start()
 {
-    i2s_start(I2S_USE_NUM);
-    // buffer might contain noise
-    i2s_zero_dma_buffer(I2S_USE_NUM);
+    if(renderer_instance != NULL)
+    {
+        i2s_start(I2S_USE_NUM);
+        // buffer might contain noise
+        i2s_zero_dma_buffer(I2S_USE_NUM);
+    }
 }
 
 void renderer_stop()
 {
-    i2s_stop(I2S_USE_NUM);
-    i2s_zero_dma_buffer(I2S_USE_NUM);
+    if(renderer_instance != NULL)
+    {
+        i2s_stop(I2S_USE_NUM);
+        i2s_zero_dma_buffer(I2S_USE_NUM);
+    }
 }
 
 void renderer_deinit()
@@ -171,17 +180,26 @@ void renderer_deinit()
 
 void renderer_adc_enable()
 {
-    i2s_adc_enable(I2S_USE_NUM);
+    if(renderer_instance != NULL)
+    {
+        i2s_adc_enable(I2S_USE_NUM);
+    }
 }
 
 void renderer_adc_disable()
 {
-    i2s_adc_disable(I2S_USE_NUM);
+    if(renderer_instance != NULL)
+    {
+        i2s_adc_disable(I2S_USE_NUM);
+    }
 }
 
 void renderer_set_clk(uint32_t rate, i2s_bits_per_sample_t bits, i2s_channel_t ch)
 {
-    i2s_set_clk(I2S_USE_NUM, rate, bits, ch);
+    if(renderer_instance != NULL)
+    {
+        i2s_set_clk(I2S_USE_NUM, rate, bits, ch);
+    }
 }
 
 void renderer_read_raw(uint8_t *buff, uint32_t len)

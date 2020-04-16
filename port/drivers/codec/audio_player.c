@@ -78,9 +78,12 @@ void player_init(void)
 
 void player_deinit(void)
 {
+    vTaskDelay(100 / portTICK_PERIOD_MS);
     if(player_instance){
-        if(player_instance->player_status != INITIALIZED || player_instance->player_status != UNINITIALIZED)
+        if((player_instance->player_status == RUNNING) || (player_instance->player_status == PAUSED))
+        {
             player_stop();
+        }
 
         if (player_instance->buf_handle)
             vRingbufferDelete(player_instance->buf_handle);
@@ -102,15 +105,11 @@ void player_deinit(void)
         {
             free((char *)http_head[1].value);
             http_head[1].value = NULL;
-        } 
-        if(xEventGroup)
-        {
-            vEventGroupDelete(xEventGroup);
         }        
         // ESP_LOGE(TAG, "RAM left %d", esp_get_free_heap_size());
     }
     else{
-        mp_warning(NULL, "Player is in playing status, can't release.");
+        mp_warning(NULL, "No player.");
     }
 }
 
@@ -189,25 +188,21 @@ void player_stop()
 {
     EventBits_t uxBits;
     if(player_instance)
-    {
-        if( player_instance->player_status == RUNNING ||  player_instance->player_status == PAUSED){
-            renderer_stop();
-            player_instance->player_status = STOPPED;
+    { 
+        renderer_stop();
+        player_instance->player_status = STOPPED;
 
-            while(1) //等待任务结束
-            {
-                uxBits = xEventGroupWaitBits(
-                            xEventGroup,    // The event group being tested.
-                            BIT_0 | BIT_1,  // The bits within the event group to wait for.
-                            pdTRUE,         // BIT_0 and BIT_4 should be cleared before returning.
-                            pdTRUE,         // wait for both bits, either bit will do.
-                            100 / portTICK_PERIOD_MS ); // Wait a maximum of 100ms for either bit to be set.
-                if( ( uxBits & ( BIT_0 | BIT_1 ) ) == ( BIT_0 | BIT_1 ) )
-                {
-                    break;
-                }
-                vTaskDelay(10 / portTICK_PERIOD_MS);
-            }
+        //等待播放任务结束
+        uxBits = xEventGroupWaitBits(
+                    xEventGroup,    // The event group being tested.
+                    BIT_0 | BIT_1,  // The bits within the event group to wait for.
+                    pdTRUE,         // BIT_0 and BIT_4 should be cleared before returning.
+                    pdTRUE,         // wait for both bits, either bit will do.
+                    portMAX_DELAY ); // Wait a maximum of 100ms for either bit to be set.
+
+        if( ( uxBits & BIT_1) !=  BIT_1 )
+        {
+            mp_warning(NULL, "Cant not stop player.");
         }
     }
     else
