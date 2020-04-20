@@ -1,10 +1,10 @@
-# mPython掌控板
+# mPython Board
 
-欢迎您，使用掌控板！
+Welcome to use mPython Board！
 
-掌控板是创客教育专家委员会、猫友汇、广大一线老师共同提出需求并与创客教育行业优秀企业代表共同参与研发的教具、学具，是一块为教育而生的开源硬件，也是一个公益项目。
+mPython Board is an open-source educational tool for students to enhance their programming learning experience. The devlopment was educational centric with participation and input from STEAM/ICT Educators, also expertise contribution from STEAM (MAKER) Education Industrial. 
 
-mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双核芯片，使用当下最流行的Python编程语言，以便您轻松地将代码从桌面传输到微控制器或嵌入式系统。
+mPython is a microcontroller board, It integrates the esp32 high-performance dual core chip and utilize the MOST USED Python Programming, easily to transfer Code from PC to the microcontroller or embedded system.
 
 ![](https://github.com/labplus-cn/mPython/blob/master/docs/images/掌控-立1.png)  
 
