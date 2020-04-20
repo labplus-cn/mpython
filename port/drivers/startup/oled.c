@@ -65,8 +65,8 @@ void oled_deinit()
 }
 
 void oled_drawPixel(int16_t x, int16_t y, int16_t color) {
-  if ((x < 0) || (x >= OLED_WIDTH) || (y < 0) || (y >= OLED_HEIGHT))
-    return;
+    if ((x < 0) || (x >= OLED_WIDTH) || (y < 0) || (y >= OLED_HEIGHT))
+        return;
     // x is which column
     switch (color) 
     {
@@ -89,13 +89,10 @@ void oled_drawImg(const uint8_t * img)
         oled_vram[i] = img[i];
     }
 }
-const uint8_t * ani_startup[25] = {
-    img_00001, img_00002, img_00003, img_00004, img_00005,
-    img_00006, img_00007, img_00008, img_00009, img_00010,
-    img_00011, img_00012, img_00013, img_00014, img_00015,
-    img_00016, img_00017, img_00018, img_00019, img_00020,
-    img_00021, img_00022, img_00023, img_00024, img_00030,
-};
+
+// const uint8_t * ani_startup[1] = {
+//     img_00030
+// };
 
 void oled_drawAnimation(const uint8_t **pImgs, int len, int frameRate)
 {
