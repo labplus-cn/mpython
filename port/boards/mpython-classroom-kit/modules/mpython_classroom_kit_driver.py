@@ -326,6 +326,9 @@ class K210():
          resp = 340
       return resp
 
+   def set_cam_led(self, on_off):
+      return self.send_cmd({'SET_CAM_LED': on_off})
+
    def set_motor(self, speed):
       return self.send_cmd({'SET_MOTOR': speed})
 

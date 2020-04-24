@@ -73,12 +73,10 @@ int vprintf_null(const char *format, va_list ap) {
 
 volatile uint32_t ticker_ticks_ms = 0;
 extern void mpython_music_tick(void);
-extern void mpython_display_tick(void);
 static void timer_1ms_ticker(void *args)
 {
     ticker_ticks_ms += 1;
     mpython_music_tick();
-    mpython_display_tick();
 }
 
 void mpython_display_exception(mp_obj_t exc_in)
@@ -164,7 +162,7 @@ void mp_task(void *pvParameter) {
 soft_reset:
     // startup
     oled_init();
-    oled_drawImg(ani_startup[24]);
+    oled_drawImg(img_00030);
     //oled_drawAnimation(ani_startup, 25, 50);
     //oled_clear();
     oled_show();
