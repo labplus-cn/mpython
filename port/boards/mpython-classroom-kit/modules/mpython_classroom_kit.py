@@ -152,6 +152,9 @@ class Camera(object):
     def reset(self):
         k210.camera_reset()
 
+    def set_cam_led(self, on_off):
+        k210.set_cam_led(on_off)
+
     def run(self,*arg):
         k210.camera_run(*arg)
 
