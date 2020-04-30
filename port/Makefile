@@ -368,7 +368,6 @@ INC += -Idrivers/startup
 STARTUP_SRC_C = $(addprefix drivers/startup/, \
 	oled.c \
 	i2c_master.c \
-	panic.c \
 	startup.c \
 	)
 # 音频功能模块

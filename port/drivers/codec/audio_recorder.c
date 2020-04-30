@@ -61,20 +61,18 @@ inline void adc_data_scale( uint8_t* s_buff, uint32_t len)
 }
 
 
-static void i2s_adc_data_scale1(uint16_t * d_buff, uint8_t* s_buff, uint32_t len)
+static void i2s_adc_data_scale1(int16_t * d_buff, uint8_t* s_buff, uint32_t len)
 {
     uint32_t j = 0;
-    uint16_t adc_val;
     renderer_config_t *renderer = renderer_get();
 
     if(renderer->bit_depth == I2S_BITS_PER_SAMPLE_16BIT) 
     {
-        // memcpy(d_buff, s_buff, len);
-        for (int i = 0; i < len; i += 2) {
-            adc_val = ((((uint16_t) (s_buff[i + 1] & 0xf) << 8) | ((s_buff[i + 0]))));
-            // adc_val = (adc_val - 2048 - 300) << 2; 
-            d_buff[j++] = adc_val;
-            // printf("%d", adc_val);
+        memcpy((uint8_t *)d_buff, s_buff, len);
+
+        for (int i = 0; i < len/2; i++){
+
+            d_buff[i] = (d_buff[i]< 0)?(-d_buff[i]):d_buff[i];
         }
         // printf("\r\n");
     }
@@ -205,21 +203,20 @@ uint32_t recorder_loudness()
 {
     // renderer_config_t *renderer = renderer_get();
     uint32_t len = 32; //320bytes: record 10ms
-    uint16_t *d_buff = calloc(len/2, sizeof(uint16_t));
+    int16_t *d_buff = calloc(len/2, sizeof(uint16_t));
     uint8_t *read_buff = calloc(len, sizeof(uint8_t)); 
-
-    renderer_adc_enable();    
+    
     renderer_read_raw(read_buff, len);
-    renderer_adc_disable();
 
     i2s_adc_data_scale1(d_buff, read_buff, len);
-    audio_recorder_quicksort(d_buff, len/2, 0, len/2 - 1);
+    audio_recorder_quicksort((uint16_t *)d_buff, len/2, 0, len/2 - 1);
 
-    uint32_t sum = d_buff[len/2-2] - d_buff[1];
+    // uint32_t sum = d_buff[len/2-2] - d_buff[1];
+    uint16_t loudness = d_buff[len/2 - 2];
     free(read_buff);
     free(d_buff);
 
-    return sum;
+    return loudness >> 4;
 }
 
 void recorder_deinit()
@@ -236,15 +233,6 @@ recorder_t *get_recorder_handle()
 {
     return recorder_instance;
 }
-
-/*
-void audio_recorder_quicksort(uint16_t *buff, uint16_t len)
-{
-    qsort(buff, len, sizeof(uint16_t), cmpfunc);
-    for(int i = 0; i < len; i++)
-        printf("%d\r\n", buff[i]);
-}
-*/
 
 /********************************
  *函数名：swap

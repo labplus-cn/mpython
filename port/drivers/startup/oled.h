@@ -48,6 +48,8 @@
 #define WHITE 1
 #define INVERSE 2
 
+#include "startup.h"
+
 bool oled_init();
 void oled_deinit();
 
@@ -59,8 +61,6 @@ void oled_show();
 
 void oled_print(const char * str, int x0, int y0);
 
-extern const uint8_t img_panic[];
-extern const uint8_t * ani_startup[25];
 void oled_drawImg(const uint8_t * img);
 void oled_drawAnimation(const uint8_t **pImgs, int len, int frameRate);
 #endif

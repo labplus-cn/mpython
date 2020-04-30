@@ -164,7 +164,7 @@ void mp_task(void *pvParameter) {
 soft_reset:
     // startup
     oled_init();
-    oled_drawImg(ani_startup[24]);
+    oled_drawImg(img_00030);
     //oled_drawAnimation(ani_startup, 25, 50);
     //oled_clear();
     oled_show();
