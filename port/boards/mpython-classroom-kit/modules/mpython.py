@@ -432,7 +432,7 @@ class sound():
 
     @staticmethod
     def init():
-        audio.recorder_init()
+        audio.recorder_init(i2c)
         audio.set_volume(0)
 
     @staticmethod
