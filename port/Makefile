@@ -1,6 +1,6 @@
 # Select the board to build for: if not given on the command line,
 # then default to GENERIC.
-BOARD ?= mpython
+BOARD ?= labplus_1956
 
 # If the build directory is not given, make it reflect the board name.
 BUILD ?= build/$(BOARD)/
@@ -39,7 +39,7 @@ include $(TOP)/py/py.mk
 
 GIT_SUBMODULES = lib/berkeley-db-1.xx
 
-PORT ?= /dev/ttyUSB0
+PORT ?= /dev/ttyS101
 BAUD ?= 2000000
 FLASH_MODE ?= dio
 FLASH_FREQ ?= 40m

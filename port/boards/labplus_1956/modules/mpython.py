@@ -225,8 +225,8 @@ class Magnetic(object):
         data1 = ustruct.unpack('>3H', buf)
 
         self.raw_x = -((data[0] - data1[0])/2)
-        self.raw_y = -((data[1] - data1[1])/2)
-        self.raw_z = -((data[2] - data1[2])/2)
+        self.raw_y = ((data[1] - data1[1])/2)
+        self.raw_z = ((data[2] - data1[2])/2)
         # print(str(self.x) + "   " + str(self.y) + "  " + str(self.z))
 
     def peeling(self):
