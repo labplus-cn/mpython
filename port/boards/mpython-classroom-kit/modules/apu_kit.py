@@ -1,6 +1,6 @@
 """ 盛思人工智能交互实验箱 K210部分驱动
 """
-from k210 import *
+from K210 import *
 from repl import *
 import time
 # 通讯接口初始化
