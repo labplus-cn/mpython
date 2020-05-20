@@ -6,7 +6,7 @@ import time
 # 通讯接口初始化
 
 class APU:
-    def __init__(self, rx=Pin.P13, tx=Pin.P14):
+    def __init__(self, rx=14, tx=13):
         # 通讯串口口初始化
         # global repl
         # self.repl = repl            

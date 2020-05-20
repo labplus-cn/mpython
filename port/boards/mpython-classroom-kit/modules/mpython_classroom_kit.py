@@ -1,16 +1,77 @@
-# labplus mPython-box library
+# labplus mPython-box for maixpy by uart library
 # MIT license; Copyright (c) 2018 labplus
 
 # mpython-box buildin periphers drivers
 
 # history:
-# V1.0 zhaohuijiang 
-
-from machine import Pin, ADC
-import time, ujson
-from mpython_classroom_kit_driver import K210,K210Error
+# V1.0 zhaohuijiang
+from repl import REPL, Serial
+from machine import Pin, ADC, UART
+import time
+import ujson
 from mpython import i2c
 import ubinascii
+from k210 import *
+
+
+# 通讯接口初始化
+mpython_box = Serial(baudrate=2000000, rx_pin=14, tx_pin=13)
+repl = REPL(mpython_box)
+time.sleep(3)
+repl.enter_raw_repl()
+
+""" MaixPy功能实例 """
+# 主绘图对象
+image = Image(repl, ref='img')
+# 显示屏
+lcd = LCD(repl)
+# 摄像头
+sensor = Sensor(repl)
+# AI运算
+kpu = KPU(repl)
+
+
+""" MaixPy端的外设实例 """
+# 电机控制
+motor = Motor(1, repl)
+# 按键
+btn_left = Button(repl, name='btn_left')
+btn_right = Button(repl, name='btn_right')
+btn_up = Button(repl, name='btn_up')
+btn_down = Button(repl, name='btn_down')
+btn_ok = Button(repl, name='btn_ok')
+# 超声波
+ultrasonic = Ultrasonic(repl)
+# 补光灯
+light = Light(repl)
+
+# def get_distance():
+#     """超声波,范围2~340cm"""
+#     return ultrasonic.distance
+
+# def get_key():
+#     """方向按键,返回按键列表"""
+#     keys = set()
+#     if btn_left.was_pressed():
+#         keys.add('left')
+#     if btn_right.was_pressed():
+#         keys.add('right')
+#     if btn_up.was_pressed():
+#         keys.add('up')
+#     if btn_down.was_pressed():
+#         keys.add('down')
+#     if btn_ok.was_pressed():
+#         keys.add('ok')
+#     return keys
+
+# def set_motor(speed):
+#     """马达,范围±100"""
+#     if speed < -100 or speed > 100:
+#             raise ValueError("Invalid value,Range in -100~100")
+#     motor.speed = speed
+
+
+""" mPython端的外设实例 """
 # human infrared
 pir = Pin(21, mode=Pin.IN, pull=None)
 
@@ -18,303 +79,100 @@ pir = Pin(21, mode=Pin.IN, pull=None)
 slider_res = ADC(Pin(34))
 slider_res.atten(slider_res.ATTN_11DB)
 
-k210 = K210()
 
-
-def get_distance():
-    """超声波,范围2~340cm"""
-    return k210.get_distance()
-
-
-def get_key():
-    """方向按键,返回按键列表"""
-    key_map = {0: 'left', 1: 'right', 2: 'up', 3: 'down', 4: 'ok'}
-    key_set = set()
-    _key = k210.get_key()
-    if _key:
-        for i in range(5):
-            if ((_key >> i) & 0x01):
-                key_set.add(key_map[i])
-    return key_set
-
-def set_motor(speed):
-    """马达,范围±100"""
-    if speed < -100 or speed > 100:
-            raise ValueError("Invalid value,Range in -100~100")
-    return k210.set_motor(speed)
-
-def k210_reset():
-    k210.reset()
-
-"""k210文件传送"""
-def filefrom_k210(source,target=None):
-    k210.file_open(source,'rb')
-    if target ==None:
-        target = source
-    with open(target,'wb') as temp:
-        while True:
-            base_64_data= k210.file_read(512*3)
-            churk=ubinascii.a2b_base64(base_64_data)
-            if churk != b'':
-                temp.write(churk)
-            else:
-                break
-    k210.file_close()
-
-def fileto_k210(source,target=None):
-    if target ==None:
-        target = source
-    k210.file_open(target,'wb')
-    with open(source,'rb') as temp:
-        while True:
-            buf = temp.read(512*3)
-            base64_data = ubinascii.b2a_base64(buf).strip()
-            if  base64_data != b'':
-                k210.file_write(base64_data)
-            else:
-                break
-    k210.file_close()
+""" 实验箱兼容旧版驱动,内置模型应用。
+"""
 
 
 class Model(object):
 
-    def __init__(self):
+    def __init__(self, repl):
+        self.repl = repl
+        self.task = None
+
         self.FACE_YOLO = 1
         self.CLASS_20_YOLO = 2
         self.MNIST_NET = 3
         self.CLASS_1000_NET = 4
-        self.YOLO2 = 1
-        self.MOBILENET = 2
 
+        # self.YOLO2 = 1
+        # self.MOBILENET = 2
+        
     def select_model(self, builtin=None):
         """内置模型选择"""
-        k210.select_model(builtin)
+        if builtin == self.FACE_YOLO:
+            sensor.reset()
+            sensor.set_framesize(Sensor.QVGA)
+            sensor.set_pixformat(Sensor.RGB565)
+            self.task = kpu.load(0x300000)
+            kpu.init_yolo2(self.task,0.5, 0.3, 5, (1.889, 2.5245, 2.9465, 3.94056,
+                                         3.99987, 5.3658, 5.155437, 6.92275, 6.718375, 9.01025))
+            self.classes = ['face']
+        elif builtin == self.CLASS_20_YOLO:
+            sensor.reset()
+            sensor.set_framesize(Sensor.QVGA)
+            sensor.set_pixformat(Sensor.RGB565)
+            self.task = kpu.load(0x640000)
+            kpu.init_yolo2(self.task, 0.5, 0.3, 5, (1.08, 1.19, 3.42, 4.41,
+                                                    6.63, 11.38, 9.42, 5.11, 16.62, 10.52))
+            self.classes = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow',
+                            'diningtable', 'dog', 'horse', 'motorbike', 'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor']
 
-    def load_model(self, path, model_type, classes, anchor=None):
-        """加载外部模型"""
-        k210.load_model(path=path, model_type=model_type,
-                        classes=classes, anchor=anchor)
+        elif builtin == self.MNIST_NET:
+            sensor.reset()
+            sensor.set_framesize(Sensor.QVGA)
+            sensor.set_pixformat(Sensor.GRAYSCALE)
+            sensor.set_windowing((224, 224))
+            sensor.set_hmirror(0)
+            self.task = kpu.load(0x600000)
+        else:
+            raise ValueError('not support model')
+        self.__model = builtin
+        lcd.clear()
 
     def detect_yolo(self):
-        """yolo模型应用"""
-        return k210.detect_yolo()
+        _img = sensor.snapshot()
+        if not self.task:
+            raise TypeError('Not load model!')
+        code = kpu.run_yolo2(self.task, _img)
+        if code:
+            for c in code:
+                _img.draw_rectangle(c['x'], c['y'], c['w'], c['h'])
+            lcd.display(_img)
+            for c in code:
+                lcd.draw_string(
+                    c['x'], c['y']-16, '{}:{:0.2f}' .format(self.classes[c['classid']], c['value']), lcd.RED, lcd.WHITE)
+        else:
+            lcd.display(_img)
+       
+        return code
+
 
     def predict_net(self):
         """MobileNet模型预测"""
-        return k210.predict_net()
+        # 内置手写数字应用
+        if self.__model == self.MNIST_NET:
+            img_cap = sensor.snapshot()
+            img_cap = img_cap.resize(28, 28)
+            img.draw_image(img_cap, 0, 0, x_scale=4.0, y_scale=4.0)
+            img_cap.invert()
+            img_cap.strech_char(1)
+            img_cap.pix_to_ai()
+            plist = kpu.forward(self.task, img_cap)
+            pmax = max(plist)
+            max_index = plist.index(pmax)
+            lcd.display(img)
+            lcd.draw_string(224, 0, "%d: %.3f" % (max_index, pmax), lcd.WHITE)
+            return plist
+        # 自定义MobileNet
 
     def deinit_yolo(self):
         """yolo释放"""
-        k210.deinit_yolo()
+        kpu.deinit(self.task)
 
     def deinit_net(self):
         """net释放"""
-        k210.deinit_net()
-    
+        kpu.deinit(self.task)
 
-
-class LCD(object):
-    BLACK = 0
-    NAVY = 15
-    DARKGREEN = 992
-    DARKCYAN = 1007
-    MAROON = 30720
-    PURPLE = 30735
-    OLIVE = 31712
-    LIGHTGREY = 50712
-    DARKGREY = 31727
-    BLUE = 31
-    GREEN = 2016
-    RED = 63488
-    MAGENTA = 63519
-    YELLOW = 65504
-    WHITE = 65535
-    ORANGE = 64800
-    GREENYELLOW = 45029
-    PINK = 63519
-
-    def init(self, *args,**kws):
-        k210.lcd_init(*args,**kws)
-
-    def display(self,**kws):
-        k210.lcd_display(**kws)
-
-    def clear(self, color=0):
-        k210.lcd_clear(color=color)
-
-    def draw_string(self, *args):
-        k210.lcd_draw_string(*args)
-
-
-class Camera(object):
-    RGB565 = 2
-    GRAYSCALE = 4
-    def reset(self):
-        k210.camera_reset()
-
-    def set_cam_led(self, on_off):
-        k210.set_cam_led(on_off)
-
-    def run(self,*arg):
-        k210.camera_run(*arg)
-
-    def snapshot(self):
-        k210.camera_snapshot()
-
-    def set_pixformat(self,*arg):
-        k210.camera_set_pixformat(*arg)
-
-    def set_contrast(self,*arg):
-        if arg[0] < -2 or arg[0] > 2:
-            raise ValueError("Invalid value,Range in -2~2")
-        k210.camera_set_contrast(*arg)
-
-    def set_brightness(self,*arg):
-        if arg[0] < -2 or arg[0] > 2:
-            raise ValueError("Invalid value,Range in -2~2")
-        k210.camera_set_brightness(*arg)
-
-    def set_saturation(self,*arg):
-        if arg[0] < -2 or arg[0] > 2:
-            raise ValueError("Invalid value,Range in -2~2")
-        k210.camera_set_saturation(*arg)
-
-    def set_auto_gain(self,*arg,**kw):
-        k210.camera_set_auto_gain(*arg,**kw)
-
-    def set_auto_whitebal(self,*arg):
-        k210.camera_set_auto_whitebal(*arg)
-
-    def set_windowing(self,*arg):
-        k210.camera_set_windowing(*arg)
-
-    def set_hmirror(self,*arg):
-        k210.camera_set_hmirror(*arg)
-
-    def set_vflip(self,*arg):
-        k210.camera_set_vflip(*arg)
-
-    def skip_frames(self,*arg,**kw):
-        k210.camera_skip_frames(*arg,**kw)
-
-
-class Img(object):
-
-    def load(self, *args, **kws):
-        k210.image_load(*args, **kws)
-
-    def width(self):
-        return int(k210.image_width())
-
-    def hight(self):
-        return int(k210.image_hight())
-
-    def format(self):
-        return int(k210.image_format())
-
-    def size(self):
-        return int(k210.image_size())
-
-    def get_pixel(self, *args, **kws):
-        temp = k210.image_get_pixel(*args, **kws)
-        if temp:
-            return tuple(temp)
-
-    def set_pixel(self, *args, **kws):
-        k210.image_set_pixel(*args, **kws)
-
-    def mean_pool(self, *args, **kws):
-        k210.image_mean_pool(*args, **kws)
-
-    def to_grayscale(self):
-        k210.image_to_grayscale()
-
-    def to_rainbow(self):
-        k210.image_to_rainbow()
-
-    def copy(self,*args, **kws):
-        k210.image_copy(*args, **kws)
-
-    def save(self,*args, **kws):
-        k210.image_save(*args, **kws)
-
-    def clear(self):
-        k210.image_clear()
-
-    def draw_line(self,*args, **kws):
-        k210.image_draw_line(*args, **kws)
-
-    def draw_rectangle(self,*args, **kws):
-        k210.image_draw_rectangle(*args, **kws)
-
-    def draw_circle(self,*args, **kws):
-        k210.image_draw_circle(*args, **kws)
-
-    def draw_string(self,*args, **kws):
-        k210.image_draw_string(*args, **kws)
-
-    def draw_cross(self,*args, **kws):
-        k210.image_draw_cross(*args, **kws)
-
-    def draw_arrow(self,*args, **kws):
-        k210.image_draw_arrow(*args, **kws)
-
-    def binary(self,*args, **kws):
-        k210.image_binary(*args, **kws)
-
-    def invert(self):
-        k210.image_invert()
-
-    def erode(self,*args, **kws):
-        k210.image_erode(*args, **kws)
-
-    def dilate(self,*args, **kws):
-        k210.image_dilate(*args, **kws)
-
-    def negate(self,*args, **kws):
-        k210.image_negate(*args, **kws)
-
-    def mean(self,*args, **kws):
-        k210.image_mean(*args, **kws)
-
-    def mode(self,*args, **kws):
-        k210.image_mode(*args, **kws)
-
-    def median(self,*args, **kws):
-        k210.image_median(*args, **kws)
-
-    def midpoint(self,*args, **kws):
-        k210.image_midpoint(*args, **kws)
-
-    def cartoon(self,*args, **kws):
-        k210.image_cartoon(*args, **kws)
-
-    def conv3(self,*args, **kws):
-        k210.image_conv3(*args, **kws)
-
-    def gaussian(self,*args, **kws):
-        k210.image_gaussian(*args, **kws)
-
-    def bilateral(self,*args, **kws):
-        k210.image_bilateral(*args, **kws)
-
-    def linpolar(self,*args, **kws):
-        k210.image_linpolar(*args, **kws)
-
-    def logpolar(self,*args, **kws):
-        k210.image_logpolar(*args, **kws)
-        
-    def rotation_corr(self,*args, **kws):
-        k210.image_rotation_corr(*args, **kws)
-
-    def find_blobs(self,*args, **kws):
-        return k210.image_find_blobs(*args, **kws)
-
-    def skip_frames(self,*arg,**kw):
-        k210.camera_skip_frames(*arg,**kw)
-
-
-lcd = LCD()
-camera = Camera()
-model = Model()
-image = Img()
+# 实例内置模型应用
+model = Model(repl)
