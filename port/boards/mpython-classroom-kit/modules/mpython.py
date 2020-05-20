@@ -17,13 +17,9 @@ from esp import dht_readinto
 from time import sleep_ms, sleep_us, sleep
 from framebuf import FrameBuffer
 import motion_mpu6050
-from mpython_classroom_kit_driver import BS8112A,Es8388
+from apu_kit import APU
 
 i2c = I2C(0, scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
-
-bs8112a = BS8112A(i2c)
-# es8388 = Es8388(i2c)
-
 
 class Font(object):
     def __init__(self, font_address=0x400000):
@@ -126,23 +122,52 @@ class OLED(SSD1106_I2C):
                     i = i + 1
             x = x + width + 1
 
-class Accelerometer():
-
-    def __init__(self):
-        motion_mpu6050.init(i2c)
-        while not motion_mpu6050.accel():
-            pass
-        
-    def get_x(self):
-        return -motion_mpu6050.accel()[1]/65536
-
-    def get_y(self):
-        return motion_mpu6050.accel()[0]/65536
-
-    def get_z(self):
-        return -motion_mpu6050.accel()[2]/65536
-
 class Motion():
+
+    class Accelerometer():
+        """Accelerometer mpu6050的加速度传感器
+        """
+
+        def get_x(self):
+            return -motion_mpu6050.accel()[1]/65536
+
+        def get_y(self):
+            return motion_mpu6050.accel()[0]/65536
+
+        def get_z(self):
+            return -motion_mpu6050.accel()[2]/65536
+        
+        @property
+        def x(self):
+            return self.get_x()
+        @property
+        def y(self):
+            return self.get_y()
+        @property
+        def z(self):
+            return self.get_z()
+
+    class Gyroscope():
+        """Gyroscope mpu6050的角速度传感器
+        """
+
+        def get_x(self):
+            return -motion_mpu6050.gyro()[1]/65536
+
+        def get_y(self):
+            return motion_mpu6050.gyro()[0]/65536
+
+        def get_z(self):
+            return -motion_mpu6050.gyro()[2]/65536
+        @property
+        def x(self):
+            return self.get_x()
+        @property
+        def y(self):
+            return self.get_y()
+        @property
+        def z(self):
+            return self.get_z()
 
     def __init__(self):
         motion_mpu6050.init(i2c)
@@ -169,6 +194,11 @@ class Motion():
     def get_quat(self):
         return tuple([i/math.pow(2, 30) for i in motion_mpu6050.quat()])
 
+    # 加速度传感器
+    accelerometer = Accelerometer()
+
+    # 角速度传感器
+    gyroscope = Gyroscope()
 
 class BME280(object):
     def __init__(self):
@@ -401,33 +431,6 @@ class wifi:
         self.ap.active(False)
         print('disable AP WiFi...')
 
-
-
-# display
-if 60 in i2c.scan():
-    oled = OLED()
-    # display = oled
-
-# 3 axis accelerometer
-accelerometer = Accelerometer()
-motion = Motion()
-
-# bm280
-if 119 in i2c.scan():
-    bme280 = BME280()
-
-# 3 rgb leds
-rgb = NeoPixel(Pin(25, Pin.OUT), 25, 3, 1)
-rgb.write()
-
-# light sensor
-light = ADC(Pin(39))
-light.atten(light.ATTN_11DB)
-
-# # sound sensor
-# sound = ADC(Pin(36))
-# sound.atten(sound.ATTN_11DB)
-
 class sound():
 
     @staticmethod
@@ -445,13 +448,55 @@ class sound():
         if loudness:
             return loudness
 
-
-# buttons
-button_a = Pin(19, Pin.IN, Pin.PULL_UP)
-button_b = Pin(2, Pin.IN, Pin.PULL_UP)
-
 # touchpad
+class BS8112A(object):
+   """  """
 
+   def __init__(self, i2c):
+      self.addr = 80
+      # config
+      self._i2c = i2c
+      self.config = [0xB0, 0x00, 0x00, 0x83, 0xf3, 0x98, 0x0f, 0x0f,
+                     0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x00]
+      checksum = 0
+      for i in range(1, 19):
+         checksum += self.config[i]
+      checksum &= 0xff
+      self.config[18] = checksum
+      # print(self.config[18])
+      retry = 0
+      if (retry < 5):
+         try:
+            self._i2c.writeto(self.addr, bytearray(self.config), True)
+            return
+         except:
+               retry = retry + 1
+      else:
+         raise Exception("bs8112a i2c read/write error!")
+
+       # i2c.writeto(self.addr, b'\xB0', False)
+       # time.sleep_ms(10)
+       # print(i2c.readfrom(self.addr, 17, True))
+
+   # key map:
+   # value       bit7 bit6 bit5 bit4 bit3 bit2 bit1 bit0
+   # bs8112a key Key8 Key7 Key6 Key5 Key4 Key3 Key2 Key1
+   # mpython key       N    O    H    T    Y    P
+   def key_value(self):
+      retry = 0
+      if (retry < 5):
+         try:
+            self._i2c.writeto(self.addr, b'\x08', False)
+            time.sleep_ms(10)
+            value = self._i2c.readfrom(self.addr, 1, True)
+            time.sleep_ms(10)
+            return value
+         except:
+               retry = retry + 1
+      else:
+         raise Exception("bs8112a i2c read/write error!")
+
+bs8112a = BS8112A(i2c)
 class Touthpad():
     def __init__(self, pin):
         self.pin = pin
@@ -465,6 +510,43 @@ class Touthpad():
                 return 1023
         return 1023
 
+from gui import *
+
+def numberMap(inputNum, bMin, bMax, cMin, cMax):
+    outputNum = 0
+    outputNum = ((cMax - cMin) / (bMax - bMin)) * (inputNum - bMin) + cMin
+    return outputNum
+
+""" devices on-board
+"""
+# display
+oled = OLED()
+# display = oled
+
+# 3 axis accelerometer
+motion = Motion()
+accelerometer = motion.accelerometer
+gyroscope = motion.gyroscope
+
+# bm280
+bme280 = BME280()
+
+# rgb matrix
+rgb = NeoPixel(Pin(25, Pin.OUT), 25, 3, 1)
+rgb.write()
+
+# light sensor
+light = ADC(Pin(39))
+light.atten(light.ATTN_11DB)
+
+# human infrared
+pir = Pin(21, mode=Pin.IN, pull=None)
+
+# slide POT
+slider_res = ADC(Pin(34))
+slider_res.atten(slider_res.ATTN_11DB)
+
+# touch pad
 touchPad_P = Touthpad(2)
 touchPad_Y = Touthpad(4)
 touchPad_T = Touthpad(8)
@@ -472,10 +554,12 @@ touchPad_H = Touthpad(16)
 touchPad_O = Touthpad(32)
 touchPad_N = Touthpad(64)
 
-from gui import *
+# buttons
+button_a = Pin(19, Pin.IN, Pin.PULL_UP)
+button_b = Pin(2, Pin.IN, Pin.PULL_UP)
 
+# apu @K210
+apu = APU()
 
-def numberMap(inputNum, bMin, bMax, cMin, cMax):
-    outputNum = 0
-    outputNum = ((cMax - cMin) / (bMax - bMin)) * (inputNum - bMin) + cMin
-    return outputNum
+# motor @K210
+motor = apu.motor
