@@ -1,6 +1,6 @@
 # Select the board to build for: if not given on the command line,
 # then default to GENERIC.
-BOARD ?= mpython
+BOARD ?= mpython-classroom-kit
 
 # If the build directory is not given, make it reflect the board name.
 BUILD ?= build/$(BOARD)/
@@ -9,6 +9,11 @@ BOARD_DIR ?= boards/$(BOARD)
 ifeq ($(wildcard $(BOARD_DIR)/.),)
 $(error Invalid BOARD specified: $(BOARD_DIR))
 endif
+
+
+# Firmware verion 
+MICROPY_GIT_TAG = $(strip $(shell git describe --dirty --always))
+FIRMWARE_NAME = $(BOARD)-$(MICROPY_GIT_TAG)
 
 include ../micropython/py/mkenv.mk
 
@@ -854,20 +859,17 @@ erase:
 	$(ECHO) "Erasing flash"
 	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) erase_flash
 
-$(BUILD)/mpython.bin: $(BUILD)/bootloader.bin $(BUILD)/partitions.bin $(BUILD)/application.bin
+$(BUILD)/$(FIRMWARE_NAME).bin: $(BUILD)/bootloader.bin $(BUILD)/partitions.bin $(BUILD)/application.bin
 	$(ECHO) "Create $@, with address from 0"
 	$(Q)$(PYTHON) release.py $^ $@
 
-release: $(BUILD)/mpython.bin
+release: $(BUILD)/$(FIRMWARE_NAME).bin
 	$(ECHO) "Writing $^ to the board"
 	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) write_flash -z --flash_mode $(FLASH_MODE) --flash_freq $(FLASH_FREQ) 0x00 $^
-
-
 
 font:
 	$(ECHO) "Write $^ to the board"
 	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) write_flash -z --flash_mode $(FLASH_MODE) --flash_freq $(FLASH_FREQ) 0x400000  Noto_Sans_CJK_SC_Light16.bin
-
 
 
 
