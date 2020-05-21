@@ -618,8 +618,22 @@ light = ADC(Pin(39))
 light.atten(light.ATTN_11DB)
 
 # sound sensor
-sound = ADC(Pin(36))
-sound.atten(sound.ATTN_11DB)
+class sound():
+
+    @staticmethod
+    def init():
+        audio.recorder_init()
+        audio.set_volume(0)
+
+    @staticmethod
+    def deinit():
+        audio.recorder_deinit()
+
+    @staticmethod
+    def read():
+        loudness = audio.loudness()
+        if loudness:
+            return loudness
 
 # buttons
 button_a = Pin(0, Pin.IN, Pin.PULL_UP)
