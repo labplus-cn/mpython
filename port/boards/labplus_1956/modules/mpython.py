@@ -481,8 +481,8 @@ class MPythonPin():
         except IndexError:
             raise IndexError("Out of Pin range")
         if mode == PinMode.IN:
-            if pin in [3]:
-                raise TypeError('IN not supported on P%d' % pin)
+            # if pin in [3]:
+            #     raise TypeError('IN not supported on P%d' % pin)
             self.Pin = Pin(self.id, Pin.IN, pull)
         if mode == PinMode.OUT:
             if pin in [2, 3]:
