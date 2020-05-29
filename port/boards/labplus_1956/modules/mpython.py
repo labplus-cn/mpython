@@ -626,7 +626,7 @@ gyroscope = motion.gyroscope
 magnetic = Magnetic()
 
 # 3 rgb leds
-rgb = NeoPixel(Pin(4, Pin.OUT), 25, 3, 1)
+rgb = NeoPixel(Pin(17, Pin.OUT), 25, 3, 1)
 rgb.write()
 
 # light sensor
@@ -636,7 +636,7 @@ light.atten(light.ATTN_11DB)
 # buttons
 button_a = Pin(0, Pin.IN, Pin.PULL_UP)
 button_b = Pin(2, Pin.IN, Pin.PULL_UP)
-button_c = Pin(17, Pin.IN, Pin.PULL_UP)
+button_c = Pin(4, Pin.IN, Pin.PULL_UP)
 
 
 
