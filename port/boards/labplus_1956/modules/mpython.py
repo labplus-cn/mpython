@@ -353,7 +353,7 @@ class Magnetic(object):
             try:
                 self.i2c.writeto(self.addr, bytearray([0x2f]), False)
                 buf = self.i2c.readfrom(self.addr, 1, True)
-                print(buf)
+                # print(buf)
                 id = ustruct.unpack('B', buf)[0]
                 return id
             except:
