@@ -129,13 +129,13 @@ class Motion():
         """
 
         def get_x(self):
-            return -motion_mpu6050.accel()[1]/65536
+            return  motion_mpu6050.accel()[1]/65536
 
         def get_y(self):
-            return motion_mpu6050.accel()[0]/65536
+            return - motion_mpu6050.accel()[0]/65536
 
         def get_z(self):
-            return -motion_mpu6050.accel()[2]/65536
+            return motion_mpu6050.accel()[2]/65536
         
         @property
         def x(self):
@@ -152,13 +152,13 @@ class Motion():
         """
 
         def get_x(self):
-            return -motion_mpu6050.gyro()[1]/65536
+            return motion_mpu6050.gyro()[1]/65536
 
         def get_y(self):
-            return motion_mpu6050.gyro()[0]/65536
+            return - motion_mpu6050.gyro()[0]/65536
 
         def get_z(self):
-            return -motion_mpu6050.gyro()[2]/65536
+            return motion_mpu6050.gyro()[2]/65536
         @property
         def x(self):
             return self.get_x()
