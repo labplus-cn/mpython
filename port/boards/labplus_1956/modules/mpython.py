@@ -71,14 +71,14 @@ class Motion():
         while not motion_mpu6050.accel():
             pass
 
-    def get_accel(self):
-        n =  list(motion_mpu6050.accel())
-        n[0] = -n[0]
-        n[2] = -n[2]
-        return tuple([i/65536 for i in n])
+    # def get_accel(self):
+    #     n =  list(motion_mpu6050.accel())
+    #     n[0] = -n[0]
+    #     n[2] = -n[2]
+    #     return tuple([i/65536 for i in n])
 
-    def get_gyro(self):
-        return tuple([i/65536 for i in motion_mpu6050.gyro()])
+    # def get_gyro(self):
+    #     return tuple([i/65536 for i in motion_mpu6050.gyro()])
 
     # output following: Pitch: -180 to 180 Roll: -90 to 90 Yaw: -180 to 180
     def get_euler(self):
