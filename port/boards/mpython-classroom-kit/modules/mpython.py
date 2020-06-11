@@ -559,5 +559,5 @@ ultrasonic = apu.ultrasonic
 btn_left = apu.btn_left
 btn_right = apu.btn_right
 btn_up = apu.btn_up
-btn_dow = apu.btn_down
+btn_down = apu.btn_down
 btn_ok = apu.btn_ok
