@@ -554,7 +554,7 @@ apu = APU()
 
 # motor @K210
 motor = apu.motor
-camera = apu.light
+camera_light = apu.light
 ultrasonic = apu.ultrasonic
 btn_left = apu.btn_left
 btn_right = apu.btn_right
