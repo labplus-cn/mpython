@@ -54,7 +54,7 @@ inline void adc_data_scale( uint8_t* s_buff, uint32_t len)
 
     for (int i = 0; i < len; i += 2) {
         dac_value = ((((uint16_t) (s_buff[i + 1] & 0xf) << 8) | ((s_buff[i + 0]))));
-        dac_value = (dac_value - 2048 - 300) << 4; 
+        dac_value = (dac_value - 2047 - 300) << 4; 
         s_buff[j++] = dac_value & 0xff;
         s_buff[j++] = (dac_value >> 8) & 0xff;
     }
@@ -64,6 +64,17 @@ inline void adc_data_scale( uint8_t* s_buff, uint32_t len)
 static void i2s_adc_data_scale1(int16_t * d_buff, uint8_t* s_buff, uint32_t len)
 {
     uint32_t j = 0;
+
+    #if MICROPY_BUILDIN_ADC
+    uint16_t dac_value;
+    int16_t tmp;
+
+    for (int i = 0; i < len; i += 2) {
+        dac_value = ((((uint16_t) (s_buff[i + 1] & 0xf) << 8) | ((s_buff[i + 0]))));
+        tmp = dac_value - 2047 - 300; 
+        d_buff[j++] = (tmp < 0)?(-tmp):tmp;
+    }
+    #else          
     renderer_config_t *renderer = renderer_get();
 
     if(renderer->bit_depth == I2S_BITS_PER_SAMPLE_16BIT) 
@@ -76,6 +87,7 @@ static void i2s_adc_data_scale1(int16_t * d_buff, uint8_t* s_buff, uint32_t len)
         }
         // printf("\r\n");
     }
+    #endif
 }
 
 int cmpfunc (const void * a, const void * b)
@@ -216,7 +228,11 @@ uint32_t recorder_loudness()
     free(read_buff);
     free(d_buff);
 
+    #if MICROPY_BUILDIN_ADC
+    return loudness;
+    #else          
     return loudness >> 4;
+    #endif
 }
 
 void recorder_deinit()
