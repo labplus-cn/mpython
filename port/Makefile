@@ -1,6 +1,6 @@
 # Select the board to build for: if not given on the command line,
 # then default to GENERIC.
-BOARD ?= mpython
+BOARD ?= mpython-classroom-kit
 
 # If the build directory is not given, make it reflect the board name.
 BUILD ?= build/$(BOARD)/
