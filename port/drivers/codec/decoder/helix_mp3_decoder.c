@@ -132,7 +132,7 @@ static int proccess_tag(mp3_decode_t *decoder)
     return 0;
 }
 
-static int mp3_decode(mp3_decode_t *decoder)
+static void mp3_decode(mp3_decode_t *decoder)
 {
     player_t *player = get_player_handle();
     int len;
@@ -141,9 +141,9 @@ static int mp3_decode(mp3_decode_t *decoder)
     // ESP_LOGE(TAG, "ringbuf len %d", len);
     if(len == 0) //ringbuf has no data
     {
-        // renderer_zero_dma_buffer();
+        renderer_zero_dma_buffer();
         vTaskDelay(5 / portTICK_PERIOD_MS);
-        return 0;
+        return;
     }
 
     int offset = MP3FindSyncWord(readBuf, decoder->bytesleft); //搜索缓存中第一个有效数据帧
@@ -151,83 +151,80 @@ static int mp3_decode(mp3_decode_t *decoder)
     {
         // ESP_LOGE(TAG, "MP3FindSyncWord not find");
         decoder->bytesleft = 0; // All data not avalible, clear the buffer.
-        return -1; 
+        return; 
     }
-
-    if (offset > 0)
-    {
-        //去除头部无效数据
-        decoder->bytesleft -= offset; 
-        memmove(readBuf, readBuf + offset,  decoder->bytesleft);
-        len = read_ringbuf(decoder);
-        // ESP_LOGE(TAG, "ringbuf len 1 %d", len);
-        if(len == 0) //ringbuf has no data
+    if (offset >= 0) {
+        if (offset > 0)
         {
-            // renderer_zero_dma_buffer();
-            vTaskDelay(5 / portTICK_PERIOD_MS);
-            return 0;
+            //去除头部无效数据
+            decoder->bytesleft -= offset; 
+            memmove(readBuf, readBuf + offset,  decoder->bytesleft);
+            len = read_ringbuf(decoder);
+            // ESP_LOGE(TAG, "ringbuf len 1 %d", len);
+            if(len == 0) //ringbuf has no data
+            {
+                renderer_zero_dma_buffer();
+                vTaskDelay(5 / portTICK_PERIOD_MS);
+                return;
+            }   
         }   
-    }   
-    // ESP_LOGE(TAG, "begin decode......");
-    //以下解码n帧，readPtr会递增，bytesleft递减
-    unsigned char *readPtr;
-    readPtr = readBuf;
-    int ret = MP3Decode(decoder->HMP3Decoder, &readPtr, &(decoder->bytesleft), (short *)output, 0);
-    if (ret == ERR_MP3_NONE) //正常解码
-    {
-        // ESP_LOGE(TAG, "decode successed......");
-        MP3GetLastFrameInfo(decoder->HMP3Decoder, &(decoder->mp3FrameInfo));
-        if(decoder->samplerate != decoder->mp3FrameInfo.samprate)
+        // ESP_LOGE(TAG, "begin decode......");
+        //以下解码n帧，readPtr会递增，bytesleft递减
+        unsigned char *readPtr;
+        readPtr = readBuf;
+        int ret = MP3Decode(decoder->HMP3Decoder, &readPtr, &(decoder->bytesleft), (short *)output, 0);
+        if (ret == ERR_MP3_NONE) 
         {
-            decoder->samplerate = decoder->mp3FrameInfo.samprate;
-            renderer_set_clk(decoder->samplerate, 16, decoder->mp3FrameInfo.nChans);
-            // ESP_LOGE(TAG,"mp3file info---bitrate=%d, layer=%d, nChans=%d, samprate=%d, outputSamps=%d",
-            //     decoder->mp3FrameInfo.bitrate, decoder->mp3FrameInfo.layer, decoder->mp3FrameInfo.nChans, 
-            //     decoder->mp3FrameInfo.samprate, decoder->mp3FrameInfo.outputSamps);
-        }
-        #if MICROPY_BUILDIN_DAC //内置DAC需转正数，加上间量处理
-        for (int i = 0; i < decoder->mp3FrameInfo.outputSamps; ++i)
-        {
-            // output[i] = (short)((output[i]*255.0/65535) * player->volume); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
-            // // output[i] = (short)((output[i]*255.0/65535)); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
-            // output[i] = output[i] << 8;
-            output[i] = (short)((output[i] + 32768) * player->volume);
-            output[i] &= 0xff00;
-            //ESP_LOGI(TAG, "%d", output[i]);
-        }
-        #endif
-
-        uint16_t bytesWritten;
-        renderer_write((unsigned char *)output, decoder->mp3FrameInfo.outputSamps * 2, (size_t *)(&bytesWritten), 1000 / portTICK_RATE_MS);
-        memmove(readBuf, readPtr, decoder->bytesleft);
-
-        return 1;
-    }
-    else //解码异常
-    {
-        // ESP_LOGE(TAG, "decode err: %d", ret);  
-        // renderer_zero_dma_buffer();
-        if (ret == ERR_MP3_INDATA_UNDERFLOW) {
-            //printf("ERR_MP3_INDATA_UNDERFLOW\n");
-            decoder->bytesleft = 0; // All data not avalible, clear the buffer.
-        } else if (ret == ERR_MP3_MAINDATA_UNDERFLOW) {
-            /* do nothing - next call to decode will provide more mainData */
-            //printf("ERR_MP3_MAINDATA_UNDERFLOW, continue to find sys words, left: %d\n", left);
-            if (decoder->bytesleft > 0) {
-                memmove(readBuf, readPtr,  decoder->bytesleft);
+            // ESP_LOGE(TAG, "decode successed......");
+            MP3GetLastFrameInfo(decoder->HMP3Decoder, &(decoder->mp3FrameInfo));
+            if(decoder->samplerate != decoder->mp3FrameInfo.samprate)
+            {
+                decoder->samplerate = decoder->mp3FrameInfo.samprate;
+                renderer_set_clk(decoder->samplerate, 16, decoder->mp3FrameInfo.nChans);
+                // ESP_LOGE(TAG,"mp3file info---bitrate=%d, layer=%d, nChans=%d, samprate=%d, outputSamps=%d",
+                //     decoder->mp3FrameInfo.bitrate, decoder->mp3FrameInfo.layer, decoder->mp3FrameInfo.nChans, 
+                //     decoder->mp3FrameInfo.samprate, decoder->mp3FrameInfo.outputSamps);
             }
-        } else {
-            //printf("unknown error: %d, left: %d\n", ret, left);
-            // skip this frame
-            if (decoder->bytesleft > 0) {
-                readPtr++;
-                decoder->bytesleft--;
-                memmove(readBuf, readPtr,  decoder->bytesleft);
+            #if MICROPY_BUILDIN_DAC //内置DAC需转正数，加上间量处理
+            for (int i = 0; i < decoder->mp3FrameInfo.outputSamps; ++i)
+            {
+                // output[i] = (short)((output[i]*255.0/65535) * player->volume); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
+                // // output[i] = (short)((output[i]*255.0/65535)); //16位－> 8位，加上直流分量，消除负值，使值范围在0-255.
+                // output[i] = output[i] << 8;
+                output[i] = (short)((output[i] + 32768) * player->volume);
+                output[i] &= 0xff00;
+                //ESP_LOGI(TAG, "%d", output[i]);
+            }
+            #endif
+
+            uint16_t bytesWritten;
+            renderer_write((unsigned char *)output, decoder->mp3FrameInfo.outputSamps * 2, (size_t *)(&bytesWritten), 1000 / portTICK_RATE_MS);
+            memmove(readBuf, readPtr, decoder->bytesleft);
+        }
+        else
+        {
+            // ESP_LOGE(TAG, "decode err: %d", ret);  
+            renderer_zero_dma_buffer();
+            if (ret == ERR_MP3_INDATA_UNDERFLOW) {
+                //printf("ERR_MP3_INDATA_UNDERFLOW\n");
+                decoder->bytesleft = 0; // All data not avalible, clear the buffer.
+            } else if (ret == ERR_MP3_MAINDATA_UNDERFLOW) {
+                /* do nothing - next call to decode will provide more mainData */
+                //printf("ERR_MP3_MAINDATA_UNDERFLOW, continue to find sys words, left: %d\n", left);
+                if (decoder->bytesleft > 0) {
+                    memmove(readBuf, readPtr,  decoder->bytesleft);
+                }
+            } else {
+                //printf("unknown error: %d, left: %d\n", ret, left);
+                // skip this frame
+                if (decoder->bytesleft > 0) {
+                    readPtr++;
+                    decoder->bytesleft--;
+                    memmove(readBuf, readPtr,  decoder->bytesleft);
+                }
             }
         }
-
-        return -2;
-    }
+    }  
 }
 
 void mp3_decoder_task(void *pvParameters)
@@ -273,10 +270,7 @@ void mp3_decoder_task(void *pvParameters)
         if(decode_status == -1)
         {
             if (decoder->bytesleft > 0) //正常结束，需把缓存剩余的数据解码完
-            {  
-                while(0 != mp3_decode(decoder)); 
-            } 
-            
+              mp3_decode(decoder); 
             renderer_zero_dma_buffer();
             break;
         }
