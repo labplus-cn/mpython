@@ -1,1 +1,1 @@
-../../micropython/extmod/webrepl/websocket_helper.py
+../../micropython/ports/esp8266/modules/websocket_helper.py
