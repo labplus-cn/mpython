@@ -178,7 +178,7 @@ STATIC machine_image_obj_t *image_from_parsed_str(const char *s, mp_int_t len, m
         } else if ('c' >= '0' && c <= '9') {
             ++line_len;
         } else {
-            mp_raise_ValueError("unexpected character in Image definition");
+            mp_raise_ValueError(MP_ERROR_TEXT("unexpected character in Image definition"));
         }
     }
     if (line_len) { //字符串到结束都没'\n' or ':'
@@ -265,7 +265,7 @@ STATIC mp_obj_t mpython_image_make_new(const mp_obj_type_t *type_in, mp_uint_t n
                     return MP_OBJ_FROM_PTR(image_from_parsed_str(str, len, 1, col));
                 }
             } else {
-                mp_raise_TypeError("Image(s) takes a string");
+                mp_raise_TypeError(MP_ERROR_TEXT("Image(s) takes a string"));
             } 
         }
 
@@ -279,7 +279,7 @@ STATIC mp_obj_t mpython_image_make_new(const mp_obj_type_t *type_in, mp_uint_t n
                 {
                     bright = mp_obj_get_int(args[1]);
                     if (bright < 0 || bright > MAX_BRIGHTNESS) {
-                        mp_raise_ValueError("brightness out of bounds");
+                        mp_raise_ValueError(MP_ERROR_TEXT("brightness out of bounds"));
                     }
                     bright = (bright > 1) ? 1 : bright;
                     col.r = 20;
@@ -318,7 +318,7 @@ STATIC mp_obj_t mpython_image_make_new(const mp_obj_type_t *type_in, mp_uint_t n
                 mp_get_buffer_raise(args[2], &bufinfo, MP_BUFFER_READ);
 
                 if (w < 0 || h < 0 || (size_t)(w * h) != bufinfo.len) {
-                    mp_raise_ValueError("image data is incorrect size");
+                    mp_raise_ValueError(MP_ERROR_TEXT("image data is incorrect size"));
                 }
                 for(mp_int_t i = 0; i < w*h; i++)
                 {
@@ -330,7 +330,7 @@ STATIC mp_obj_t mpython_image_make_new(const mp_obj_type_t *type_in, mp_uint_t n
         }
 
         default: {
-            mp_raise_TypeError("Image() takes 0 to 3 arguments");
+            mp_raise_TypeError(MP_ERROR_TEXT("Image() takes 0 to 3 arguments"));
         }
     }
 }
@@ -428,7 +428,7 @@ mp_obj_t mpython_image_get_pixel(mp_obj_t self_in, mp_obj_t x_in, mp_obj_t y_in)
     mp_int_t y = mp_obj_get_int(y_in);
     color_t col;
     if (x < 0 || y < 0) {
-        mp_raise_ValueError("index cannot be negative");
+        mp_raise_ValueError(MP_ERROR_TEXT("index cannot be negative"));
     }
     if (x < self->width && y < self->height) {
         col = imageGetPixelValue(self, x, y);
@@ -439,14 +439,14 @@ mp_obj_t mpython_image_get_pixel(mp_obj_t self_in, mp_obj_t x_in, mp_obj_t y_in)
         };
         return mp_obj_new_tuple(3, tuple);
     }
-    mp_raise_ValueError("index too large");
+    mp_raise_ValueError(MP_ERROR_TEXT("index too large"));
 }
 MP_DEFINE_CONST_FUN_OBJ_3(mpython_image_get_pixel_obj, mpython_image_get_pixel);
 
 /* Raise an exception if not mutable */
 static void check_mutability(machine_image_obj_t *self) {
     // if (self->base.five) {
-    //     mp_raise_TypeError("image cannot be modified (try copying first)");
+    //     mp_raise_TypeError(MP_ERROR_TEXT("image cannot be modified (try copying first)"));
     // }
 }
 
@@ -463,7 +463,7 @@ mp_obj_t mpython_image_set_pixel(mp_uint_t n_args, const mp_obj_t *args) {
     {
         bright = mp_obj_get_int(args[3]);
         if (bright < 0 || bright > MAX_BRIGHTNESS) {
-            mp_raise_ValueError("brightness out of bounds");
+            mp_raise_ValueError(MP_ERROR_TEXT("brightness out of bounds"));
         }
         bright = (bright > 1) ? 1 : bright;
         col.r = 20;
@@ -482,7 +482,7 @@ mp_obj_t mpython_image_set_pixel(mp_uint_t n_args, const mp_obj_t *args) {
     
 
     if (x < 0 || y < 0) {
-        mp_raise_ValueError("index cannot be negative");
+        mp_raise_ValueError(MP_ERROR_TEXT("index cannot be negative"));
     }
 
     self->brightness = bright;
@@ -491,7 +491,7 @@ mp_obj_t mpython_image_set_pixel(mp_uint_t n_args, const mp_obj_t *args) {
         imageSetPixelValue(self, x, y, col);
         return mp_const_none;
     }
-    mp_raise_ValueError("index too large");
+    mp_raise_ValueError(MP_ERROR_TEXT("index too large"));
 }
 MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mpython_image_set_pixel_obj, 4, 4, mpython_image_set_pixel);
 
@@ -503,7 +503,7 @@ mp_obj_t mpython_image_fill(mp_obj_t self_in, mp_obj_t n_in) {
     {
         mp_int_t n = mp_obj_get_int(n_in);
         if (n < 0 || n > MAX_BRIGHTNESS) {
-            mp_raise_ValueError("brightness out of bounds");
+            mp_raise_ValueError(MP_ERROR_TEXT("brightness out of bounds"));
         }
         n = (n > 1) ? 1 : n;
         self->brightness = n;
@@ -531,17 +531,17 @@ mp_obj_t mpython_image_blit(mp_uint_t n_args, const mp_obj_t *args) {
 
     mp_obj_t src = args[1];
     if (mp_obj_get_type(src) != &machine_image_type) {
-        mp_raise_TypeError("expecting an image");
+        mp_raise_TypeError(MP_ERROR_TEXT("expecting an image"));
     }
     if (n_args == 7) {
-        mp_raise_TypeError("must specify both offsets");
+        mp_raise_TypeError(MP_ERROR_TEXT("must specify both offsets"));
     }
     mp_int_t x = mp_obj_get_int(args[2]);
     mp_int_t y = mp_obj_get_int(args[3]);
     mp_int_t w = mp_obj_get_int(args[4]);
     mp_int_t h = mp_obj_get_int(args[5]);
     if (w < 0 || h < 0) {
-        mp_raise_ValueError("size cannot be negative");
+        mp_raise_ValueError(MP_ERROR_TEXT("size cannot be negative"));
     }
     mp_int_t xdest;
     mp_int_t ydest;
@@ -737,7 +737,7 @@ machine_image_obj_t *mpython_image_for_char(char c, mp_int_t bright, color_t col
 /* 调整整体亮度，fval：亮度倍数 */
 void mpython_image_dim(machine_image_obj_t *lhs, mp_float_t fval) {
     if (fval < 0)
-        mp_raise_ValueError("brightness multiplier must not be negative");
+        mp_raise_ValueError(MP_ERROR_TEXT("brightness multiplier must not be negative"));
 
     lhs->brightness = min((int)(lhs->brightness*fval+0.5), MAX_BRIGHTNESS);
 }
@@ -747,7 +747,7 @@ machine_image_obj_t *mpython_image_sum(machine_image_obj_t *lhs, machine_image_o
     mp_int_t h = lhs->height;
     mp_int_t w = lhs->width;
     if (rhs->height != h || lhs->width != w) {
-        mp_raise_ValueError("images must be the same size");
+        mp_raise_ValueError(MP_ERROR_TEXT("images must be the same size"));
     }
     machine_image_obj_t *result = image_make_new(w, h, 9);
     color_t c1, c2;

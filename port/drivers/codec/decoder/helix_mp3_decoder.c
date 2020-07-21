@@ -244,7 +244,7 @@ void mp3_decoder_task(void *pvParameters)
     }
     if(!decoder || !readBuf || !output || !decoder->HMP3Decoder)
     {
-        mp_raise_ValueError("No enought memory for decoder.");
+        mp_raise_ValueError(MP_ERROR_TEXT("No enought memory for decoder."));
     }
 
     decoder->bytesleft = 0;

@@ -241,15 +241,15 @@ static inline void run_self_test(void)
     result = mpu_run_self_test(gyro, accel);
 #endif
     if (result == 0x7) {
-	MPL_LOGI("Passed!\n");
-        MPL_LOGI("accel: %7.4f %7.4f %7.4f\n",
-                    accel[0]/65536.f,
-                    accel[1]/65536.f,
-                    accel[2]/65536.f);
-        MPL_LOGI("gyro: %7.4f %7.4f %7.4f\n",
-                    gyro[0]/65536.f,
-                    gyro[1]/65536.f,
-                    gyro[2]/65536.f);
+	    MPL_LOGI("Passed!\n");
+        // MPL_LOGI("accel: %7.4f %7.4f %7.4f\n",
+        //             accel[0]/65536.f,
+        //             accel[1]/65536.f,
+        //             accel[2]/65536.f);
+        // MPL_LOGI("gyro: %7.4f %7.4f %7.4f\n",
+        //             gyro[0]/65536.f,
+        //             gyro[1]/65536.f,
+        //             gyro[2]/65536.f);
         /* Test passed. We can trust the gyro data here, so now we need to update calibrated data*/
 
 #ifdef USE_CAL_HW_REGISTERS

@@ -56,7 +56,7 @@ void mpython_display_show(machine_display_obj_t *display, machine_image_obj_t *i
     color_t color;
     mp_int_t bright = image->brightness;
     if (bright < 0 || bright > MAX_BRIGHTNESS) {
-        mp_raise_ValueError("brightness out of bounds");
+        mp_raise_ValueError(MP_ERROR_TEXT("brightness out of bounds"));
     }
     bright = (bright > 1) ? 1 : bright;
     for (; x < w; ++x) {
@@ -224,7 +224,7 @@ static void draw_object(mp_obj_t obj) {
             async_stop();
         }
     } else {
-        MP_STATE_VM(mp_pending_exception) = mp_obj_new_exception_msg(&mp_type_TypeError, "not an image");
+        MP_STATE_VM(mp_pending_exception) = mp_obj_new_exception_msg(&mp_type_TypeError, MP_ERROR_TEXT("not an image"));
         async_stop();
     }
 }
@@ -399,10 +399,10 @@ MP_DEFINE_CONST_FUN_OBJ_1(mpython_display_clear_obj, mpython_display_clear_func)
 
 void mpython_display_set_pixel(machine_display_obj_t *display, mp_int_t x, mp_int_t y, mp_int_t bright, color_t color) {
     if (x < 0 || y < 0 || x > 4 || y > 4) {
-        mp_raise_ValueError("index out of bounds");
+        mp_raise_ValueError(MP_ERROR_TEXT("index out of bounds"));
     }
     if (bright < 0 || bright > MAX_BRIGHTNESS) {
-        mp_raise_ValueError("brightness out of bounds");
+        mp_raise_ValueError(MP_ERROR_TEXT("brightness out of bounds"));
     }
     mp_int_t _bright = (bright > 1) ? 1 : bright;
     display->image_buffer[y][x].r = _bright*color.r;
@@ -422,7 +422,7 @@ STATIC mp_obj_t mpython_display_set_pixel_func(mp_uint_t n_args, const mp_obj_t 
     {
         bright = mp_obj_get_int(args[3]);
         if (bright < 0 || bright > MAX_BRIGHTNESS) {
-            mp_raise_ValueError("brightness out of bounds");
+            mp_raise_ValueError(MP_ERROR_TEXT("brightness out of bounds"));
         }
         bright = (bright > 1) ? 1 : bright;
         col.r =  20;
@@ -446,7 +446,7 @@ MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mpython_display_set_pixel_obj, 4, 4, mpython
 
 color_t mpython_display_get_pixel(machine_display_obj_t *display, mp_int_t x, mp_int_t y) {
     if (x < 0 || y < 0 || x > 4 || y > 4) {
-        mp_raise_ValueError("index out of bounds");
+        mp_raise_ValueError(MP_ERROR_TEXT("index out of bounds"));
     }
     color_t col;
     col.r = display->image_buffer[y][x].r;
@@ -469,7 +469,7 @@ MP_DEFINE_CONST_FUN_OBJ_3(mpython_display_get_pixel_obj, mpython_display_get_pix
 
 STATIC mp_obj_t mpython_display_init(mp_obj_t self) {
     (void)self;
-     mp_raise_ValueError("hello ");
+     mp_raise_ValueError(MP_ERROR_TEXT("hello "));
     mpython_display_show(&mpython_display_obj,  BLANK_IMAGE);
     return mp_const_none;
 }

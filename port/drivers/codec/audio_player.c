@@ -163,7 +163,7 @@ void player_play(const char *url)
     }
     else
     {
-        mp_raise_ValueError("no player, please init player first");
+        mp_raise_ValueError(MP_ERROR_TEXT("no player, please init player first"));
     }
 }
 

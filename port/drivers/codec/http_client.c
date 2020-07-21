@@ -52,7 +52,7 @@ static void http_param_init()
     {
         http_param_instance = calloc(1, sizeof(http_param_t));
         if (!http_param_instance)
-            mp_raise_ValueError("Can not calloc http_param.");
+            mp_raise_ValueError(MP_ERROR_TEXT("Can not calloc http_param."));
     }
  
     http_param_instance->http_head = NULL;                    
@@ -240,7 +240,7 @@ static void print_respone()
     char *buffer = calloc(BODY_READ_LEN, sizeof(char));
     if (!buffer)
     {
-        mp_raise_ValueError("Can not calloc buffer.");
+        mp_raise_ValueError(MP_ERROR_TEXT("Can not calloc buffer."));
     }
     
     // ESP_LOGE(TAG,"Not audio stream!");
@@ -280,7 +280,7 @@ void http_request_task(void *pvParameters)
             free(http_param_instance);
             http_param_instance = NULL;
         }
-        mp_raise_ValueError("http client init fail.");
+        mp_raise_ValueError(MP_ERROR_TEXT("http client init fail."));
     }
 
     if(http_request() != 0) //发出http请求

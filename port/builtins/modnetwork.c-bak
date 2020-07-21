@@ -58,54 +58,54 @@
 #define MODNETWORK_INCLUDE_CONSTANTS (1)
 
 NORETURN void _esp_exceptions(esp_err_t e) {
-    switch (e) {
-        case ESP_ERR_WIFI_NOT_INIT:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Not Initialized"));
-        case ESP_ERR_WIFI_NOT_STARTED:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Not Started"));
-        case ESP_ERR_WIFI_NOT_STOPPED:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Not Stopped"));
-        case ESP_ERR_WIFI_IF:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Invalid Interface"));
-        case ESP_ERR_WIFI_MODE:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Invalid Mode"));
-        case ESP_ERR_WIFI_STATE:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Internal State Error"));
-        case ESP_ERR_WIFI_CONN:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Internal Error"));
-        case ESP_ERR_WIFI_NVS:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Internal NVS Error"));
-        case ESP_ERR_WIFI_MAC:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Invalid MAC Address"));
-        case ESP_ERR_WIFI_SSID:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi SSID Invalid"));
-        case ESP_ERR_WIFI_PASSWORD:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Invalid Password"));
-        case ESP_ERR_WIFI_TIMEOUT:
-            mp_raise_OSError(MP_ETIMEDOUT);
-        case ESP_ERR_WIFI_WAKE_FAIL:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Wakeup Failure"));
-        case ESP_ERR_WIFI_WOULD_BLOCK:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Would Block"));
-        case ESP_ERR_WIFI_NOT_CONNECT:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Not Connected"));
-        case ESP_ERR_TCPIP_ADAPTER_INVALID_PARAMS:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("TCP/IP Invalid Parameters"));
-        case ESP_ERR_TCPIP_ADAPTER_IF_NOT_READY:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("TCP/IP IF Not Ready"));
-        case ESP_ERR_TCPIP_ADAPTER_DHCPC_START_FAILED:
-            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("TCP/IP DHCP Client Start Failed"));
-        case ESP_ERR_TCPIP_ADAPTER_NO_MEM:
-            mp_raise_OSError(MP_ENOMEM);
-        default:
-            mp_raise_msg_varg(&mp_type_RuntimeError, MP_ERROR_TEXT("Wifi Unknown Error 0x%04x"), e);
-    }
+   switch (e) {
+      case ESP_ERR_WIFI_NOT_INIT:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Not Initialized"));
+      case ESP_ERR_WIFI_NOT_STARTED:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Not Started"));
+      case ESP_ERR_WIFI_NOT_STOPPED:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Not Stopped"));
+      case ESP_ERR_WIFI_IF:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Invalid Interface"));
+      case ESP_ERR_WIFI_MODE:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Invalid Mode"));
+      case ESP_ERR_WIFI_STATE:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Internal State Error"));
+      case ESP_ERR_WIFI_CONN:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Internal Error"));
+      case ESP_ERR_WIFI_NVS:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Internal NVS Error"));
+      case ESP_ERR_WIFI_MAC:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Invalid MAC Address"));
+      case ESP_ERR_WIFI_SSID:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi SSID Invalid"));
+      case ESP_ERR_WIFI_PASSWORD:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Invalid Password"));
+      case ESP_ERR_WIFI_TIMEOUT:
+        mp_raise_OSError(MP_ETIMEDOUT);
+      case ESP_ERR_WIFI_WAKE_FAIL:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Wakeup Failure"));
+      case ESP_ERR_WIFI_WOULD_BLOCK:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Would Block"));
+      case ESP_ERR_WIFI_NOT_CONNECT:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Not Connected"));
+      case ESP_ERR_TCPIP_ADAPTER_INVALID_PARAMS:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("TCP/IP Invalid Parameters"));
+      case ESP_ERR_TCPIP_ADAPTER_IF_NOT_READY:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("TCP/IP IF Not Ready"));
+      case ESP_ERR_TCPIP_ADAPTER_DHCPC_START_FAILED:
+        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("TCP/IP DHCP Client Start Failed"));
+      case ESP_ERR_TCPIP_ADAPTER_NO_MEM:
+        mp_raise_OSError(MP_ENOMEM);
+      default:
+        nlr_raise(mp_obj_new_exception_msg_varg(
+          &mp_type_RuntimeError, MP_ERROR_TEXT("Wifi Unknown Error 0x%04x"), e
+        ));
+   }
 }
 
 static inline void esp_exceptions(esp_err_t e) {
-    if (e != ESP_OK) {
-        _esp_exceptions(e);
-    }
+    if (e != ESP_OK) _esp_exceptions(e);
 }
 
 #define ESP_EXCEPTIONS(x) do { esp_exceptions(x); } while (0);
@@ -233,7 +233,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event) {
 
 /*void error_check(bool status, const char *msg) {
     if (!status) {
-        mp_raise_msg(&mp_type_OSError, msg);
+        nlr_raise(mp_obj_new_exception_msg(&mp_type_OSError, msg));
     }
 }
 */
@@ -445,7 +445,7 @@ STATIC mp_obj_t esp_scan(mp_obj_t self_in) {
     wifi_mode_t mode;
     ESP_EXCEPTIONS(esp_wifi_get_mode(&mode));
     if ((mode & WIFI_MODE_STA) == 0) {
-        mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("STA must be active"));
+        nlr_raise(mp_obj_new_exception_msg(&mp_type_OSError, MP_ERROR_TEXT("STA must be active")));
     }
 
     mp_obj_t list = mp_obj_new_list(0, NULL);
@@ -627,11 +627,6 @@ STATIC mp_obj_t esp_config(size_t n_args, const mp_obj_t *args, mp_map_t *kwargs
                         ESP_EXCEPTIONS(tcpip_adapter_set_hostname(self->if_id, s));
                         break;
                     }
-                    case QS(MP_QSTR_max_clients): {
-                        req_if = WIFI_IF_AP;
-                        cfg.ap.max_connection = mp_obj_get_int(kwargs->table[i].value);
-                        break;
-                    }
                     default:
                         goto unknown;
                 }
@@ -704,10 +699,6 @@ STATIC mp_obj_t esp_config(size_t n_args, const mp_obj_t *args, mp_map_t *kwargs
             const char *s;
             ESP_EXCEPTIONS(tcpip_adapter_get_hostname(self->if_id, &s));
             val = mp_obj_new_str(s, strlen(s));
-            break;
-        }
-        case QS(MP_QSTR_max_clients): {
-            val = MP_OBJ_NEW_SMALL_INT(cfg.ap.max_connection);
             break;
         }
         default:

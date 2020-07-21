@@ -58,7 +58,7 @@ STATIC mp_obj_t audio_player_init(size_t n_args, const mp_obj_t *args)
         }
     }
     else
-        mp_raise_ValueError("Need a i2c object param.");  
+        mp_raise_ValueError(MP_ERROR_TEXT("Need a i2c object param."));  
     #endif
 
     player_init();
@@ -142,7 +142,7 @@ STATIC mp_obj_t audio_recorder_init(size_t n_args, const mp_obj_t *args)
         }
     }
     else
-        mp_raise_ValueError("Need a i2c object param.");  
+        mp_raise_ValueError(MP_ERROR_TEXT("Need a i2c object param."));  
     #endif
     
     recorder_init();

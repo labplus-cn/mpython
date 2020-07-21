@@ -21,6 +21,8 @@
 // emitters
 #define MICROPY_PERSISTENT_CODE_LOAD        (1)
 #define MICROPY_EMIT_XTENSAWIN              (1)
+void *esp_native_code_commit(void*, size_t);
+#define MP_PLAT_COMMIT_EXEC(buf, len) esp_native_code_commit(buf, len)
 
 // compiler configuration
 #define MICROPY_COMP_MODULE_CONST           (1)
@@ -59,6 +61,7 @@
 #define MICROPY_ENABLE_SCHEDULER            (1)
 #define MICROPY_SCHEDULER_DEPTH             (8)
 #define MICROPY_VFS                         (1)
+#define MICROPY_VFS_FAT                     (1)
 
 // control over Python builtins
 #define MICROPY_PY_FUNCTION_ATTRS           (1)
@@ -73,11 +76,11 @@
 #define MICROPY_PY_BUILTINS_SET             (1)
 #define MICROPY_PY_BUILTINS_SLICE           (1)
 #define MICROPY_PY_BUILTINS_SLICE_ATTRS     (1)
-#define MICROPY_PY_BUILTINS_SLICE_INDICES   (1)
 #define MICROPY_PY_BUILTINS_FROZENSET       (1)
 #define MICROPY_PY_BUILTINS_PROPERTY        (1)
 #define MICROPY_PY_BUILTINS_RANGE_ATTRS     (1)
 #define MICROPY_PY_BUILTINS_ROUND_INT       (1)
+#define MICROPY_PY_BUILTINS_TIMEOUTERROR    (1)
 #define MICROPY_PY_ALL_SPECIAL_METHODS      (1)
 #define MICROPY_PY_BUILTINS_COMPILE         (1)
 #define MICROPY_PY_BUILTINS_ENUMERATE       (1)
@@ -124,7 +127,6 @@
 #define MICROPY_PY_THREAD_GIL_VM_DIVISOR    (32)
 
 // extended modules
-#define MICROPY_PY_UASYNCIO                 (1)
 #define MICROPY_PY_UCTYPES                  (1)
 #define MICROPY_PY_UZLIB                    (1)
 #define MICROPY_PY_UJSON                    (1)
@@ -162,7 +164,7 @@
 #define MICROPY_PY_FRAMEBUF                 (1)
 #define MICROPY_PY_USOCKET_EVENTS           (MICROPY_PY_WEBREPL)
 #define MICROPY_PY_BLUETOOTH_RANDOM_ADDR    (1)
-#define MICROPY_PY_BLUETOOTH_DEFAULT_GAP_NAME ("ESP32")
+#define MICROPY_PY_BLUETOOTH_DEFAULT_NAME   ("ESP32")
 
 // fatfs configuration
 #define MICROPY_FATFS_ENABLE_LFN            (1)
@@ -194,7 +196,7 @@ extern const struct _mp_obj_module_t mp_module_onewire;
 extern const struct _mp_obj_module_t mp_music_module;
 extern const struct _mp_obj_module_t mp_module_audio;
 extern const struct _mp_obj_module_t mp_module_radio;
-// extern const struct _mp_obj_module_t mp_module_xunfeiAI;
+extern const struct _mp_obj_module_t mp_module_xunfeiAI;
 extern const struct _mp_obj_module_t mp_module_servo;
 extern const struct _mp_obj_module_t mp_module_rfid;
 
@@ -211,6 +213,7 @@ extern const struct _mp_obj_module_t mp_module_rfid;
     { MP_OBJ_NEW_QSTR(MP_QSTR_music), (mp_obj_t)&mp_music_module }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_radio), (mp_obj_t)&mp_module_radio }, \
     { MP_ROM_QSTR(MP_QSTR_servo), (mp_obj_t)&mp_module_servo }, \
+    { MP_ROM_QSTR(MP_QSTR_xunfeiAI), MP_ROM_PTR(&mp_module_xunfeiAI) }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_audio), (mp_obj_t)&mp_module_audio }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_rfid), (mp_obj_t)&mp_module_rfid }, \
     BOARD_PORT_BUILTIN_MODULES 
@@ -230,18 +233,16 @@ struct mp_bluetooth_nimble_root_pointers_t;
     const char *readline_hist[8]; \
     mp_obj_t machine_pin_irq_handler[40]; \
     struct _machine_timer_obj_t *machine_timer_obj_head; \
-    MICROPY_PORT_ROOT_POINTER_BLUETOOTH_NIMBLE \
     struct _music_data_t * music_data; \
     void *async_data[2]; \
+    MICROPY_PORT_ROOT_POINTER_BLUETOOTH_NIMBLE \
     MPYTHON_PORT_ROOT_POINTER
 
 // type definitions for the specific machine
 
 #define BYTES_PER_WORD (4)
-#define MICROPY_MAKE_POINTER_CALLABLE(p) ((void *)((mp_uint_t)(p)))
+#define MICROPY_MAKE_POINTER_CALLABLE(p) ((void*)((mp_uint_t)(p)))
 #define MP_PLAT_PRINT_STRN(str, len) mp_hal_stdout_tx_strn_cooked(str, len)
-void *esp_native_code_commit(void *, size_t, void *);
-#define MP_PLAT_COMMIT_EXEC(buf, len, reloc) esp_native_code_commit(buf, len, reloc)
 #define MP_SSIZE_MAX (0x7fffffff)
 
 // Note: these "critical nested" macros do not ensure cross-CPU exclusion,
@@ -260,8 +261,8 @@ void *esp_native_code_commit(void *, size_t, void *);
 #if MICROPY_PY_THREAD
 #define MICROPY_EVENT_POLL_HOOK \
     do { \
-        extern void mp_handle_pending(bool); \
-        mp_handle_pending(true); \
+        extern void mp_handle_pending(void); \
+        mp_handle_pending(); \
         MICROPY_PY_USOCKET_EVENTS_HANDLER \
         MP_THREAD_GIL_EXIT(); \
         MP_THREAD_GIL_ENTER(); \
@@ -269,15 +270,12 @@ void *esp_native_code_commit(void *, size_t, void *);
 #else
 #define MICROPY_EVENT_POLL_HOOK \
     do { \
-        extern void mp_handle_pending(bool); \
-        mp_handle_pending(true); \
+        extern void mp_handle_pending(void); \
+        mp_handle_pending(); \
         MICROPY_PY_USOCKET_EVENTS_HANDLER \
-        asm ("waiti 0"); \
+        asm("waiti 0"); \
     } while (0);
 #endif
-
-// Functions that should go in IRAM
-#define MICROPY_WRAP_MP_KEYBOARD_INTERRUPT(f) IRAM_ATTR f
 
 #define UINT_FMT "%u"
 #define INT_FMT "%d"

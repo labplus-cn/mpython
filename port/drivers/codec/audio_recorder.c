@@ -140,7 +140,7 @@ void recorder_record(const char *filename, int time)
         /* make wav head */
         wav_header_t *wav_header = calloc(1, sizeof(wav_header_t));
         if (!wav_header)
-            mp_raise_ValueError("Can not alloc enough memory to make wav head.");
+            mp_raise_ValueError(MP_ERROR_TEXT("Can not alloc enough memory to make wav head."));
         wav_head_init(wav_header, renderer->sample_rate, renderer->bit_depth, renderer->i2s_channal_nums, data_len);
         file_write(F, &write_bytes, (uint8_t *)wav_header, sizeof(wav_header_t));
         free(wav_header);
@@ -149,7 +149,7 @@ void recorder_record(const char *filename, int time)
         for (int i = 0; i < blocks; i++){
             read_buff[i] = (uint8_t *)m_new(uint8_t, REC_BLOCK_LEN);
             if (!read_buff[i])
-                mp_raise_ValueError("Can not alloc enough memory to record.");
+                mp_raise_ValueError(MP_ERROR_TEXT("Can not alloc enough memory to record."));
         }
 
         #if MICROPY_BUILDIN_ADC
@@ -179,11 +179,11 @@ void recorder_record(const char *filename, int time)
         // uint16_t read_buf_len = 1024*3;
         // read_buff = (uint8_t *)m_new(uint8_t, read_buf_len); 
         // if (!read_buff)
-        //     mp_raise_ValueError("Can not alloc enough memory to record.");
+        //     mp_raise_ValueError(MP_ERROR_TEXT("Can not alloc enough memory to record."));
         // // uint8_t *write_buff = calloc(renderer->i2s_read_buff_size, sizeof(uint8_t));
         // wav_header_t *wav_header = calloc(1, sizeof(wav_header_t));
         // if (!wav_header)
-        //     mp_raise_ValueError("Can not alloc enough memory to make wav head.");
+        //     mp_raise_ValueError(MP_ERROR_TEXT("Can not alloc enough memory to make wav head."));
         // wav_head_init(wav_header, renderer->sample_rate, renderer->bit_depth, renderer->i2s_channal_nums, data_len);
         // file_write(F, &write_bytes, (uint8_t *)wav_header, sizeof(wav_header_t));
         // // ESP_LOGE(TAG, "i2s_read_buff_size: %d, datasize:%d", renderer->i2s_read_buff_size, 32 * recorder->recorde_time); //samplerate:16000 32byts/ms
