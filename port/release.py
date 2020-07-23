@@ -3,13 +3,15 @@ import sys
 OFFSET_BOOTLOADER = 0x1000
 OFFSET_PARTITIONS = 0x8000
 OFFSET_APPLICATION = 0x10000
+OFFSET_FONT = 0x400000
 
 files_in = [
     ('bootloader', OFFSET_BOOTLOADER, sys.argv[1]),
     ('partitions', OFFSET_PARTITIONS, sys.argv[2]),
     ('application', OFFSET_APPLICATION, sys.argv[3]),
+    ('font', OFFSET_FONT, sys.argv[4]),
 ]
-file_out = sys.argv[4]
+file_out = sys.argv[5]
 
 cur_offset = 0
 with open(file_out, 'wb') as fout:
