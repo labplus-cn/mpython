@@ -16,7 +16,7 @@
 #define ROT_MATRIX_SCALE_FLOAT (1073741824.0f)
 #define ROT_MATRIX_LONG_TO_FLOAT( longval ) \
     ((float) ((longval) / ROT_MATRIX_SCALE_FLOAT ))
-#define SIGNM(k)((int)(k)&1?-1:1)
+#define SIGNM(k) ((int)(k)&1?-1:1)
 #define SIGNSET(x) ((x) ? -1 : +1)
 
 #define INV_TWO_POWER_NEG_30 9.313225746154785e-010f

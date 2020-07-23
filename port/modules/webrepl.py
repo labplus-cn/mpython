@@ -1,1 +1,1 @@
-../../micropython/ports/esp8266/modules/webrepl.py
+../../micropython/extmod/webrepl/webrepl.py

@@ -32,7 +32,7 @@
 
 #define BODY_READ_LEN 64
 #define READ_BUFF_LEN 2048
-static const char *TAG = "LOCAL_FILE";
+// static const char *TAG = "LOCAL_FILE";
 extern TaskHandle_t mp3_decode_task_handel;
 
 
