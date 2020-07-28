@@ -902,7 +902,7 @@ erase:
 	$(ECHO) "Erasing flash"
 	$(Q)$(ESPTOOL) --chip esp32 --port $(PORT) --baud $(BAUD) erase_flash
 
-$(BUILD)/$(FIRMWARE_NAME).bin: $(BUILD)/bootloader.bin $(BUILD)/partitions.bin $(BUILD)/application.bin
+$(BUILD)/$(FIRMWARE_NAME).bin: $(BUILD)/bootloader.bin $(BUILD)/partitions.bin $(BUILD)/application.bin Noto_Sans_CJK_SC_Light16.bin
 	$(ECHO) "Create $@, with address from 0"
 	$(Q)$(PYTHON) release.py $^ $@
 
