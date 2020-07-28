@@ -610,7 +610,7 @@ gyroscope = motion.gyroscope
 magnetic = Magnetic()
 
 # 3 rgb leds
-rgb = NeoPixel(Pin(4, Pin.OUT), 3, 3, 1)
+rgb = NeoPixel(Pin(17, Pin.OUT), 3, 3, 1)
 rgb.write()
 
 # light sensor

@@ -14,9 +14,9 @@ class APU:
         # 使用REPL接口协议
         self.repl = REPL(self.serial)
         # 等待K210复位完成
-        time.sleep(3)
+        time.sleep(4)
 
-        self.repl.enter_raw_repl(5)
+        self.repl.enter_raw_repl()
         # try:
         #     self.repl.enter_raw_repl(5, True)
         # except:
