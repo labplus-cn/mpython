@@ -326,7 +326,10 @@ void http_request_task(void *pvParameters)
         case RUNNING:
             err = http_get_data(client);
             if(err == -1)
+            {
+                player->player_status = STOPPED; 
                 break;
+            }
             if(http_param_instance->content_type == AUDIO_WAV) //wav音频直接送I2S
             {
                 ringBufRemainBytes = RINGBUF_SIZE - xRingbufferGetCurFreeSize(player->buf_handle);
@@ -362,7 +365,11 @@ void http_request_task(void *pvParameters)
     }
 
     abort:
-    player->player_status = STOPPED;  //stop会触发decode任务结束
+    if(err != -1)
+    {
+        player->player_status = END;  //正常播放结束
+    }
+    
     if(client){
         esp_http_client_close(client);
         esp_http_client_cleanup(client);

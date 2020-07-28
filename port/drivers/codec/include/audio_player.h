@@ -32,7 +32,7 @@ typedef enum {
 } audio_type_t;
 
 typedef enum {
-    UNINITIALIZED, INITIALIZED, RUNNING, STOPPED, PAUSED
+    UNINITIALIZED, INITIALIZED, RUNNING, STOPPED, PAUSED, END
 } player_status_t, component_status_t;
 
 typedef enum {

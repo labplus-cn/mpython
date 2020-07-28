@@ -261,6 +261,9 @@ void mp3_decoder_task(void *pvParameters)
             mp3_decode(decoder);
             break;
         case STOPPED:
+            decode_status = -2;
+            break;
+        case END:
             decode_status = -1;
             break;
         case PAUSED:
@@ -272,15 +275,17 @@ void mp3_decoder_task(void *pvParameters)
 
         if(decode_status == -1)
         {
-            if (decoder->bytesleft > 0) //正常结束，需把缓存剩余的数据解码完
+            if (decoder->bytesleft > 0) //正常播放结束，需把缓存剩余的数据解码完
             {  
                 while(0 != mp3_decode(decoder)); 
             } 
-            
-            renderer_zero_dma_buffer();
             break;
         }
+        else if(decode_status == -2) //停止命令
+            break;
     } 
+
+    renderer_zero_dma_buffer();
 
     if (readBuf){
         m_del(char, readBuf, MAINBUF_SIZE1);
