@@ -81,8 +81,7 @@ def request(method, url, data=None, json=None, headers={}, stream=None, params=N
     if isinstance(data, tuple):
       data = dict(data)
     if isinstance(data, dict):
-      if not 'ujson' in globals():
-        import ujson
+      from urllib.parse import urlencode
       data = urlencode(data)
       _headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8'
 
