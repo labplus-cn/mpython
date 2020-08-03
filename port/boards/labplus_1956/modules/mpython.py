@@ -71,14 +71,14 @@ class Motion():
         while not motion_mpu6050.accel():
             pass
 
-    def get_accel(self):
-        n =  list(motion_mpu6050.accel())
-        n[0] = -n[0]
-        n[2] = -n[2]
-        return tuple([i/65536 for i in n])
+    # def get_accel(self):
+    #     n =  list(motion_mpu6050.accel())
+    #     n[0] = -n[0]
+    #     n[2] = -n[2]
+    #     return tuple([i/65536 for i in n])
 
-    def get_gyro(self):
-        return tuple([i/65536 for i in motion_mpu6050.gyro()])
+    # def get_gyro(self):
+    #     return tuple([i/65536 for i in motion_mpu6050.gyro()])
 
     # output following: Pitch: -180 to 180 Roll: -90 to 90 Yaw: -180 to 180
     def get_euler(self):
@@ -210,7 +210,6 @@ class Magnetic(object):
         self.i2c.writeto(self.addr, b'\x00', False)
         buf = self.i2c.readfrom(self.addr, 6)
         data = ustruct.unpack('>3H', buf)
-        print(data)
 
         self.i2c.writeto(self.addr, b'\x09\x10', True)  #reset
 
@@ -224,11 +223,10 @@ class Magnetic(object):
         self.i2c.writeto(self.addr, b'\x00', False)
         buf = self.i2c.readfrom(self.addr, 6)
         data1 = ustruct.unpack('>3H', buf)
-        print(data1)
 
         self.raw_x = -((data[0] - data1[0])/2)
-        self.raw_y = -((data[1] - data1[1])/2)
-        self.raw_z = -((data[2] - data1[2])/2)
+        self.raw_y = ((data[1] - data1[1])/2)
+        self.raw_z = ((data[2] - data1[2])/2)
         # print(str(self.x) + "   " + str(self.y) + "  " + str(self.z))
 
     def peeling(self):
@@ -273,12 +271,7 @@ class Magnetic(object):
         return (math.sqrt(self.raw_x * self.raw_x + self.raw_y * self.raw_y + self.raw_z * self.raw_z))*0.25
 
     def calibrate(self):
-        oled.fill(0)
-        oled.DispChar("步骤1:", 0,0,1)
-        oled.DispChar("如图",0,26,1)
-        oled.DispChar("转几周",0,43,1)
-        oled.bitmap(64,0,calibrate_img.rotate,64,64,1)
-        oled.show()
+
         self._get_raw()
         min_x = max_x = self.raw_x
         min_y = max_y = self.raw_y
@@ -294,12 +287,6 @@ class Magnetic(object):
         self.cali_offset_x = (max_x + min_x) / 2
         self.cali_offset_y = (max_y + min_y) / 2
         print('cali_offset_x: ' + str(self.cali_offset_x) + '  cali_offset_y: ' + str(self.cali_offset_y))
-        oled.fill(0)
-        oled.DispChar("步骤2:", 85,0,1)
-        oled.DispChar("如图",85,26,1)
-        oled.DispChar("转几周",85,43,1)
-        oled.bitmap(0,0,calibrate_img.rotate1,64,64,1)
-        oled.show()
         ticks_start = time.ticks_ms()
         while (time.ticks_diff(time.ticks_ms(), ticks_start) < 15000) :
             self._get_raw()
@@ -313,10 +300,7 @@ class Magnetic(object):
         print('cali_offset_z: ' + str(self.cali_offset_z))
         # print('cali_offset_y: ' + str(self.cali_offset_y))
 
-        oled.fill(0)
-        oled.DispChar("校准完成", 40,24,1)
-        oled.show()
-        oled.fill(0)
+
 
     def get_heading(self):
         self._get_raw()
@@ -369,7 +353,7 @@ class Magnetic(object):
             try:
                 self.i2c.writeto(self.addr, bytearray([0x2f]), False)
                 buf = self.i2c.readfrom(self.addr, 1, True)
-                print(buf)
+                # print(buf)
                 id = ustruct.unpack('B', buf)[0]
                 return id
             except:
@@ -497,8 +481,8 @@ class MPythonPin():
         except IndexError:
             raise IndexError("Out of Pin range")
         if mode == PinMode.IN:
-            if pin in [3]:
-                raise TypeError('IN not supported on P%d' % pin)
+            # if pin in [3]:
+            #     raise TypeError('IN not supported on P%d' % pin)
             self.Pin = Pin(self.id, Pin.IN, pull)
         if mode == PinMode.OUT:
             if pin in [2, 3]:
@@ -626,17 +610,35 @@ gyroscope = motion.gyroscope
 magnetic = Magnetic()
 
 # 3 rgb leds
-rgb = NeoPixel(Pin(4, Pin.OUT), 25, 3, 1)
+rgb = NeoPixel(Pin(17, Pin.OUT), 3, 3, 1)
 rgb.write()
 
 # light sensor
 light = ADC(Pin(39))
 light.atten(light.ATTN_11DB)
 
+# sound sensor
+class sound():
+
+    @staticmethod
+    def init():
+        audio.recorder_init()
+        audio.set_volume(0)
+
+    @staticmethod
+    def deinit():
+        audio.recorder_deinit()
+
+    @staticmethod
+    def read():
+        loudness = audio.loudness()
+        if loudness:
+            return loudness
+
 # buttons
 button_a = Pin(0, Pin.IN, Pin.PULL_UP)
 button_b = Pin(2, Pin.IN, Pin.PULL_UP)
-button_c = Pin(17, Pin.IN, Pin.PULL_UP)
+button_c = Pin(4, Pin.IN, Pin.PULL_UP)
 
 
 

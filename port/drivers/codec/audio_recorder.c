@@ -47,14 +47,14 @@ void example_disp_buf(uint8_t* buf, int length)
     printf("======\n");
 }
 
-inline void adc_data_scale( uint8_t* s_buff, uint32_t len)
+__attribute__ ((gnu_inline))inline void adc_data_scale( uint8_t* s_buff, uint32_t len)
 {
     uint32_t j = 0;
     uint32_t dac_value;
 
     for (int i = 0; i < len; i += 2) {
         dac_value = ((((uint16_t) (s_buff[i + 1] & 0xf) << 8) | ((s_buff[i + 0]))));
-        dac_value = (dac_value - 2048 - 300) << 4; 
+        dac_value = (dac_value - 2047 - 300) << 4; 
         s_buff[j++] = dac_value & 0xff;
         s_buff[j++] = (dac_value >> 8) & 0xff;
     }
@@ -64,6 +64,17 @@ inline void adc_data_scale( uint8_t* s_buff, uint32_t len)
 static void i2s_adc_data_scale1(int16_t * d_buff, uint8_t* s_buff, uint32_t len)
 {
     uint32_t j = 0;
+
+    #if MICROPY_BUILDIN_ADC
+    uint16_t dac_value;
+    int16_t tmp;
+
+    for (int i = 0; i < len; i += 2) {
+        dac_value = ((((uint16_t) (s_buff[i + 1] & 0xf) << 8) | ((s_buff[i + 0]))));
+        tmp = dac_value - 2047 - 300; 
+        d_buff[j++] = (tmp < 0)?(-tmp):tmp;
+    }
+    #else          
     renderer_config_t *renderer = renderer_get();
 
     if(renderer->bit_depth == I2S_BITS_PER_SAMPLE_16BIT) 
@@ -76,6 +87,7 @@ static void i2s_adc_data_scale1(int16_t * d_buff, uint8_t* s_buff, uint32_t len)
         }
         // printf("\r\n");
     }
+    #endif
 }
 
 int cmpfunc (const void * a, const void * b)
@@ -128,7 +140,7 @@ void recorder_record(const char *filename, int time)
         /* make wav head */
         wav_header_t *wav_header = calloc(1, sizeof(wav_header_t));
         if (!wav_header)
-            mp_raise_ValueError("Can not alloc enough memory to make wav head.");
+            mp_raise_ValueError(MP_ERROR_TEXT("Can not alloc enough memory to make wav head."));
         wav_head_init(wav_header, renderer->sample_rate, renderer->bit_depth, renderer->i2s_channal_nums, data_len);
         file_write(F, &write_bytes, (uint8_t *)wav_header, sizeof(wav_header_t));
         free(wav_header);
@@ -137,7 +149,7 @@ void recorder_record(const char *filename, int time)
         for (int i = 0; i < blocks; i++){
             read_buff[i] = (uint8_t *)m_new(uint8_t, REC_BLOCK_LEN);
             if (!read_buff[i])
-                mp_raise_ValueError("Can not alloc enough memory to record.");
+                mp_raise_ValueError(MP_ERROR_TEXT("Can not alloc enough memory to record."));
         }
 
         #if MICROPY_BUILDIN_ADC
@@ -167,11 +179,11 @@ void recorder_record(const char *filename, int time)
         // uint16_t read_buf_len = 1024*3;
         // read_buff = (uint8_t *)m_new(uint8_t, read_buf_len); 
         // if (!read_buff)
-        //     mp_raise_ValueError("Can not alloc enough memory to record.");
+        //     mp_raise_ValueError(MP_ERROR_TEXT("Can not alloc enough memory to record."));
         // // uint8_t *write_buff = calloc(renderer->i2s_read_buff_size, sizeof(uint8_t));
         // wav_header_t *wav_header = calloc(1, sizeof(wav_header_t));
         // if (!wav_header)
-        //     mp_raise_ValueError("Can not alloc enough memory to make wav head.");
+        //     mp_raise_ValueError(MP_ERROR_TEXT("Can not alloc enough memory to make wav head."));
         // wav_head_init(wav_header, renderer->sample_rate, renderer->bit_depth, renderer->i2s_channal_nums, data_len);
         // file_write(F, &write_bytes, (uint8_t *)wav_header, sizeof(wav_header_t));
         // // ESP_LOGE(TAG, "i2s_read_buff_size: %d, datasize:%d", renderer->i2s_read_buff_size, 32 * recorder->recorde_time); //samplerate:16000 32byts/ms
@@ -216,7 +228,11 @@ uint32_t recorder_loudness()
     free(read_buff);
     free(d_buff);
 
+    #if MICROPY_BUILDIN_ADC
+    return loudness;
+    #else          
     return loudness >> 4;
+    #endif
 }
 
 void recorder_deinit()

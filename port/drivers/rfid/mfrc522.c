@@ -215,7 +215,7 @@ uint8_t RFID_IncDecCardBlock(uint8_t dd_mode, uint8_t blockAddr, int32_t pValue)
 {
   char status;
   unsigned int  unLen;
-  uint8_t i, buff[16];
+  uint8_t buff[16];
 
   buff[0] = dd_mode;
   buff[1] = blockAddr;

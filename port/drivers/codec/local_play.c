@@ -32,7 +32,7 @@
 
 #define BODY_READ_LEN 64
 #define READ_BUFF_LEN 2048
-static const char *TAG = "LOCAL_FILE";
+// static const char *TAG = "LOCAL_FILE";
 extern TaskHandle_t mp3_decode_task_handel;
 
 
@@ -196,10 +196,10 @@ void local_play(void *pvParameters)
         {
             if(player->content_type == AUDIO_MPEG)
             {
-                if(data_read(file, buffer) == -1){  //往ringbuf填数据
+                if(data_read(file, buffer) == -1){  //往ringbuf填数据， -1 文件结束
                     player->eof = true;
                     // ESP_LOGE(TAG, "File read end.");
-                    player->player_status = STOPPED;
+                    player->player_status = END;
                 }
             }
             else if((player->content_type == AUDIO_PCM) || (player->content_type == AUDIO_WAV))
@@ -232,7 +232,7 @@ void local_play(void *pvParameters)
             }
         }
 
-        if(player->player_status == STOPPED){
+        if((player->player_status == STOPPED) || (player->player_status == END)){
             // ESP_LOGE(TAG, "Recieved stop command, break.");
             break;
         }

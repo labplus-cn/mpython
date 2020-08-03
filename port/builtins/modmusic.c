@@ -43,7 +43,7 @@
 #define music_acquire_pin(pin)      mcpwm_gpio_init(MCPWM_UNIT_1, MCPWM0A, (pin))
 #define music_free_pin(pin)         gpio_reset_pin(pin)
 
-inline void music_init_contorl(void) {
+__attribute__ ((gnu_inline))inline void music_init_contorl(void) {
     mcpwm_config_t pwm_config;
     pwm_config.frequency = 500;    //frequency = 50Hz, i.e. for every servo motor time period should be 20ms
     pwm_config.cmpr_a = 0;    //duty cycle of PWMxA = 0
@@ -345,7 +345,7 @@ STATIC mp_obj_t mpython_music_play(mp_uint_t n_args, const mp_obj_t *pos_args, m
     // get the pin to play on
     int wanted_pin = args[1].u_int;
     if(!GPIO_IS_VALID_OUTPUT_GPIO(wanted_pin)) {
-        mp_raise_ValueError("invalid output pin");
+        mp_raise_ValueError(MP_ERROR_TEXT("invalid output pin"));
     }
     music_acquire_pin(wanted_pin);
     
@@ -398,7 +398,7 @@ STATIC mp_obj_t mpython_music_pitch(mp_uint_t n_args, const mp_obj_t *pos_args, 
         music_data->async_pin = -1;
     }
     if(!GPIO_IS_VALID_OUTPUT_GPIO(pin)) {
-        mp_raise_ValueError("invalid output pin");
+        mp_raise_ValueError(MP_ERROR_TEXT("invalid output pin"));
     }
     music_acquire_pin(pin);
     
@@ -408,7 +408,7 @@ STATIC mp_obj_t mpython_music_pitch(mp_uint_t n_args, const mp_obj_t *pos_args, 
         music_free_pin(pin);
     } else if (music_set_frequecty(frequency)) {
         music_free_pin(pin);
-        mp_raise_ValueError("invalid pitch");
+        mp_raise_ValueError(MP_ERROR_TEXT("invalid pitch"));
     }
     if (duration >= 0) {
         // use async machinery to stop the pitch after the duration

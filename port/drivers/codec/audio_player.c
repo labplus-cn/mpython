@@ -163,7 +163,7 @@ void player_play(const char *url)
     }
     else
     {
-        mp_raise_ValueError("no player, please init player first");
+        mp_raise_ValueError(MP_ERROR_TEXT("no player, please init player first"));
     }
 }
 
@@ -189,20 +189,28 @@ void player_stop()
     EventBits_t uxBits;
     if(player_instance)
     { 
-        renderer_stop();
-        player_instance->player_status = STOPPED;
+        if((player_instance->player_status == RUNNING) || (player_instance->player_status == PAUSED)){
+            renderer_stop();
+            if(player_instance->player_status == PAUSED)
+            {
+                player_instance->player_status = RUNNING;
+                vTaskResume( mp3_decode_task_handel );
+                vTaskResume( http_client_task_handel );
+            }
+            player_instance->player_status = STOPPED;
 
-        //等待播放任务结束
-        uxBits = xEventGroupWaitBits(
-                    xEventGroup,    // The event group being tested.
-                    BIT_0 | BIT_1,  // The bits within the event group to wait for.
-                    pdTRUE,         // BIT_0 and BIT_4 should be cleared before returning.
-                    pdTRUE,         // wait for both bits, either bit will do.
-                    portMAX_DELAY ); // Wait a maximum of 100ms for either bit to be set.
+            //等待播放任务结束
+            uxBits = xEventGroupWaitBits(
+                        xEventGroup,    // The event group being tested.
+                        BIT_0 | BIT_1,  // The bits within the event group to wait for.
+                        pdTRUE,         // BIT_0 and BIT_4 should be cleared before returning.
+                        pdTRUE,         // wait for both bits, either bit will do.
+                        portMAX_DELAY ); // Wait a maximum of 100ms for either bit to be set.
 
-        if( ( uxBits & BIT_1) !=  BIT_1 )
-        {
-            mp_warning(NULL, "Cant not stop player.");
+            if( ( uxBits & BIT_1) !=  BIT_1 )
+            {
+                mp_warning(NULL, "Cant not stop player.");
+            }
         }
     }
     else

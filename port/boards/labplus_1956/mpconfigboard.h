@@ -1,8 +1,8 @@
-#define MICROPY_HW_BOARD_NAME "mpython-classroom-kit"
+#define MICROPY_HW_BOARD_NAME "labplus1956"
 #define MICROPY_HW_MCU_NAME "ESP32"
 
-#define MICROPY_BUILDIN_ADC                 (0)
-#define MICROPY_BUILDIN_DAC                 (0)
+#define MICROPY_BUILDIN_ADC                 (1)
+#define MICROPY_BUILDIN_DAC                 (1)
 
 extern const struct _mp_obj_module_t mp_module_motion;
 extern const struct _mp_obj_module_t mp_module_rgbLED5x5;

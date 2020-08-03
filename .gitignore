@@ -40,3 +40,4 @@ mpy-cross/*.map
 py/__pycache__/*
 pymakr.conf
 **/__pycache__/
+build-venv/

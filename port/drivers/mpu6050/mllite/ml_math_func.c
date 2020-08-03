@@ -526,17 +526,15 @@ void inv_matrix_det_incd(double *a, double *b, int *n, int x, int y)
 float inv_matrix_det(float *p, int *n)
 {
     float d[6][6], sum = 0;
-    int i, j, m;
+    int i, j, m, a;
     m = *n;
     if (*n == 2)
         return (*p ** (p + 7) - *(p + 1) ** (p + 6));
     for (i = 0, j = 0; j < m; j++) {
         *n = m;
         inv_matrix_det_inc(p, &d[0][0], n, i, j);
-        sum =
-            sum + *(p + 6 * i + j) * SIGNM(i +
-                                            j) *
-            inv_matrix_det(&d[0][0], n);
+        a = SIGNM(i +j);
+        sum = sum + *(p + 6 * i + j) * (a) * inv_matrix_det(&d[0][0], n);
     }
 
     return (sum);

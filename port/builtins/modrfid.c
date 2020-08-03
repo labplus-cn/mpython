@@ -11,7 +11,7 @@
 
 #define MFRC522_ADDR (47) 
 #define MAX_LEN (16)
-static const char *TAG = "RFID";
+// static const char *TAG = "RFID";
 static mp_obj_base_t *i2c_obj = NULL;
 //原扇区A密码，16个扇区，每个扇区密码6Byte
 static uint8_t sectorKeyA[16][6] = {
@@ -72,7 +72,7 @@ STATIC mp_obj_t mfrc522_anticoll(void) {
 MP_DEFINE_CONST_FUN_OBJ_0(mfrc522_anticoll_obj, mfrc522_anticoll);
 
 STATIC mp_obj_t mfrc522_select_tag(mp_obj_t serialNum) {
-    unsigned char str[MAX_LEN];
+    // unsigned char str[MAX_LEN];
     uint8_t serNum[5];       // 4字节卡序列号，第5字节为校验字节
     mp_obj_t *elem;\
     uint16_t size;

@@ -65,7 +65,7 @@ void radio_enable(void) {
         // espnow init
         radio_recv_queue = xQueueCreate(RADIO_QUEUE_SIZE_DEFUALT, sizeof(radio_recv_event_t));
         if (radio_recv_queue == NULL) {
-            mp_raise_ValueError("radio on failed");
+            mp_raise_ValueError(MP_ERROR_TEXT("radio on failed"));
         }
         ESP_ERROR_CHECK(esp_now_init());
         ESP_ERROR_CHECK(esp_now_register_recv_cb(radio_recv_cb));
@@ -74,7 +74,7 @@ void radio_enable(void) {
         // add broadcast peer
         esp_now_peer_info_t *peer = malloc(sizeof(esp_now_peer_info_t));
         if( peer == NULL) {
-            mp_raise_ValueError("radio on failed");
+            mp_raise_ValueError(MP_ERROR_TEXT("radio on failed"));
             esp_now_deinit();
         }
         memset(peer, 0, sizeof(esp_now_peer_info_t));
@@ -184,7 +184,7 @@ MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(radio_receive_bytes_obj, 0, 1, radio_receive
 STATIC mp_obj_t radio_config(mp_uint_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     (void)pos_args;     // unused;
     if (n_args != 0) {
-        mp_raise_TypeError("arguments must be keywords");
+        mp_raise_TypeError(MP_ERROR_TEXT("arguments must be keywords"));
     }
 
     qstr arg_name = MP_QSTR_;
@@ -209,7 +209,7 @@ STATIC mp_obj_t radio_config(mp_uint_t n_args, const mp_obj_t *pos_args, mp_map_
                     case MP_QSTR_group:
                         break;
                     default:
-                        nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError, "unknown argument %q", arg_name));
+                        nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError, MP_ERROR_TEXT("unknown argument %q"), arg_name));
                         break;
                 }
             }
@@ -218,7 +218,7 @@ STATIC mp_obj_t radio_config(mp_uint_t n_args, const mp_obj_t *pos_args, mp_map_
     return mp_const_none;
 
 value_error:
-    nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError, "value out of range for argument '%q'", arg_name));
+    nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError, MP_ERROR_TEXT("value out of range for argument '%q'"), arg_name));
 }
 MP_DEFINE_CONST_FUN_OBJ_KW(radio_config_obj, 0, radio_config);
 
