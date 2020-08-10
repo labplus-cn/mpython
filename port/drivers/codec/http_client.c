@@ -261,6 +261,7 @@ void http_request_task(void *pvParameters)
     size_t len;
     short *output= NULL; 
     size_t write_bytes;
+    int err = 0;
 
     http_param_init();
 
@@ -317,7 +318,6 @@ void http_request_task(void *pvParameters)
 
     // ESP_LOGE(TAG, "3.1. http request run, RAM left: %d, has_read_size = %d", esp_get_free_heap_size(), http_param_instance->has_read_size);
    
-    int err = 0;
     /* 3种情况退出循环：1 长时间取不到数据 2 数据读完 3 收到指令 */ 
     while(http_param_instance->has_read_size < http_param_instance->content_size) 
     {  
