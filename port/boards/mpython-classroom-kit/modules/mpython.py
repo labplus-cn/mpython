@@ -244,6 +244,7 @@ class BME280(object):
         retry = 0
         if (retry < 5):
             try:
+                self.temperature()
                 i2c.writeto(self.addr, b'\xF7', False)
                 buff = i2c.readfrom(self.addr, 3)
                 P = (((buff[0] << 8) | buff[1]) << 4) | (buff[2] >> 4 & 0x0F)
