@@ -78,7 +78,7 @@ void radio_enable(void) {
             esp_now_deinit();
         }
         memset(peer, 0, sizeof(esp_now_peer_info_t));
-        peer->channel = radio_channel;
+        peer->channel = 0; // radio_channel;
         wifi_mode_t mode;
         esp_wifi_get_mode(&mode);
         peer->ifidx = (mode == WIFI_MODE_STA) ? ESP_IF_WIFI_STA:ESP_IF_WIFI_AP;
