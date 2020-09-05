@@ -144,6 +144,7 @@ INC += -I$(TOP)
 INC += -I$(TOP)/lib/mp-readline
 INC += -I$(TOP)/lib/netutils
 INC += -I$(TOP)/lib/timeutils
+INC += -Ilib/ble_mesh
 INC += -I$(BUILD)
 
 INC_ESPCOMP += -I$(ESPCOMP)/bootloader_support/include
@@ -215,6 +216,7 @@ INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/nimble/nimble/host/services/tps/inclu
 INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/nimble/nimble/host/util/include
 INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/nimble/nimble/host/store/ram/include
 INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/nimble/nimble/host/store/config/include
+INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/nimble/nimble/host/mesh/include
 INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/nimble/porting/npl/freertos/include
 INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/nimble/ext/tinycrypt/include
 INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/esp-hci/include
@@ -371,6 +373,12 @@ LIB_SRC_C = $(addprefix lib/,\
 	timeutils/timeutils.c \
 	utils/interrupt_char.c \
 	utils/sys_stdio_mphal.c \
+	ble_mesh/ble_mesh.c \
+	ble_mesh/device.c \
+	ble_mesh/model_level.c \
+	ble_mesh/model_on_off.c \
+	ble_mesh/model_light.c \
+	ble_mesh/model_vnd.c \
 	)
 
 # 增加运行时的异常屏幕显示功能;CTRL+C中断停止所有线程和定时器
@@ -477,6 +485,7 @@ BUILTIN_C ?= $(addprefix builtins/, \
 	modmotion.c \
 	modrgbLED5x5.c \
 	modrfid.c \
+	modble_mesh.c \
 	)
 
 # mpython project builtin modules source files 
@@ -679,6 +688,7 @@ ESPIDF_BT_NIMBLE_O = $(patsubst %.c,%.o,\
 	$(wildcard $(ESPCOMP)/bt/host/nimble/nimble/nimble/host/store/config/src/ble_store_nvs.c) \
 	$(wildcard $(ESPCOMP)/bt/host/nimble/nimble/nimble/host/store/ram/src/*.c) \
 	$(wildcard $(ESPCOMP)/bt/host/nimble/nimble/nimble/host/util/src/*.c) \
+	$(wildcard $(ESPCOMP)/bt/host/nimble/nimble/nimble/host/mesh/src/*.c) \
 	$(wildcard $(ESPCOMP)/bt/host/nimble/nimble/nimble/src/*.c) \
 	$(wildcard $(ESPCOMP)/bt/host/nimble/nimble/porting/nimble/src/*.c) \
 	$(wildcard $(ESPCOMP)/bt/host/nimble/nimble/porting/npl/freertos/src/*.c) \

@@ -197,6 +197,7 @@ extern const struct _mp_obj_module_t mp_module_radio;
 // extern const struct _mp_obj_module_t mp_module_xunfeiAI;
 extern const struct _mp_obj_module_t mp_module_servo;
 extern const struct _mp_obj_module_t mp_module_rfid;
+extern const struct _mp_obj_module_t mp_module_ble_mesh;
 
 #define MICROPY_PORT_BUILTIN_MODULES \
     { MP_OBJ_NEW_QSTR(MP_QSTR_esp), (mp_obj_t)&esp_module }, \
@@ -213,6 +214,7 @@ extern const struct _mp_obj_module_t mp_module_rfid;
     { MP_ROM_QSTR(MP_QSTR_servo), (mp_obj_t)&mp_module_servo }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_audio), (mp_obj_t)&mp_module_audio }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_rfid), (mp_obj_t)&mp_module_rfid }, \
+    { MP_OBJ_NEW_QSTR(MP_QSTR_ble_mesh), (mp_obj_t)&mp_module_ble_mesh }, \
     BOARD_PORT_BUILTIN_MODULES 
 
 #define MP_STATE_PORT MP_STATE_VM
