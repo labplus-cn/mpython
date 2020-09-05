@@ -21,11 +21,11 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 </tr>
 <tr style="height: 100px;">
 <td style="width: 100px; height: 100px;"><img style="display: block; margin-left: auto; margin-right: auto;" src="https://www.labplus.cn/2b1507b610dd5820e815a646dd5535fb.png" width="60" height="60" /></td>
-<td style="width: 247px; height: 109px;">由Labplus盛思在MIT Scratch 3.0基础上研发的一款专门针对小学四到六年级学生学习编程的图形化软件。相比原生Scratch 3.0，Labplus 3扩展了对掌控板的支持。在Labplus 3上应用掌控板时，有互动编程与离线编程两种模式。软件强调易用性，只保留了最常用的功能，去掉了复杂的部分，便于初学者入门使用。软件有Windows和MacOS两个离线安装包，另外，还支持盛思魔盒与初级实验箱。</td>
+<td style="width: 247px; height: 109px;">由Labplus盛思在MIT Scratch 3.0基础上研发的一款专门针对小学四到六年级学生学习编程的图形化软件。</br>相比原生Scratch 3.0，Labplus 3扩展了对掌控板的支持。在Labplus 3上应用掌控板时，有互动编程与离线编程两种</br>模式。软件强调易用性，只保留了最常用的功能，去掉了复杂的部分，便于初学者入门使用。软件有Windows和MacOS两个离线安装包，另外，还支持盛思魔盒与初级实验箱。</td>
 </tr>
 <tr style="height: 100px;">
 <td style="width: 100px; height: 100px;"><img style="display: block; margin-left: auto; margin-right: auto;" src="http://download3.dfrobot.com.cn/website/image/logo.png" width="100" height="50" /></td>
-<td style="width: 247px; height: 109px;">Mind+是一款拥有自主知识产权的国产青少年编程软件，集成各种主流主控板及上百种开源硬件，支持人工智能（AI）与物联网（IoT）功能，既可以拖动图形化积木编程，还可以使用Python/C/C++等高级编程语言，让大家轻松体验创造的乐趣。</td>
+<td style="width: 247px; height: 109px;">Mind+是一款拥有自主知识产权的国产青少年编程软件，集成各种主流主控板及上百种开源硬件，</br>支持人工智能（AI）与物联网（IoT）功能，既可以拖动图形化积木编程，还可以使用Python/C/C++等高级编程语言，让大家轻松体验创造的乐趣。</td>
 </tr>
 </table>
 
