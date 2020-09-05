@@ -12,9 +12,20 @@ mPython is a microcontroller board, It integrates the esp32 high-performance dua
 
 At present, the programming software supporting the mPython board is as follows:
 
-- <img src="http://wiki.labplus.cn/images/2/2d/MPythonX.png"  width="30" />  [mPythonX](https://www.mpython.cn/mPython/software) -- Officially recommended programming software, support Python code programming and mainstream graphical programming;
-- <img src="http://wiki.dfrobot.com.cn/images/thumb/c/ca/Mind%2B_logo.png/128px-Mind%2B_logo.png"  width="30" />  [Mind+](http://mindplus.cc/) -- based on Scratch3.0, supporting arduino, micro:bit, control board and other open source hardware；
-
+<table >
+<tr style="height: 100px;">
+<td style="width: 100px; height: 100px;"><img style="display: block; margin-left: auto; margin-right: auto;" src="http://wiki.labplus.cn/images/2/2d/MPythonX.png" width="60" height="60" /></td>
+<td style="width: 500px; height: 106px;">Officially recommended programming software, support Python code programming and mainstream graphical programming</td>
+</tr>
+<tr style="height: 100px;">
+<td style="width: 100px; height: 100px;"><img style="display: block; margin-left: auto; margin-right: auto;" src="https://www.labplus.cn/2b1507b610dd5820e815a646dd5535fb.png" width="60" height="60" /></td>
+<td style="width: 247px; height: 109px;">A graphical software program developed by Labplus Shensi based on MIT Scratch 3.0 for fourth - and sixth-grade students learning to program.</td>
+</tr>
+<tr style="height: 100px;">
+<td style="width: 100px; height: 100px;"><img style="display: block; margin-left: auto; margin-right: auto;" src="http://download3.dfrobot.com.cn/website/image/logo.png" width="100" height="50" /></td>
+<td style="width: 247px; height: 109px;">based on Scratch3.0, supporting arduino, micro:bit, control board and other open source hardware</td>
+</tr>
+</table>
 
 
 # Community
