@@ -15,7 +15,7 @@ At present, the programming software supporting the mPython board is as follows:
 <table >
 <tr style="height: 100px;">
 <td style="width: 100px; height: 100px;"><img style="display: block; margin-left: auto; margin-right: auto;" src="http://wiki.labplus.cn/images/2/2d/MPythonX.png" width="60" height="60" /></td>
-<td style="width: 500px; height: 106px;">Officially recommended programming software, support Python code programming and mainstream graphical programming</td>
+<td style="width: 247px; height: 106px;">Officially recommended programming software, support Python code programming and mainstream graphical programming</td>
 </tr>
 <tr style="height: 100px;">
 <td style="width: 100px; height: 100px;"><img style="display: block; margin-left: auto; margin-right: auto;" src="https://www.labplus.cn/2b1507b610dd5820e815a646dd5535fb.png" width="60" height="60" /></td>

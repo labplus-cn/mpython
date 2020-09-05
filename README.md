@@ -16,7 +16,7 @@ mPython掌控板是一块MicroPython微控制器板，它集成ESP32高性能双
 <table >
 <tr style="height: 100px;">
 <td style="width: 100px; height: 100px;"><img style="display: block; margin-left: auto; margin-right: auto;" src="http://wiki.labplus.cn/images/2/2d/MPythonX.png" width="60" height="60" /></td>
-<td style="width: 500px; height: 106px;">官方推荐编程软件,mPython是一款专用于掌控板的编程教育软件，给掌控板“注入”你想实现的功能，
+<td style="width: 247px; height: 106px;">官方推荐编程软件,mPython是一款专用于掌控板的编程教育软件，给掌控板“注入”你想实现的功能，
 它可以让你从图形化编程入手，进而轻松掌握Python编程语言。</td>
 </tr>
 <tr style="height: 100px;">
