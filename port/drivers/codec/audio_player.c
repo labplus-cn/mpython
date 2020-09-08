@@ -78,11 +78,25 @@ void player_init(void)
 
 void player_deinit(void)
 {
-    vTaskDelay(100 / portTICK_PERIOD_MS);
+    EventBits_t uxBits;
     if(player_instance){
         if((player_instance->player_status == RUNNING) || (player_instance->player_status == PAUSED))
         {
             player_stop();
+        }
+
+        //等待播放任务结束
+        uxBits = xEventGroupWaitBits(
+                    xEventGroup,    // The event group being tested.
+                    BIT_0 | BIT_1,  // The bits within the event group to wait for.
+                    pdTRUE,         // BIT_0 and BIT_4 should be cleared before returning.
+                    pdFALSE,         // not wait for both bits, either bit will do.
+                    portMAX_DELAY ); // Wait a maximum of 100ms for either bit to be set.
+
+        if( ( uxBits & BIT_1) !=  BIT_1 )
+        {
+            mp_warning(NULL, "Cant not stop player.");
+            return;
         }
 
         if (player_instance->buf_handle)
@@ -186,7 +200,6 @@ void player_start()
 
 void player_stop()
 {
-    EventBits_t uxBits;
     if(player_instance)
     { 
         if((player_instance->player_status == RUNNING) || (player_instance->player_status == PAUSED)){
@@ -198,19 +211,6 @@ void player_stop()
                 vTaskResume( http_client_task_handel );
             }
             player_instance->player_status = STOPPED;
-
-            //等待播放任务结束
-            uxBits = xEventGroupWaitBits(
-                        xEventGroup,    // The event group being tested.
-                        BIT_0 | BIT_1,  // The bits within the event group to wait for.
-                        pdTRUE,         // BIT_0 and BIT_4 should be cleared before returning.
-                        pdTRUE,         // wait for both bits, either bit will do.
-                        portMAX_DELAY ); // Wait a maximum of 100ms for either bit to be set.
-
-            if( ( uxBits & BIT_1) !=  BIT_1 )
-            {
-                mp_warning(NULL, "Cant not stop player.");
-            }
         }
     }
     else
