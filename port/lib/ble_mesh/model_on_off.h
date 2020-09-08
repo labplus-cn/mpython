@@ -36,7 +36,7 @@ struct generic_onoff_state {
 	u16_t last_dst_addr;
 };
 
-extern struct generic_onoff_state gen_onoff_srv_root_user_data;
+extern struct generic_onoff_state gen_onoff_user_data;
 extern struct bt_mesh_model_pub gen_onoff_srv_pub_root;
 extern struct bt_mesh_model_pub gen_onoff_cli_pub_root; 
 extern struct os_mbuf *bt_mesh_pub_msg_gen_onoff_srv_pub_root;

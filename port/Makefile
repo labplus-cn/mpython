@@ -379,6 +379,7 @@ LIB_SRC_C = $(addprefix lib/,\
 	ble_mesh/model_level.c \
 	ble_mesh/model_on_off.c \
 	ble_mesh/model_light.c \
+	ble_mesh/model_sensor.c \
 	ble_mesh/model_vnd.c \
 	)
 

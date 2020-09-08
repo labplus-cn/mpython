@@ -39,7 +39,7 @@ struct generic_level_state {
 	u16_t last_dst_addr;
 };
 
-extern struct generic_level_state gen_level_srv_root_user_data;
+extern struct generic_level_state gen_level_user_data;
 extern struct bt_mesh_model_pub gen_level_srv_pub_root;
 extern struct bt_mesh_model_pub gen_level_cli_pub_root;
 extern struct os_mbuf *bt_mesh_pub_msg_gen_level_srv_pub_root;

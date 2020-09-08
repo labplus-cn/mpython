@@ -24,11 +24,13 @@
 #include "extmod/nimble/modbluetooth_nimble.h"
 #include "mesh/mesh.h"
 #include "ble_mesh.h"
+#include "device.h"
+#include "model_on_off.h"
+#include "model_level.h"
+#include "model_light.h"
+#include "model_sensor.h"
 
 static const char *tag = "NimBLE_MESH";
-
-uint8_t gen_on_off_state;
-int16_t gen_level_state;
 
 extern volatile int mp_bluetooth_nimble_ble_state;
 
@@ -75,28 +77,74 @@ static mp_obj_t init() {
 MP_DEFINE_CONST_FUN_OBJ_0(init_obj, init);
 
 static mp_obj_t get_on_off(){
-    return MP_OBJ_NEW_SMALL_INT(gen_on_off_state);
+    return MP_OBJ_NEW_SMALL_INT(gen_onoff_user_data.onoff);
 }
 MP_DEFINE_CONST_FUN_OBJ_0(get_on_off_obj, get_on_off);
 
 static mp_obj_t get_level(){
-    return MP_OBJ_NEW_SMALL_INT(gen_level_state);
+    return MP_OBJ_NEW_SMALL_INT(gen_level_user_data.level);
 }
 MP_DEFINE_CONST_FUN_OBJ_0(get_level_obj, get_level);
 
+static mp_obj_t get_lightness(){
+    return MP_OBJ_NEW_SMALL_INT(light_user_data.light_linear);
+}
+MP_DEFINE_CONST_FUN_OBJ_0(get_lightness_obj, get_lightness);
+
+static mp_obj_t get_light_temp(){
+    return MP_OBJ_NEW_SMALL_INT(light_user_data.light_temp);
+}
+MP_DEFINE_CONST_FUN_OBJ_0(get_light_temp_obj, get_light_temp);
+
+static mp_obj_t get_light_hsl(){
+    mp_obj_t tuple[3] = {
+        tuple[0] = mp_obj_new_int(light_user_data.light_hue),
+        tuple[1] = mp_obj_new_int(light_user_data.light_saturation),
+        tuple[2] = mp_obj_new_int(light_user_data.light_linear),
+     };
+    return mp_obj_new_tuple(3, tuple);
+}
+MP_DEFINE_CONST_FUN_OBJ_0(get_light_hsl_obj, get_light_hsl);
+
 static mp_obj_t set_on_off(mp_obj_t on_off){
-    gen_on_off_state = mp_obj_get_int(on_off);
-    // gen_onoff_publish(gen_on_off_state);
+    gen_onoff_user_data.onoff = mp_obj_get_int(on_off);
+    gen_onoff_publish(&root_models[3]);
     return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_1(set_on_off_obj, set_on_off);
 
 static mp_obj_t set_level(mp_obj_t level){
-    gen_level_state = mp_obj_get_int(level);
-    
+    gen_level_user_data.level = mp_obj_get_int(level);
+    gen_level_publish(&root_models[5]);
     return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_1(set_level_obj, set_level);
+
+static mp_obj_t set_lightness(mp_obj_t lightness){
+    light_user_data.light_linear = mp_obj_get_int(lightness);
+    light_lightness_publish(&root_models[7]);
+    return mp_const_none;
+}
+MP_DEFINE_CONST_FUN_OBJ_1(set_lightness_obj, set_lightness);
+
+static mp_obj_t set_light_temp(mp_obj_t light_temp){
+    light_user_data.light_temp = mp_obj_get_int(light_temp);
+    light_ctl_publish(&root_models[7]);
+    return mp_const_none;
+}
+MP_DEFINE_CONST_FUN_OBJ_1(set_light_temp_obj, set_light_temp);
+
+static mp_obj_t set_light_hsl(const mp_obj_t hsl){
+    mp_obj_t *elem;
+    mp_obj_get_array_fixed_n(hsl, 3, &elem);
+    light_user_data.light_hue = mp_obj_get_int(elem[0]);
+    light_user_data.light_saturation = mp_obj_get_int(elem[1]);
+    light_user_data.light_linear = mp_obj_get_int(elem[2]);
+
+    light_hsl_publish(&root_models[7]);
+    return mp_const_none;
+}
+MP_DEFINE_CONST_FUN_OBJ_1(set_light_hsl_obj, set_light_hsl);
 
 STATIC const mp_map_elem_t ble_mesh_module_locals_dict_table[] = {
     { MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_ble_mesh) },
@@ -107,8 +155,14 @@ STATIC const mp_map_elem_t ble_mesh_module_locals_dict_table[] = {
     // { MP_ROM_QSTR(MP_QSTR_MODELS_SENSOR), MP_ROM_INT(MODELS_SENSOR) },
     { MP_OBJ_NEW_QSTR(MP_QSTR_get_on_off), (mp_obj_t)&get_on_off_obj },
     { MP_OBJ_NEW_QSTR(MP_QSTR_get_level), (mp_obj_t)&get_level_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_get_lightness), (mp_obj_t)&get_lightness_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_get_light_temp), (mp_obj_t)&get_light_temp_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_get_light_hsl), (mp_obj_t)&get_light_hsl_obj },
     { MP_OBJ_NEW_QSTR(MP_QSTR_set_on_off), (mp_obj_t)&set_on_off_obj },
     { MP_OBJ_NEW_QSTR(MP_QSTR_set_level), (mp_obj_t)&set_level_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_set_lightness), (mp_obj_t)&set_lightness_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_set_light_temp), (mp_obj_t)&set_light_temp_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_set_light_hsl), (mp_obj_t)&set_light_hsl_obj },
     // { MP_ROM_QSTR(MP_QSTR_MODELS_SENSOR), MP_ROM_INT(MODELS_SENSOR) },
     // { MP_ROM_QSTR(MP_QSTR_MODELS_SENSOR), MP_ROM_INT(MODELS_SENSOR) },
 };

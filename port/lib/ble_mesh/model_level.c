@@ -43,7 +43,7 @@ struct os_mbuf *bt_mesh_pub_msg_gen_level_srv_pub_root;
 struct os_mbuf *bt_mesh_pub_msg_gen_level_cli_pub_root;
 
 /* Definitions of models user data (Start) */
-struct generic_level_state gen_level_srv_root_user_data;
+struct generic_level_state gen_level_user_data;
 /* Definitions of models user data (End) */
 
 /* message handlers (Start) */
@@ -124,8 +124,8 @@ void gen_level_publish(struct bt_mesh_model *model)
 /* Mapping of message handlers for Generic Levl Server (0x1002) */
 const struct bt_mesh_model_op gen_level_srv_op[] = {
 	{ BT_MESH_MODEL_OP_2(0x82, 0x05), 0, gen_level_get_srv },
-	{ BT_MESH_MODEL_OP_2(0x82, 0x06), 3, gen_level_set_srv },
-	{ BT_MESH_MODEL_OP_2(0x82, 0x07), 3, gen_level_set_unack_srv },
+	{ BT_MESH_MODEL_OP_2(0x82, 0x06), 2, gen_level_set_srv },
+	{ BT_MESH_MODEL_OP_2(0x82, 0x07), 2, gen_level_set_unack_srv },
 	BT_MESH_MODEL_OP_END,
 };
 
