@@ -27,6 +27,7 @@
 // #include "common.h"
 #include "ble_mesh.h"
 #include "device.h"
+#include "config/config.h"
 
 static const char *tag = "ble_mesh";
 
@@ -80,8 +81,7 @@ void blemesh_on_sync(void)
 {
 	int err;
 	ble_addr_t addr;
-	ESP_LOGI(tag, "Bluetooth initialized\n");
-	ESP_LOGE(tag, "1. before mesh init, RAM left: %d", esp_get_free_heap_size());
+	ESP_LOGI(tag, "Bluetooth initialized. RAM left: %d\n", esp_get_free_heap_size());
 
 	/* Use NRPA */
 	err = ble_hs_id_gen_rnd(1, &addr);
@@ -96,17 +96,17 @@ void blemesh_on_sync(void)
 	}
 
 	if (IS_ENABLED(CONFIG_SETTINGS)) {
-		settings_load();
+		// settings_load();
+		bt_mesh_settings_init();
 	}
 
 	if (bt_mesh_is_provisioned()) {
-		ESP_LOGI(tag, "Mesh network restored from flash\n");
+		ESP_LOGE(tag, "Mesh network restored from flash\n");
 	}
 
 	bt_mesh_prov_enable(BT_MESH_PROV_GATT | BT_MESH_PROV_ADV);
 
-	ESP_LOGI(tag, "Mesh initialized\n");
-	ESP_LOGE(tag, "2 mesh init finish, RAM left: %d", esp_get_free_heap_size());
+	ESP_LOGI(tag, "Mesh initialized. RAM left: %d\n", esp_get_free_heap_size());
 
 	// bt_initialized();
 }

@@ -146,6 +146,34 @@ static mp_obj_t set_light_hsl(const mp_obj_t hsl){
 }
 MP_DEFINE_CONST_FUN_OBJ_1(set_light_hsl_obj, set_light_hsl);
 
+static mp_obj_t provision(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args){
+    enum { ARG_net_key, ARG_net_idx, ARG_flags, ARG_iv_index, ARG_addr, ARG_dev_key };
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_net_key,      MP_ARG_KW_ONLY | MP_ARG_REQUIRED | MP_ARG_OBJ },
+        { MP_QSTR_net_idx,      MP_ARG_KW_ONLY | MP_ARG_REQUIRED | MP_ARG_INT },
+        { MP_QSTR_flags,        MP_ARG_KW_ONLY | MP_ARG_REQUIRED | MP_ARG_INT, {.u_int = 0}  },
+        { MP_QSTR_iv_index,     MP_ARG_KW_ONLY | MP_ARG_REQUIRED | MP_ARG_INT, {.u_int = 1} },
+        { MP_QSTR_addr,         MP_ARG_KW_ONLY | MP_ARG_REQUIRED | MP_ARG_INT },
+        { MP_QSTR_dev_key,      MP_ARG_KW_ONLY | MP_ARG_REQUIRED | MP_ARG_OBJ },
+    };
+
+    mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
+    mp_arg_parse_all(n_args, pos_args, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
+
+    mp_buffer_info_t net_key;
+    mp_get_buffer_raise(args[ARG_net_key].u_obj, &net_key, MP_BUFFER_READ);
+    mp_buffer_info_t dev_key;
+    mp_get_buffer_raise(args[ARG_dev_key].u_obj, &dev_key, MP_BUFFER_READ);
+    mp_int_t net_idx = args[ARG_net_idx].u_int;
+    mp_int_t net_flags = args[ARG_flags].u_int;
+    mp_int_t net_iv_index = args[ARG_iv_index].u_int;
+    mp_int_t net_addr = args[ARG_addr].u_int;
+   	mp_int_t err = bt_mesh_provision(net_key.buf, net_idx, net_flags, net_iv_index, net_addr, dev_key.buf);
+
+    return mp_const_none;
+}
+MP_DEFINE_CONST_FUN_OBJ_KW(provision_obj, 0, provision);
+
 STATIC const mp_map_elem_t ble_mesh_module_locals_dict_table[] = {
     { MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_ble_mesh) },
     // { MP_OBJ_NEW_QSTR(MP_QSTR___init__), (mp_obj_t)&radio___init___obj },
@@ -165,6 +193,7 @@ STATIC const mp_map_elem_t ble_mesh_module_locals_dict_table[] = {
     { MP_OBJ_NEW_QSTR(MP_QSTR_set_light_hsl), (mp_obj_t)&set_light_hsl_obj },
     // { MP_ROM_QSTR(MP_QSTR_MODELS_SENSOR), MP_ROM_INT(MODELS_SENSOR) },
     // { MP_ROM_QSTR(MP_QSTR_MODELS_SENSOR), MP_ROM_INT(MODELS_SENSOR) },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_provisioning), (mp_obj_t)&provision_obj },
 };
 
 STATIC MP_DEFINE_CONST_DICT(ble_mesh_module_locals_dict, ble_mesh_module_locals_dict_table);

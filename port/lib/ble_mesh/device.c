@@ -84,7 +84,7 @@ void init_pub(void)
 	// bt_mesh_pub_msg_light_ctl_cli_pub			= NET_BUF_SIMPLE(2 + 2);
 	bt_mesh_pub_msg_light_hsl_srv_pub			= NET_BUF_SIMPLE(2 + 6);
 	// bt_mesh_pub_msg_light_hsl_cli_pub			= NET_BUF_SIMPLE(2 + 6);
-	bt_mesh_pub_msg_sensor_srv_pub              = NET_BUF_SIMPLE(2 + 20);
+	// bt_mesh_pub_msg_sensor_srv_pub              = NET_BUF_SIMPLE(2 + 20);
     // bt_mesh_pub_msg_sensor_cli_pub              = NET_BUF_SIMPLE(2 + 2);
 	// bt_mesh_pub_msg_sensor_setup_srv_pub              = NET_BUF_SIMPLE(2 + 2);
 
@@ -102,8 +102,8 @@ void init_pub(void)
 	light_ctl_cli_pub.msg			= bt_mesh_pub_msg_light_ctl_srv_pub;
 	light_hsl_srv_pub.msg			= bt_mesh_pub_msg_light_hsl_srv_pub;
 	light_hsl_cli_pub.msg			= bt_mesh_pub_msg_light_hsl_srv_pub;
-	sensor_srv_pub.msg              = bt_mesh_pub_msg_sensor_srv_pub;
-	sensor_cli_pub.msg              = bt_mesh_pub_msg_sensor_srv_pub;
+	// sensor_srv_pub.msg              = bt_mesh_pub_msg_sensor_srv_pub;
+	// sensor_cli_pub.msg              = bt_mesh_pub_msg_sensor_srv_pub;
 	// sensor_setup_srv_pub.msg        = bt_mesh_pub_msg_sensor_setup_srv_pub;
 
 	vnd_pub.msg						= bt_mesh_pub_msg_vnd_pub;
@@ -124,8 +124,8 @@ struct bt_mesh_model root_models[] = {
 	BT_MESH_MODEL(BT_MESH_MODEL_ID_LIGHT_CTL_CLI, light_ctl_cli_op, &light_ctl_cli_pub, &light_user_data),
 	BT_MESH_MODEL(BT_MESH_MODEL_ID_LIGHT_HSL_SRV, light_hsl_srv_op, &light_hsl_srv_pub, &light_user_data),
 	BT_MESH_MODEL(BT_MESH_MODEL_ID_LIGHT_HSL_CLI, light_hsl_cli_op, &light_hsl_cli_pub, &light_user_data),
-	BT_MESH_MODEL(BT_MESH_MODEL_ID_SENSOR_SRV, sensor_srv_op, &sensor_srv_pub, &sensor_user_data),
-	BT_MESH_MODEL(BT_MESH_MODEL_ID_SENSOR_CLI, sensor_cli_op, &sensor_cli_pub, &light_user_data),
+	// BT_MESH_MODEL(BT_MESH_MODEL_ID_SENSOR_SRV, sensor_srv_op, &sensor_srv_pub, &sensor_user_data),
+	// BT_MESH_MODEL(BT_MESH_MODEL_ID_SENSOR_CLI, sensor_cli_op, &sensor_cli_pub, &light_user_data),
 	// BT_MESH_MODEL(BT_MESH_MODEL_ID_SENSOR_SETUP_SRV, sensor_setup_srv_op, &sensor_setup_srv_pub, &sensor_setup_user_data),
 };
 

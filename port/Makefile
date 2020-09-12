@@ -217,6 +217,7 @@ INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/nimble/nimble/host/util/include
 INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/nimble/nimble/host/store/ram/include
 INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/nimble/nimble/host/store/config/include
 INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/nimble/nimble/host/mesh/include
+INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/nimble/nimble/host/mesh/src
 INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/nimble/porting/npl/freertos/include
 INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/nimble/ext/tinycrypt/include
 INC_ESPCOMP += -I$(ESPCOMP)/bt/host/nimble/esp-hci/include
@@ -379,8 +380,10 @@ LIB_SRC_C = $(addprefix lib/,\
 	ble_mesh/model_level.c \
 	ble_mesh/model_on_off.c \
 	ble_mesh/model_light.c \
-	ble_mesh/model_sensor.c \
 	ble_mesh/model_vnd.c \
+	ble_mesh/config/settings_nvs.c \
+	ble_mesh/config/glue.c \
+	ble_mesh/config/settings.c \
 	)
 
 # 增加运行时的异常屏幕显示功能;CTRL+C中断停止所有线程和定时器
