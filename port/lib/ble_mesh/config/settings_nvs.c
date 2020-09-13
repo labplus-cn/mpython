@@ -139,14 +139,14 @@ static void net_buf_simple_add_le16_1(struct net_buf_simple *buf, uint16_t val)
     memcpy(net_buf_simple_add1(buf, sizeof(val)), &val, sizeof(val));
 }
 
-/* API used to initialize, load and commit BLE Mesh related settings */
+/* API used to initialize, load and commit BLE Mesh related settings 本函数用于初始化，加载flash中mesh相关参数*/
 
 void bt_mesh_settings_foreach(void)
 {
     int err = 0;
     int i;
 
-#if CONFIG_BLE_MESH_SPECIFIC_PARTITION
+#if CONFIG_BLE_MESH_SPECIFIC_PARTITION //如果mesh专用flash保存分区
     err = nvs_flash_init_partition(CONFIG_BLE_MESH_PARTITION_NAME);
     if (err != ESP_OK) {
         ESP_LOGE(tag, "Failed to init mesh partition, name %s, err %d", CONFIG_BLE_MESH_PARTITION_NAME, err);
@@ -155,7 +155,7 @@ void bt_mesh_settings_foreach(void)
 #endif
 
     for (i = 0; i < ARRAY_SIZE(settings_ctx); i++) {
-        struct settings_context *ctx = &settings_ctx[i];
+        struct settings_context *ctx = &settings_ctx[i]; 
 
 #if CONFIG_BLE_MESH_SPECIFIC_PARTITION
         err = nvs_open_from_partition(CONFIG_BLE_MESH_PARTITION_NAME, ctx->nvs_name, NVS_READWRITE, &ctx->handle);
@@ -172,12 +172,12 @@ void bt_mesh_settings_foreach(void)
             continue;
         }
 
-        if (ctx->settings_load1 && ctx->settings_load1()) {
+        if (ctx->settings_load1 && ctx->settings_load1()) { //先从flash中加载各参数到临时变量中
             ESP_LOGE(tag, "%s, Load settings failed, name %s", __func__, ctx->nvs_name);
             continue;
         }
 
-        if (ctx->settings_commit && ctx->settings_commit()) {
+        if (ctx->settings_commit && ctx->settings_commit()) { //把各临时变量参数，更新到mesh相关结构，更新的过程会伴随一些相关操作
             ESP_LOGE(tag, "%s, Commit settings failed, name %s", __func__, ctx->nvs_name);
             continue;
         }

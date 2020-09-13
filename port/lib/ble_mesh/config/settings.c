@@ -68,33 +68,6 @@ __extension__ ({                            \
     __p->__v;                               \
 })
 
-/* bt_mesh_net.flags */
-enum {
-    BLE_MESH_NODE,            /* Device is a node */
-    BLE_MESH_PROVISIONER,     /* Device is a Provisioner */
-    BLE_MESH_VALID,           /* We have been provisioned */
-    BLE_MESH_VALID_PROV,      /* Provisioner has been enabled */
-    BLE_MESH_SUSPENDED,       /* Network is temporarily suspended */
-    BLE_MESH_IVU_IN_PROGRESS, /* IV Update in Progress */
-    BLE_MESH_IVU_INITIATOR,   /* IV Update initiated by us */
-    BLE_MESH_IVU_TEST,        /* IV Update test mode */
-    BLE_MESH_IVU_PENDING,     /* Update blocked by SDU in progress */
-
-    /* pending storage actions, must reside within first 32 flags */
-    BLE_MESH_RPL_PENDING,
-    BLE_MESH_KEYS_PENDING,
-    BLE_MESH_NET_PENDING,
-    BLE_MESH_IV_PENDING,
-    BLE_MESH_SEQ_PENDING,
-    BLE_MESH_HB_PUB_PENDING,
-    BLE_MESH_CFG_PENDING,
-    BLE_MESH_MOD_PENDING,
-    BLE_MESH_VA_PENDING,
-
-    /* Don't touch - intentionally last */
-    BLE_MESH_FLAG_COUNT,
-};
-
 static inline int bt_mesh_atomic_get(const int *target)
 {
     return __atomic_load_n(target, __ATOMIC_SEQ_CST);
@@ -270,7 +243,7 @@ static int iv_set(const char *name)
     if (err) {
         BT_WARN("%s, Clear IV", __func__);
         bt_mesh.iv_index = 0U;
-        atomic_clear_bit(bt_mesh.flags, BLE_MESH_IVU_IN_PROGRESS);
+        atomic_clear_bit(bt_mesh.flags, BT_MESH_IVU_IN_PROGRESS);
         return 0;
     }
 
@@ -924,28 +897,28 @@ int settings_core_commit(void)
         cfg->default_ttl = stored_cfg.cfg.default_ttl;
     }
 
-    atomic_set_bit(bt_mesh.flags, BLE_MESH_VALID);
+    atomic_set_bit(bt_mesh.flags, BT_MESH_VALID);
     bt_mesh_net_start();
 
     return 0;
 }
 
 /* Pending flags that use K_NO_WAIT as the storage timeout */
-#define NO_WAIT_PENDING_BITS (BIT(BLE_MESH_NET_PENDING) |       \
-                              BIT(BLE_MESH_IV_PENDING) |        \
-                              BIT(BLE_MESH_SEQ_PENDING))
+#define NO_WAIT_PENDING_BITS (BIT(BT_MESH_NET_PENDING) |       \
+                              BIT(BT_MESH_IV_PENDING) |        \
+                              BIT(BT_MESH_SEQ_PENDING))
 
 /* Pending flags that use CONFIG_BLE_MESH_STORE_TIMEOUT */
-#define GENERIC_PENDING_BITS (BIT(BLE_MESH_KEYS_PENDING) |      \
-                              BIT(BLE_MESH_HB_PUB_PENDING) |    \
-                              BIT(BLE_MESH_CFG_PENDING) |       \
-                              BIT(BLE_MESH_MOD_PENDING))
+#define GENERIC_PENDING_BITS (BIT(BT_MESH_KEYS_PENDING) |      \
+                              BIT(BT_MESH_HB_PUB_PENDING) |    \
+                              BIT(BT_MESH_CFG_PENDING) |       \
+                              BIT(BT_MESH_MOD_PENDING))
 
 static void schedule_store(int flag)
 {
     s32_t timeout = 0, remaining = 0;
 
-    atomic_set_bit(bt_mesh.flags, flag);
+    atomic_set_bit(bt_mesh.flags, flag); //挂起霜要存储操作的位。
 
     if (bt_mesh_atomic_get(bt_mesh.flags) & NO_WAIT_PENDING_BITS) {
         timeout = K_NO_WAIT;
@@ -964,7 +937,7 @@ static void schedule_store(int flag)
         return;
     }
 
-    BT_ERR("Waiting %d seconds", timeout / MSEC_PER_SEC);
+    BT_DBG("Waiting %d seconds", timeout / MSEC_PER_SEC);
 
     if (timeout) {
         k_delayed_work_submit(&pending_store, timeout);
@@ -1000,7 +973,7 @@ static void store_pending_net(void)
 
 void bt_mesh_store_net(void)
 {
-    schedule_store(BLE_MESH_NET_PENDING);
+    schedule_store(BT_MESH_NET_PENDING);
 }
 
 static void store_pending_iv(void)
@@ -1008,7 +981,7 @@ static void store_pending_iv(void)
     struct iv_val iv = {0};
 
     iv.iv_index = bt_mesh.iv_index;
-    iv.iv_update = atomic_test_bit(bt_mesh.flags, BLE_MESH_IVU_IN_PROGRESS);
+    iv.iv_update = atomic_test_bit(bt_mesh.flags, BT_MESH_IVU_IN_PROGRESS);
     iv.iv_duration = bt_mesh.ivu_duration;
 
     bt_mesh_save_core_settings("mesh/iv", (const u8_t *)&iv, sizeof(iv));
@@ -1016,11 +989,11 @@ static void store_pending_iv(void)
 
 void bt_mesh_store_iv(bool only_duration)
 {
-    schedule_store(BLE_MESH_IV_PENDING);
+    schedule_store(BT_MESH_IV_PENDING);
 
     if (!only_duration) {
         /* Always update Seq whenever IV changes */
-        schedule_store(BLE_MESH_SEQ_PENDING);
+        schedule_store(BT_MESH_SEQ_PENDING);
     }
 }
 
@@ -1047,7 +1020,7 @@ void bt_mesh_store_seq(void)
         return;
     }
 
-    schedule_store(BLE_MESH_SEQ_PENDING);
+    schedule_store(BT_MESH_SEQ_PENDING);
 }
 
 void bt_mesh_clear_seq(void)
@@ -1443,7 +1416,7 @@ static void store_pending_mod(struct bt_mesh_model *model,
 /* 存储相应挂起位对应的配置数据 */
 static void store_pending(struct ble_npl_event *ev)
 {
-    BT_ERR("%s", __func__);
+    BT_DBG("%s", __func__);
 
     if (atomic_test_and_clear_bit(bt_mesh.flags, BT_MESH_RPL_PENDING)) {
         if (atomic_test_bit(bt_mesh.flags, BT_MESH_VALID)) {
@@ -1500,7 +1473,7 @@ static void store_pending(struct ble_npl_event *ev)
 void bt_mesh_store_rpl(struct bt_mesh_rpl *entry)
 {
     entry->store = true;
-    schedule_store(BLE_MESH_RPL_PENDING);
+    schedule_store(BT_MESH_RPL_PENDING);
 }
 
 static struct key_update *key_update_find(bool app_key, u16_t key_idx,
@@ -1541,7 +1514,7 @@ void bt_mesh_store_subnet(struct bt_mesh_subnet *sub)
     update = key_update_find(false, sub->net_idx, &free_slot);
     if (update) {
         update->clear = 0U;
-        schedule_store(BLE_MESH_KEYS_PENDING);
+        schedule_store(BT_MESH_KEYS_PENDING);
         return;
     }
 
@@ -1555,7 +1528,7 @@ void bt_mesh_store_subnet(struct bt_mesh_subnet *sub)
     free_slot->app_key = 0U;
     free_slot->clear = 0U;
 
-    schedule_store(BLE_MESH_KEYS_PENDING);
+    schedule_store(BT_MESH_KEYS_PENDING);
 }
 
 void bt_mesh_store_app_key(struct bt_mesh_app_key *key)
@@ -1568,7 +1541,7 @@ void bt_mesh_store_app_key(struct bt_mesh_app_key *key)
     update = key_update_find(true, key->app_idx, &free_slot);
     if (update) {
         update->clear = 0U;
-        schedule_store(BLE_MESH_KEYS_PENDING);
+        schedule_store(BT_MESH_KEYS_PENDING);
         return;
     }
 
@@ -1582,24 +1555,24 @@ void bt_mesh_store_app_key(struct bt_mesh_app_key *key)
     free_slot->app_key = 1U;
     free_slot->clear = 0U;
 
-    schedule_store(BLE_MESH_KEYS_PENDING);
+    schedule_store(BT_MESH_KEYS_PENDING);
 }
 
 void bt_mesh_store_hb_pub(void)
 {
-    schedule_store(BLE_MESH_HB_PUB_PENDING);
+    schedule_store(BT_MESH_HB_PUB_PENDING);
 }
 
 void bt_mesh_store_cfg(void)
 {
-    schedule_store(BLE_MESH_CFG_PENDING);
+    schedule_store(BT_MESH_CFG_PENDING);
 }
 
 void bt_mesh_clear_net(void)
 {
-    schedule_store(BLE_MESH_NET_PENDING);
-    schedule_store(BLE_MESH_IV_PENDING);
-    schedule_store(BLE_MESH_CFG_PENDING);
+    schedule_store(BT_MESH_NET_PENDING);
+    schedule_store(BT_MESH_IV_PENDING);
+    schedule_store(BT_MESH_CFG_PENDING);
 }
 
 void bt_mesh_clear_subnet(struct bt_mesh_subnet *sub)
@@ -1612,7 +1585,7 @@ void bt_mesh_clear_subnet(struct bt_mesh_subnet *sub)
     update = key_update_find(false, sub->net_idx, &free_slot);
     if (update) {
         update->clear = 1U;
-        schedule_store(BLE_MESH_KEYS_PENDING);
+        schedule_store(BT_MESH_KEYS_PENDING);
         return;
     }
 
@@ -1626,7 +1599,7 @@ void bt_mesh_clear_subnet(struct bt_mesh_subnet *sub)
     free_slot->app_key = 0U;
     free_slot->clear = 1U;
 
-    schedule_store(BLE_MESH_KEYS_PENDING);
+    schedule_store(BT_MESH_KEYS_PENDING);
 }
 
 void bt_mesh_clear_app_key(struct bt_mesh_app_key *key)
@@ -1639,7 +1612,7 @@ void bt_mesh_clear_app_key(struct bt_mesh_app_key *key)
     update = key_update_find(true, key->app_idx, &free_slot);
     if (update) {
         update->clear = 1U;
-        schedule_store(BLE_MESH_KEYS_PENDING);
+        schedule_store(BT_MESH_KEYS_PENDING);
         return;
     }
 
@@ -1653,12 +1626,12 @@ void bt_mesh_clear_app_key(struct bt_mesh_app_key *key)
     free_slot->app_key = 1U;
     free_slot->clear = 1U;
 
-    schedule_store(BLE_MESH_KEYS_PENDING);
+    schedule_store(BT_MESH_KEYS_PENDING);
 }
 
 void bt_mesh_clear_rpl(void)
 {
-    schedule_store(BLE_MESH_RPL_PENDING);
+    schedule_store(BT_MESH_RPL_PENDING);
 }
 
 void bt_mesh_store_mod_bind(struct bt_mesh_model *model)
