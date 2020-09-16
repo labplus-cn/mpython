@@ -29,10 +29,21 @@
 #include "model_level.h"
 #include "model_light.h"
 #include "model_sensor.h"
+#include "model_vnd.h"
 
 static const char *tag = "NimBLE_MESH";
 
 extern volatile int mp_bluetooth_nimble_ble_state;
+/*
+ * index fun
+ * 0     on_off
+ * 1     level
+ * 2     lightness
+ * 3     light temp
+ * 4     light hsl
+ * 5     gen_data
+*/
+mp_obj_t callbacks[6];
 
 void ble_store_config_init(void);
 
@@ -146,6 +157,20 @@ static mp_obj_t set_light_hsl(const mp_obj_t hsl){
 }
 MP_DEFINE_CONST_FUN_OBJ_1(set_light_hsl_obj, set_light_hsl);
 
+static mp_obj_t set_usr_data(const mp_obj_t buf_in){
+    mp_buffer_info_t bufinfo;
+    mp_get_buffer_raise(buf_in, &bufinfo, MP_BUFFER_READ);
+
+    vnd_user_data.len = bufinfo.len;
+    for(int i = 0; i < bufinfo.len; i++){
+        vnd_user_data.data[i] = ((uint8_t *)(bufinfo.buf))[i];
+    }
+
+    vnd_publish(&vnd_models[1]);
+    return mp_const_none;
+}
+MP_DEFINE_CONST_FUN_OBJ_1(set_usr_data_obj, set_usr_data);
+
 static mp_obj_t provision(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args){
     enum { ARG_net_key, ARG_net_idx, ARG_flags, ARG_iv_index, ARG_addr, ARG_dev_key };
     static const mp_arg_t allowed_args[] = {
@@ -174,6 +199,42 @@ static mp_obj_t provision(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_
 }
 MP_DEFINE_CONST_FUN_OBJ_KW(provision_obj, 0, provision);
 
+static mp_obj_t set_callbacks(mp_obj_t callback){
+    mp_map_t *cb = mp_obj_dict_get_map(callback);
+
+    mp_map_elem_t *elem =  mp_map_lookup(cb, MP_OBJ_NEW_QSTR(MP_QSTR_on_off_msg), MP_MAP_LOOKUP);
+    if(elem){
+        // ESP_LOGE(tag, "%s", mp_obj_str_get_str(elem->key));
+        callbacks[0] = elem->value;
+        // mp_sched_schedule(callbacks[0], NULL);
+    }
+    elem =  mp_map_lookup(cb, MP_OBJ_NEW_QSTR(MP_QSTR_level_msg), MP_MAP_LOOKUP);
+    if(elem){  
+        ESP_LOGE(tag, "%s", mp_obj_str_get_str(elem->key));
+        callbacks[1] = elem->value; }
+
+    elem =  mp_map_lookup(cb, MP_OBJ_NEW_QSTR(MP_QSTR_lightness_msg), MP_MAP_LOOKUP);
+    if(elem){  callbacks[2] = elem->value; }
+
+    elem =  mp_map_lookup(cb, MP_OBJ_NEW_QSTR(MP_QSTR_light_temp_msg), MP_MAP_LOOKUP);
+    if(elem){  callbacks[3] = elem->value; }
+
+    elem =  mp_map_lookup(cb, MP_OBJ_NEW_QSTR(MP_QSTR_light_hsl_msg), MP_MAP_LOOKUP);
+    if(elem){  callbacks[4] = elem->value; }
+
+    elem =  mp_map_lookup(cb, MP_OBJ_NEW_QSTR(MP_QSTR_gen_data_msg), MP_MAP_LOOKUP);
+    if(elem){  callbacks[5] = elem->value; }
+
+    return mp_const_none;
+}
+MP_DEFINE_CONST_FUN_OBJ_1(set_callbacks_obj, set_callbacks);
+
+static mp_obj_t node_reset(){
+    bt_mesh_reset();
+    return mp_const_none;
+}
+MP_DEFINE_CONST_FUN_OBJ_0(node_reset_obj, node_reset);
+
 STATIC const mp_map_elem_t ble_mesh_module_locals_dict_table[] = {
     { MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_ble_mesh) },
     // { MP_OBJ_NEW_QSTR(MP_QSTR___init__), (mp_obj_t)&radio___init___obj },
@@ -191,9 +252,12 @@ STATIC const mp_map_elem_t ble_mesh_module_locals_dict_table[] = {
     { MP_OBJ_NEW_QSTR(MP_QSTR_set_lightness), (mp_obj_t)&set_lightness_obj },
     { MP_OBJ_NEW_QSTR(MP_QSTR_set_light_temp), (mp_obj_t)&set_light_temp_obj },
     { MP_OBJ_NEW_QSTR(MP_QSTR_set_light_hsl), (mp_obj_t)&set_light_hsl_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_set_usr_data), (mp_obj_t)&set_usr_data_obj },
     // { MP_ROM_QSTR(MP_QSTR_MODELS_SENSOR), MP_ROM_INT(MODELS_SENSOR) },
     // { MP_ROM_QSTR(MP_QSTR_MODELS_SENSOR), MP_ROM_INT(MODELS_SENSOR) },
     { MP_OBJ_NEW_QSTR(MP_QSTR_provisioning), (mp_obj_t)&provision_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_set_callbacks), (mp_obj_t)&set_callbacks_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_node_reset), (mp_obj_t)&node_reset_obj },
 };
 
 STATIC MP_DEFINE_CONST_DICT(ble_mesh_module_locals_dict, ble_mesh_module_locals_dict_table);

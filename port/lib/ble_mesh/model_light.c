@@ -31,8 +31,11 @@
 
 #include "ble_mesh.h"
 #include "model_light.h"
+#include "py/runtime.h"
+#include "py/obj.h"
 
 static const char *tag = "model_light";
+extern mp_obj_t callbacks[6];
 
 struct bt_mesh_model_pub light_lightness_srv_pub;
 struct bt_mesh_model_pub light_lightness_cli_pub;
@@ -82,6 +85,10 @@ static void light_lightness_set_unack_srv(struct bt_mesh_model *model, struct bt
 {
     light_user_data.light_linear = (uint16_t)net_buf_simple_pull_le16(buf);
 	ESP_LOGI(tag, "#mesh-lightness SET-UNACK: lightness=%d\n", light_user_data.light_linear);
+
+	if(callbacks[2]){
+		mp_sched_schedule(callbacks[2], mp_obj_new_int(light_user_data.light_linear));
+	}
 }
 
 static void light_lightness_set_srv(struct bt_mesh_model *model, struct bt_mesh_msg_ctx *ctx, struct os_mbuf *buf)
@@ -90,6 +97,10 @@ static void light_lightness_set_srv(struct bt_mesh_model *model, struct bt_mesh_
 	ESP_LOGI(tag, "#mesh-lightness SET: light=%d\n", light_user_data.light_linear);
 
     light_lightness_status_srv(model, ctx); //ACK
+
+	if(callbacks[2]){
+		mp_sched_schedule(callbacks[2], mp_obj_new_int(light_user_data.light_linear));
+	}
 }
 
 void light_lightness_publish(struct bt_mesh_model *model)
@@ -145,6 +156,10 @@ static void light_ctl_temp_set_unack_srv(struct bt_mesh_model *model, struct bt_
 {
     light_user_data.light_temp = (uint16_t)net_buf_simple_pull_le16(buf);
 	ESP_LOGI(tag, "#mesh-light-temp SET-UNACK: temp=%d\n", light_user_data.light_temp);
+
+	if(callbacks[3]){
+		mp_sched_schedule(callbacks[3], mp_obj_new_int(light_user_data.light_temp));
+	}
 }
 
 static void light_ctl_temp_set_srv(struct bt_mesh_model *model, struct bt_mesh_msg_ctx *ctx, struct os_mbuf *buf)
@@ -153,6 +168,10 @@ static void light_ctl_temp_set_srv(struct bt_mesh_model *model, struct bt_mesh_m
 	ESP_LOGI(tag, "#mesh-lightness SET: light=%d\n", light_user_data.light_temp);
 
     light_ctl_temp_status_srv(model, ctx); //ACK
+
+	if(callbacks[3]){
+		mp_sched_schedule(callbacks[3], mp_obj_new_int(light_user_data.light_temp));
+	}
 }
 
 void light_ctl_publish(struct bt_mesh_model *model)
@@ -214,6 +233,16 @@ static void light_hsl_set_unack_srv(struct bt_mesh_model *model, struct bt_mesh_
 	light_user_data.light_saturation = (uint16_t)net_buf_simple_pull_le16(buf);
 	ESP_LOGI(tag, "#mesh-hsl SET-UNACK: light_linear=%d hue=%d saturation=%d\n", light_user_data.light_linear,
 					light_user_data.light_hue, light_user_data.light_saturation);
+
+	if(callbacks[4]){
+		mp_obj_t tuple[3] = {
+			tuple[0] = mp_obj_new_int(light_user_data.light_hue),
+			tuple[1] = mp_obj_new_int(light_user_data.light_saturation),
+			tuple[2] = mp_obj_new_int(light_user_data.light_linear),
+		};
+		 
+		mp_sched_schedule(callbacks[4], mp_obj_new_tuple(3, tuple));
+	}
 }
 
 static void light_hsl_set_srv(struct bt_mesh_model *model, struct bt_mesh_msg_ctx *ctx, struct os_mbuf *buf)
@@ -225,6 +254,16 @@ static void light_hsl_set_srv(struct bt_mesh_model *model, struct bt_mesh_msg_ct
 					light_user_data.light_hue, light_user_data.light_saturation);
 
     light_hsl_status_srv(model, ctx); //ACK
+
+	if(callbacks[4]){
+		mp_obj_t tuple[3] = {
+			tuple[0] = mp_obj_new_int(light_user_data.light_hue),
+			tuple[1] = mp_obj_new_int(light_user_data.light_saturation),
+			tuple[2] = mp_obj_new_int(light_user_data.light_linear),
+		};
+		 
+		mp_sched_schedule(callbacks[4], mp_obj_new_tuple(3, tuple));
+	}
 }
 
 void light_hsl_publish(struct bt_mesh_model *model)

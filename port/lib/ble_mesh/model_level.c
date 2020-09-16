@@ -31,10 +31,11 @@
 
 #include "ble_mesh.h"
 #include "model_level.h"
-// #include "state_binding.h"
-// #include "transition.h"
+#include "py/runtime.h"
+#include "py/obj.h"
 
 static const char *tag = "model_level";
+extern mp_obj_t callbacks[6];
 
 struct bt_mesh_model_pub gen_level_srv_pub_root;
 struct bt_mesh_model_pub gen_level_cli_pub_root;
@@ -78,6 +79,10 @@ static void gen_level_set_unack_srv(struct bt_mesh_model *model, struct bt_mesh_
 
     state->level = (int16_t) net_buf_simple_pull_le16(buf);
     ESP_LOGI(tag, "#mesh-level SET-UNACK: level=%d\n", state->level);
+
+	if(callbacks[1]){
+		mp_sched_schedule(callbacks[1], mp_obj_new_int(state->level));
+	}
 }
 
 static void gen_level_set_srv(struct bt_mesh_model *model,  struct bt_mesh_msg_ctx *ctx, struct os_mbuf *buf)
@@ -87,6 +92,10 @@ static void gen_level_set_srv(struct bt_mesh_model *model,  struct bt_mesh_msg_c
     state->level = (int16_t) net_buf_simple_pull_le16(buf);
     ESP_LOGI(tag, "#mesh-level SET-ACK: level=%d\n", state->level);
 	gen_level_status_srv(model, ctx);
+
+	if(callbacks[1]){
+		mp_sched_schedule(callbacks[1], mp_obj_new_int(state->level));
+	}
 }
 
 /* Generic Level Client message handlers */

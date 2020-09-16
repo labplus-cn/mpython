@@ -28,8 +28,10 @@
 #include "ble_mesh.h"
 #include "device.h"
 #include "config/config.h"
+#include "extmod/nimble/modbluetooth_nimble.h"
 
 static const char *tag = "ble_mesh";
+extern volatile int mp_bluetooth_nimble_ble_state;
 
 #define OOB_AUTH_ENABLE 1
 #ifdef OOB_AUTH_ENABLE
@@ -107,6 +109,7 @@ void blemesh_on_sync(void)
 	bt_mesh_prov_enable(BT_MESH_PROV_GATT | BT_MESH_PROV_ADV);
 
 	ESP_LOGI(tag, "Mesh initialized. RAM left: %d\n", esp_get_free_heap_size());
+	mp_bluetooth_nimble_ble_state = MP_BLUETOOTH_NIMBLE_BLE_STATE_ACTIVE;
 
 	// bt_initialized();
 }

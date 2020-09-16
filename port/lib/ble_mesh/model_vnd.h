@@ -40,12 +40,18 @@ struct vendor_state {
 	u8_t last_tid;
 	u16_t last_src_addr;
 	u16_t last_dst_addr;
+	u8_t len;
+	u8_t data[16];
 };
 
 
 extern struct vendor_state vnd_user_data;
-extern struct bt_mesh_model_pub vnd_pub;
+extern struct bt_mesh_model_pub vnd_pub_srv;
+extern struct bt_mesh_model_pub vnd_pub_cli;
 extern struct os_mbuf *bt_mesh_pub_msg_vnd_pub;
-extern struct bt_mesh_model vnd_models[1];
+// extern struct os_mbuf *bt_mesh_pub_msg_vnd_pub_cli;
+extern struct bt_mesh_model vnd_models[2];
+
+void vnd_publish(struct bt_mesh_model *model);
 
 #endif //_MODEL_VND_H_

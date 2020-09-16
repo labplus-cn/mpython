@@ -84,11 +84,11 @@ void init_pub(void)
 	// bt_mesh_pub_msg_light_ctl_cli_pub			= NET_BUF_SIMPLE(2 + 2);
 	bt_mesh_pub_msg_light_hsl_srv_pub			= NET_BUF_SIMPLE(2 + 6);
 	// bt_mesh_pub_msg_light_hsl_cli_pub			= NET_BUF_SIMPLE(2 + 6);
-	// bt_mesh_pub_msg_sensor_srv_pub              = NET_BUF_SIMPLE(2 + 20);
-    // bt_mesh_pub_msg_sensor_cli_pub              = NET_BUF_SIMPLE(2 + 2);
-	// bt_mesh_pub_msg_sensor_setup_srv_pub              = NET_BUF_SIMPLE(2 + 2);
+	// bt_mesh_pub_msg_sensor_srv_pub              	= NET_BUF_SIMPLE(2 + 20);
+    // bt_mesh_pub_msg_sensor_cli_pub              	= NET_BUF_SIMPLE(2 + 2);
+	// bt_mesh_pub_msg_sensor_setup_srv_pub        	= NET_BUF_SIMPLE(2 + 2);
 
-	bt_mesh_pub_msg_vnd_pub						= NET_BUF_SIMPLE(3 + 6);
+	bt_mesh_pub_msg_vnd_pub						= NET_BUF_SIMPLE(3 + 17);
 
 	health_pub.msg					= bt_mesh_pub_msg_health_pub;
 	gen_onoff_srv_pub_root.msg		= bt_mesh_pub_msg_gen_onoff_srv_pub_root;
@@ -106,7 +106,8 @@ void init_pub(void)
 	// sensor_cli_pub.msg              = bt_mesh_pub_msg_sensor_srv_pub;
 	// sensor_setup_srv_pub.msg        = bt_mesh_pub_msg_sensor_setup_srv_pub;
 
-	vnd_pub.msg						= bt_mesh_pub_msg_vnd_pub;
+	vnd_pub_srv.msg						= bt_mesh_pub_msg_vnd_pub;
+	vnd_pub_cli.msg						= bt_mesh_pub_msg_vnd_pub;
 }
 
 struct bt_mesh_model root_models[] = {

@@ -23,19 +23,23 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-
+#include "py/obj.h"
+#include "py/objstr.h"
+#include "py/runtime.h"
+#include "mphalport.h"
 #include "esp_log.h"
 #include "mesh/mesh.h"
-
-// #include "storage.h"
 
 #include "ble_mesh.h"
 #include "model_vnd.h"
 
 static const char *tag = "model_vnd";
+extern mp_obj_t callbacks[6];
 
-struct bt_mesh_model_pub vnd_pub;
+struct bt_mesh_model_pub vnd_pub_srv;
+struct bt_mesh_model_pub vnd_pub_cli;
 struct os_mbuf *bt_mesh_pub_msg_vnd_pub;
+// struct os_mbuf *bt_mesh_pub_msg_vnd_pub_cli;
 
 /* Definitions of models user data (Start) */
 struct vendor_state vnd_user_data;
@@ -43,76 +47,114 @@ struct vendor_state vnd_user_data;
 
 /* message handlers (Start) */
 /* Vendor Model message handlers*/
-static void vnd_get(struct bt_mesh_model *model, struct bt_mesh_msg_ctx *ctx, struct os_mbuf *buf)
+static void vnd_status_srv(struct bt_mesh_model *model,
+                             struct bt_mesh_msg_ctx *ctx)
 {
-	struct os_mbuf *msg = NET_BUF_SIMPLE(3 + 6 + 4);
-	struct vendor_state *state = model->user_data;
+	ESP_LOGI(tag, "#mesh-vnd STATUS\n");
 
-	/* This is dummy response for demo purpose */
-	state->response = 0xA578FEB3;
+	struct os_mbuf *msg = NET_BUF_SIMPLE(3 + 17 + 4);
+	struct vendor_state *state = model->user_data; //on_off state store in model->user_data->on_off
 
 	bt_mesh_model_msg_init(msg, BT_MESH_MODEL_OP_3(0x04, CID_RUNTIME));
-	net_buf_simple_add_le16(msg, state->current);
-	net_buf_simple_add_le32(msg, state->response);
+	net_buf_simple_add_u8(msg, state->len);
+	for(int i = 0; i < state->len; i++)
+		net_buf_simple_add_u8(msg, state->data[i]);
 
 	if (bt_mesh_model_send(model, ctx, msg, NULL, NULL)) {
-		ESP_LOGI(tag, "Unable to send VENDOR Status response\n");
+		ESP_LOGI(tag, "Unable to send GEN_ONOFF_SRV Status response\n");
 	}
 
 	os_mbuf_free_chain(msg);
 }
 
-static void vnd_set_unack(struct bt_mesh_model *model, struct bt_mesh_msg_ctx *ctx, struct os_mbuf *buf)
+static void vnd_get_srv(struct bt_mesh_model *model, struct bt_mesh_msg_ctx *ctx, struct os_mbuf *buf)
 {
-	u8_t tid;
-	int current;
-	s64_t now;
+	ESP_LOGI(tag, "#mesh-vnd GET\n");
+
+	vnd_status_srv(model, ctx);
+}
+
+static void vnd_set_unack_srv(struct bt_mesh_model *model, struct bt_mesh_msg_ctx *ctx, struct os_mbuf *buf)
+{
 	struct vendor_state *state = model->user_data;
 
-	current = net_buf_simple_pull_le16(buf);
-	tid = net_buf_simple_pull_u8(buf);
+	state->len = net_buf_simple_pull_u8(buf);
+	for(int i = 0; i < state->len; i++)
+		state->data[i] = net_buf_simple_pull_u8(buf);
 
-	// now = k_uptime_get();
-	// if (state->last_tid == tid &&
-	//     state->last_src_addr == ctx->addr &&
-	//     state->last_dst_addr == ctx->recv_dst &&
-	//     (now - state->last_msg_timestamp <= K_SECONDS(6))) {
-	// 	return;
-	// }
-
-	state->last_tid = tid;
-	state->last_src_addr = ctx->addr;
-	state->last_dst_addr = ctx->recv_dst;
-	// state->last_msg_timestamp = now;
-	state->current = current;
-
-	ESP_LOGI(tag, "Vendor model message = %04x\n", state->current);
+    vstr_t vstr;
+    vstr_init_len(&vstr, state->len);
+	for(int i = 0; i < state->len; i++)
+		vstr.buf[i] = state->data[i];
+	if(callbacks[5]){
+		mp_sched_schedule(callbacks[5], mp_obj_new_str_from_vstr(&mp_type_bytes, &vstr));
+	}
 }
 
-static void vnd_set(struct bt_mesh_model *model, struct bt_mesh_msg_ctx *ctx, struct os_mbuf *buf)
+static void vnd_set_srv(struct bt_mesh_model *model, struct bt_mesh_msg_ctx *ctx, struct os_mbuf *buf)
 {
-	vnd_set_unack(model, ctx, buf);
-	vnd_get(model, ctx, buf);
+	struct vendor_state *state = model->user_data;
+
+	state->len = net_buf_simple_pull_u8(buf);
+	for(int i = 0; i < state->len; i++)
+		state->data[i] = net_buf_simple_pull_u8(buf);
+	ESP_LOGI(tag, "#mesh-vnd SET-UNACK: state->data[0]=%d\n", state->data[0]);
+
+	vnd_status_srv(model, ctx);
+
+    vstr_t vstr;
+    vstr_init_len(&vstr, state->len);
+	for(int i = 0; i < state->len; i++)
+		vstr.buf[i] = state->data[i];
+	if(callbacks[5]){
+		mp_sched_schedule(callbacks[5], mp_obj_new_str_from_vstr(&mp_type_bytes, &vstr));
+	}
 }
 
-static void vnd_status(struct bt_mesh_model *model, struct bt_mesh_msg_ctx *ctx, struct os_mbuf *buf)
+static void vnd_status_cli(struct bt_mesh_model *model, struct bt_mesh_msg_ctx *ctx, struct os_mbuf *buf)
 {
-	ESP_LOGI(tag, "Acknownledgement from Vendor\n");
-	ESP_LOGI(tag, "cmd = %04x\n", net_buf_simple_pull_le16(buf));
+	// ESP_LOGI(tag, "Acknownledgement from Vendor\n");
+	// ESP_LOGI(tag, "cmd = %04x\n", net_buf_simple_pull_le16(buf));
 	// ESP_LOGI(tag, "response = %08lx\n", net_buf_simple_pull_le32(buf));
 }
 
+void vnd_publish(struct bt_mesh_model *model)
+{
+	int err;
+	struct os_mbuf *msg = model->pub->msg;
+	struct vendor_state *state = model->user_data;
+
+	if (model->pub->addr == BT_MESH_ADDR_UNASSIGNED) {
+		return;
+	}
+
+	bt_mesh_model_msg_init(msg, BT_MESH_MODEL_OP_3(0x03, CID_RUNTIME));
+	net_buf_simple_add_u8(msg, state->len);
+	for(int i = 0; i < state->len; i++)
+		net_buf_simple_add_u8(msg, state->data[i]);
+
+	err = bt_mesh_model_publish(model);
+	if (err) {
+		ESP_LOGI(tag, "bt_mesh_model_publish err %d\n", err);
+	}
+}
+
 /* Mapping of message handlers for Vendor (0x4321) */
-static const struct bt_mesh_model_op vnd_ops[] = {
-	{ BT_MESH_MODEL_OP_3(0x01, CID_RUNTIME), 0, vnd_get },
-	{ BT_MESH_MODEL_OP_3(0x02, CID_RUNTIME), 3, vnd_set },
-	{ BT_MESH_MODEL_OP_3(0x03, CID_RUNTIME), 3, vnd_set_unack },
-	{ BT_MESH_MODEL_OP_3(0x04, CID_RUNTIME), 6, vnd_status },
+static const struct bt_mesh_model_op vnd_srv_ops[] = {
+	{ BT_MESH_MODEL_OP_3(0x01, CID_RUNTIME), 0, vnd_get_srv },
+	{ BT_MESH_MODEL_OP_3(0x02, CID_RUNTIME), 3, vnd_set_srv },
+	{ BT_MESH_MODEL_OP_3(0x03, CID_RUNTIME), 3, vnd_set_unack_srv },
 	BT_MESH_MODEL_OP_END,
 };
 
-struct bt_mesh_model vnd_models[1] = {
-	BT_MESH_MODEL_VND(CID_RUNTIME, 0x4321, vnd_ops, &vnd_pub, &vnd_user_data),
+static const struct bt_mesh_model_op vnd_cli_ops[] = {
+	{ BT_MESH_MODEL_OP_3(0x04, CID_RUNTIME), 6, vnd_status_cli },
+	BT_MESH_MODEL_OP_END,
+};
+
+struct bt_mesh_model vnd_models[2] = {
+	BT_MESH_MODEL_VND(CID_RUNTIME, 0x4321, vnd_srv_ops, &vnd_pub_srv, &vnd_user_data),
+	BT_MESH_MODEL_VND(CID_RUNTIME, 0x4320, vnd_cli_ops, &vnd_pub_cli, &vnd_user_data),
 };
 
 

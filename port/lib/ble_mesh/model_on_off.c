@@ -29,10 +29,11 @@
 // #include "storage.h"
 #include "ble_mesh.h"
 #include "model_on_off.h"
-// #include "state_binding.h"
-// #include "transition.h"
+#include "py/runtime.h"
+#include "py/obj.h"
 
 static const char *tag = "model_onoff";
+extern mp_obj_t callbacks[6];
 
 struct bt_mesh_model_pub gen_onoff_srv_pub_root;
 struct bt_mesh_model_pub gen_onoff_cli_pub_root;
@@ -78,6 +79,10 @@ static void gen_onoff_set_unack_srv(struct bt_mesh_model *model,struct bt_mesh_m
 
     state->onoff = net_buf_simple_pull_u8(buf);
 	ESP_LOGI(tag, "#mesh-onoff SET-UNACK: on_off=%d\n", state->onoff);
+
+	if(callbacks[0]){
+		mp_sched_schedule(callbacks[0], mp_obj_new_int(state->onoff));
+	}
 }
 
 static void gen_onoff_set_srv(struct bt_mesh_model *model, struct bt_mesh_msg_ctx *ctx, struct os_mbuf *buf)
@@ -87,6 +92,10 @@ static void gen_onoff_set_srv(struct bt_mesh_model *model, struct bt_mesh_msg_ct
 	ESP_LOGI(tag, "#mesh-onoff SET: on_off=%d\n", state->onoff);
 
     gen_onoff_status_srv(model, ctx); //ACK
+
+	if(callbacks[0]){
+		mp_sched_schedule(callbacks[0], mp_obj_new_int(state->onoff));
+	}
 }
 
 /* Generic OnOff Client message handlers */
