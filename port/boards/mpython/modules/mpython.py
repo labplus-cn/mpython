@@ -70,7 +70,7 @@ class OLED(SSD1106_I2C):
         if self.f is None:
             raise Exception('font load failed')
 
-    def DispChar(self, s, x, y, mode=TextMode.normal):
+    def DispChar(self, s, x, y, mode=TextMode.normal, auto_return=False):
             row = 0
             str_width = 0
             if self.f is None:
@@ -78,17 +78,22 @@ class OLED(SSD1106_I2C):
             for c in s:
                 data = self.f.GetCharacterData(c)
                 if data is None:
-                    x = x + self.f.width
+                    if auto_return is True:
+                        x = x + self.f.width
+                    else:
+                        x = x + self.width
                     continue
                 width, bytes_per_line = ustruct.unpack('HH', data[:4])
                 # print('character [%d]: width = %d, bytes_per_line = %d' % (ord(c)
                 # , width, bytes_per_line))
-                if x > self.width - width:
-                    str_width +=self.width -x
-                    x = 0
-                    row += 1
-                    y += self.f.height
-                    if y > (self.height - self.f.height)+0: y, row = 0, 0
+                if auto_return is True:
+                    if x > self.width - width:
+                        str_width += self.width - x
+                        x = 0
+                        row += 1
+                        y += self.f.height
+                        if y > (self.height - self.f.height)+0:
+                            y, row = 0, 0
                 for h in range(0, self.f.height):
                     w = 0
                     i = 0
@@ -111,8 +116,7 @@ class OLED(SSD1106_I2C):
                                 if mode == TextMode.rev:
                                     c = 0
                                 if mode == TextMode.xor:
-                                    c = self.buffer[page *
-                                                    self.width + px] & bit
+                                    c = self.buffer[page * (self.width if auto_return is True else 128) + px] & bit
                                     if c != 0:
                                         c = 0
                                     else:
