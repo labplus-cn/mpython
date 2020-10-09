@@ -25,32 +25,70 @@
 """
 from mpython import i2c, sleep_ms, MPythonPin, PinMode
 from micropython import const
-from machine import UART
+from machine import UART, ADC, Pin
 import framebuf
 import ubinascii
 import ustruct
 import math
 
 
-class NTC(object):
-    """NTC 模块
+class Thermistor:
+    """
+    NTC 模块。也适用于其他的热敏电阻。
 
     :param pin: 掌控板引脚号,如使用P0,pin=0.
+    :param series_resistor: 与热敏电阻连接的串联电阻器的值。默认是10K电阻。
+    :param nominal_resistance: 在标称温度下热敏电阻的阻值。
+    :param nominal_temperature: 在标称电阻值下热敏电阻的温度值(以摄氏度为单位)。默认使用25.0摄氏度。
+    :param b_coefficient: 热敏电阻的温度系数。
+    :param high_side: 表示热敏电阻是连接在电阻分压器的高侧还是低侧。默认high_side为True。
     """
 
-    def __init__(self, pin):
-        self.pin = pin
-
+    def __init__(
+        self,
+        pin,
+        series_resistor=10000.0,
+        nominal_resistance=10000.0,
+        nominal_temperature=25.0,
+        b_coefficient=3935.0,
+        high_side=True
+    ):
+        self.adc = ADC(Pin(eval("Pin.P{}".format(pin))))
+        self.adc.atten(ADC.ATTN_11DB)
+        self.series_resistor = series_resistor
+        self.nominal_resistance = nominal_resistance
+        self.nominal_temperature = nominal_temperature
+        self.b_coefficient = b_coefficient
+        self.high_side = high_side
+    
     def getTemper(self):
         """
-        获取温度
+        获取温度,读取异常则返回None
 
         :return: 温度,单位摄氏度
         """
-        _pin = MPythonPin(self.pin, PinMode.ANALOG)
-        val = _pin.read_analog()
-        return 1 / (math.log(4095 / val - 1) / 3935 + 1 / 298) - 273
+        try:
+            if self.high_side:
+                # Thermistor connected from analog input to high logic level.
+                reading = self.adc.read_u16() / 64
+                reading = (1023 * self.series_resistor) / reading
+                reading -= self.series_resistor
+            else:
+                # Thermistor connected from analog input to ground.
+                reading = self.series_resistor / (65535.0 / self.adc.read_u16() - 1.0)
+            steinhart = reading / self.nominal_resistance  # (R/Ro)
+            steinhart = math.log(steinhart)  # ln(R/Ro)
+            steinhart /= self.b_coefficient  # 1/B * ln(R/Ro)
+            steinhart += 1.0 / (self.nominal_temperature + 273.15)  # + (1/To)
+            steinhart = 1.0 / steinhart  # Invert
+            steinhart -= 273.15  # convert to C
 
+            return steinhart
+        except:
+            return None
+
+# 兼容以前旧接口
+NTC = Thermistor
 
 class LM35(object):
     """LM35 模块
@@ -506,7 +544,7 @@ class LCD1602(object):
         设置光标位置
 
         :param col: 列,1~16
-        :param col: 行,1~2
+        :param row: 行,1~2
 
         """
         if row >= 2:
