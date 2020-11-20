@@ -127,6 +127,9 @@ void mpython_stop_thread(void) {
     #endif  
 }
 
+static uint16_t hw_init_flags = 0;
+const char msg_iic_failed[] = "IIC硬件错误(IIC Hardfault),系统无法正常工作!IIC连线是否接反?请移除IIC总线上的所有设备后重试!\n";
+
 void mp_task(void *pvParameter) {
     volatile uint32_t sp = (uint32_t)get_sp();
     #if MICROPY_PY_THREAD
@@ -135,7 +138,6 @@ void mp_task(void *pvParameter) {
 
     esp_log_level_set("*", ESP_LOG_ERROR);    // only error msg for mpython
     // esp_log_level_set("*", ESP_LOG_INFO);
-
     uart_init();
 
     // TODO: CONFIG_SPIRAM_SUPPORT is for 3.3 compatibility, remove after move to 4.0.
@@ -164,13 +166,17 @@ void mp_task(void *pvParameter) {
     #endif
 
 soft_reset:
+    hw_init_flags = 0;
     // startup
-    oled_init();
-    oled_drawImg(img_00030);
-    //oled_drawAnimation(ani_startup, 25, 50);
-    //oled_clear();
-    oled_show();
-    oled_deinit();
+    // iic总线错误,打印提示信息
+    if (oled_init() == false) { 
+        ESP_LOGE("system", "%s", msg_iic_failed);
+        hw_init_flags |= 0x0001;
+    } else {
+        oled_drawImg(img_00030);
+        oled_show();
+        oled_deinit();
+    }
 
     // initialise the stack pointer for the main thread
     mp_stack_set_top((void *)sp);
@@ -200,7 +206,9 @@ soft_reset:
     // run boot-up scripts
     pyexec_frozen_module("_boot.py");
     pyexec_file_if_exists("boot.py");
-    if (pyexec_mode_kind == PYEXEC_MODE_FRIENDLY_REPL) {
+
+    // 如果硬件初始化没有错误,则运行main.py;否则直接进入REPL
+    if (pyexec_mode_kind == PYEXEC_MODE_FRIENDLY_REPL && hw_init_flags == 0) {
         pyexec_file_if_exists("main.py");
     }
 
