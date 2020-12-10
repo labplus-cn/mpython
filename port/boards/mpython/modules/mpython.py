@@ -17,6 +17,7 @@ from neopixel import NeoPixel
 from time import sleep_ms, sleep_us, sleep
 import framebuf 
 import calibrate_img
+from micropython import schedule
 
 i2c = I2C(0, scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
 
@@ -190,6 +191,71 @@ class Accelerometer():
         self.set_resolustion(Accelerometer.RES_10_BIT)
         self.set_range(Accelerometer.RANGE_2G)
         self._writeReg(0x11,0)                  # set power mode = normal
+        # interrupt
+        self._writeReg(0x16, 0x70)      # int enabled: Orient | S_TAP | D_TAP 
+        self._writeReg(0x17, 0x08)      # int enabled: Freefall
+        self._writeReg(0x19, 0x71)      # int1 map to: Orient, S_TAP, D_TAP, Freefall
+        self._writeReg(0x20, 0x02)      # int1 active level = 0, output = OD
+        self._writeReg(0x21, 0x0C)      # int tempoary latched 25ms
+        # freefall:
+        #   single mode: |acc_x| < Threshold && |acc_y| < Threshold && |acc_z| < Threshold, at least time > Duration
+        #   sum mode: |acc_x| + |acc_y| + |acc_z| < Threshold, at least time > Duration
+        self._writeReg(0x22, 20)    # Freefall Duration:(n+1)*2ms, range from 2ms to 512ms
+        self._writeReg(0x23, 48)    # Freefall Threshold: n*7.81mg
+        self._writeReg(0x24, 0x01)  # Freefall mode = 0-singlemode;hysteresis = n*125mg
+        # tap:
+        self._writeReg(0x2A, 0x06)  # Tap duration:quit = 30ms, shock=50ms, time window for secent shock=500ms
+        self._writeReg(0x2B, 0x0A)  # Tap threshold = 10*[62.5mg@2G | 125mg@4G | 250mg@8G | 500mg@16g]
+        # Orient
+        self._writeReg(0x2C, 0x18)  # Orient hysteresis= 1*62.5mg; 
+                                    #        block mode = 10 z_axis blocking or slope in any axis > 0.2g;
+                                    #        orient mode = 00-symetrical
+        self._writeReg(0x2D, 8)     # Z-axis block
+        # int pin irq register
+        self.int = Pin(37, Pin.IN)
+        self.int.irq(trigger=Pin.IRQ_FALLING, handler=self.irq)
+        # event handler 
+        self.handler_tilt_up = None
+        self.handler_tilt_down = None
+        self.handler_tilt_left = None
+        self.handler_tilt_right = None
+        self.handler_face_up = None
+        self.handler_face_down = None
+        self.handler_single_click = None
+        self.handler_double_click = None
+        self.handler_freefall = None        
+
+    def irq(self, arg):
+        reg_int = self._readReg(0x09)[0]
+        reg_orent = self._readReg(0x0C)[0]
+        # orient_int
+        if (reg_int & 0x40):
+            if ((reg_orent & 0x30) == 0x00 and self.handler_tilt_right != None):
+                schedule(self.handler_tilt_right, self)
+            if ((reg_orent & 0x30) == 0x10 and self.handler_tilt_left != None):
+                schedule(self.handler_tilt_left, self)
+            if ((reg_orent & 0x30) == 0x20 and self.handler_tilt_up != None):
+                schedule(self.handler_tilt_up, self)
+            if ((reg_orent & 0x30) == 0x30 and self.handler_tilt_down != None):
+                schedule(self.handler_tilt_down, self)
+
+            if ((reg_orent & 0x40) == 0x00 and self.handler_face_up):
+                schedule(self.handler_face_up, self)
+            if ((reg_orent & 0x40) == 0x40 and self.handler_face_down):
+                schedule(self.handler_face_down, self)
+        # single tap
+        if (reg_int & 0x20):
+            if (self.handler_single_click != None):
+                schedule(self.handler_single_click, self)
+        # double tap
+        if (reg_int & 0x10):
+            if (self.handler_double_click != None):
+                schedule(self.handler_double_click, self)
+        # freefall
+        if (reg_int & 0x01):
+            if (self.handler_freefall != None):
+                schedule(self.handler_freefall, self)
+        print("acc sensor interrupt, because 0x%2x, orient = 0x%2x" % (reg_int, reg_orent))
 
     def _readReg(self, reg, nbytes=1):
         return self.i2c.readfrom_mem(self.addr, reg, nbytes)
