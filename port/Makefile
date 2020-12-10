@@ -70,18 +70,17 @@ $(info Supported git hash (v4.0) (experimental): $(ESPIDF_SUPHASH_V4))
 endef
 
 # paths to ESP IDF and its components
-# ifeq ($(ESPIDF),)
-# ifneq ($(IDF_PATH),)
-# ESPIDF = $(IDF_PATH)
-# else
-# $(info The ESPIDF variable has not been set, please set it to the root of the esp-idf repository.)
-# $(info See README.md for installation instructions.)
-# dummy := $(call print_supported_git_hash)
-# $(error ESPIDF not set)
-# endif
-# endif
-# 改为内置esp-idf
-ESPIDF = ../esp-idf
+ifeq ($(ESPIDF),)
+ifneq ($(IDF_PATH),)
+ESPIDF = $(IDF_PATH)
+else
+$(info The ESPIDF variable has not been set, please set it to the root of the esp-idf repository.)
+$(info See README.md for installation instructions.)
+dummy := $(call print_supported_git_hash)
+$(error ESPIDF not set)
+endif
+endif
+
 
 
 ESPCOMP = $(ESPIDF)/components
