@@ -824,8 +824,59 @@ sound = ADC(Pin(36))
 sound.atten(sound.ATTN_11DB)
 
 # buttons
-button_a = Pin(0, Pin.IN, Pin.PULL_UP)
-button_b = Pin(2, Pin.IN, Pin.PULL_UP)
+
+class Button:
+
+    def __init__(self, pin_num):
+        self.__pin = Pin(pin_num, Pin.IN, Pin.PULL_UP)
+        self.__pin.irq(trigger=Pin.IRQ_FALLING, handler = self.__irq_handler)
+        self.__user_irq = None
+        self.event_keydown = None
+
+        self.__pressed_count = 0
+
+    def __irq_handler(self):
+        # debounce
+        time.sleep_ms(10)
+        if (self.__pin.value() == 1):
+            return
+        # compatible with irq mode
+        if (self.__user_irq != None):
+            schedule(self.__user_irq, None)
+        # new event handler
+        if (self.event_keydown != None):
+            schedule(self.event_keydown)
+        # key status
+        self.__was_pressed = True
+        if (self.__pressed_count < 100):
+            self.__pressed_count = self.__pressed_count + 1
+
+    def is_pressed(self):
+        if (self.__pin.value() == 0):
+            return True
+        else:
+            return False
+
+    def was_pressed(self):
+        r = self.__was_pressed
+        self.__was_pressed = False
+        return r
+
+    def get_pressed(self):
+        r = self.__pressed_count
+        self.__pressed_count = 0
+        return r
+
+    def value(self):
+        return self.__pin.value()
+
+    def irq(self, trigger=(Pin.IRQ_RISING | Pin.IRQ_FALLING), handler=None):
+        self.__user_irq = handler
+
+# button_a = Pin(0, Pin.IN, Pin.PULL_UP)
+# button_b = Pin(2, Pin.IN, Pin.PULL_UP)
+button_a = Button(0)
+button_b = Button(2)
 
 # touchpad
 touchPad_P = TouchPad(Pin(27))
