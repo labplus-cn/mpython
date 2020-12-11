@@ -1363,7 +1363,7 @@ class VoiceAssistant():
         return bytes(n)
 
 
-    def dueros_profile_config(duer_profile):
+    def dueros_profile_config(self, duer_profile):
         """语音助手读取文本文件
         :param duer_profile: profile
         """
