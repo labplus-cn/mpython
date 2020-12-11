@@ -835,36 +835,59 @@ sound = ADC(Pin(36))
 sound.atten(sound.ATTN_11DB)
 
 # buttons
-
-
 class Button:
+    def __init__(self, pin_num, pull=Pin.PULL_UP):
+        
+        (self.PRESS, self.RELEASE) = (Pin.IRQ_FALLING, Pin.IRQ_RISING) if pull == Pin.PULL_UP else (Pin.IRQ_RISING, Pin.IRQ_FALLING)
+        (self._press_level, self._release_level) = (0, 1) if pull == Pin.PULL_UP else (1, 0)
 
-    def __init__(self, pin_num):
-        self.__pin = Pin(pin_num, Pin.IN, Pin.PULL_UP)
-        self.__pin.irq(trigger=Pin.IRQ_FALLING, handler=self.__irq_handler)
+        self.__pin = Pin(pin_num, Pin.IN, pull=pull)
+        # self.__pin.irq(trigger=self.PRESS, handler=self.__irq_handler)
         self.__user_irq = None
-        self.event_keydown = None
-
+        self.event_pressed = None
+        self.event_released = None
         self.__pressed_count = 0
+        self.set_trigger(self.PRESS)
+        # print("level: pressed is {}, released is {}." .format(self._press_level, self._release_level))
+        # print("press: {}, release: {}.".format(self.PRESS, self.RELEASE))
+        self.flag = True
+
+    def set_trigger(self, trigger):
+        
+        self.__trigger = trigger
+        # print("trigger:{}".format(self.__trigger))
+        self.__pin.irq(trigger=trigger, handler=self.__irq_handler)
 
     def __irq_handler(self, pin):
         # debounce
-        time.sleep_ms(10)
-        if (self.__pin.value() == 1):
+        if not self.flag:
             return
+        active = 0
+        while active < 20:
+            if self.__pin.value() == (self._press_level if self.__trigger == self.PRESS else self._release_level):
+                active += 1
+            else:
+                return
+            time.sleep_ms(1)
         # compatible with irq mode
-        if (self.__user_irq is not None):
-            schedule(self.__user_irq, self.__pin)
-        # new event handler
-        if (self.event_keydown is not None):
-            schedule(self.event_keydown, self.__pin)
-        # key status
-        self.__was_pressed = True
-        if (self.__pressed_count < 100):
-            self.__pressed_count = self.__pressed_count + 1
+        if self.flag:
+            self.flag = False
+            if (self.__user_irq is not None):
+                schedule(self.__user_irq, self.__pin)
+            # new event handler
+            if (self.event_pressed is not None) and (self.__trigger is self.PRESS):
+                schedule(self.event_pressed, self.__pin)
+            elif (self.event_released is not None) and (self.__trigger is self.RELEASE):
+                schedule(self.event_released, self.__pin)
 
+            # key status
+            self.__was_pressed = True
+            if (self.__pressed_count < 100):
+                self.__pressed_count = self.__pressed_count + 1
+            self.flag = True
+    
     def is_pressed(self):
-        if (self.__pin.value() == 0):
+        if self.__pin.value() == self._press_level:
             return True
         else:
             return False
@@ -884,6 +907,7 @@ class Button:
 
     def irq(self, trigger=(Pin.IRQ_RISING | Pin.IRQ_FALLING), handler=None):
         self.__user_irq = handler
+
 
 # button_a = Pin(0, Pin.IN, Pin.PULL_UP)
 # button_b = Pin(2, Pin.IN, Pin.PULL_UP)
