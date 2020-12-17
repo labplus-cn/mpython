@@ -128,7 +128,7 @@ STATIC void machine_touchpad_timer_cb(void *args)
         }
     }
     // all touchpad released
-    if (inactive_pad_num == 10) {
+    if (inactive_pad_num == 10 && is_touchpad_all_released == false) {
         is_touchpad_all_released = true;
         esp_timer_stop(touchpad_timer);
     }
@@ -136,9 +136,16 @@ STATIC void machine_touchpad_timer_cb(void *args)
 
 STATIC void machine_touchpad_isr_handler(void *arg) 
 {
+    static uint32_t pre_pad_intr = 0;
     uint32_t pad_intr = touch_pad_get_status();
     //clear interrupt
     touch_pad_clear_status();
+
+    // debounce
+    if (pre_pad_intr != pad_intr) {
+        pre_pad_intr = pad_intr;
+        return;
+    }
     
     for (int i = 0; i < MP_ARRAY_SIZE(touchpad_obj); i++) {
         mp_obj_t handler = MP_STATE_PORT(machine_touchpad_irq_handler)[i];
