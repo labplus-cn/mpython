@@ -841,7 +841,7 @@ class Button:
         (self.__press_level, self.__release_level) = (0, 1) if not self.__reverse else (1, 0)
         self.__pin = Pin(pin_num, Pin.IN, pull=Pin.PULL_UP)
         self.__pin.irq(trigger=Pin.IRQ_FALLING | Pin.IRQ_RISING, handler=self.__irq_handler)
-        self.__user_irq = None
+        # self.__user_irq = None
         self.event_pressed = None
         self.event_released = None
         self.__pressed_count = 0
@@ -854,8 +854,8 @@ class Button:
         time.sleep_ms(10)
         if self.__pin.value() == (self.__press_level if irq_falling else self.__release_level):
             # compatible with irq mode
-            if self.__user_irq is not None:
-                schedule(self.__user_irq, self.__pin)
+            # if self.__user_irq is not None:
+            #     schedule(self.__user_irq, self.__pin)
             # new event handler
             # pressed event
             if (self.event_pressed is not None) and irq_falling:
@@ -888,8 +888,8 @@ class Button:
     def value(self):
         return self.__pin.value()
 
-    def irq(self, trigger=(Pin.IRQ_RISING | Pin.IRQ_FALLING), handler=None):
-        self.__user_irq = handler
+    def irq(self, *args, **kws):
+        self.__pin.irq(*args, **kws)
 
 
 # button_a = Pin(0, Pin.IN, Pin.PULL_UP)
