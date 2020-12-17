@@ -56,6 +56,9 @@ STATIC const mtp_obj_t touchpad_obj[] = {
 };
 
 static bool is_touchpad_intr_enabled = false;
+static bool is_touchpad_all_released = true;
+static esp_timer_handle_t touchpad_timer = NULL;
+static uint16_t touchpad_inactive_timeout[10] = {0};
 
 STATIC mp_obj_t mtp_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw,
     const mp_obj_t *args) {
@@ -111,6 +114,25 @@ STATIC mp_obj_t mtp_read(mp_obj_t self_in) {
 }
 MP_DEFINE_CONST_FUN_OBJ_1(mtp_read_obj, mtp_read);
 
+STATIC void machine_touchpad_timer_cb(void *args)
+{
+    int inactive_pad_num = 0;
+    for (int i = 0; i < MP_ARRAY_SIZE(touchpad_obj);i++) {
+        if (touchpad_inactive_timeout[i]) {
+            touchpad_inactive_timeout[i]--;
+            if (touchpad_inactive_timeout[i] == 0) {
+                mp_obj_t handler = MP_STATE_PORT(machine_touchpad_irq_handler)[i];
+                mp_sched_schedule(handler, mp_obj_new_int(0));
+                inactive_pad_num++;
+            }
+        }
+    }
+    // all touchpad released
+    if (inactive_pad_num == 10) {
+        is_touchpad_all_released = true;
+        esp_timer_stop(touchpad_timer);
+    }
+}
 
 STATIC void machine_touchpad_isr_handler(void *arg) 
 {
@@ -121,10 +143,17 @@ STATIC void machine_touchpad_isr_handler(void *arg)
     for (int i = 0; i < MP_ARRAY_SIZE(touchpad_obj); i++) {
         mp_obj_t handler = MP_STATE_PORT(machine_touchpad_irq_handler)[i];
         if ((pad_intr >> i) & 0x01 && handler != MP_OBJ_NULL) {
-            const mtp_obj_t *self = &touchpad_obj[i];
-            mp_sched_schedule(handler, MP_OBJ_FROM_PTR(self));
+            if (touchpad_inactive_timeout[i] == 0) {
+                mp_sched_schedule(handler, mp_obj_new_int(1));
+            }
+            touchpad_inactive_timeout[i] = 5;   // 50ms
         }
-    }  
+    } 
+
+    if (is_touchpad_all_released == true) {
+        is_touchpad_all_released = false;
+        esp_timer_start_periodic(touchpad_timer, 10*1000);
+    }
     mp_hal_wake_main_task_from_isr();    
 }
 
@@ -156,6 +185,14 @@ STATIC mp_obj_t machine_touchpad_irq(size_t n_args, const mp_obj_t *pos_args, mp
             touch_pad_isr_register(machine_touchpad_isr_handler, NULL);
             touch_pad_intr_enable();
             is_touchpad_intr_enabled = true;
+            is_touchpad_all_released = true;
+
+            const esp_timer_create_args_t timer_args = {
+                .callback = machine_touchpad_timer_cb,
+                .name = "touchpad timer"
+            };
+            ESP_ERROR_CHECK(esp_timer_create(&timer_args, &touchpad_timer));
+            // esp_timer_start_periodic(touchpad_timer, 25*1000);
         }
     }
     // return the irq object
