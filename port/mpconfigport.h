@@ -229,6 +229,7 @@ struct mp_bluetooth_nimble_root_pointers_t;
 #define MICROPY_PORT_ROOT_POINTERS \
     const char *readline_hist[8]; \
     mp_obj_t machine_pin_irq_handler[40]; \
+    mp_obj_t machine_touchpad_irq_handler[10]; \
     struct _machine_timer_obj_t *machine_timer_obj_head; \
     MICROPY_PORT_ROOT_POINTER_BLUETOOTH_NIMBLE \
     struct _music_data_t * music_data; \

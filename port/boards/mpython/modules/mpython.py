@@ -17,6 +17,7 @@ from neopixel import NeoPixel
 from time import sleep_ms, sleep_us, sleep
 import framebuf 
 import calibrate_img
+from micropython import schedule,const
 
 i2c = I2C(0, scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
 
@@ -175,21 +176,97 @@ if 60 in i2c.scan():
     display = oled
 
 class Accelerometer():
-    """  """
-    RANGE_2G = 0
-    RANGE_4G = 1
-    RANGE_8G = 2
-    RANGE_16G = 3
-    RES_14_BIT = 0
-    RES_12_BIT = 1
-    RES_10_BIT = 2
+    """MSA300"""
+    # Range and resolustion
+    RANGE_2G = const(0)
+    RANGE_4G = const(1)
+    RANGE_8G = const(2)
+    RANGE_16G = const(3)
+    RES_14_BIT = const(0)
+    RES_12_BIT = const(1)
+    RES_10_BIT = const(2)
+    # Event
+    TILT_LEFT = const(0)
+    TILT_RIGHT = const(1)
+    TILT_UP = const(2)
+    TILT_DOWN = const(3)
+    FACE_UP = const(4)
+    FACE_DOWN = const(5)
+    SINGLE_CLICK = const(6)
+    DOUBLE_CLICK = const(7)
+    FREEFALL = const(8)
 
     def __init__(self):
         self.addr = 38
         self.i2c = i2c
-        self.set_resolustion(Accelerometer.RES_10_BIT)
+        self.set_resolution(Accelerometer.RES_10_BIT)
         self.set_range(Accelerometer.RANGE_2G)
-        self._writeReg(0x11,0)                  # set power mode = normal
+        self._writeReg(0x12, 0x03)               # polarity of y,z axis,
+        self._writeReg(0x11, 0)                  # set power mode = normal
+        # interrupt
+        self._writeReg(0x16, 0x70)      # int enabled: Orient | S_TAP | D_TAP 
+        self._writeReg(0x17, 0x08)      # int enabled: Freefall
+        self._writeReg(0x19, 0x71)      # int1 map to: Orient, S_TAP, D_TAP, Freefall
+        self._writeReg(0x20, 0x02)      # int1 active level = 0, output = OD
+        self._writeReg(0x21, 0x0C)      # int tempoary latched 25ms
+        # freefall:
+        #   single mode: |acc_x| < Threshold && |acc_y| < Threshold && |acc_z| < Threshold, at least time > Duration
+        #   sum mode: |acc_x| + |acc_y| + |acc_z| < Threshold, at least time > Duration
+        self._writeReg(0x22, 20)    # Freefall Duration:(n+1)*2ms, range from 2ms to 512ms
+        self._writeReg(0x23, 48)    # Freefall Threshold: n*7.81mg
+        self._writeReg(0x24, 0x01)  # Freefall mode = 0-singlemode;hysteresis = n*125mg
+        # tap:
+        self._writeReg(0x2A, 0x06)  # Tap duration:quit = 30ms, shock=50ms, time window for secent shock=500ms
+        self._writeReg(0x2B, 0x0A)  # Tap threshold = 10*[62.5mg@2G | 125mg@4G | 250mg@8G | 500mg@16g]
+        # Orient
+        self._writeReg(0x2C, 0x18)  # Orient hysteresis= 1*62.5mg; 
+                                    #        block mode = 10 z_axis blocking or slope in any axis > 0.2g;
+                                    #        orient mode = 00-symetrical
+        self._writeReg(0x2D, 8)     # Z-axis block
+        # int pin irq register
+        self.int = Pin(37, Pin.IN)
+        self.int.irq(trigger=Pin.IRQ_FALLING, handler=self.irq)
+        # event handler 
+        self.event_tilt_up = None
+        self.event_tilt_down = None
+        self.event_tilt_left = None
+        self.event_tilt_right = None
+        self.event_face_up = None
+        self.event_face_down = None
+        self.event_single_click = None
+        self.event_double_click = None
+        self.event_freefall = None
+
+    def irq(self, arg):
+        reg_int = self._readReg(0x09)[0]
+        reg_orent = self._readReg(0x0C)[0]
+        # orient_int
+        if (reg_int & 0x40):
+            if ((reg_orent & 0x30) == 0x00 and self.event_tilt_left is not None):
+                schedule(self.event_tilt_left, self.TILT_LEFT)
+            if ((reg_orent & 0x30) == 0x10 and self.event_tilt_right is not None):
+                schedule(self.event_tilt_right, self.TILT_RIGHT)
+            if ((reg_orent & 0x30) == 0x20 and self.event_tilt_up is not None):
+                schedule(self.event_tilt_up, self.TILT_UP)
+            if ((reg_orent & 0x30) == 0x30 and self.event_tilt_down is not None):
+                schedule(self.event_tilt_down, self.TILT_DOWN)
+            if ((reg_orent & 0x40) == 0x00 and self.event_face_up):
+                schedule(self.event_face_up, self.FACE_UP)
+            if ((reg_orent & 0x40) == 0x40 and self.event_face_down):
+                schedule(self.event_face_down, self.FACE_DOWN)
+        # single tap
+        if (reg_int & 0x20):
+            if (self.event_single_click is not None):
+                schedule(self.event_single_click, self.SINGLE_CLICK)
+        # double tap
+        if (reg_int & 0x10):
+            if (self.event_double_click is not None):
+                schedule(self.event_double_click, self.DOUBLE_CLICK)
+        # freefall
+        if (reg_int & 0x01):
+            if (self.event_freefall is not None):
+                schedule(self.event_freefall, self.FREEFALL)
+        # print("acc sensor interrupt, because 0x%2x, orient = 0x%2x" % (reg_int, reg_orent))
 
     def _readReg(self, reg, nbytes=1):
         return self.i2c.readfrom_mem(self.addr, reg, nbytes)
@@ -197,29 +274,29 @@ class Accelerometer():
     def _writeReg(self, reg, value):
         self.i2c.writeto_mem(self.addr, reg, value.to_bytes(1, 'little'))
 
-    def set_resolustion(self,resolution):
-        format = self._readReg(0x0f,1)
+    def set_resolution(self, resolution):
+        format = self._readReg(0x0f, 1)
         format = format[0] & ~0xC
-        format |= (resolution<<2)
-        self._writeReg(0x0f,format)
- 
+        format |= (resolution << 2)
+        self._writeReg(0x0f, format)
+
     def set_range(self, range):
         self.range = range
-        format = self._readReg(0x0f,1)
+        format = self._readReg(0x0f, 1)
         format = format[0] & ~0x3
         format |= range
-        self._writeReg(0x0f,format)
+        self._writeReg(0x0f, format)
 
     def set_offset(self, x=None, y=None, z=None):
         for i in (x, y, z):
-            if i != None:
+            if i is not None:
                 if i < -1 or i > 1:
                     raise ValueError("out of range,only offset 1 gravity")
-        if x != None:
+        if x is not None:
             self._writeReg(0x39, int(round(x/0.0039)))
-        elif y != None:
+        elif y is not None:
             self._writeReg(0x38, int(round(y/0.0039)))
-        elif z != None:
+        elif z is not None:
             self._writeReg(0x3A, int(round(z/0.0039)))
 
     def get_x(self):
@@ -758,8 +835,67 @@ sound = ADC(Pin(36))
 sound.atten(sound.ATTN_11DB)
 
 # buttons
-button_a = Pin(0, Pin.IN, Pin.PULL_UP)
-button_b = Pin(2, Pin.IN, Pin.PULL_UP)
+class Button:
+    def __init__(self, pin_num, reverse=False):
+        self.__reverse = reverse
+        (self.__press_level, self.__release_level) = (0, 1) if not self.__reverse else (1, 0)
+        self.__pin = Pin(pin_num, Pin.IN, pull=Pin.PULL_UP)
+        self.__pin.irq(trigger=Pin.IRQ_FALLING | Pin.IRQ_RISING, handler=self.__irq_handler)
+        # self.__user_irq = None
+        self.event_pressed = None
+        self.event_released = None
+        self.__pressed_count = 0
+        # print("level: pressed is {}, released is {}." .format(self.__press_level, self.__release_level))
+    
+
+    def __irq_handler(self, pin):
+        irq_falling = True if pin.value() == self.__press_level else False
+        # debounce
+        time.sleep_ms(10)
+        if self.__pin.value() == (self.__press_level if irq_falling else self.__release_level):
+            # compatible with irq mode
+            # if self.__user_irq is not None:
+            #     schedule(self.__user_irq, self.__pin)
+            # new event handler
+            # pressed event
+            if (self.event_pressed is not None) and irq_falling:
+                schedule(self.event_pressed, self.__pin)
+                # key status
+                self.__was_pressed = True
+                if (self.__pressed_count < 100):
+                    self.__pressed_count = self.__pressed_count + 1
+            # release event
+            elif (self.event_released is not None) and (not irq_falling) :
+                schedule(self.event_released, self.__pin)
+
+                
+    def is_pressed(self):
+        if self.__pin.value() == self.__press_level:
+            return True
+        else:
+            return False
+
+    def was_pressed(self):
+        r = self.__was_pressed
+        self.__was_pressed = False
+        return r
+
+    def get_pressed(self):
+        r = self.__pressed_count
+        self.__pressed_count = 0
+        return r
+
+    def value(self):
+        return self.__pin.value()
+
+    def irq(self, *args, **kws):
+        self.__pin.irq(*args, **kws)
+
+
+# button_a = Pin(0, Pin.IN, Pin.PULL_UP)
+# button_b = Pin(2, Pin.IN, Pin.PULL_UP)
+button_a = Button(0)
+button_b = Button(2)
 
 # touchpad
 touchPad_P = TouchPad(Pin(27))

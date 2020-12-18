@@ -1333,3 +1333,46 @@ class Scan_Rfid():
                 serial_num = int.from_bytes(bytes(serial_tuple[:-1]), 'little')
                 print("find card: {}" .format(serial_num))
                 return Rfid(i2c, serial_num)
+
+class VoiceAssistant():
+    """语音助手类"""
+
+    def wifi_config(self, ssid, password):
+        """语音助手Wi-Fi连接
+        :param ssid: 账号
+        :param password: 账号，密码
+        """
+        data_len_L = 96 & 0xff
+        data_len_H = 96 >> 8
+        checkSum = data_len_L + data_len_H + 0x01 + 0x01
+        n1 = [0xff, 0x55, data_len_L, data_len_H, 0x01, 0x01]
+        wifi_ssid = bytes(ssid, 'utf-8')
+        list_wifi_ssid = [0]*32
+        for i in range(0,  len(wifi_ssid)):
+            list_wifi_ssid[i] = wifi_ssid[i]
+        for i in range(0, 32):
+            checkSum += list_wifi_ssid[i]
+        wifi_pwd = bytes(password, 'utf-8')
+        list_wifi_pwd = [0]*64
+        for i in range(0,  len(wifi_pwd)):
+            list_wifi_pwd[i] = wifi_pwd[i]
+        for i in range(0, 64):
+            checkSum += list_wifi_pwd[i]
+        n = n1 + list_wifi_ssid + list_wifi_pwd
+        n.append(checkSum & 0xff)
+        return bytes(n)
+
+
+    def dueros_profile_config(self, duer_profile):
+        """语音助手读取文本文件
+        :param duer_profile: profile
+        """
+        data_len_L = len(duer_profile) & 0xff
+        data_len_H = len(duer_profile) >> 8
+        checkSum = data_len_L + data_len_H + 0x02 + 0x02
+        n1 = [0xff, 0x55, data_len_L, data_len_H, 0x02, 0x02]
+        for i in range(0, len(duer_profile)):
+            checkSum += duer_profile[i]
+        n = n1 + list(duer_profile)
+        n.append(checkSum & 0xff)
+        return bytes(n)

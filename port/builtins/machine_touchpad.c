@@ -55,6 +55,11 @@ STATIC const mtp_obj_t touchpad_obj[] = {
     {{&machine_touchpad_type}, GPIO_NUM_32, TOUCH_PAD_NUM9},
 };
 
+static bool is_touchpad_intr_enabled = false;
+static bool is_touchpad_all_released = true;
+static esp_timer_handle_t touchpad_timer = NULL;
+static uint16_t touchpad_inactive_timeout[10] = {0};
+
 STATIC mp_obj_t mtp_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw,
     const mp_obj_t *args) {
 
@@ -109,10 +114,104 @@ STATIC mp_obj_t mtp_read(mp_obj_t self_in) {
 }
 MP_DEFINE_CONST_FUN_OBJ_1(mtp_read_obj, mtp_read);
 
+STATIC void machine_touchpad_timer_cb(void *args)
+{
+    int inactive_pad_num = 0;
+    for (int i = 0; i < MP_ARRAY_SIZE(touchpad_obj);i++) {
+        if (touchpad_inactive_timeout[i]) {
+            touchpad_inactive_timeout[i]--;
+            if (touchpad_inactive_timeout[i] == 0) {
+                mp_obj_t handler = MP_STATE_PORT(machine_touchpad_irq_handler)[i];
+                mp_sched_schedule(handler, mp_obj_new_int(0));
+                inactive_pad_num++;
+            }
+        }
+    }
+    // all touchpad released
+    if (inactive_pad_num == 10 && is_touchpad_all_released == false) {
+        is_touchpad_all_released = true;
+        esp_timer_stop(touchpad_timer);
+    }
+}
+
+STATIC void machine_touchpad_isr_handler(void *arg) 
+{
+    static uint32_t pre_pad_intr = 0;
+    uint32_t pad_intr = touch_pad_get_status();
+    //clear interrupt
+    touch_pad_clear_status();
+
+    // debounce
+    if (pre_pad_intr != pad_intr) {
+        pre_pad_intr = pad_intr;
+        return;
+    }
+    
+    for (int i = 0; i < MP_ARRAY_SIZE(touchpad_obj); i++) {
+        mp_obj_t handler = MP_STATE_PORT(machine_touchpad_irq_handler)[i];
+        if ((pad_intr >> i) & 0x01 && handler != MP_OBJ_NULL) {
+            if (touchpad_inactive_timeout[i] == 0) {
+                mp_sched_schedule(handler, mp_obj_new_int(1));
+            }
+            touchpad_inactive_timeout[i] = 5;   // 50ms
+        }
+    } 
+
+    if (is_touchpad_all_released == true) {
+        is_touchpad_all_released = false;
+        esp_timer_start_periodic(touchpad_timer, 10*1000);
+    }
+    mp_hal_wake_main_task_from_isr();    
+}
+
+// touchpad.irq(handler=None, threshold=80)
+STATIC mp_obj_t machine_touchpad_irq(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    enum { ARG_handler, ARG_threshold};
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_handler, MP_ARG_OBJ, {.u_obj = mp_const_none} },
+        { MP_QSTR_threshold, MP_ARG_INT, {.u_int = 80} },
+    };
+    mtp_obj_t *self = MP_OBJ_TO_PTR(pos_args[0]);
+    mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
+    mp_arg_parse_all(n_args - 1, pos_args + 1, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
+
+    if (n_args > 1 || kw_args->used != 0) {
+        // configure irq
+        mp_obj_t handler = args[ARG_handler].u_obj;
+        uint32_t threshold = args[ARG_threshold].u_int;
+        if (handler == mp_const_none) {
+            handler = MP_OBJ_NULL;
+        }
+        // if (threshold < 30 || threshold > 100) {
+        //     mp_raise_ValueError(MP_ERROR_TEXT("threshold value out of range"));
+        // }
+        MP_STATE_PORT(machine_touchpad_irq_handler)[self->touchpad_id] = handler;
+        touch_pad_set_thresh(self->touchpad_id, threshold);
+        // touch_pad_isr_deregister()
+        if (is_touchpad_intr_enabled == false) {
+            touch_pad_isr_register(machine_touchpad_isr_handler, NULL);
+            touch_pad_intr_enable();
+            is_touchpad_intr_enabled = true;
+            is_touchpad_all_released = true;
+
+            const esp_timer_create_args_t timer_args = {
+                .callback = machine_touchpad_timer_cb,
+                .name = "touchpad timer"
+            };
+            ESP_ERROR_CHECK(esp_timer_create(&timer_args, &touchpad_timer));
+            // esp_timer_start_periodic(touchpad_timer, 25*1000);
+        }
+    }
+    // return the irq object
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_KW(machine_touchpad_irq_obj, 1, machine_touchpad_irq);
+
 STATIC const mp_rom_map_elem_t mtp_locals_dict_table[] = {
     // instance methods
     { MP_ROM_QSTR(MP_QSTR_config), MP_ROM_PTR(&mtp_config_obj) },
     { MP_ROM_QSTR(MP_QSTR_read), MP_ROM_PTR(&mtp_read_obj) },
+    { MP_ROM_QSTR(MP_QSTR_irq), MP_ROM_PTR(&machine_touchpad_irq_obj)},
 };
 
 STATIC MP_DEFINE_CONST_DICT(mtp_locals_dict, mtp_locals_dict_table);
