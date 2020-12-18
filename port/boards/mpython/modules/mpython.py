@@ -845,6 +845,7 @@ class Button:
         self.event_pressed = None
         self.event_released = None
         self.__pressed_count = 0
+        self.__was_pressed = False
         # print("level: pressed is {}, released is {}." .format(self.__press_level, self.__release_level))
     
 
@@ -853,20 +854,19 @@ class Button:
         # debounce
         time.sleep_ms(10)
         if self.__pin.value() == (self.__press_level if irq_falling else self.__release_level):
-            # compatible with irq mode
-            # if self.__user_irq is not None:
-            #     schedule(self.__user_irq, self.__pin)
             # new event handler
             # pressed event
-            if (self.event_pressed is not None) and irq_falling:
-                schedule(self.event_pressed, self.__pin)
+            if irq_falling:
+                if self.event_pressed is not None:
+                    schedule(self.event_pressed, self.__pin)
                 # key status
                 self.__was_pressed = True
                 if (self.__pressed_count < 100):
                     self.__pressed_count = self.__pressed_count + 1
             # release event
-            elif (self.event_released is not None) and (not irq_falling) :
-                schedule(self.event_released, self.__pin)
+            else:
+                if self.event_released is not None:
+                    schedule(self.event_released, self.__pin)
 
                 
     def is_pressed(self):
@@ -892,18 +892,69 @@ class Button:
         self.__pin.irq(*args, **kws)
 
 
+
+class Touch:
+
+    def __init__(self, pin):
+        self.__touch_pad = TouchPad(pin)
+        self.__touch_pad.irq(self.__irq_handler)
+        self.event_pressed = None
+        self.event_released = None
+        self.__pressed_count = 0
+        self.__was_pressed = False
+        self.__value = 0
+
+    def __irq_handler(self, value):
+        # when pressed
+        if value == 1:
+            if self.event_pressed is not None:
+                self.event_pressed(value)
+            self.__was_pressed = True
+            self.__value = 1
+            if (self.__pressed_count < 100):
+                self.__pressed_count = self.__pressed_count + 1
+        # when released
+        else:
+            self.__value = 0
+            if self.event_released is not None:
+                self.event_released(value)
+            
+    def set_threshold(self, threshold):
+        self.__touch_pad.config(threshold)
+
+    def is_pressed(self):
+        if self.__value:
+            return True
+        else:
+            return False
+
+    def was_pressed(self):
+        r = self.__was_pressed
+        self.__was_pressed = False
+        return r
+
+    def get_pressed(self):
+        r = self.__pressed_count
+        self.__pressed_count = 0
+        return r
+
+    def read(self):
+        return self.__touch_pad.read()
+
+
 # button_a = Pin(0, Pin.IN, Pin.PULL_UP)
 # button_b = Pin(2, Pin.IN, Pin.PULL_UP)
 button_a = Button(0)
 button_b = Button(2)
 
+
 # touchpad
-touchPad_P = TouchPad(Pin(27))
-touchPad_Y = TouchPad(Pin(14))
-touchPad_T = TouchPad(Pin(12))
-touchPad_H = TouchPad(Pin(13))
-touchPad_O = TouchPad(Pin(15))
-touchPad_N = TouchPad(Pin(4))
+touchpad_p = touchPad_P = Touch(Pin(27))
+touchpad_y = touchPad_Y = Touch(Pin(14))
+touchpad_t = touchPad_T = Touch(Pin(12))
+touchpad_h = touchPad_H = Touch(Pin(13))
+touchpad_o = touchPad_O = Touch(Pin(15))
+touchpad_n = touchPad_N = Touch(Pin(4))
 
 from gui import *
 
