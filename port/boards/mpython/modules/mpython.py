@@ -919,7 +919,7 @@ class Touch:
             if self.event_released is not None:
                 self.event_released(value)
             
-    def set_threshold(self, threshold):
+    def config(self, threshold):
         self.__touch_pad.config(threshold)
 
     def is_pressed(self):
