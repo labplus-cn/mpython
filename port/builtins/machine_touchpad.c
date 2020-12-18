@@ -153,7 +153,7 @@ STATIC void machine_touchpad_isr_handler(void *arg)
             if (touchpad_inactive_timeout[i] == 0) {
                 mp_sched_schedule(handler, mp_obj_new_int(1));
             }
-            touchpad_inactive_timeout[i] = 5;   // 50ms
+            touchpad_inactive_timeout[i] = 10;   // 50ms
         }
     } 
 
