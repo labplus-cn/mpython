@@ -880,7 +880,7 @@ class Button:
         self.__was_pressed = False
         return r
 
-    def get_pressed(self):
+    def get_presses(self):
         r = self.__pressed_count
         self.__pressed_count = 0
         return r
@@ -933,7 +933,7 @@ class Touch:
         self.__was_pressed = False
         return r
 
-    def get_pressed(self):
+    def get_presses(self):
         r = self.__pressed_count
         self.__pressed_count = 0
         return r
