@@ -164,12 +164,12 @@ STATIC void machine_touchpad_isr_handler(void *arg)
     mp_hal_wake_main_task_from_isr();    
 }
 
-// touchpad.irq(handler=None, threshold=80)
+// touchpad.irq(handler=None, threshold=400)
 STATIC mp_obj_t machine_touchpad_irq(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     enum { ARG_handler, ARG_threshold};
     static const mp_arg_t allowed_args[] = {
         { MP_QSTR_handler, MP_ARG_OBJ, {.u_obj = mp_const_none} },
-        { MP_QSTR_threshold, MP_ARG_INT, {.u_int = 80} },
+        { MP_QSTR_threshold, MP_ARG_INT, {.u_int = 400} },
     };
     mtp_obj_t *self = MP_OBJ_TO_PTR(pos_args[0]);
     mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
