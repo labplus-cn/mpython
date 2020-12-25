@@ -25,7 +25,7 @@
 #include "helix_mp3_decoder.h"
 #include "audio_renderer.h"
 #include "driver/i2s.h"
-#include "wav_head.h"
+#include "wave_head.h"
 
 #include "local_play.h"
 #include "mpconfigboard.h"

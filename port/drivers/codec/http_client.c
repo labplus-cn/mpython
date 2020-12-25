@@ -24,7 +24,7 @@
 #include "http_client.h"
 #include "audio_recorder.h"
 #include "local_play.h"
-#include "wav_head.h"
+#include "wave_head.h"
 #include "driver/i2s.h"
 #include "audio_renderer.h"
 

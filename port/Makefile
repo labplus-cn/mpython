@@ -408,7 +408,7 @@ CODEC_SRC_C = $(addprefix drivers/codec/,\
 	http_client.c \
 	audio_renderer.c \
 	audio_recorder.c \
-	wav_head.c \
+	wave_head.c \
 	codec_lib/helix/src/bitstream.c \
 	codec_lib/helix/src/buffers.c \
 	codec_lib/helix/src/dct32.c \

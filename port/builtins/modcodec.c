@@ -19,7 +19,7 @@
 #include "py/objstr.h"
 #include "modmachine.h"
 #include "mphalport.h"
-#include "wav_head.h"
+#include "wave_head.h"
 #include "esp_log.h"
 #include "esp_system.h"
 #include "esp_http_client.h"

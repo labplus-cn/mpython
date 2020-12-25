@@ -24,7 +24,7 @@
 #include "driver/i2s.h"
 #include "driver/adc.h"
 #include "local_play.h"
-#include "wav_head.h"
+#include "wave_head.h"
 #include "mpconfigboard.h"
 
 #define TAG "audio_recorder"

@@ -41,3 +41,4 @@ py/__pycache__/*
 pymakr.conf
 **/__pycache__/
 build-venv/
+build-venv-robot/

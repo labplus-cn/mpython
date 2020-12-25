@@ -1,8 +1,8 @@
 // Copyright 2018 Espressif Systems (Shanghai) PTE LTD
 // All rights reserved.
 
-#ifndef _WAV_HEADER_H_
-#define _WAV_HEADER_H_
+#ifndef _WAVE_HEADER_H_
+#define _WAVE_HEADER_H_
 
 #include "esp_err.h"
 
