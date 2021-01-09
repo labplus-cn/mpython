@@ -335,6 +335,20 @@ class Accelerometer():
         else:
             raise Exception("i2c read/write error!")
 
+    def roll_pitch_angle(self):
+        x, y, z = self.get_x(), self.get_y(), -self.get_z()
+        # vector normalize
+        mag = math.sqrt(x ** 2 + y ** 2+z ** 2)
+        x /= mag
+        y /= mag
+        z /= mag
+        roll = math.degrees(-math.asin(y))
+        pitch = math.degrees(math.atan2(x, z))
+
+        return roll, pitch
+
+
+
 # 3 axis accelerometer
 accelerometer = Accelerometer()
 
