@@ -521,16 +521,7 @@ class MPythonPin():
     def read_analog(self):
         if not self.mode == PinMode.ANALOG:
             raise TypeError('the pin is not in ANALOG mode')
-        # calibration esp32 ADC 
-        calibration_val = 0
-        val = int(sum([self.adc.read() for i in range(50)]) / 50)
-        if 0 < val <= 2855:
-            calibration_val = 1.023 * val + 183.6
-        if 2855 < val <= 3720:
-            calibration_val = 0.9769 * val + 181
-        if 3720 < val <= 4095:
-            calibration_val = 4095 - (4095 - val) * 0.2
-        return calibration_val
+        return self.adc.read()
 
     def write_analog(self, duty, freq=1000):
         if not self.mode == PinMode.PWM:
@@ -636,9 +627,69 @@ class sound():
             return loudness
 
 # buttons
-button_a = Pin(0, Pin.IN, Pin.PULL_UP)
-button_b = Pin(2, Pin.IN, Pin.PULL_UP)
-button_c = Pin(4, Pin.IN, Pin.PULL_UP)
 
+
+class Button:
+    def __init__(self, pin_num, reverse=False):
+        self.__reverse = reverse
+        (self.__press_level, self.__release_level) = (0, 1) if not self.__reverse else (1, 0)
+        self.__pin = Pin(pin_num, Pin.IN, pull=Pin.PULL_UP)
+        self.__pin.irq(trigger=Pin.IRQ_FALLING | Pin.IRQ_RISING, handler=self.__irq_handler)
+        # self.__user_irq = None
+        self.event_pressed = None
+        self.event_released = None
+        self.__pressed_count = 0
+        self.__was_pressed = False
+        # print("level: pressed is {}, released is {}." .format(self.__press_level, self.__release_level))
+
+    def __irq_handler(self, pin):
+        irq_falling = True if pin.value() == self.__press_level else False
+        # debounce
+        time.sleep_ms(10)
+        if self.__pin.value() == (self.__press_level if irq_falling else self.__release_level):
+            # new event handler
+            # pressed event
+            if irq_falling:
+                if self.event_pressed is not None:
+                    schedule(self.event_pressed, self.__pin)
+                # key status
+                self.__was_pressed = True
+                if (self.__pressed_count < 100):
+                    self.__pressed_count = self.__pressed_count + 1
+            # release event
+            else:
+                if self.event_released is not None:
+                    schedule(self.event_released, self.__pin)
+
+    def is_pressed(self):
+        if self.__pin.value() == self.__press_level:
+            return True
+        else:
+            return False
+
+    def was_pressed(self):
+        r = self.__was_pressed
+        self.__was_pressed = False
+        return r
+
+    def get_presses(self):
+        r = self.__pressed_count
+        self.__pressed_count = 0
+        return r
+
+    def value(self):
+        return self.__pin.value()
+
+    def irq(self, *args, **kws):
+        self.__pin.irq(*args, **kws)
+
+
+# buttons
+# button_a = Pin(0, Pin.IN, Pin.PULL_UP)
+# button_b = Pin(2, Pin.IN, Pin.PULL_UP)
+# button_c = Pin(4, Pin.IN, Pin.PULL_UP)
+button_a = Button(0)
+button_b = Button(2)
+button_c = Button(4)
 
 

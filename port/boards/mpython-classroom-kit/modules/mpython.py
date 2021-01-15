@@ -70,57 +70,104 @@ class OLED(SSD1106_I2C):
         if self.f is None:
             raise Exception('font load failed')
 
-    def DispChar(self, s, x, y, mode=TextMode.normal):
-        if self.f is None:
-            return
-        for c in s:
-            data = self.f.GetCharacterData(c)
-            if data is None:
-                x = x + self.width
-                continue
-            width, bytes_per_line = ustruct.unpack('HH', data[:4])
-            # print('character [%d]: width = %d, bytes_per_line = %d' % (ord(c)
-            # , width, bytes_per_line))
-            for h in range(0, self.f.height):
-                w = 0
-                i = 0
-                while w < width:
-                    mask = data[4 + h * bytes_per_line + i]
-                    if (width - w) >= 8:
-                        n = 8
+    def DispChar(self, s, x, y, mode=TextMode.normal, auto_return=False):
+            row = 0
+            str_width = 0
+            if self.f is None:
+                return
+            for c in s:
+                data = self.f.GetCharacterData(c)
+                if data is None:
+                    if auto_return is True:
+                        x = x + self.f.width
                     else:
-                        n = width - w
-                    py = y + h
-                    page = py >> 3
-                    bit = 0x80 >> (py % 8)
-                    for p in range(0, n):
-                        px = x + w + p
-                        c = 0
-                        if (mask & 0x80) != 0:
-                            if mode == TextMode.normal or \
-                               mode == TextMode.trans:
-                                c = 1
-                            if mode == TextMode.rev:
-                                c = 0
-                            if mode == TextMode.xor:
-                                c = self.buffer[page * 128 + px] & bit
-                                if c != 0:
-                                    c = 0
-                                else:
-                                    c = 1
-                                # print("px = %d, py = %d, c = %d" % (px, py, c))
-                            super().pixel(px, py, c)
+                        x = x + self.width
+                    continue
+                width, bytes_per_line = ustruct.unpack('HH', data[:4])
+                # print('character [%d]: width = %d, bytes_per_line = %d' % (ord(c)
+                # , width, bytes_per_line))
+                if auto_return is True:
+                    if x > self.width - width:
+                        str_width += self.width - x
+                        x = 0
+                        row += 1
+                        y += self.f.height
+                        if y > (self.height - self.f.height)+0:
+                            y, row = 0, 0
+                for h in range(0, self.f.height):
+                    w = 0
+                    i = 0
+                    while w < width:
+                        mask = data[4 + h * bytes_per_line + i]
+                        if (width - w) >= 8:
+                            n = 8
                         else:
-                            if mode == TextMode.normal:
-                                c = 0
+                            n = width - w
+                        py = y + h
+                        page = py >> 3
+                        bit = 0x80 >> (py % 8)
+                        for p in range(0, n):
+                            px = x + w + p
+                            c = 0
+                            if (mask & 0x80) != 0:
+                                if mode == TextMode.normal or \
+                                        mode == TextMode.trans:
+                                    c = 1
+                                if mode == TextMode.rev:
+                                    c = 0
+                                if mode == TextMode.xor:
+                                    c = self.buffer[page * (self.width if auto_return is True else 128) + px] & bit
+                                    if c != 0:
+                                        c = 0
+                                    else:
+                                        c = 1
                                 super().pixel(px, py, c)
-                            if mode == TextMode.rev:
-                                c = 1
-                                super().pixel(px, py, c)
-                        mask = mask << 1
-                    w = w + 8
-                    i = i + 1
-            x = x + width + 1
+                            else:
+                                if mode == TextMode.normal:
+                                    c = 0
+                                    super().pixel(px, py, c)
+                                if mode == TextMode.rev:
+                                    c = 1
+                                    super().pixel(px, py, c)
+                            mask = mask << 1
+                        w = w + 8
+                        i = i + 1
+                x = x + width + 1
+                str_width += width + 1
+            return (str_width-1,(x-1, y))
+
+    def DispChar_font(self, font, s, x, y, invert=False):
+        """
+        custom font display.Ref by , https://github.com/peterhinch/micropython-font-to-py
+        :param font:  use font_to_py.py script convert to `py` from `ttf` or `otf`.
+        """
+        screen_width = self.width
+        screen_height = self.height
+        text_row = x
+        text_col = y
+        text_length = 0
+        if font.hmap():
+            font_map = framebuf.MONO_HMSB if font.reverse() else framebuf.MONO_HLSB
+        else:
+            raise ValueError('Font must be horizontally mapped.')
+        for c in s:
+            glyph, char_height, char_width = font.get_ch(c)
+            buf = bytearray(glyph)
+            if invert:
+                for i, v in enumerate(buf):
+                    buf[i] = 0xFF & ~ v
+            fbc = framebuf.FrameBuffer(buf, char_width, char_height, font_map)
+            if text_row + char_width > screen_width - 1:
+                text_length += screen_width-text_row
+                text_row = 0
+                text_col += char_height
+            if text_col + char_height > screen_height + 2:
+                text_col = 0
+
+            super().blit(fbc, text_row, text_col)
+            text_row = text_row + char_width+1
+            text_length += char_width+1
+        return (text_length-1, (text_row-1, text_col))
 
 class Motion():
 
@@ -355,16 +402,8 @@ class MPythonPin():
     def read_analog(self):
         if not self.mode == PinMode.ANALOG:
             raise TypeError('the pin is not in ANALOG mode')
-        # calibration esp32 ADC 
-        calibration_val = 0
-        val = int(sum([self.adc.read() for i in range(50)]) / 50)
-        if 0 < val <= 2855:
-            calibration_val = 1.023 * val + 183.6
-        if 2855 < val <= 3720:
-            calibration_val = 0.9769 * val + 181
-        if 3720 < val <= 4095:
-            calibration_val = 4095 - (4095 - val) * 0.2
-        return calibration_val
+        return self.adc.read()
+
 
     def write_analog(self, duty, freq=1000):
         if not self.mode == PinMode.PWM:
@@ -502,6 +541,64 @@ class Touthpad():
                 return 1023
         return 1023
 
+# buttons
+class Button:
+    def __init__(self, pin_num, reverse=False):
+        self.__reverse = reverse
+        (self.__press_level, self.__release_level) = (0, 1) if not self.__reverse else (1, 0)
+        self.__pin = Pin(pin_num, Pin.IN, pull=Pin.PULL_UP)
+        self.__pin.irq(trigger=Pin.IRQ_FALLING | Pin.IRQ_RISING, handler=self.__irq_handler)
+        # self.__user_irq = None
+        self.event_pressed = None
+        self.event_released = None
+        self.__pressed_count = 0
+        self.__was_pressed = False
+        # print("level: pressed is {}, released is {}." .format(self.__press_level, self.__release_level))
+    
+
+    def __irq_handler(self, pin):
+        irq_falling = True if pin.value() == self.__press_level else False
+        # debounce
+        time.sleep_ms(10)
+        if self.__pin.value() == (self.__press_level if irq_falling else self.__release_level):
+            # new event handler
+            # pressed event
+            if irq_falling:
+                if self.event_pressed is not None:
+                    schedule(self.event_pressed, self.__pin)
+                # key status
+                self.__was_pressed = True
+                if (self.__pressed_count < 100):
+                    self.__pressed_count = self.__pressed_count + 1
+            # release event
+            else:
+                if self.event_released is not None:
+                    schedule(self.event_released, self.__pin)
+
+                
+    def is_pressed(self):
+        if self.__pin.value() == self.__press_level:
+            return True
+        else:
+            return False
+
+    def was_pressed(self):
+        r = self.__was_pressed
+        self.__was_pressed = False
+        return r
+
+    def get_presses(self):
+        r = self.__pressed_count
+        self.__pressed_count = 0
+        return r
+
+    def value(self):
+        return self.__pin.value()
+
+    def irq(self, *args, **kws):
+        self.__pin.irq(*args, **kws)
+
+
 from gui import *
 
 def numberMap(inputNum, bMin, bMax, cMin, cMax):
@@ -539,17 +636,18 @@ slider_res = ADC(Pin(34))
 slider_res.atten(slider_res.ATTN_11DB)
 
 # touch pad
-touchPad_P = Touthpad(2)
-touchPad_Y = Touthpad(4)
-touchPad_T = Touthpad(8)
-touchPad_H = Touthpad(16)
-touchPad_O = Touthpad(32)
-touchPad_N = Touthpad(64)
+touchpad_p = touchPad_P = Touthpad(2)
+touchpad_y = touchPad_Y = Touthpad(4)
+touchpad_t = touchPad_T = Touthpad(8)
+touchpad_h = touchPad_H = Touthpad(16)
+touchpad_o = touchPad_O = Touthpad(32)
+touchpad_n = touchPad_N = Touthpad(64)
 
 # buttons
-button_a = Pin(19, Pin.IN, Pin.PULL_UP)
-button_b = Pin(2, Pin.IN, Pin.PULL_UP)
-
+# button_a = Pin(19, Pin.IN, Pin.PULL_UP)
+# button_b = Pin(2, Pin.IN, Pin.PULL_UP)
+button_a = Button(19)
+button_b = Button(2)
 # apu @K210
 apu = APU()
 
