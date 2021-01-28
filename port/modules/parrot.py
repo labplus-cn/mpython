@@ -211,20 +211,21 @@ class IR(object):
         """
         i2c.writeto(16, b'\x05')
 
-    def learn(self):
+    def learn(self, wait=True):
         """
-        红外学习。该函数为阻塞型函数。learn()开始后，须在5秒内，常按住被学习对象按键。当学习完成后，会返回学习结果，成功True，失败Fail。
-        
+        红外学习。默认下wait为True,此时为阻塞函数。learn()开始后，须在5秒内，常按住被学习对象按键。当学习完成后，会返回学习结果，成功True，失败Fail。wait 为 False,则为非阻塞，此时不返回结果。
+        :param bool wait: 是否阻塞
         :retuen bool: 返回结果
         """
         i2c.writeto(16, b'\x06')
         print("Start Learning: the learning object should hold down the button within 5 seconds.")
-        time.sleep(5)
-        if self.__get_learn_status() != 0:
-            # error
-            return False
-        else:
-            return True
+        if wait:
+            time.sleep(5)
+            if self.__get_learn_status() != 0:
+                # error
+                return False
+            else:
+                return True
 
     def get_learn_data(self):
         """
