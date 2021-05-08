@@ -281,7 +281,6 @@ class Ultrasonic(object):
         distanceCM = (temp[0] + temp[1] * 256) / 10
         return distanceCM
 
-
 class SEGdisplay(object):
     """
     4段数码管模块tm1650控制类
@@ -291,11 +290,21 @@ class SEGdisplay(object):
 
     def __init__(self, i2c=i2c):
         self.i2c = i2c
-        self.i2c.writeto(0x24, bytearray([0x01]))
-        self._TubeTab = [
-            0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x77,
-            0x7C, 0x39, 0x5E, 0x79, 0x71, 0x00, 0x40
-        ]
+        addr = self.i2c.scan()
+        if 36 in addr:
+            self.chip = 1  # TM1650
+        elif 112 in addr:
+            self.chip = 2  # HT16K33
+        else:
+            raise OSError("Can not find 7-seg-display module.")
+        if self.chip == 1:
+            self.i2c.writeto(0x24, bytearray([0x01]))
+            self._TubeTab = [
+                0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x77,
+                0x7C, 0x39, 0x5E, 0x79, 0x71, 0x00, 0x40
+            ]
+        elif self.chip == 2:
+            self.ht16k33 = HT16K33_SEG()
 
     def _uint(self, x):
         """ display unsigned int number """
@@ -311,8 +320,13 @@ class SEGdisplay(object):
                 charTemp[1] = 0x10
             if x < 10:
                 charTemp[2] = 0x10
-        for i in range(0, 4):
-            self.i2c.writeto(0x34 + i, bytearray([self._TubeTab[charTemp[i]]]))
+        if self.chip == 1:
+            for i in range(0, 4):
+                self.i2c.writeto(0x34 + i, bytearray([self._TubeTab[charTemp[i]]]))
+        elif self.chip == 2:
+            for i in range(0, 4):
+                self.ht16k33.buffer[i*2] = self.ht16k33._TubeTab[charTemp[i]]
+            self.ht16k33.show()
 
     def numbers(self, x):
         """
@@ -328,19 +342,34 @@ class SEGdisplay(object):
             temp = abs(temp)
             self._uint(temp)
             if temp < 10:
-                self.i2c.writeto(0x36, bytearray([self._TubeTab[0x11]]))
+                if self.chip == 1:
+                    self.i2c.writeto(0x36, bytearray([self._TubeTab[0x11]]))
+                elif self.chip == 2:
+                    self.ht16k33.buffer[4] = self.ht16k33._TubeTab[17]
+                    self.ht16k33.show()
             elif temp < 100:
-                self.i2c.writeto(0x35, bytearray([self._TubeTab[0x11]]))
+                if self.chip == 1:
+                    self.i2c.writeto(0x35, bytearray([self._TubeTab[0x11]]))
+                elif self.chip == 2:
+                    self.ht16k33.buffer[2] = self.ht16k33._TubeTab[17]
+                    self.ht16k33.show()
             elif temp < 1000:
-                self.i2c.writeto(0x34, bytearray([self._TubeTab[0x11]]))
+                if self.chip == 1:
+                    self.i2c.writeto(0x34, bytearray([self._TubeTab[0x11]]))
+                elif self.chip == 2:
+                    self.ht16k33.buffer[0] = self.ht16k33._TubeTab[17]
+                    self.ht16k33.show()
 
     def Clear(self):
         """
         数码管清屏
         """
-
-        for i in range(0, 4):
-            self.i2c.writeto(0x34 + i, bytearray([self._TubeTab[0x10]]))
+        if self.chip == 1:
+            for i in range(0, 4):
+                self.i2c.writeto(0x34 + i, bytearray([self._TubeTab[0x10]]))
+        elif self.chip == 2:
+            self.ht16k33.fill(0)
+            self.ht16k33.show()
 
 
 _HT16K33_BLINK_CMD = const(0x80)
@@ -490,6 +519,15 @@ class Matrix(HT16K33Matrix):
     _LCD_1LINE = const(0x00)
     _LCD_5x10DOTS = const(0x04)
     _LCD_5x8DOTS = const(0x00)
+
+
+class HT16K33_SEG(HT16K33):
+    def __init__(self, i2c=i2c):
+        super().__init__(i2c)
+        # 0 1 2 3 4 5 6 7 8 9 a b c d e f ' ' -
+        self._TubeTab = [
+            0xFC, 0x60, 0xDA, 0xF2, 0x66, 0xB6, 0xBE, 0xE0, 0xFE, 0xF6, 0xEE,
+            0x3E, 0x1A, 0x7A, 0xDE, 0x8E, 0x00, 0x02]   
 
 
 class LCD1602(object):
