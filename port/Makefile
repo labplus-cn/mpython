@@ -482,6 +482,7 @@ BUILTIN_C ?= $(addprefix builtins/, \
 	modmotion.c \
 	modrgbLED5x5.c \
 	modrfid.c \
+	esp32_nvs.c \
 	)
 
 # mpython project builtin modules source files 
