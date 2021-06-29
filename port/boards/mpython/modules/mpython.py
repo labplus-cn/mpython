@@ -174,6 +174,8 @@ class OLED(SSD1106_I2C):
 if 60 in i2c.scan():
     oled = OLED()
     display = oled
+else:
+    pass
 
 class MOTION(object):
     def __init__(self):
@@ -290,8 +292,6 @@ class MOTION(object):
             elif(MOTION.chip==2):
                 try:
                     id =  MOTION._readReg(0x0, 2)
-                    # print(id[0])
-                    # print(id[1])
                 except:
                     pass
                 self.set_range(MOTION.Accelerometer.RANGE_2G) #设置默认分辨率+-2g
@@ -398,74 +398,82 @@ class MOTION(object):
             elif(MOTION.chip==2):
                 for i in (x, y, z):
                     if i is not None:
-                        if i < -3 or i > 3:
-                            raise ValueError("out of range,only offset 1 gravity")
+                        if i < -1 or i > 1:
+                            raise ValueError("超出调整范围!!! out of range,only offset 1 gravity")
                 if x is not None:
-                    print('XXX')
-                    _x = math.modf(x)
-                    _x_integer = int(_x[1])
-                    x_decimals = _x[0]
-                    format = (int(x_decimals*4096) & 0x0fff ) | (abs(_x_integer) << 12)
-                    format_h = ((format & 0xf000) | format & 0x0f00 ) >> 8
-                    format_l = format & 0xff
-                    if (_x_integer > 0):
-                        format_h = (-(format & 0xf000) | (format & 0x0f00)) >> 8
-                    MOTION._writeReg(0x60, 0x01) # soft reset regist value.
-                    MOTION._writeReg(0x08, 0x0) # disable all sensor
-                    time.sleep_ms(10) 
-                    MOTION._writeReg(0x0B, format_l) # CAL1_L
+                    _x = x
+                    if(x == -1):
+                        _x = -0.99999
+                    elif(x == 1):
+                        _x = 0.99999
+                    format = ( int(abs(_x)*4096) & 0x0fff )
+                    # print('format:',format)
+                    if (x > 0):
+                        format_h = -((format & 0x0f00) >> 8)
+                        format_l = -(format & 0xff)
+                    else:
+                        format_h = (format & 0x0f00) >> 8
+                        format_l = format & 0xff
+                    # print('format_h:',format_h)
+                    # print('format_l:',format_l)
                     MOTION._writeReg(0x0C, format_h) # CAL1_H
+                    # time.sleep_ms(10) 
+                    MOTION._writeReg(0x0B, format_l) # CAL1_L
                     MOTION._writeReg(0x0A, 0x09)
                     while True:
                         if (MOTION._readReg(0x2F, 1)[0] & 0X01) == 0X01:
-                            # print('MOTION._readReg(0x2F, 1)[0] & 0X01) == 0X01')
+                            MOTION._writeReg(0x60, 0x01) # soft reset regist value.
+                            MOTION._writeReg(0x0C, 0) # CAL1_H
+                            MOTION._writeReg(0x0B, 0) # CAL1_L 清空寄存器
                             break
-                    MOTION._writeReg(0x08, 0x01)
+
                 if y is not None:
-                    print('yyy')
-                    _y = math.modf(y)
-                    _y_integer = int(_y[1])
-                    y_decimals = _y[0]
-                    format = (int(y_decimals*4096) & 0x0fff ) | (abs(_y_integer) << 12)
-                    format_h = ((format & 0xf000) | format & 0x0f00 ) >> 8
-                    format_l = format & 0xff
-                    if (_y_integer > 0):
-                        format_h = (-(format & 0xf000) | (format & 0x0f00)) >> 8
-                    MOTION._writeReg(0x60, 0x01) # soft reset regist value.
-                    MOTION._writeReg(0x08, 0x0) # disable all sensor
-                    time.sleep_ms(10) 
+                    _y = y
+                    if(y == -1):
+                        _y = -0.99999
+                    elif(y == 1):
+                        _y = 0.99999
+                    format = ( int(abs(_y)*4096) & 0x0fff )
+                    if (_y > 0):
+                        format_h = -((format & 0x0f00) >> 8)
+                        format_l = -(format & 0xff)
+                    else:
+                        format_h = (format & 0x0f00) >> 8
+                        format_l = format & 0xff
                     MOTION._writeReg(0x0D, format_l) # CAL2_L
                     MOTION._writeReg(0x0E, format_h) # CAL2_H
                     MOTION._writeReg(0x0A, 0x09)
                     while True:
                         if (MOTION._readReg(0x2F, 1)[0] & 0X01) == 0X01:
-                            # print('MOTION._readReg(0x2F, 1)[0] & 0X01) == 0X01')
+                            MOTION._writeReg(0x60, 0x01) # soft reset regist value.
+                            MOTION._writeReg(0x0D, 0) # CAL1_H
+                            MOTION._writeReg(0x0E, 0) # CAL1_L 清空寄存器
                             break
-                    MOTION._writeReg(0x08, 0x01)
+                    # MOTION._writeReg(0x08, 0x01)
                 if z is not None:
-                    z = math.modf(z)
-                    _z_integer = int(z[1])
-                    z_decimals = z[0]
-                    format = (int(z_decimals*4096) & 0x0fff ) | (abs(_z_integer) << 12)
-                    format_h = ((format & 0xf000) | format & 0x0f00 ) >> 8
-                    format_l = format & 0xff
-                    if (_z_integer > 0):
-                        format_h = (-(format & 0xf000) | (format & 0x0f00)) >> 8
-                    MOTION._writeReg(0x60, 0x01) # soft reset regist value.
-                    MOTION._writeReg(0x08, 0x0) # disable all sensor
+                    _z = z
+                    if(z == -1):
+                        _z = -0.99999
+                    elif(y == 1):
+                        _z = 0.99999
+                    format = ( int(abs(_z)*4096) & 0x0fff )
+                    if (_z > 0):
+                        format_h = -((format & 0x0f00) >> 8)
+                        format_l = -(format & 0xff)
+                    else:
+                        format_h = (format & 0x0f00) >> 8
+                        format_l = format & 0xff
+
                     time.sleep_ms(10) 
                     MOTION._writeReg(0x0F, format_l) # CAL3_L
                     MOTION._writeReg(0x10, format_h) # CAL3_H
                     MOTION._writeReg(0x0A, 0x09)
-                    x1 = MOTION._readReg(0x10, 1)
-                    print('0x10 format:',x1)
-                    x2 = MOTION._readReg(0x0F, 1)
-                    print('0x0F format:',x2)
                     while True:
                         if (MOTION._readReg(0x2F, 1)[0] & 0X01) == 0X01:
-                            # print('MOTION._readReg(0x2F, 1)[0] & 0X01) == 0X01')
+                            MOTION._writeReg(0x60, 0x01) # soft reset regist value.
+                            MOTION._writeReg(0x0F, 0) # CAL1_H
+                            MOTION._writeReg(0x10, 0) # CAL1_L 清空寄存器
                             break
-                    MOTION._writeReg(0x08, 0x01) # enable accel
                 
 
         def get_x(self):
