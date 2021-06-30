@@ -424,7 +424,7 @@ class MOTION(object):
                     try:
                         buf = MOTION._readReg(0x02, 2)
                         x = ustruct.unpack('h', buf)[0]
-                        return x / 4 / 4096 * 2**self.range 
+                        return x / 4 / 4096 * 2**self.range
                     except:
                         retry = retry + 1
                 else:
@@ -484,10 +484,6 @@ class MOTION(object):
         def get_nvs_offset(self):
             try:
                 tmp = NVS("offset_a")
-                print("加速计校准值:")
-                print("x_offset:", round(tmp.get_i32("x")/1e5, 5))
-                print("y_offset:", round(tmp.get_i32("y")/1e5, 5))
-                print("z_offset:", round(tmp.get_i32("z")/1e5, 5))
                 self.x_offset = round(tmp.get_i32("x")/1e5, 5)
                 self.y_offset = round(tmp.get_i32("y")/1e5, 5)
                 self.z_offset = round(tmp.get_i32("z")/1e5, 5)
@@ -595,10 +591,6 @@ class MOTION(object):
             elif(MOTION.chip==2):
                 try:
                     tmp = NVS("offset_g")
-                    print("陀螺仪校准值:")
-                    print("x_offset:", round(tmp.get_i32("x")/1e5, 5))
-                    print("y_offset:", round(tmp.get_i32("y")/1e5, 5))
-                    print("z_offset:", round(tmp.get_i32("z")/1e5, 5))
                     self.x_offset = round(tmp.get_i32("x")/1e5, 5)
                     self.y_offset = round(tmp.get_i32("y")/1e5, 5)
                     self.z_offset = round(tmp.get_i32("z")/1e5, 5)
