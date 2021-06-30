@@ -18,6 +18,7 @@ from time import sleep_ms, sleep_us, sleep
 import framebuf 
 import calibrate_img
 from micropython import schedule,const
+import NVS
 
 i2c = I2C(0, scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
 
@@ -290,6 +291,11 @@ class MOTION(object):
                 self.event_double_click = None
                 self.event_freefall = None
             elif(MOTION.chip==2):
+                # 设置偏移值
+                self.x_offset = 0
+                self.y_offset = 0
+                self.z_offset = 0
+                self.get_nvs_offset()
                 try:
                     id =  MOTION._readReg(0x0, 2)
                 except:
@@ -299,6 +305,7 @@ class MOTION(object):
                 self.int.irq(trigger=Pin.IRQ_FALLING, handler=self.irq)
                 # event handler 
                 self.wom = None
+            
 
         def irq(self, arg):
             if(MOTION.chip==1):
@@ -398,84 +405,18 @@ class MOTION(object):
             elif(MOTION.chip==2):
                 for i in (x, y, z):
                     if i is not None:
-                        if i < -1 or i > 1:
-                            raise ValueError("超出调整范围!!! out of range,only offset 1 gravity")
+                        if i < -16 or i > 16:
+                            raise ValueError("超出调整范围!!!")
                 if x is not None:
-                    _x = x
-                    if(x == -1):
-                        _x = -0.99999
-                    elif(x == 1):
-                        _x = 0.99999
-                    format = ( int(abs(_x)*4096) & 0x0fff )
-                    # print('format:',format)
-                    if (x > 0):
-                        format_h = -((format & 0x0f00) >> 8)
-                        format_l = -(format & 0xff)
-                    else:
-                        format_h = (format & 0x0f00) >> 8
-                        format_l = format & 0xff
-                    # print('format_h:',format_h)
-                    # print('format_l:',format_l)
-                    MOTION._writeReg(0x0C, format_h) # CAL1_H
-                    # time.sleep_ms(10) 
-                    MOTION._writeReg(0x0B, format_l) # CAL1_L
-                    MOTION._writeReg(0x0A, 0x09)
-                    while True:
-                        if (MOTION._readReg(0x2F, 1)[0] & 0X01) == 0X01:
-                            MOTION._writeReg(0x60, 0x01) # soft reset regist value.
-                            MOTION._writeReg(0x0C, 0) # CAL1_H
-                            MOTION._writeReg(0x0B, 0) # CAL1_L 清空寄存器
-                            break
-
+                    self.x_offset = x
+                    self.set_nvs_offset("x", x)
                 if y is not None:
-                    _y = y
-                    if(y == -1):
-                        _y = -0.99999
-                    elif(y == 1):
-                        _y = 0.99999
-                    format = ( int(abs(_y)*4096) & 0x0fff )
-                    if (_y > 0):
-                        format_h = -((format & 0x0f00) >> 8)
-                        format_l = -(format & 0xff)
-                    else:
-                        format_h = (format & 0x0f00) >> 8
-                        format_l = format & 0xff
-                    MOTION._writeReg(0x0D, format_l) # CAL2_L
-                    MOTION._writeReg(0x0E, format_h) # CAL2_H
-                    MOTION._writeReg(0x0A, 0x09)
-                    while True:
-                        if (MOTION._readReg(0x2F, 1)[0] & 0X01) == 0X01:
-                            MOTION._writeReg(0x60, 0x01) # soft reset regist value.
-                            MOTION._writeReg(0x0D, 0) # CAL1_H
-                            MOTION._writeReg(0x0E, 0) # CAL1_L 清空寄存器
-                            break
-                    # MOTION._writeReg(0x08, 0x01)
+                    self.y_offset = y
+                    self.set_nvs_offset("y", y)
                 if z is not None:
-                    _z = z
-                    if(z == -1):
-                        _z = -0.99999
-                    elif(y == 1):
-                        _z = 0.99999
-                    format = ( int(abs(_z)*4096) & 0x0fff )
-                    if (_z > 0):
-                        format_h = -((format & 0x0f00) >> 8)
-                        format_l = -(format & 0xff)
-                    else:
-                        format_h = (format & 0x0f00) >> 8
-                        format_l = format & 0xff
-
-                    time.sleep_ms(10) 
-                    MOTION._writeReg(0x0F, format_l) # CAL3_L
-                    MOTION._writeReg(0x10, format_h) # CAL3_H
-                    MOTION._writeReg(0x0A, 0x09)
-                    while True:
-                        if (MOTION._readReg(0x2F, 1)[0] & 0X01) == 0X01:
-                            MOTION._writeReg(0x60, 0x01) # soft reset regist value.
-                            MOTION._writeReg(0x0F, 0) # CAL1_H
-                            MOTION._writeReg(0x10, 0) # CAL1_L 清空寄存器
-                            break
+                    self.z_offset = z
+                    self.set_nvs_offset("z", z)
                 
-
         def get_x(self):
             if(MOTION.chip==1):
                 retry = 0
@@ -483,7 +424,7 @@ class MOTION(object):
                     try:
                         buf = MOTION._readReg(0x02, 2)
                         x = ustruct.unpack('h', buf)[0]
-                        return x / 4 / 4096 * 2**self.range
+                        return x / 4 / 4096 * 2**self.range 
                     except:
                         retry = retry + 1
                 else:
@@ -491,7 +432,7 @@ class MOTION(object):
             elif(MOTION.chip==2):
                 buf = MOTION._readReg(0x35, 2)
                 x = ustruct.unpack('<h', buf)[0]
-                return (x * self.FS) / 32768 
+                return (x * self.FS) / 32768 + self.x_offset
 
         def get_y(self):
             if(MOTION.chip==1):
@@ -508,7 +449,7 @@ class MOTION(object):
             elif(MOTION.chip==2):
                 buf = MOTION._readReg(0x37, 2)
                 y = ustruct.unpack('<h', buf)[0]
-                return (y * self.FS) / 32768 
+                return (y * self.FS) / 32768  + self.y_offset
 
         def get_z(self):
             if(MOTION.chip==1):
@@ -525,7 +466,7 @@ class MOTION(object):
             elif(MOTION.chip==2):
                 buf = MOTION._readReg(0x39, 2)
                 z = ustruct.unpack('<h', buf)[0]
-                return (z * self.FS) / 32768
+                return (z * self.FS) / 32768 + self.z_offset
                 # return -(z * self.FS) / 32768
      
         def roll_pitch_angle(self):
@@ -539,6 +480,30 @@ class MOTION(object):
             pitch = math.degrees(math.atan2(x, z))
 
             return roll, pitch
+        
+        def get_nvs_offset(self):
+            try:
+                tmp = NVS("offset_a")
+                print("加速计校准值:")
+                print("x_offset:", round(tmp.get_i32("x")/1e5, 5))
+                print("y_offset:", round(tmp.get_i32("y")/1e5, 5))
+                print("z_offset:", round(tmp.get_i32("z")/1e5, 5))
+                self.x_offset = round(tmp.get_i32("x")/1e5, 5)
+                self.y_offset = round(tmp.get_i32("y")/1e5, 5)
+                self.z_offset = round(tmp.get_i32("z")/1e5, 5)
+            except OSError as e:
+                print('Accelerometer get_nvs_offset:',e)
+                self.x_offset = 0
+                self.y_offset = 0
+                self.z_offset = 0
+        
+        def set_nvs_offset(self, key, value):
+            try:
+                nvs = NVS("offset_a")
+                nvs.set_i32(key, int(value*1e5))
+                nvs.commit()
+            except OSError as e:
+                print('Gyroscope set_nvs_offset error:',e)
 
     class Gyroscope():
         # gyro full scale
@@ -552,36 +517,105 @@ class MOTION(object):
         RANGE_2048_DPS = const(0x70)
 
         def __init__(self):
-            self.set_range(MOTION.Gyroscope.RANGE_256_DPS)
+            if(MOTION.chip==1):
+                pass
+            elif(MOTION.chip==2):
+                # 设置偏移值
+                self.x_offset = 0
+                self.y_offset = 0
+                self.z_offset = 0
+                self.get_nvs_offset()
+                self.set_range(MOTION.Gyroscope.RANGE_256_DPS)
 
         def set_range(self, range):
-            self.FS = 16*(2**(range >> 4))        
-            format = MOTION._readReg(0x04, 1)
-            format = format[0] & 0x8F
-            format |= range
-            MOTION._writeReg(0x04, format)
+            if(MOTION.chip==1):
+                pass
+            elif(MOTION.chip==2):
+                self.FS = 16*(2**(range >> 4))        
+                format = MOTION._readReg(0x04, 1)
+                format = format[0] & 0x8F
+                format |= range
+                MOTION._writeReg(0x04, format)
 
         def set_ODR(self, odr):  # set data output rate
-            self.odr = odr
-            format = MOTION._readReg(0x04, 1)
-            format = format[0] & 0xF0
-            format |= odr
-            MOTION._writeReg(0x04, format)
+            if(MOTION.chip==1):
+                pass
+            elif(MOTION.chip==2):
+                self.odr = odr
+                format = MOTION._readReg(0x04, 1)
+                format = format[0] & 0xF0
+                format |= odr
+                MOTION._writeReg(0x04, format)
 
         def get_x(self):
-            buf = MOTION._readReg(0x3b, 2)
-            x = ustruct.unpack('<h', buf)[0]
-            return (x * self.FS) / 32768
+            if(MOTION.chip==1):
+                pass
+            elif(MOTION.chip==2):
+                buf = MOTION._readReg(0x3b, 2)
+                x = ustruct.unpack('<h', buf)[0]
+                return (x * self.FS) / 32768 + self.x_offset
 
         def get_y(self):
-            buf = MOTION._readReg(0x3d, 2)
-            y = ustruct.unpack('<h', buf)[0]
-            return (y * self.FS) / 32768
+            if(MOTION.chip==1):
+                pass
+            elif(MOTION.chip==2):
+                buf = MOTION._readReg(0x3d, 2)
+                y = ustruct.unpack('<h', buf)[0]
+                return (y * self.FS) / 32768 + self.y_offset
 
         def get_z(self):
-            buf = MOTION._readReg(0x3f, 2)
-            z = ustruct.unpack('<h', buf)[0]
-            return (z * self.FS) / 32768
+            if(MOTION.chip==1):
+                pass
+            elif(MOTION.chip==2):
+                buf = MOTION._readReg(0x3f, 2)
+                z = ustruct.unpack('<h', buf)[0]
+                return (z * self.FS) / 32768 + self.z_offset
+        
+        def set_offset(self, x=None, y=None, z=None):
+            if(MOTION.chip==1):
+                pass
+            elif(MOTION.chip==2):
+                for i in (x, y, z):
+                    if i is not None:
+                        if i < -4096 or i > 4096:
+                            raise ValueError("超出调整范围!!!")
+                if x is not None:
+                    self.x_offset = x
+                    self.set_nvs_offset("x", x)
+                if y is not None:
+                    self.y_offset = y
+                    self.set_nvs_offset("y", y)
+                if z is not None:
+                    self.z_offset = z
+                    self.set_nvs_offset("z", z)
+
+        def get_nvs_offset(self):
+            if(MOTION.chip==1):
+                pass
+            elif(MOTION.chip==2):
+                try:
+                    tmp = NVS("offset_g")
+                    print("陀螺仪校准值:")
+                    print("x_offset:", round(tmp.get_i32("x")/1e5, 5))
+                    print("y_offset:", round(tmp.get_i32("y")/1e5, 5))
+                    print("z_offset:", round(tmp.get_i32("z")/1e5, 5))
+                    self.x_offset = round(tmp.get_i32("x")/1e5, 5)
+                    self.y_offset = round(tmp.get_i32("y")/1e5, 5)
+                    self.z_offset = round(tmp.get_i32("z")/1e5, 5)
+                except OSError as e:
+                    print('Gyroscope get_nvs_offset:',e)
+                    self.x_offset = 0
+                    self.y_offset = 0
+                    self.z_offset = 0
+
+        def set_nvs_offset(self, key, value):
+            try:
+                nvs = NVS("offset_g")
+                nvs.set_i32(key, int(value*1e5))
+                nvs.commit()
+            except OSError as e:
+                print('Gyroscope set_nvs_offset error:',e)
+
     
 motion = MOTION()
 accelerometer = motion.Accelerometer()
