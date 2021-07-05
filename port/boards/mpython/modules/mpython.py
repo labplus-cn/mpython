@@ -488,10 +488,11 @@ class MOTION(object):
                 self.y_offset = round(tmp.get_i32("y")/1e5, 5)
                 self.z_offset = round(tmp.get_i32("z")/1e5, 5)
             except OSError as e:
-                print('Accelerometer get_nvs_offset:',e)
-                self.x_offset = 0
-                self.y_offset = 0
-                self.z_offset = 0
+                # print('Accelerometer get_nvs_offset:',e)
+                # self.x_offset = 0
+                # self.y_offset = 0
+                # self.z_offset = 0
+                self.set_offset(0,0,0)
         
         def set_nvs_offset(self, key, value):
             try:
@@ -595,10 +596,11 @@ class MOTION(object):
                     self.y_offset = round(tmp.get_i32("y")/1e5, 5)
                     self.z_offset = round(tmp.get_i32("z")/1e5, 5)
                 except OSError as e:
-                    print('Gyroscope get_nvs_offset:',e)
-                    self.x_offset = 0
-                    self.y_offset = 0
-                    self.z_offset = 0
+                    # print('Gyroscope get_nvs_offset:',e)
+                    self.set_offset(0,0,0)
+                    # self.x_offset = 0
+                    # self.y_offset = 0
+                    # self.z_offset = 0
 
         def set_nvs_offset(self, key, value):
             try:
