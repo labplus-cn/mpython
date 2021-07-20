@@ -22,6 +22,14 @@ import NVS
 
 i2c = I2C(0, scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
 
+if '_print' not in dir(): _print = print
+
+def print(_t, *args, sep=' ', end='\n'):
+    _s = str(_t)[0:1]
+    if u'\u4e00' <= _s <= u'\u9fff':
+        _print(' ' + str(_t), *args, sep=sep, end=end)
+    else:
+        _print(_t, *args, sep=sep, end=end)
 
 class Font(object):
     def __init__(self, font_address=0x400000):

@@ -61,11 +61,12 @@ STATIC void esp32_nvs_print(const mp_print_t *print, mp_obj_t self_in, mp_print_
 STATIC mp_obj_t esp32_nvs_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args) {
     // Check args
     mp_arg_check_num(n_args, n_kw, 1, 1, false);
-
     // Get requested nvs namespace
     const char *ns_name = mp_obj_str_get_str(all_args[0]);
     nvs_handle_t namespace;
-    check_esp_err(nvs_open(ns_name, NVS_READWRITE, &namespace));
+    // check_esp_err(nvs_open(ns_name, NVS_READWRITE, &namespace));
+    check_esp_err(nvs_flash_init_partition("user_nvs"));
+    check_esp_err(nvs_open_from_partition("user_nvs", ns_name, NVS_READWRITE, &namespace));
     return MP_OBJ_FROM_PTR(esp32_nvs_new(namespace));
 }
 
