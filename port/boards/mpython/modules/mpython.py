@@ -202,7 +202,7 @@ class MOTION(object):
             pass
         elif(MOTION.chip == 2):
             MOTION._writeReg(0x60, 0x01) # soft reset regist value.
-            sleep_ms(20)
+            time.sleep_ms(20)
             MOTION._writeReg(0x02, 0x60) # Enabe reg address auto increment auto
             MOTION._writeReg(0x08, 0x03) # Enable accel and gyro
             MOTION._writeReg(0x03, 0x1c) # accel range:4g ODR 128HZ
@@ -625,10 +625,19 @@ gyroscope = motion.Gyroscope()
 
 class Magnetic(object):
     """ MMC5983MA driver """
-
+    """ MMC5603NJ driver 20211028替换"""
     def __init__(self):
         self.addr = 48
         self.i2c = i2c
+        self._judge_id()
+        time.sleep_ms(5)
+        if (self.product_ID==48):
+            pass  # MMC5983MA
+        elif (self.product_ID==16):
+            pass  # MMC5603NJ
+        else:
+            raise OSError("Magnetic init error")
+        """ MMC5983MA driver """
         # 传量器裸数据，乘0.25后转化为mGS
         self.raw_x = 0.0
         self.raw_y = 0.0
@@ -642,84 +651,141 @@ class Magnetic(object):
         self.peeling_y = 0.0
         self.peeling_z = 0.0
         self.is_peeling = 0
+        if (self.chip==1):
+            self.i2c.writeto(self.addr, b'\x09\x20\xbd\x00', True)
+        """ MMC5603NJ driver """
+        if (self.chip==2):
+            self._writeReg(0x1C, 0x80)#软件复位
+            time.sleep_ms(100)
+            self._writeReg(0x1A, 255)
+            self._writeReg(0x1B, 0b10100001)
+            self._writeReg(0x1C, 0b00000011)
+            self._writeReg(0x1D, 0b10010000)
+            sleep_ms(100)
 
-        self.i2c.writeto(self.addr, b'\x09\x20\xbd\x00', True)
-        # self.i2c.writeto(self.addr, b'\x09\x21', True)
+    def _readReg(self, reg, nbytes=1):
+        return i2c.readfrom_mem(self.addr, reg, nbytes)
+
+    def _writeReg(self, reg, value):
+        i2c.writeto_mem(self.addr, reg, value.to_bytes(1, 'little')) 
 
     def _set_offset(self):
-        self.i2c.writeto(self.addr, b'\x09\x08', True)  #set
+        if(self.chip == 1):
+            self.i2c.writeto(self.addr, b'\x09\x08', True)  #set
+            self.i2c.writeto(self.addr, b'\x09\x01', True)
+            while True:
+                self.i2c.writeto(self.addr, b'\x08', False)
+                buf = self.i2c.readfrom(self.addr, 1)
+                status = ustruct.unpack('B', buf)[0]
+                if(status & 0x01):
+                    break
+            self.i2c.writeto(self.addr, b'\x00', False)
+            buf = self.i2c.readfrom(self.addr, 6)
+            data = ustruct.unpack('>3H', buf)
 
-        self.i2c.writeto(self.addr, b'\x09\x01', True)
-        while True:
-            self.i2c.writeto(self.addr, b'\x08', False)
-            buf = self.i2c.readfrom(self.addr, 1)
-            status = ustruct.unpack('B', buf)[0]
-            if(status & 0x01):
-                break
-        self.i2c.writeto(self.addr, b'\x00', False)
-        buf = self.i2c.readfrom(self.addr, 6)
-        data = ustruct.unpack('>3H', buf)
+            self.i2c.writeto(self.addr, b'\x09\x10', True)  #reset
 
-        self.i2c.writeto(self.addr, b'\x09\x10', True)  #reset
+            self.i2c.writeto(self.addr, b'\x09\x01', True)
+            while True:
+                self.i2c.writeto(self.addr, b'\x08', False)
+                buf = self.i2c.readfrom(self.addr, 1)
+                status = ustruct.unpack('B', buf)[0]
+                if(status & 0x01):
+                    break
+            self.i2c.writeto(self.addr, b'\x00', False)
+            buf = self.i2c.readfrom(self.addr, 6)
+            data1 = ustruct.unpack('>3H', buf)
 
-        self.i2c.writeto(self.addr, b'\x09\x01', True)
-        while True:
-            self.i2c.writeto(self.addr, b'\x08', False)
-            buf = self.i2c.readfrom(self.addr, 1)
-            status = ustruct.unpack('B', buf)[0]
-            if(status & 0x01):
-                break
-        self.i2c.writeto(self.addr, b'\x00', False)
-        buf = self.i2c.readfrom(self.addr, 6)
-        data1 = ustruct.unpack('>3H', buf)
-
-        self.x_offset = (data[0] + data1[0])/2
-        self.y_offset = (data[1] + data1[1])/2
-        self.z_offset = (data[2] + data1[2])/2
-        # print(self.x_offset)
-        # print(self.y_offset)
-        # print(self.z_offset)
-
+            self.x_offset = (data[0] + data1[0])/2
+            self.y_offset = (data[1] + data1[1])/2
+            self.z_offset = (data[2] + data1[2])/2
+        elif(self.chip == 2):
+            pass
+    
     def _get_raw(self):
-        retry = 0
-        if (retry < 5):
-            try:
-                self.i2c.writeto(self.addr, b'\x09\x08', True)  #set
+        if (self.chip == 1):
+            retry = 0
+            if (retry < 5):
+                try:
+                    self.i2c.writeto(self.addr, b'\x09\x08', True)  #set
 
-                self.i2c.writeto(self.addr, b'\x09\x01', True)
-                while True:
-                    self.i2c.writeto(self.addr, b'\x08', False)
-                    buf = self.i2c.readfrom(self.addr, 1)
-                    status = ustruct.unpack('B', buf)[0]
-                    if(status & 0x01):
-                        break
-                self.i2c.writeto(self.addr, b'\x00', False)
-                buf = self.i2c.readfrom(self.addr, 6)
-                data = ustruct.unpack('>3H', buf)
+                    self.i2c.writeto(self.addr, b'\x09\x01', True)
+                    while True:
+                        self.i2c.writeto(self.addr, b'\x08', False)
+                        buf = self.i2c.readfrom(self.addr, 1)
+                        status = ustruct.unpack('B', buf)[0]
+                        if(status & 0x01):
+                            break
+                    self.i2c.writeto(self.addr, b'\x00', False)
+                    buf = self.i2c.readfrom(self.addr, 6)
+                    data = ustruct.unpack('>3H', buf)
 
-                self.i2c.writeto(self.addr, b'\x09\x10', True)  #reset
+                    self.i2c.writeto(self.addr, b'\x09\x10', True)  #reset
 
-                self.i2c.writeto(self.addr, b'\x09\x01', True)
-                while True:
-                    self.i2c.writeto(self.addr, b'\x08', False)
-                    buf = self.i2c.readfrom(self.addr, 1)
-                    status = ustruct.unpack('B', buf)[0]
-                    if(status & 0x01):
-                        break
-                self.i2c.writeto(self.addr, b'\x00', False)
-                buf = self.i2c.readfrom(self.addr, 6)
-                data1 = ustruct.unpack('>3H', buf)
+                    self.i2c.writeto(self.addr, b'\x09\x01', True)
+                    while True:
+                        self.i2c.writeto(self.addr, b'\x08', False)
+                        buf = self.i2c.readfrom(self.addr, 1)
+                        status = ustruct.unpack('B', buf)[0]
+                        if(status & 0x01):
+                            break
+                    self.i2c.writeto(self.addr, b'\x00', False)
+                    buf = self.i2c.readfrom(self.addr, 6)
+                    data1 = ustruct.unpack('>3H', buf)
 
-                self.raw_x = -((data[0] - data1[0])/2)
-                self.raw_y = -((data[1] - data1[1])/2)
-                self.raw_z = -((data[2] - data1[2])/2)
-                # print(str(self.x) + "   " + str(self.y) + "  " + str(self.z))
-            except:
-                retry = retry + 1
-        else:
-            raise Exception("i2c read/write error!")     
+                    self.raw_x = -((data[0] - data1[0])/2)
+                    self.raw_y = -((data[1] - data1[1])/2)
+                    self.raw_z = -((data[2] - data1[2])/2)
+                    # print(str(self.raw_x) + "   " + str(self.raw_y) + "  " + str(self.raw_z))
+                except:
+                    retry = retry + 1
+            else:
+                raise Exception("i2c read/write error!")     
+        elif(self.chip == 2):
+            retry = 0
+            if (retry < 5):
+                try:
+                    _raw_x = 0
+                    _raw_y = 0
+                    _raw_z = 0
+                    while True:
+                        self._writeReg(0x1B,0b10100001)
+                        time.sleep_ms(10)
+                        buf = self._readReg(0x18, 1)
+                        status = buf[0]
+                        # print('status:',status)
+                        if(status & 0x40):
+                            break
+                    # self.i2c.writeto(self.addr, b'\x00', False)
+                    # buf = self.i2c.readfrom(self.addr, 9)
+                    buf = self._readReg(0x00, 9)
+
+                    _raw_x |= buf[0] << 12
+                    _raw_x |= buf[1] << 4
+                    # _raw_x |= buf[6] << 0
+                    _raw_x |= buf[6] >> 4
+                    self.raw_x = _raw_x
+
+                    _raw_y |= buf[2] << 12
+                    _raw_y |= buf[3] << 4
+                    # _raw_y |= buf[7] << 0
+                    _raw_y |= buf[7] >> 4
+                    self.raw_y = _raw_y
+
+                    _raw_z |= buf[4] << 12
+                    _raw_z |= buf[5] << 4
+                    # _raw_z |= buf[8] << 0
+                    _raw_z |= buf[8] >> 4
+                    self.raw_z = _raw_z
+                except:
+                    retry = retry + 1
+            else:
+                raise Exception("i2c read/write error!")
 
     def peeling(self):
+        '''
+        去除磁场环境
+        '''
         self._get_raw()
         self.peeling_x = self.raw_x
         self.peeling_y = self.raw_y
@@ -733,22 +799,43 @@ class Magnetic(object):
         self.is_peeling = 0
 
     def get_x(self):
-        self._get_raw()
-        return self.raw_x * 0.25
+        if (self.chip == 1):
+            self._get_raw()
+            return self.raw_x * 0.25
+        if (self.chip == 2):
+            self._get_raw()
+            return -0.0625 * (self.raw_x - self.cali_offset_x - 524288)
+            # return (self.raw_x - 524288)/16384
 
     def get_y(self):
-        self._get_raw()
-        return self.raw_y * 0.25
+        if (self.chip == 1):
+            self._get_raw()
+            return self.raw_y * 0.25
+        if (self.chip == 2):
+            self._get_raw()
+            return -0.0625 * (self.raw_y - self.cali_offset_y - 524288)
+            # return (self.raw_y - 524288)/16384
 
     def get_z(self):
-        self._get_raw()
-        return self.raw_z * 0.25 
+        if (self.chip == 1):
+            self._get_raw()
+            return self.raw_z * 0.25 
+        if (self.chip == 2):
+            self._get_raw()
+            return 0.0625 * (self.raw_z - self.cali_offset_z - 524288)
+            # return (self.raw_z - 524288)/16384
 
     def get_field_strength(self):
-        self._get_raw()
-        if self.is_peeling == 1:
-            return (math.sqrt((self.raw_x - self.peeling_x)*(self.raw_x - self.peeling_x) + (self.raw_y - self.peeling_y)*(self.raw_y - self.peeling_y) + (self.raw_z - self.peeling_z)*(self.raw_z - self.peeling_z)))*0.25
-        return (math.sqrt(self.raw_x * self.raw_x + self.raw_y * self.raw_y + self.raw_z * self.raw_z))*0.25
+        if(self.chip==1):
+            self._get_raw()
+            if self.is_peeling == 1:
+                return (math.sqrt((self.raw_x - self.peeling_x)*(self.raw_x - self.peeling_x) + (self.raw_y - self.peeling_y)*(self.raw_y - self.peeling_y) + (self.raw_z - self.peeling_z)*(self.raw_z - self.peeling_z)))*0.25
+            return (math.sqrt(self.raw_x * self.raw_x + self.raw_y * self.raw_y + self.raw_z * self.raw_z))*0.25
+        elif(self.chip==2):
+            self._get_raw()
+            if self.is_peeling == 1:
+                return (math.sqrt(math.pow(self.raw_x - self.peeling_x -524288, 2) + pow(self.raw_y - self.peeling_y -524288, 2) + pow(self.raw_z - self.peeling_z -524288, 2)))*0.0625
+            return (math.sqrt(math.pow(self.get_x(), 2) + pow(self.get_y(), 2) + pow(self.get_z(), 2)))
 
     def calibrate(self):
         oled.fill(0)
@@ -782,14 +869,11 @@ class Magnetic(object):
         while (time.ticks_diff(time.ticks_ms(), ticks_start) < 15000) :
             self._get_raw()
             min_z = min(self.raw_z, min_z)
-            # min_y = min(self.raw_y, min_y)
             max_z = max(self.raw_z, max_z)
-            # max_y = max(self.raw_y, max_y)
             time.sleep_ms(100)
         self.cali_offset_z = (max_z + min_z) / 2
-        # self.cali_offset_y = (max_y + min_y) / 2
+  
         print('cali_offset_z: ' + str(self.cali_offset_z))
-        # print('cali_offset_y: ' + str(self.cali_offset_y))
 
         oled.fill(0)
         oled.DispChar("校准完成", 40,24,1)
@@ -797,63 +881,90 @@ class Magnetic(object):
         oled.fill(0)
 
     def get_heading(self):
-        self._get_raw()
-
-        # if (accelerometer):
-        #     # use accelerometer get inclination   
-        #     x = accelerometer.get_x()
-        #     y = accelerometer.get_y()
-        #     z = accelerometer.get_z()
-
-        #     phi = math.atan2(x, -z)
-        #     theta = math.atan2(y, (x*math.sin(phi) - z*math.cos(phi)))
-        #     sinPhi = math.sin(phi)
-        #     cosPhi = math.cos(phi)
-        #     sinTheta = math.sin(theta)
-        #     cosTheta = math.cos(theta)
-        #     heading = (math.atan2(x*cosTheta + y*sinTheta*sinPhi + z*sinTheta*cosPhi, z*sinPhi - y*cosPhi)) * (180 / 3.14159265) + 180
-        #     return heading
-
-        temp_x = self.raw_x - self.cali_offset_x
-        temp_y = self.raw_y - self.cali_offset_y
-        temp_z = self.raw_z - self.cali_offset_z
-        heading = math.atan2(temp_y, -temp_x) * (180 / 3.14159265) + 180
-        return heading
-
-    def _get_temperature(self):
-        retry = 0
-        if (retry < 5):
-            try:
-                self.i2c.writeto(self.addr, b'\x09\x02', True)
-                while True:
-                    self.i2c.writeto(self.addr, b'\x08', False)
-                    buf = self.i2c.readfrom(self.addr, 1)
-                    status = ustruct.unpack('B', buf)[0]
-                    if(status & 0x02):
-                        break
-                self.i2c.writeto(self.addr, b'\x07', False)
-                buf = self.i2c.readfrom(self.addr, 1)
-                temp = (ustruct.unpack('B', buf)[0])*0.8 -75
-                # print(data)
-                return temp
-            except:
-                retry = retry + 1
+        if(self.chip==1):
+            self._get_raw()
+            temp_x = self.raw_x - self.cali_offset_x
+            temp_y = self.raw_y - self.cali_offset_y
+            # temp_z = self.raw_z - self.cali_offset_z
+            heading = math.atan2(temp_y, -temp_x) * (180 / 3.14159265) + 180
+            return heading
         else:
-            raise Exception("i2c read/write error!")   
+            # self._get_raw()
+            # heading = math.atan2(temp_y, -temp_x) * (180 / 3.14159265) + 180 + 3
+            heading = math.atan2(self.get_y(), -self.get_x()) * (180 / 3.14159265) + 180 + 3
+            return heading
+        
+    def _get_temperature(self):
+        if(self.chip==1):
+            retry = 0
+            if (retry < 5):
+                try:
+                    self.i2c.writeto(self.addr, b'\x09\x02', True)
+                    while True:
+                        self.i2c.writeto(self.addr, b'\x08', False)
+                        buf = self.i2c.readfrom(self.addr, 1)
+                        status = ustruct.unpack('B', buf)[0]
+                        if(status & 0x02):
+                            break
+                    self.i2c.writeto(self.addr, b'\x07', False)
+                    buf = self.i2c.readfrom(self.addr, 1)
+                    temp = (ustruct.unpack('B', buf)[0])*0.8 -75
+                    # print(data)
+                    return temp
+                except:
+                    retry = retry + 1
+            else:
+                raise Exception("i2c read/write error!")   
+        elif(self.chip == 2):
+            pass
 
     def _get_id(self):
+        if (self.chip==1):
+            retry = 0
+            if (retry < 5):
+                try:
+                    self.i2c.writeto(self.addr, bytearray([0x2f]), False)
+                    buf = self.i2c.readfrom(self.addr, 1, True)
+                    print(buf)
+                    id = ustruct.unpack('B', buf)[0]
+                    return id
+                except:
+                    retry = retry + 1
+            else:
+                raise Exception("i2c read/write error!")
+        elif (self.chip==2):
+            retry = 0
+            if (retry < 5):
+                try:
+                    self.i2c.writeto(self.addr, bytearray([0x39]), False)
+                    buf = self.i2c.readfrom(self.addr, 1, True)
+                    id = ustruct.unpack('B', buf)[0]
+                    return id
+                except:
+                    retry = retry + 1
+            else:
+                raise Exception("i2c read/write error!")
+
+    def _judge_id(self):
+        """
+        判断product_ID
+        """
         retry = 0
         if (retry < 5):
             try:
-                self.i2c.writeto(self.addr, bytearray([0x2f]), False)
+                self.i2c.writeto(self.addr, bytearray([0x39]), False)
                 buf = self.i2c.readfrom(self.addr, 1, True)
-                print(buf)
                 id = ustruct.unpack('B', buf)[0]
-                return id
+                if(id == 16):
+                    self.chip = 2
+                    self.product_ID = 16
+                else:
+                    self.chip = 1
+                    self.product_ID = 48
             except:
                 retry = retry + 1
         else:
-            raise Exception("i2c read/write error!")    
+            raise Exception("i2c read/write error!") 
 
 # Magnetic
 if 48 in i2c.scan():
