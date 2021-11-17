@@ -31,6 +31,21 @@ def print(_t, *args, sep=' ', end='\n'):
     else:
         _print(_t, *args, sep=sep, end=end)
 
+# my_wifi = wifi()
+#多次尝试连接wifi
+def try_connect_wifi(_wifi, _ssid, _pass, _times):
+    if _times < 1: return False
+    try:
+        print("Try Connect WiFi ... {} Times".format(_times) )
+        _wifi.connectWiFi(_ssid, _pass)
+        if _wifi.sta.isconnected(): return True
+        else:
+            time.sleep(5)
+            return try_connect_wifi(_wifi, _ssid, _pass, _times-1)
+    except:
+        time.sleep(5)
+        return try_connect_wifi(_wifi, _ssid, _pass, _times-1)
+
 class Font(object):
     def __init__(self, font_address=0x400000):
         self.font_address = font_address
