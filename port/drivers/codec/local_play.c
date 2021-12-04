@@ -15,7 +15,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
-// #include "freertos/event_groups.h"
+#include "freertos/event_groups.h"
 #include "freertos/ringbuf.h"
 #include "esp_log.h"
 #include "esp_system.h"
@@ -34,7 +34,7 @@
 #define READ_BUFF_LEN 2048
 // static const char *TAG = "LOCAL_FILE";
 extern TaskHandle_t mp3_decode_task_handel;
-
+extern EventGroupHandle_t xEventGroup;
 
 mp_obj_t file_open(const char *filename, const char *mode)
 {
@@ -178,7 +178,7 @@ void local_play(void *pvParameters)
                 renderer_cfg.channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT;
             
             renderer_init(&renderer_cfg);
-            // renderer_set_clk(wav_info->sampleRate, wav_info->bits, wav_info->channels);
+            renderer_set_clk(wav_info->sampleRate, wav_info->bits, wav_info->channels);
             if(wav_info->fmtSubchunckSize == 16)
                 file_read(file, &read_bytes, read_buff,  8);
             else if(wav_info->fmtSubchunckSize == 18)
@@ -226,6 +226,9 @@ void local_play(void *pvParameters)
                     renderer_stop();
                     player->eof = true;
                     player->player_status = STOPPED;
+                    xEventGroupSetBits(
+                    xEventGroup,    // The event group being updated.
+                    BIT_1);// The bits being set.
                     break;
                 }
                 //vTaskDelay(10);

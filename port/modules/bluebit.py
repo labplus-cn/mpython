@@ -838,8 +838,8 @@ class MP3(object):
     :param i2c: I2C实例对象,默认i2c=i2c.
     """
 
-    def __init__(self, tx):
-        self.uart = UART(1, 9600, tx=tx)
+    def __init__(self, tx=-1, rx=-1, uart_num=1):
+        self.uart = UART(uart_num, 9600, tx=tx, rx=rx)
         self.volume = 25
 
     def _cmdWrite(self, cmd):
