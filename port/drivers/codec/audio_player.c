@@ -91,13 +91,13 @@ void player_deinit(void)
                     BIT_0 | BIT_1,  // The bits within the event group to wait for.
                     pdTRUE,         // BIT_0 and BIT_4 should be cleared before returning.
                     pdFALSE,         // not wait for both bits, either bit will do.
-                    portMAX_DELAY ); // Wait a maximum of 100ms for either bit to be set.
+                    1000 / portTICK_PERIOD_MS ); // Wait a maximum of 100ms for either bit to be set.
 
-        if( ( uxBits & BIT_1) !=  BIT_1 )
-        {
-            mp_warning(NULL, "Cant not stop player.");
-            return;
-        }
+        // if( ( uxBits & BIT_1) !=  BIT_1 )
+        // {
+        //     mp_warning(NULL, "Cant not stop player.");
+        //     return;
+        // }
 
         if (player_instance->buf_handle)
             vRingbufferDelete(player_instance->buf_handle);
