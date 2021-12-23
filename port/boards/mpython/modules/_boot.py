@@ -1,5 +1,4 @@
 import time
-
 import gc
 import uos
 from flashbdev import bdev
@@ -22,5 +21,4 @@ except OSError:
 for count in range(3):
     print("=$%#=")
     time.sleep_ms(150)
-  
 gc.collect()
