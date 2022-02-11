@@ -925,7 +925,6 @@ class MP3(object):
 
         :param int songNo: 歌曲编号,类型为数字
         """
-        #
         var = bytearray([0xFF, 0x06, 0x08, 0x00, 0x00, songNo])
         self._cmdWrite(var)
 
@@ -969,6 +968,116 @@ class MP3(object):
         """复位MP3"""
         var = bytearray([0xFF, 0x06, 0x0C, 0x00, 0x00, 0x00])
         self._cmdWrite(var)
+
+class MP3_(object):
+    """
+    MP3模块
+    WT2003H4-16S
+    2022.01.20
+    """
+    def __init__(self, tx=-1, rx=-1, uart_num=1):
+        self.uart = UART(uart_num, 9600, stop=2, tx=tx, rx=rx)
+        self._vol = 15
+        self.is_paused = False
+        self.set_output_mode(1)
+        self.volume(15)
+
+    def _cmdWrite(self, cmd):
+        sum = 0
+        len = 0
+        for i in cmd:
+            sum += i
+            len += 1
+
+        len += 2
+        sum += len
+        sum = sum & 0xff
+
+        pakage = [0x7E, len]
+        pakage += cmd
+        pakage += ([sum, 0xEF])
+        self.uart.write(bytearray(pakage))
+        # print(len)
+        # print(pakage)
+        sleep_ms(100)
+
+    def play_song(self, num):
+        """
+        播放歌曲
+        :param int num: 歌曲编号,类型为数字
+        """
+        # var = [0xA0, (num >> 8) & 0xff, num & 0xff]
+        var = [0xA2, (num >> 8) & 0xff, num & 0xff]
+        self._cmdWrite(var)
+
+    def set_output_mode(self, mode):
+        """设置音频输出模式：0：speaker 1: DAC"""
+        var = [0xB6, mode]
+        self._cmdWrite(var)  
+    
+    def set_play_mode(self, mode):
+        """指定播放模式"""
+        var = [0xAF, mode]
+        self._cmdWrite(var)
+
+    def pause(self):
+        """暂停播放"""
+        if self.is_paused == False:
+            self.is_paused = True
+            var = [0xAA]
+            self._cmdWrite(var)
+
+    def stop(self):
+        """停止播放"""
+        var = [0xAB]
+        self._cmdWrite(var)
+
+    def play(self):
+        """
+        播放,用于暂停后的继续播放
+        """
+        if self.is_paused:
+            self.is_paused = False
+            var = [0xAA]
+            self._cmdWrite(var)
+
+    def playNext(self):
+        """播下一首"""
+        var = [0xAC]
+        self._cmdWrite(var)
+
+    def playPrev(self):
+        """播上一首"""
+        var = [0xAD]
+        self._cmdWrite(var)
+
+    def volume(self, vol):
+        """设置音量"""
+        # 音量 0~30
+        self._vol = vol
+        var = [0xAE, vol]
+        self._cmdWrite(var)
+        while True:
+            if(self.uart.any()):
+                buff = self.uart.read(2)
+                # print(buff)
+                break
+    
+    def song_num(self):
+        """查询 SD 卡内音乐文件总数"""
+        var = [0xC5]
+        self._cmdWrite(var)
+        while True:
+            if(self.uart.any()):
+                buff = self.uart.read(3)
+                num = (buff[1] << 8) + buff[2]
+                if(buff[0]==197):
+                    # print('song_num:')
+                    # print(num)
+                    return num
+                else:
+                    return 0
+
 
 
 class OLEDBit(framebuf.FrameBuffer):
