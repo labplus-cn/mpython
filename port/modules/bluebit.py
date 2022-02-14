@@ -973,7 +973,7 @@ class MP3_(object):
     """
     MP3模块
     WT2003H4-16S
-    2022.01.20
+    2022.02.12
     """
     def __init__(self, tx=-1, rx=-1, uart_num=1):
         self.uart = UART(uart_num, 9600, stop=2, tx=tx, rx=rx)
@@ -1006,7 +1006,6 @@ class MP3_(object):
         播放歌曲
         :param int num: 歌曲编号,类型为数字
         """
-        # var = [0xA0, (num >> 8) & 0xff, num & 0xff]
         var = [0xA2, (num >> 8) & 0xff, num & 0xff]
         self._cmdWrite(var)
 
@@ -1052,8 +1051,7 @@ class MP3_(object):
         self._cmdWrite(var)
 
     def volume(self, vol):
-        """设置音量"""
-        # 音量 0~30
+        """设置音量 0~30"""
         self._vol = vol
         var = [0xAE, vol]
         self._cmdWrite(var)
@@ -1072,8 +1070,6 @@ class MP3_(object):
                 buff = self.uart.read(3)
                 num = (buff[1] << 8) + buff[2]
                 if(buff[0]==197):
-                    # print('song_num:')
-                    # print(num)
                     return num
                 else:
                     return 0
