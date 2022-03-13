@@ -63,7 +63,7 @@ SDKCONFIG_H = $(BUILD)/sdkconfig.h
 # These correspond to v3.3.2 and v4.0.1.
 ESPIDF_SUPHASH_V3 := 9e70825d1e1cbf7988cf36981774300066580ea7
 # ESPIDF_SUPHASH_V4 := 4c81978a3e2220674a432a588292a4c860eef27b
-ESPIDF_SUPHASH_V4 := f56e8baef7fd663d590e6d3b03c91db0a632fb39
+ESPIDF_SUPHASH_V4 := 0872bdcb9c146bb5413cee3afd59c0195256b858
 
 define print_supported_git_hash
 $(info Supported git hash (v3.3): $(ESPIDF_SUPHASH_V3))
