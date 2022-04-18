@@ -139,6 +139,32 @@ class joyButton(object):
             btn = 'D'
         return btn
 
+class joyButton1(object):
+    """
+    五向按键,掌控板实验箱
+    :param pin: 掌控板引脚号,如使用P0,pin=0.
+    """
+    def __init__(self, pin):
+        self.pin = pin
+
+    def getVal(self):
+        """
+        :return: 返回按键,值可以是'up','down','right','left','mid',无按键按下'None'.
+        """
+        _pin = MPythonPin(self.pin, PinMode.ANALOG)
+        val = _pin.read_analog()
+        btn = None
+        if val < 150:
+            btn = 'up'
+        elif val > 300 and val < 900:
+            btn = 'down'
+        elif val > 1100 and val < 1700:
+            btn = 'right'
+        elif val > 1900 and val < 2500:
+            btn = 'left'
+        elif val > 2700 and val < 3300:
+            btn = 'mid'
+        return btn
 
 class SHT20(object):
     """
