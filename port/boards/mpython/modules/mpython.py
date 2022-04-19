@@ -819,7 +819,8 @@ class Magnetic(object):
             return self.raw_x * 0.25
         if (self.chip == 2):
             self._get_raw()
-            return -0.0625 * (self.raw_x - self.cali_offset_x - 524288)
+            return -0.0625 * (self.raw_x - 524288)
+            # return -0.0625 * (self.raw_x - self.cali_offset_x - 524288)
             # return (self.raw_x - 524288)/16384
 
     def get_y(self):
@@ -828,7 +829,8 @@ class Magnetic(object):
             return self.raw_y * 0.25
         if (self.chip == 2):
             self._get_raw()
-            return -0.0625 * (self.raw_y - self.cali_offset_y - 524288)
+            # return -0.0625 * (self.raw_y - self.cali_offset_y - 524288)
+            return -0.0625 * (self.raw_y - 524288)
             # return (self.raw_y - 524288)/16384
 
     def get_z(self):
@@ -837,7 +839,8 @@ class Magnetic(object):
             return self.raw_z * 0.25 
         if (self.chip == 2):
             self._get_raw()
-            return 0.0625 * (self.raw_z - self.cali_offset_z - 524288)
+            return 0.0625 * (self.raw_z - 524288)
+            # return 0.0625 * (self.raw_z - self.cali_offset_z - 524288)
             # return (self.raw_z - 524288)/16384
 
     def get_field_strength(self):
@@ -904,7 +907,9 @@ class Magnetic(object):
             heading = math.atan2(temp_y, -temp_x) * (180 / 3.14159265) + 180
             return heading
         else:
-            # self._get_raw()
+            self._get_raw()
+            # temp_x = self.raw_x - self.cali_offset_x
+            # temp_y = self.raw_y - self.cali_offset_y
             # heading = math.atan2(temp_y, -temp_x) * (180 / 3.14159265) + 180 + 3
             heading = math.atan2(self.get_y(), -self.get_x()) * (180 / 3.14159265) + 180 + 3
             return heading
