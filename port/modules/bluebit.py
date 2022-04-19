@@ -141,7 +141,7 @@ class joyButton(object):
 
 class joyButton1(object):
     """
-    五向按键,掌控板实验箱
+    五向按键,掌控板魔盒
     :param pin: 掌控板引脚号,如使用P0,pin=0.
     """
     def __init__(self, pin):
