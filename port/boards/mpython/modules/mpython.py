@@ -674,7 +674,8 @@ class Magnetic(object):
             time.sleep_ms(100)
             self._writeReg(0x1A, 255)
             self._writeReg(0x1B, 0b10100001)
-            self._writeReg(0x1C, 0b00000011)
+            # self._writeReg(0x1C, 0b00000011)
+            self._writeReg(0x1C, 0b00000000)
             self._writeReg(0x1D, 0b10010000)
             time.sleep_ms(100)
 
@@ -760,37 +761,40 @@ class Magnetic(object):
             retry = 0
             if (retry < 5):
                 try:
-                    _raw_x = 0
-                    _raw_y = 0
-                    _raw_z = 0
+                    _raw_x = 0.0
+                    _raw_y = 0.0
+                    _raw_z = 0.0
+
+                    # self.i2c.writeto(self.addr, b'\x1B\x08', True)  #set
+                    # self.i2c.writeto(self.addr, b'\x1B\x01', True)
+                    
+                    # while True:
+                    #     buf = self._readReg(0x18, 1)
+                    #     status = buf[0]
+                    #     if(status & 0x40):
+                    #         break
+
+                    # _buf = self._readReg(0x00, 9)
+
+                    self.i2c.writeto(self.addr, b'\x1B\x08', True)  #set
+                    # self.i2c.writeto(self.addr, b'\x1B\x80', True)
+                    self.i2c.writeto(self.addr, b'\x1B\x01', True)
+                    
                     while True:
-                        self._writeReg(0x1B,0b10100001)
-                        time.sleep_ms(10)
+                        sleep_ms(25)
                         buf = self._readReg(0x18, 1)
                         status = buf[0]
-                        # print('status:',status)
                         if(status & 0x40):
                             break
-                    # self.i2c.writeto(self.addr, b'\x00', False)
-                    # buf = self.i2c.readfrom(self.addr, 9)
+
                     buf = self._readReg(0x00, 9)
 
-                    _raw_x |= buf[0] << 12
-                    _raw_x |= buf[1] << 4
-                    # _raw_x |= buf[6] << 0
-                    _raw_x |= buf[6] >> 4
+                    _raw_x = (buf[0] << 12) | (buf[1] << 4) | (buf[6] >> 4)
+                    _raw_y = (buf[2] << 12) | (buf[3] << 4) | (buf[7] >> 4)
+                    _raw_z = (buf[4] << 12) | (buf[5] << 4) | (buf[8] >> 4)
+
                     self.raw_x = _raw_x
-
-                    _raw_y |= buf[2] << 12
-                    _raw_y |= buf[3] << 4
-                    # _raw_y |= buf[7] << 0
-                    _raw_y |= buf[7] >> 4
                     self.raw_y = _raw_y
-
-                    _raw_z |= buf[4] << 12
-                    _raw_z |= buf[5] << 4
-                    # _raw_z |= buf[8] << 0
-                    _raw_z |= buf[8] >> 4
                     self.raw_z = _raw_z
                 except:
                     retry = retry + 1
@@ -819,9 +823,11 @@ class Magnetic(object):
             return self.raw_x * 0.25
         if (self.chip == 2):
             self._get_raw()
-            # return -0.0625 * (self.raw_x - 524288)
-            # return -0.0625 * (self.raw_x - self.cali_offset_x - 524288)
-            return -(self.raw_x - 524288)/16384
+            if(self.cali_offset_x):
+                return -0.0625 * (self.raw_x - self.cali_offset_x)
+            else:
+                return -0.0625 * (self.raw_x - 524288)
+            # return -(self.raw_x - 524288)/16384
 
     def get_y(self):
         if (self.chip == 1):
@@ -829,9 +835,11 @@ class Magnetic(object):
             return self.raw_y * 0.25
         if (self.chip == 2):
             self._get_raw()
-            # return -0.0625 * (self.raw_y - self.cali_offset_y - 524288)
-            # return -0.0625 * (self.raw_y - 524288)
-            return -(self.raw_y - 524288)/16384
+            if(self.cali_offset_y):
+                return -0.0625 * (self.raw_y - self.cali_offset_y)
+            else:
+                return -0.0625 * (self.raw_y - 524288)
+            # return -(self.raw_y - 524288)/16384
 
     def get_z(self):
         if (self.chip == 1):
@@ -839,9 +847,11 @@ class Magnetic(object):
             return self.raw_z * 0.25 
         if (self.chip == 2):
             self._get_raw()
-            # return 0.0625 * (self.raw_z - 524288)
-            # return 0.0625 * (self.raw_z - self.cali_offset_z - 524288)
-            return (self.raw_z - 524288)/16384
+            if(self.cali_offset_z):
+                return 0.0625 * (self.raw_z - self.cali_offset_z)
+            else:
+                return 0.0625 * (self.raw_z - 524288)
+            # return (self.raw_z - 524288)/16384
 
     def get_field_strength(self):
         if(self.chip==1):
@@ -852,7 +862,7 @@ class Magnetic(object):
         elif(self.chip==2):
             self._get_raw()
             if self.is_peeling == 1:
-                return (math.sqrt(math.pow(self.raw_x - self.peeling_x -524288, 2) + pow(self.raw_y - self.peeling_y -524288, 2) + pow(self.raw_z - self.peeling_z -524288, 2)))*0.0625
+                return (math.sqrt(math.pow(self.raw_x - self.peeling_x, 2) + pow(self.raw_y - self.peeling_y, 2) + pow(self.raw_z - self.peeling_z , 2)))*0.0625
             return (math.sqrt(math.pow(self.get_x(), 2) + pow(self.get_y(), 2) + pow(self.get_z(), 2)))
 
     def calibrate(self):
@@ -909,10 +919,11 @@ class Magnetic(object):
         else:
             if(self.cali_offset_x):
                 self._get_raw()
-                temp_x = self.raw_x - self.cali_offset_x
-                temp_y = self.raw_y - self.cali_offset_y
+                temp_x = -(self.raw_x - self.cali_offset_x)
+                temp_y = -(self.raw_y - self.cali_offset_y)
                 heading = math.atan2(temp_y, -temp_x) * (180 / 3.14159265) + 180 + 3
-            heading = math.atan2(self.get_y(), -self.get_x()) * (180 / 3.14159265) + 180 + 3
+            else:
+                heading = math.atan2(self.get_y(), -self.get_x()) * (180 / 3.14159265) + 180 + 3
             return heading
         
     def _get_temperature(self):
