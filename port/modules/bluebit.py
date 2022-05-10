@@ -31,6 +31,8 @@ import ubinascii
 import ustruct
 import math
 
+from spl06_001 import Barometric
+from apds9960 import Gesture
 
 class Thermistor:
     """
