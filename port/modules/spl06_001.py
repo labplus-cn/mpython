@@ -205,7 +205,7 @@ class Barometric(object):
 
         return tmp
     
-    def get_temperature(self):
+    def temperature(self):
         """
         获取温度
         :return: 温度,单位摄氏度
@@ -217,7 +217,7 @@ class Barometric(object):
 
         traw_sc = traw / t_scale
         temp_c = ((c0) * 0.5) + ((c1) * traw_sc)
-        # temp_f = (temp_c * 9/5) + 32
+        temp_f = (temp_c * 9/5) + 32 #华氏度
 
         return temp_c
 
