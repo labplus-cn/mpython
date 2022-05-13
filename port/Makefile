@@ -13,7 +13,8 @@ endif
 
 
 # Firmware verion 
-MICROPY_GIT_TAG = $(strip $(shell git describe --dirty --always))
+# MICROPY_GIT_TAG = $(strip $(shell git describe --dirty --always))
+MICROPY_GIT_TAG = $(strip $(shell git describe --dirty --tags))
 FIRMWARE_NAME = $(BOARD)-$(MICROPY_GIT_TAG)
 
 include ../micropython/py/mkenv.mk

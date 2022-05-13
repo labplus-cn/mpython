@@ -1103,8 +1103,8 @@ class BME280(object):
             raise Exception("i2c read/write error!")
 
 # bm280
-if 119 in i2c.scan():
-    bme280 = BME280()
+# if 119 in i2c.scan():
+#     bme280 = BME280()
 
 class PinMode(object):
     IN = 1
