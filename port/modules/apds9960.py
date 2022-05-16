@@ -165,6 +165,14 @@ APDS9960_DIR_NEAR = 5
 APDS9960_DIR_FAR = 6
 APDS9960_DIR_ALL = 7
 
+GESTURES = {
+    0:"none",
+    1:"left",
+    2:"right",
+    3:"up",
+    4:"down"
+}
+
 # 状态定义
 APDS9960_STATE_NA = 0
 APDS9960_STATE_NEAR = 1
@@ -358,7 +366,8 @@ class _APDS9960:
 
         # 确保电源和手势是打开的，数据是有效的  
         if not (self.getMode() & 0b01000001) or not self.isGestureAvailable():
-            return APDS9960_DIR_NONE
+            # return APDS9960_DIR_NONE
+            return "none"
 
         # 只要手势数据有效，就保持循环
         while(self.isGestureAvailable()):
@@ -399,13 +408,16 @@ class _APDS9960:
         motion = self.gesture_motion_
 
         self.resetGestureParameters()
-        return motion
+        # return motion 
+        Gesture = GESTURES.get(motion,0)
+        return Gesture
 
-    # 打开APDS-9960电源
+
+    # 打开APDS9960电源
     def enablePower(self):
         self.setMode(APDS9960_MODE_POWER, True)
 
-    # 关闭APDS-9960电源
+    # 关闭APDS9960电源
     def disablePower(self):
         self.setMode(APDS9960_MODE_POWER, False)
 
