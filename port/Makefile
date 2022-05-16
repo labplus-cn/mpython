@@ -1,6 +1,7 @@
 # Select the board to build for: if not given on the command line,
 # then default to GENERIC.
-BOARD ?= mpython
+BOARD ?= labplus-Ledong
+# BOARD ?= mpython-classroom-kit
 
 # If the build directory is not given, make it reflect the board name.
 BUILD ?= build/$(BOARD)/
@@ -12,7 +13,8 @@ endif
 
 
 # Firmware verion 
-MICROPY_GIT_TAG = $(strip $(shell git describe --dirty --always))
+# MICROPY_GIT_TAG = $(strip $(shell git describe --dirty --always))
+MICROPY_GIT_TAG = $(strip $(shell git describe --dirty --tags))
 FIRMWARE_NAME = $(BOARD)-$(MICROPY_GIT_TAG)
 
 include ../micropython/py/mkenv.mk
@@ -47,8 +49,8 @@ include $(TOP)/py/py.mk
 
 GIT_SUBMODULES = lib/berkeley-db-1.xx
 
-PORT ?= /dev/ttyUSB0
-# PORT ?= /dev/ttyACM0
+# PORT ?= /dev/ttyUSB0
+PORT ?= /dev/ttyACM0
 BAUD ?= 2000000
 FLASH_MODE ?= dio
 FLASH_FREQ ?= 40m
