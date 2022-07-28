@@ -1391,26 +1391,3 @@ def numberMap(inputNum, bMin, bMax, cMin, cMax):
     outputNum = 0
     outputNum = ((cMax - cMin) / (bMax - bMin)) * (inputNum - bMin) + cMin
     return outputNum
-
-
-class IRObstacle():
-    def __init__(self, pin):
-        '''初始化参数，引脚'''
-        self.pin = MPythonPin(pin, PinMode.ANALOG)
-        self.threshold = 1500 #默认阈值
-
-    def detect(self):
-        '''是否探测到，布尔类型True/False'''
-        tmp = self.pin.read_analog()
-        if(tmp<=self.threshold):
-            return True
-        else:
-            return False
-
-    def get_raw_val(self):
-        '''获取红外探测传感器裸数据，模拟值'''
-        return self.pin.read_analog()
-
-    def set_threshold(self, threshold):
-        '''设置红外探测传感器阈值，模拟值'''
-        self.threshold = threshold
