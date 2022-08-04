@@ -173,7 +173,8 @@ soft_reset:
         ESP_LOGE("system", "%s", msg_iic_failed);
         hw_init_flags |= 0x0001;
     } else {
-        oled_drawImg(img_00030);
+        // oled_drawImg(img_00030);
+        oled_drawImg(img_InnovaBit);
         oled_show();
         oled_deinit();
     }
@@ -238,7 +239,8 @@ soft_reset:
 
     gc_sweep_all();
 
-    mp_hal_stdout_tx_str("mpython: soft reboot\r\n");
+    // mp_hal_stdout_tx_str("mpython: soft reboot\r\n");
+    mp_hal_stdout_tx_str("InnovaBit: soft reboot\r\n");
 
     // deinitialise peripherals
     machine_pins_deinit();

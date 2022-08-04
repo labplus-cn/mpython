@@ -3,4 +3,5 @@
 #include <stdint.h>
 
 extern  uint8_t img_00030[];
+extern  uint8_t img_InnovaBit[];
 #endif
