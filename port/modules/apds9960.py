@@ -1,5 +1,6 @@
-from time import sleep
 from mpython import i2c
+# from InnovaBit import i2c
+from time import sleep
 
 # APDS9960 i2c地址
 APDS9960_I2C_ADDR = 0x39
