@@ -1642,3 +1642,50 @@ class SoilHumiditySensor():
     def set_threshold(self, threshold):
         '''设置土壤湿度传感器阈值，模拟值'''
         self.threshold = threshold
+
+class GamePadVal():
+    '''
+    返回值 key,axix_x_Val,axix_y_Val : 按键键值，摇杆x轴模拟值(0-4095)，摇杆y轴模拟值(0-4095)
+    '''
+    def __init__(self):
+        self.p0 = MPythonPin(0, PinMode.ANALOG)
+        self.p1 = MPythonPin(1, PinMode.ANALOG)
+        self.p2 = MPythonPin(2, PinMode.ANALOG)
+        self.p15 = MPythonPin(15, PinMode.IN) 
+        self.p16 = MPythonPin(16, PinMode.IN)
+        self.p13 = MPythonPin(13, PinMode.IN)
+        self.p14 = MPythonPin(14, PinMode.IN)
+
+    def getGamePadVal(self):
+        self.key = 0
+        btRocker = self.p2.read_analog()
+        btX = self.p15.read_digital()
+        btY = self.p16.read_digital()
+        btSELECT = self.p13.read_digital()
+        btSTART = self.p14.read_digital()
+       
+        if (btX==0):
+            self.key = 1    # button X
+        elif (btY==0):
+            self.key = 2    # button Y
+        elif (btSELECT==0):
+            self.key = 3    # button SELECT
+        elif (btSTART==0):
+            self.key = 4    # button START
+        elif (btRocker==0):
+            self.key = 5    # button Rocker
+        elif button_a.is_pressed():
+            self.key = 6    # button A
+        elif button_b.is_pressed():
+            self.key = 7    # button B
+    
+    def getKey(self,key):
+        self.getGamePadVal()
+        return self.key == key
+
+    def getAxix(self,key='x'):
+        if(key=='x'):
+            return self.p0.read_analog()
+        else:
+            return self.p1.read_analog()
+    
