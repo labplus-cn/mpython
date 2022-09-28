@@ -23,7 +23,7 @@
 | blue:bit modules library for mPython. 
 | more about with bluebit info browse http://wiki.labplus.cn/index.php?title=Bluebit
 """
-from mpython import i2c, sleep_ms, MPythonPin, PinMode
+from mpython import i2c, sleep_ms, MPythonPin, PinMode,numberMap
 from micropython import const
 from machine import UART, ADC, Pin
 import framebuf
@@ -1625,24 +1625,33 @@ class SoilHumiditySensor():
     '''乐动模块 土壤湿度'''
     def __init__(self, pin):
         self.pin = MPythonPin(pin, PinMode.ANALOG)
-        self.threshold = 1500 
+        self.threshold = 2500 
 
     def detect(self):
         '''是否探测到，布尔类型True/False'''
-        tmp = self.pin.read_analog()
+        tmp = self.get_raw_val()
         if(tmp>=self.threshold):
             return True
         else:
             return False
 
     def get_raw_val(self):
-        '''获取土壤湿度传感器裸数据，模拟值'''
-        return self.pin.read_analog()
+        '''获取土壤湿度传感器裸数据，模拟值:1600-2600 映射 4095-0 '''
+        _soil_humidity =  self.pin.read_analog()
+        if _soil_humidity > 2600:
+            _soil_humidity = 2600
+            return int(numberMap(_soil_humidity,1600,2600,4095,0))
+        elif _soil_humidity < 1600:
+            _soil_humidity = 1600
+            return int(numberMap(_soil_humidity,1600,2600,4095,0))
+        else:
+            return int(numberMap(_soil_humidity,1600,2600,4095,0))
 
     def set_threshold(self, threshold):
         '''设置土壤湿度传感器阈值，模拟值'''
         self.threshold = threshold
 
+from mpython import button_a,button_b
 class GamePadVal():
     '''
     返回值 key,axix_x_Val,axix_y_Val : 按键键值，摇杆x轴模拟值(0-4095)，摇杆y轴模拟值(0-4095)
