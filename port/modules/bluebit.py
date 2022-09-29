@@ -1630,7 +1630,7 @@ class SoilHumiditySensor():
     def detect(self):
         '''是否探测到，布尔类型True/False'''
         tmp = self.get_raw_val()
-        if(tmp>=self.threshold):
+        if(tmp<=self.threshold):
             return True
         else:
             return False
