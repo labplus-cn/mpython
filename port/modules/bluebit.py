@@ -23,7 +23,8 @@
 | blue:bit modules library for mPython. 
 | more about with bluebit info browse http://wiki.labplus.cn/index.php?title=Bluebit
 """
-from mpython import i2c, sleep_ms, MPythonPin, PinMode
+# from mpython import i2c, sleep_ms, MPythonPin, PinMode
+from InnovaBit import i2c, sleep_ms, MPythonPin, PinMode
 from micropython import const
 from machine import UART, ADC, Pin
 import framebuf
