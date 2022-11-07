@@ -1713,8 +1713,7 @@ class GamePadVal():
         elif (3550>_battery and _battery >=3400):
             _battery_level = 0.25
         elif (3400>_battery):
-             _battery_level = 0
-            
-        print("_battery:",_battery)
+             _battery_level = 0.1
+        # print("_battery:",_battery)
         return _battery_level
     
