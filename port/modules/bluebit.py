@@ -1659,6 +1659,7 @@ class GamePadVal():
     def __init__(self):
         self.p0 = MPythonPin(0, PinMode.ANALOG)
         self.p1 = MPythonPin(1, PinMode.ANALOG)
+        self.p8 = MPythonPin(8, PinMode.IN)
         self.p2 = MPythonPin(2, PinMode.ANALOG)
         self.p15 = MPythonPin(15, PinMode.IN) 
         self.p16 = MPythonPin(16, PinMode.IN)
@@ -1667,7 +1668,7 @@ class GamePadVal():
 
     def getGamePadVal(self):
         self.key = 0
-        btRocker = self.p2.read_analog()
+        btRocker = self.p8.read_digital()
         btX = self.p15.read_digital()
         btY = self.p16.read_digital()
         btSELECT = self.p13.read_digital()
@@ -1697,4 +1698,23 @@ class GamePadVal():
             return self.p0.read_analog()
         else:
             return self.p1.read_analog()
+
+    def get_battery_level(self):
+        """    手柄电量 毫伏   """
+        _adc=self.p2.read_analog()
+        _battery=(6600*_adc)/4095
+        _battery_level = 1
+        if(_battery>=3950):
+            _battery_level = 1
+        elif (3700>_battery  and _battery>=3700):
+             _battery_level = 0.75
+        elif (3700>_battery and _battery>=3550):
+             _battery_level = 0.5
+        elif (3550>_battery and _battery >=3400):
+            _battery_level = 0.25
+        elif (3400>_battery):
+             _battery_level = 0
+            
+        print("_battery:",_battery)
+        return _battery_level
     
