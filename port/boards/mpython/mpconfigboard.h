@@ -1,4 +1,4 @@
-#define MICROPY_HW_BOARD_NAME "mpython"
+#define MICROPY_HW_BOARD_NAME "InnovaBit"
 #define MICROPY_HW_MCU_NAME "ESP32"
 
 #define MICROPY_BUILDIN_ADC                 (1)

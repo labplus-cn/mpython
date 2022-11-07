@@ -1,4 +1,4 @@
-#define MICROPY_HW_BOARD_NAME "mpython-classroom-kit"
+#define MICROPY_HW_BOARD_NAME "InnovaBit-AI-Box"
 #define MICROPY_HW_MCU_NAME "ESP32"
 
 #define MICROPY_BUILDIN_ADC                 (0)

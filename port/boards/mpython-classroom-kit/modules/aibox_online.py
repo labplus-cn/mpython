@@ -5,7 +5,7 @@
 # @Description : A transfer protocol between mPython AI box and Labplus software
 # @Version  : 1.0
 
-from mpython import *
+from img_InnovaBit import *
 from mpython_classroom_kit import *
 from servo import Servo
 import machine
