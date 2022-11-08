@@ -1,4 +1,5 @@
 #define MICROPY_HW_BOARD_NAME "labplus-Ledong"
+// #define MICROPY_HW_BOARD_NAME "InnovaBit-Core"
 #define MICROPY_HW_MCU_NAME "ESP32"
 
 #define MICROPY_BUILDIN_ADC                 (0)

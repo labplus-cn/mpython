@@ -24,6 +24,7 @@
 | more about with bluebit info browse http://wiki.labplus.cn/index.php?title=Bluebit
 """
 from mpython import i2c, sleep_ms, MPythonPin, PinMode,numberMap
+# from InnovaBit import i2c, sleep_ms, MPythonPin, PinMode,numberMap
 from micropython import const
 from machine import UART, ADC, Pin
 import framebuf
