@@ -16,3 +16,10 @@ except OSError:
     vfs = inisetup.setup()
 
 gc.collect()
+
+# 硬件复位标志
+for count in range(3):
+    print("=$%#=")
+    time.sleep_ms(150)
+gc.collect()
+
