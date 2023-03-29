@@ -308,6 +308,8 @@ class Ultrasonic(object):
         sleep_ms(2)
         temp = self.i2c.readfrom(0x0b, 2)
         distanceCM = (temp[0] + temp[1] * 256) / 10
+        if(distanceCM>200):
+            distanceCM=200
         return distanceCM
 
 class SEGdisplay(object):
