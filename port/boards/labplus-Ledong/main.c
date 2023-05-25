@@ -239,8 +239,8 @@ soft_reset:
 
     gc_sweep_all();
 
-    // mp_hal_stdout_tx_str("mpython: soft reboot\r\n");
-    mp_hal_stdout_tx_str("InnovaBit: soft reboot\r\n");
+    mp_hal_stdout_tx_str("mpython: soft reboot\r\n");
+    // mp_hal_stdout_tx_str("InnovaBit: soft reboot\r\n");
 
     // deinitialise peripherals
     machine_pins_deinit();
