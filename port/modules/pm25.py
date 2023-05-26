@@ -26,7 +26,7 @@ class PM25():
         if (self.dustVal > 1024):
             self.dustVal = 1024
         calcVoltage = self.dustVal * (3.3 / 1024.0) #将模拟值转换为电压值
-        dustDensity = (0.17 * (3.59 - calcVoltage) - 0.1)*1000 # 将电压值转换为粉尘密度输出单位 ug/m3
+        dustDensity = (0.17 * (3.89 - calcVoltage) - 0.1)*1000 # 将电压值转换为粉尘密度输出单位 ug/m3
         if (dustDensity < 0 ):
             dustDensity = 0
         
