@@ -64,7 +64,7 @@ class WEATHER(object):
     def __init__(self, uart_num=1, pin_tx = Pin.P14, pin_rx = Pin.P13):
       self.wait_time = 200
       self.crc = modus_crc()
-      self.uart = UART(uart_num, baudrate = 9600, tx = pin_tx, rx = pin_rx)
+      self.uart = UART(uart_num, baudrate = 4800, tx = pin_tx, rx = pin_rx)
       self.rainfall = None # 降雨量，单位mm
       self.wind_power = None # 风速 m/s
       self.wind_dir = None
