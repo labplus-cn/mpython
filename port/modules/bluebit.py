@@ -37,6 +37,7 @@ from ATGM336H_5N import GPS
 from weather import WEATHER
 from pm25 import PM25
 from max30102 import MAX30102
+from CSK6011A import SpeechSynthesis
 
 class Thermistor:
     """
