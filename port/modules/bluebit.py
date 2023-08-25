@@ -1667,7 +1667,7 @@ class ASRPRO(object):
         self.identifying_word = -1
 
     def any(self):
-        time.sleep_ms(10)
+        sleep_ms(10)
         if(self.uart.any()):
             self.recognition()
             return True
