@@ -129,7 +129,7 @@ class WEATHER(object):
       time.sleep_ms(self.wait_time)
       tmp = self._read(9)
       if tmp != None and len(tmp) == 9:
-          l = struct.unpack(">2H", tmp[3:])
+          l = struct.unpack(">2H", tmp[3:7])
           return l[0]/10,l[1]  # 风速m/s 风速 X级， 风速要除以10 
       return None
      
@@ -144,7 +144,7 @@ class WEATHER(object):
       time.sleep_ms(self.wait_time)
       tmp = self._read(9)
       if tmp != None and len(tmp) == 9:
-          l = struct.unpack(">2H", tmp[3:])
+          l = struct.unpack(">2H", tmp[3:7])
           return l[0],l[1]  # 风向 0-7 对应北风 -> 西北风 风向 度，
       return None,None
 
