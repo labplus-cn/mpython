@@ -1659,4 +1659,24 @@ class SoilHumiditySensor():
     def set_threshold(self, threshold):
         '''设置土壤湿度传感器阈值，模拟值'''
         self.threshold = threshold
-        
+    
+
+class ASRPRO(object):
+    def __init__(self, tx=Pin.P16, rx=Pin.P15, uart_num=1):
+        self.uart = UART(uart_num, baudrate=115200, rx=rx, tx=tx)
+        self.identifying_word = -1
+
+    def any(self):
+        time.sleep_ms(10)
+        if(self.uart.any()):
+            self.recognition()
+            return True
+        else:
+            return False
+    
+    def recognition(self):
+        try:
+            self.identifying_word = int(self.uart.read().decode('UTF-8','ignore'))
+        except Exception as e:
+            self.identifying_word = -1
+            pass
