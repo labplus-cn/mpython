@@ -39,7 +39,6 @@ REG_PART_ID = 0xFF
 class MAX30102():
     #默认使用引脚X1作为中断引脚，连接模块的INT引脚
     def __init__(self):
-        # self.i2c = I2C(i2c_id,I2C.MASTER, baudrate=400000)
         self.ir_D = None
         self.red_D = None
         self.i2c = i2c
@@ -47,13 +46,13 @@ class MAX30102():
         # self.interrupt = MPythonPin(15, PinMode.IN)  #设置中断引脚为输入模式
         self.reset() 
         # print("intpin: {0}, address: {1}".format(self.address))   
-        time.sleep(1)
+        time.sleep(0.5)
         addr = self.i2c.scan()
         if self.address not in addr:
             print('max30102 device not found!\n')
         else:
             self.setup()
-        time.sleep(2)
+        time.sleep(1)
         print('max30102 device init.\n')
 
     def _writeReg(self, value, reg):
@@ -135,7 +134,7 @@ class MAX30102():
         time.sleep(0.5)
         try:
             print('In the measurement, it takes approximately 30 seconds.\n')
-            print('测量中，将手指放在传感器上保持不动，大约需要30-60秒\n')
+            # print('测量中，将手指放在传感器上保持不动，大约需要30-60秒\n')
             #采样数据，大约30秒钟
             red, ir = self.read_sequential(1000)
             #进行分析
@@ -154,10 +153,12 @@ class MAX30102():
             else:
                 self.ir_D = (sum(ir_avg)) // len(ir_avg)
                 self.red_D = (sum(red_avg)) // len(red_avg)
-            print(ir_avg)
+            # print(ir_avg)
             print('Measurement completed.\n')
-            print('测试完成\n')
-            print('****************************\n')
+            self.ir_D = int(self.ir_D)
+            self.red_D = int(self.red_D)
+            # print('测试完成\n')
+            # print('****************************\n')
         except Exception as e:
             print("An error occurred.\n")
             print('测量出错。\n')
