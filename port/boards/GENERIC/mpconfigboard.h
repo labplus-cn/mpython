@@ -1,6 +1,5 @@
-#define MICROPY_HW_BOARD_NAME "ESP32 module demo"
+#define MICROPY_HW_BOARD_NAME "v1.19 demo"
 #define MICROPY_HW_MCU_NAME "ESP32"
-
 
 #define MICROPY_BUILDIN_ADC                 (1)
 #define MICROPY_BUILDIN_DAC                 (1)
@@ -18,3 +17,5 @@
         short *mp3DecOutBuf; \
 
 #define BOARD_PORT_BUILTIN_MODULES \
+
+

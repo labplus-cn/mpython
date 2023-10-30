@@ -7,7 +7,8 @@
 # history:
 # V1.1 add oled draw function,add buzz.freq().  by tangliufeng
 # V1.2 add servo/ui class,by tangliufeng
-# V1.19  
+
+# V1.19 
 
 from machine import I2C, PWM, Pin, ADC, TouchPad
 from ssd1106 import SSD1106_I2C
@@ -79,11 +80,13 @@ class Font(object):
         esp.flash_read(ptr_char_data + self.font_address, buffer)
         return buffer
 
+
 class TextMode():
     normal = 1
     rev = 2
     trans = 3
     xor = 4
+
 
 class OLED(SSD1106_I2C):
     """ 128x64 oled display """
@@ -673,9 +676,10 @@ class Magnetic(object):
             time.sleep_ms(100)
             self._writeReg(0x1A, 255)
             self._writeReg(0x1B, 0b10100001)
-            self._writeReg(0x1C, 0b00000011)
+            # self._writeReg(0x1C, 0b00000011)
+            self._writeReg(0x1C, 0b00000000)
             self._writeReg(0x1D, 0b10010000)
-            sleep_ms(100)
+            time.sleep_ms(100)
 
     def _readReg(self, reg, nbytes=1):
         return i2c.readfrom_mem(self.addr, reg, nbytes)
@@ -759,37 +763,40 @@ class Magnetic(object):
             retry = 0
             if (retry < 5):
                 try:
-                    _raw_x = 0
-                    _raw_y = 0
-                    _raw_z = 0
+                    _raw_x = 0.0
+                    _raw_y = 0.0
+                    _raw_z = 0.0
+
+                    # self.i2c.writeto(self.addr, b'\x1B\x08', True)  #set
+                    # self.i2c.writeto(self.addr, b'\x1B\x01', True)
+                    
+                    # while True:
+                    #     buf = self._readReg(0x18, 1)
+                    #     status = buf[0]
+                    #     if(status & 0x40):
+                    #         break
+
+                    # _buf = self._readReg(0x00, 9)
+
+                    self.i2c.writeto(self.addr, b'\x1B\x08', True)  #set
+                    # self.i2c.writeto(self.addr, b'\x1B\x80', True)
+                    self.i2c.writeto(self.addr, b'\x1B\x01', True)
+                    
                     while True:
-                        self._writeReg(0x1B,0b10100001)
-                        time.sleep_ms(10)
+                        sleep_ms(25)
                         buf = self._readReg(0x18, 1)
                         status = buf[0]
-                        # print('status:',status)
                         if(status & 0x40):
                             break
-                    # self.i2c.writeto(self.addr, b'\x00', False)
-                    # buf = self.i2c.readfrom(self.addr, 9)
+
                     buf = self._readReg(0x00, 9)
 
-                    _raw_x |= buf[0] << 12
-                    _raw_x |= buf[1] << 4
-                    # _raw_x |= buf[6] << 0
-                    _raw_x |= buf[6] >> 4
+                    _raw_x = (buf[0] << 12) | (buf[1] << 4) | (buf[6] >> 4)
+                    _raw_y = (buf[2] << 12) | (buf[3] << 4) | (buf[7] >> 4)
+                    _raw_z = (buf[4] << 12) | (buf[5] << 4) | (buf[8] >> 4)
+
                     self.raw_x = _raw_x
-
-                    _raw_y |= buf[2] << 12
-                    _raw_y |= buf[3] << 4
-                    # _raw_y |= buf[7] << 0
-                    _raw_y |= buf[7] >> 4
                     self.raw_y = _raw_y
-
-                    _raw_z |= buf[4] << 12
-                    _raw_z |= buf[5] << 4
-                    # _raw_z |= buf[8] << 0
-                    _raw_z |= buf[8] >> 4
                     self.raw_z = _raw_z
                 except:
                     retry = retry + 1
@@ -818,8 +825,11 @@ class Magnetic(object):
             return self.raw_x * 0.25
         if (self.chip == 2):
             self._get_raw()
-            return -0.0625 * (self.raw_x - self.cali_offset_x - 524288)
-            # return (self.raw_x - 524288)/16384
+            if(self.cali_offset_x):
+                return -0.0625 * (self.raw_x - self.cali_offset_x)
+            else:
+                return -0.0625 * (self.raw_x - 524288)
+            # return -(self.raw_x - 524288)/16384
 
     def get_y(self):
         if (self.chip == 1):
@@ -827,8 +837,11 @@ class Magnetic(object):
             return self.raw_y * 0.25
         if (self.chip == 2):
             self._get_raw()
-            return -0.0625 * (self.raw_y - self.cali_offset_y - 524288)
-            # return (self.raw_y - 524288)/16384
+            if(self.cali_offset_y):
+                return -0.0625 * (self.raw_y - self.cali_offset_y)
+            else:
+                return -0.0625 * (self.raw_y - 524288)
+            # return -(self.raw_y - 524288)/16384
 
     def get_z(self):
         if (self.chip == 1):
@@ -836,7 +849,10 @@ class Magnetic(object):
             return self.raw_z * 0.25 
         if (self.chip == 2):
             self._get_raw()
-            return 0.0625 * (self.raw_z - self.cali_offset_z - 524288)
+            if(self.cali_offset_z):
+                return 0.0625 * (self.raw_z - self.cali_offset_z)
+            else:
+                return 0.0625 * (self.raw_z - 524288)
             # return (self.raw_z - 524288)/16384
 
     def get_field_strength(self):
@@ -848,7 +864,7 @@ class Magnetic(object):
         elif(self.chip==2):
             self._get_raw()
             if self.is_peeling == 1:
-                return (math.sqrt(math.pow(self.raw_x - self.peeling_x -524288, 2) + pow(self.raw_y - self.peeling_y -524288, 2) + pow(self.raw_z - self.peeling_z -524288, 2)))*0.0625
+                return (math.sqrt(math.pow(self.raw_x - self.peeling_x, 2) + pow(self.raw_y - self.peeling_y, 2) + pow(self.raw_z - self.peeling_z , 2)))*0.0625
             return (math.sqrt(math.pow(self.get_x(), 2) + pow(self.get_y(), 2) + pow(self.get_z(), 2)))
 
     def calibrate(self):
@@ -900,12 +916,16 @@ class Magnetic(object):
             temp_x = self.raw_x - self.cali_offset_x
             temp_y = self.raw_y - self.cali_offset_y
             # temp_z = self.raw_z - self.cali_offset_z
-            heading = math.atan2(temp_y, -temp_x) * (180 / 3.14159265) + 180
+            heading = math.atan2(temp_y, -temp_x) * (180 / 3.14159265) + 180 + 3
             return heading
         else:
-            # self._get_raw()
-            # heading = math.atan2(temp_y, -temp_x) * (180 / 3.14159265) + 180 + 3
-            heading = math.atan2(self.get_y(), -self.get_x()) * (180 / 3.14159265) + 180 + 3
+            if(self.cali_offset_x):
+                self._get_raw()
+                temp_x = -(self.raw_x - self.cali_offset_x)
+                temp_y = -(self.raw_y - self.cali_offset_y)
+                heading = math.atan2(temp_y, -temp_x) * (180 / 3.14159265) + 180 + 3
+            else:
+                heading = math.atan2(self.get_y(), -self.get_x()) * (180 / 3.14159265) + 180 + 3
             return heading
         
     def _get_temperature(self):
@@ -984,6 +1004,110 @@ class Magnetic(object):
 if 48 in i2c.scan():
     magnetic = Magnetic()
 
+class BME280(object):
+    def __init__(self):
+        self.addr = 119
+        # The “ctrl_hum” register sets the humidity data acquisition options of the device
+        # 0x01 = [2:0]oversampling ×1
+        i2c.writeto(self.addr, b'\xF2\x01')
+        # The “ctrl_meas” register sets the pressure and temperature data acquisition options of the device.
+        # The register needs to be written after changing “ctrl_hum” for the changes to become effective.
+        # 0x27 = [7:5]Pressure oversampling ×1 | [4:2]Temperature oversampling ×4 | [1:0]Normal mode
+        i2c.writeto(self.addr, b'\xF4\x27')
+        # The “config” register sets the rate, filter and interface options of the device. Writes to the “config”
+        # register in normal mode may be ignored. In sleep mode writes are not ignored.
+        i2c.writeto(self.addr, b'\xF5\x00')
+
+        i2c.writeto(self.addr, b'\x88', False)
+        bytes = i2c.readfrom(self.addr, 6)
+        self.dig_T = ustruct.unpack('Hhh', bytes)
+
+        i2c.writeto(self.addr, b'\x8E', False)
+        bytes = i2c.readfrom(self.addr, 18)
+        self.dig_P = ustruct.unpack('Hhhhhhhhh', bytes)
+
+        i2c.writeto(self.addr, b'\xA1', False)
+        self.dig_H = array.array('h', [0, 0, 0, 0, 0, 0])
+        self.dig_H[0] = i2c.readfrom(self.addr, 1)[0]
+        i2c.writeto(self.addr, b'\xE1', False)
+        buff = i2c.readfrom(self.addr, 7)
+        self.dig_H[1] = ustruct.unpack('h', buff[0:2])[0]
+        self.dig_H[2] = buff[2]
+        self.dig_H[3] = (buff[3] << 4) | (buff[4] & 0x0F)
+        self.dig_H[4] = (buff[5] << 4) | (buff[4] >> 4 & 0x0F)
+        self.dig_H[5] = buff[6]
+
+    def temperature(self):
+        retry = 0
+        if (retry < 5):
+            try:
+                i2c.writeto(self.addr, b'\xFA', False)
+                buff = i2c.readfrom(self.addr, 3)
+                T = (((buff[0] << 8) | buff[1]) << 4) | (buff[2] >> 4 & 0x0F)
+                c1 = (T / 16384.0 - self.dig_T[0] / 1024.0) * self.dig_T[1]
+                c2 = ((T / 131072.0 - self.dig_T[0] / 8192.0) * (T / 131072.0 - self.dig_T[0] / 8192.0)) * self.dig_T[2]
+                self.tFine = c1 + c2
+                return self.tFine / 5120.0
+            except:
+                retry = retry + 1
+        else:
+            raise Exception("i2c read/write error!")
+
+    def pressure(self):
+        retry = 0
+        if (retry < 5):
+            try:
+                self.temperature()
+                i2c.writeto(self.addr, b'\xF7', False)
+                buff = i2c.readfrom(self.addr, 3)
+                P = (((buff[0] << 8) | buff[1]) << 4) | (buff[2] >> 4 & 0x0F)
+                c1 = self.tFine / 2.0 - 64000.0
+                c2 = c1 * c1 * self.dig_P[5] / 32768.0
+                c2 = c2 + c1 * self.dig_P[4] * 2.0
+                c2 = c2 / 4.0 + self.dig_P[3] * 65536.0
+                c1 = (self.dig_P[2] * c1 * c1 / 524288.0 + self.dig_P[1] * c1) / 524288.0
+                c1 = (1.0 + c1 / 32768.0) * self.dig_P[0]
+                if c1 == 0.0:
+                    return 0
+                p = 1048576.0 - P
+                p = (p - c2 / 4096.0) * 6250.0 / c1
+                c1 = self.dig_P[8] * p * p / 2147483648.0
+                c2 = p * self.dig_P[7] / 32768.0
+                p = p + (c1 + c2 + self.dig_P[6]) / 16.0
+                return p
+            except:
+                retry = retry + 1
+        else:
+            raise Exception("i2c read/write error!")
+
+    def humidity(self):
+        retry = 0
+        if (retry < 5):
+            try:
+                self.temperature()
+                i2c.writeto(self.addr, b'\xFD', False)
+                buff = i2c.readfrom(self.addr, 2)
+                H = buff[0] << 8 | buff[1]
+                h = self.tFine - 76800.0
+                h = (H - (self.dig_H[3] * 64.0 + self.dig_H[4] / 16384.0 * h)) * \
+                    (self.dig_H[1] / 65536.0 * (1.0 + self.dig_H[5] / 67108864.0 * h * \
+                    (1.0 + self.dig_H[2] / 67108864.0 * h)))
+                h = h * (1.0 - self.dig_H[0] * h / 524288.0)
+                if h > 100.0:
+                    return 100.0
+                elif h < 0.0:
+                    return 0.0
+                else:
+                    return h
+            except:
+                retry = retry + 1
+        else:
+            raise Exception("i2c read/write error!")
+
+# bm280
+# if 119 in i2c.scan():
+#     bme280 = BME280()
+
 class PinMode(object):
     IN = 1
     OUT = 2
@@ -991,8 +1115,10 @@ class PinMode(object):
     ANALOG = 4
     OUT_DRAIN = 5
 
+
 pins_remap_esp32 = (33, 32, 35, 34, 39, 0, 16, 17, 26, 25, 36, 2, -1, 18, 19, 21, 5, -1, -1, 22, 23, -1, -1, 27, 14, 12,
                     13, 15, 4)
+
 
 class MPythonPin():
     def __init__(self, pin, mode=PinMode.IN, pull=None):
@@ -1056,6 +1182,7 @@ class MPythonPin():
         self.pwm.freq(freq)
         self.pwm.duty(duty)
 
+
 '''
 # to be test
 class LightSensor(ADC):
@@ -1071,6 +1198,7 @@ class LightSensor(ADC):
         return super().read() * 1.1 / 4095 / 6.81 / 0.011
     
 '''
+
 
 class wifi:
     def __init__(self):
@@ -1123,6 +1251,7 @@ class wifi:
         self.ap.active(False)
         print('disable AP WiFi...')
 
+
 # 3 rgb leds
 # rgb = NeoPixel(Pin(17, Pin.OUT), 3, 3, 1, brightness=0.3)
 # rgb.write()
@@ -1134,10 +1263,6 @@ light.atten(light.ATTN_11DB)
 # sound sensor
 sound = ADC(Pin(36))
 sound.atten(sound.ATTN_11DB)
-# Potentiometer sensor
-Potentiometer = ADC(Pin(34))
-Potentiometer.atten(sound.ATTN_11DB)
-
 
 # buttons
 class Button:
@@ -1196,101 +1321,73 @@ class Button:
     def irq(self, *args, **kws):
         self.__pin.irq(*args, **kws)
 
-button_a = Button(4)
-button_b = Button(2)
 
-class Motor(object):
-    def __init__(self):
-        self.p14 = MPythonPin(14, PinMode.PWM)
-        self.p15 = MPythonPin(15, PinMode.PWM)
 
-    def set_speed(self, speed):
-        if speed < -100:
-            speed = -100
-        if speed > 100:
-            speed = 100
-        self.speed = int(numberMap(speed, 0, 100, 0, 1023))
-        print(self.speed)
-        if self.speed < 0:
-          self.p14.write_analog(0)
-          self.p15.write_analog(-self.speed)  
-        else:
-          self.p14.write_analog(self.speed)
-          self.p15.write_analog(0)     
+class Touch:
 
-motor = Motor()
-
-# touchpad
-class BS8112A(object):
-   """  """
-
-   def __init__(self, i2c):
-      self.addr = 80
-      # config
-      self._i2c = i2c
-      self.config = [0xB0, 0x00, 0x00, 0x83, 0xf3, 0x98, 0x0f, 0x0f,
-                     0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x00]
-      checksum = 0
-      for i in range(1, 19):
-         checksum += self.config[i]
-      checksum &= 0xff
-      self.config[18] = checksum
-      # print(self.config[18])
-      retry = 0
-      if (retry < 5):
-         try:
-            self._i2c.writeto(self.addr, bytearray(self.config), True)
-            return
-         except:
-               retry = retry + 1
-      else:
-         raise Exception("bs8112a i2c read/write error!")
-
-       # i2c.writeto(self.addr, b'\xB0', False)
-       # time.sleep_ms(10)
-       # print(i2c.readfrom(self.addr, 17, True))
-
-   # key map:
-   # value       bit7 bit6 bit5 bit4 bit3 bit2 bit1 bit0
-   # bs8112a key Key8 Key7 Key6 Key5 Key4 Key3 Key2 Key1
-   # mpython key       N    O    H    T    Y    P
-   def key_value(self):
-      retry = 0
-      if (retry < 5):
-         try:
-            self._i2c.writeto(self.addr, b'\x08', False)
-            time.sleep_ms(10)
-            value = self._i2c.readfrom(self.addr, 1, True)
-            time.sleep_ms(10)
-            return value
-         except:
-               retry = retry + 1
-      else:
-         raise Exception("bs8112a i2c read/write error!")
-
-bs8112a = BS8112A(i2c)
-class Touthpad():
     def __init__(self, pin):
-        self.pin = pin
+        self.__touch_pad = TouchPad(pin)
+        self.__touch_pad.irq(self.__irq_handler)
+        self.event_pressed = None
+        self.event_released = None
+        self.__pressed_count = 0
+        self.__was_pressed = False
+        self.__value = 0
+
+    def __irq_handler(self, value):
+        # when pressed
+        if value == 1:
+            if self.event_pressed is not None:
+                self.event_pressed(value)
+            self.__was_pressed = True
+            self.__value = 1
+            if (self.__pressed_count < 100):
+                self.__pressed_count = self.__pressed_count + 1
+        # when released
+        else:
+            self.__value = 0
+            if self.event_released is not None:
+                self.event_released(value)
+            
+    def config(self, threshold):
+        self.__touch_pad.config(threshold)
+
+    def is_pressed(self):
+        if self.__value:
+            return True
+        else:
+            return False
+
+    def was_pressed(self):
+        r = self.__was_pressed
+        self.__was_pressed = False
+        return r
+
+    def get_presses(self):
+        r = self.__pressed_count
+        self.__pressed_count = 0
+        return r
 
     def read(self):
-        key = bs8112a.key_value()
-        if key != None:
-            if (key[0] & self.pin) != 0:
-                return 0
-            else:
-                return 1023
-        return 1023
+        return self.__touch_pad.read()
 
-# touch pad
-touchpad_p = touchPad_P = Touthpad(2)
-touchpad_y = touchPad_Y = Touthpad(4)
-touchpad_t = touchPad_T = Touthpad(8)
-touchpad_h = touchPad_H = Touthpad(16)
-touchpad_o = touchPad_O = Touthpad(32)
-touchpad_n = touchPad_N = Touthpad(64)
+
+# button_a = Pin(0, Pin.IN, Pin.PULL_UP)
+# button_b = Pin(2, Pin.IN, Pin.PULL_UP)
+button_a = Button(0)
+button_b = Button(2)
+
+
+# touchpad
+touchpad_p = touchPad_P = Touch(Pin(27))
+touchpad_y = touchPad_Y = Touch(Pin(14))
+touchpad_t = touchPad_T = Touch(Pin(12))
+touchpad_h = touchPad_H = Touch(Pin(13))
+touchpad_o = touchPad_O = Touch(Pin(15))
+touchpad_n = touchPad_N = Touch(Pin(4))
 
 from gui import *
+
 
 def numberMap(inputNum, bMin, bMax, cMin, cMax):
     outputNum = 0
