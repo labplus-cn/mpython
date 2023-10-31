@@ -14,7 +14,7 @@ from machine import I2C, PWM, Pin, ADC, TouchPad
 from ssd1106 import SSD1106_I2C
 import esp, math, time, network
 import ustruct, array
-# from neopixel import NeoPixel
+from neopixel import NeoPixel
 # from esp import dht_readinto
 from time import sleep_ms, sleep_us, sleep
 import framebuf 
@@ -1253,8 +1253,8 @@ class wifi:
 
 
 # 3 rgb leds
-# rgb = NeoPixel(Pin(17, Pin.OUT), 3, 3, 1, brightness=0.3)
-# rgb.write()
+rgb = NeoPixel(Pin(17, Pin.OUT), 3, 3, 1)
+rgb.write()
 
 # light sensor
 light = ADC(Pin(39))
