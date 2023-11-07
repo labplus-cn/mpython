@@ -5,8 +5,8 @@ endif()
 
 set(MICROPY_DIR ${MICROPY_DIR}/mpython/micropython)
 
-message("MICROPY_DIR:"${MICROPY_DIR})
-message("PROJECT_DIR:"${PROJECT_DIR})
+# message("MICROPY_DIR:"${MICROPY_DIR})
+# message("PROJECT_DIR:"${PROJECT_DIR})
 
 # Include core source components.
 include(${MICROPY_DIR}/py/py.cmake)
@@ -71,6 +71,7 @@ set(MICROPY_SOURCE_PORT
     ${MICROPY_DIR}/ports/esp32/machine_i2s.c
     ${MICROPY_DIR}/ports/esp32/machine_uart.c
     ${MICROPY_DIR}/ports/esp32/modmachine.c
+    ${MICROPY_DIR}/ports/esp32/modnetwork.c
     ${MICROPY_DIR}/ports/esp32/network_lan.c
     ${MICROPY_DIR}/ports/esp32/network_ppp.c
     ${MICROPY_DIR}/ports/esp32/network_wlan.c
@@ -87,7 +88,6 @@ set(MICROPY_SOURCE_PORT
     ${MICROPY_DIR}/ports/esp32/mpthreadport.c
     ${MICROPY_DIR}/ports/esp32/machine_rtc.c
     ${MICROPY_DIR}/ports/esp32/machine_sdcard.c
-    ${MICROPY_DIR}/ports/esp32/modnetwork.c
     ${MICROPY_PORT_DIR}/builtins/machine_pin.c
     ${MICROPY_PORT_DIR}/builtins/machine_servo.c
     ${MICROPY_PORT_DIR}/builtins/machine_touchpad.c
@@ -112,10 +112,10 @@ set(MICROPY_SOURCE_QSTR
     ${MICROPY_SOURCE_BOARD}
 )
 
-message("MICROPY_SOURCE_PY:"${MICROPY_SOURCE_PY})
-message("MICROPY_SOURCE_PORT:"${MICROPY_SOURCE_PORT})
-message("MICROPY_SOURCE_BOARD:"${MICROPY_SOURCE_BOARD})
-message("================")
+# message("MICROPY_SOURCE_PY:"${MICROPY_SOURCE_PY})
+# message("MICROPY_SOURCE_PORT:"${MICROPY_SOURCE_PORT})
+# message("MICROPY_SOURCE_BOARD:"${MICROPY_SOURCE_BOARD})
+# message("================")
 
 set(IDF_COMPONENTS
     app_update
@@ -218,10 +218,6 @@ target_compile_options(${MICROPY_TARGET} PUBLIC
     -Wno-missing-field-initializers
 )
 
-# Additional include directories needed for private NimBLE headers.
-target_include_directories(${MICROPY_TARGET} PUBLIC
-    ${IDF_PATH}/components/bt/host/nimble/nimble
-)
 
 # Add additional extmod and usermod components.
 target_link_libraries(${MICROPY_TARGET} micropy_extmod_btree)
