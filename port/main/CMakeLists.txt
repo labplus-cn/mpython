@@ -112,10 +112,12 @@ set(MICROPY_SOURCE_QSTR
     ${MICROPY_SOURCE_BOARD}
 )
 
-# message("MICROPY_SOURCE_PY:"${MICROPY_SOURCE_PY})
-# message("MICROPY_SOURCE_PORT:"${MICROPY_SOURCE_PORT})
-# message("MICROPY_SOURCE_BOARD:"${MICROPY_SOURCE_BOARD})
-# message("================")
+message("MICROPY_SOURCE_PY:"${MICROPY_SOURCE_PY})
+message("================")
+message("MICROPY_SOURCE_PORT:"${MICROPY_SOURCE_PORT})
+message("================")
+message("MICROPY_SOURCE_BOARD:"${MICROPY_SOURCE_BOARD})
+message("================")
 
 set(IDF_COMPONENTS
     app_update

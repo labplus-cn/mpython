@@ -1,3 +1,6 @@
+PROJECT_NAME := labplus
+# EXTRA_COMPONENT_DIRS := builtins
+# COMPONENT_PATHS := main
 # Select the board to build for: if not given on the command line,
 # then default to GENERIC.
 BOARD ?= mpython

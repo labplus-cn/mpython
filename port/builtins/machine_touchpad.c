@@ -25,16 +25,15 @@
  */
 
 
-#include <stdio.h>
+#include "/home/labplus/esp/mpython/micropython/py/runtime.h"
+#include "/home/labplus/esp/mpython/micropython/py/mphal.h"
+#include "/home/labplus/esp/mpython/micropython/ports/esp32/modmachine.h"
 
-#include "esp_log.h"
 
 #include "driver/gpio.h"
+
 #include "driver/touch_pad.h"
 
-#include "py/runtime.h"
-#include "py/mphal.h"
-#include "modmachine.h"
 
 typedef struct _mtp_obj_t {
     mp_obj_base_t base;

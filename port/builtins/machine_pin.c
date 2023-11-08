@@ -32,12 +32,12 @@
 #include "driver/gpio.h"
 
 #include "py/runtime.h"
-#include "py/mphal.h"
-#include "mphalport.h"
-#include "modmachine.h"
+#include "/home/labplus/esp/mpython/micropython/py/mphal.h"
+#include "/home/labplus/esp/mpython/micropython/ports/esp32/mphalport.h"
+#include "/home/labplus/esp/mpython/micropython/ports/esp32/modmachine.h"
 #include "extmod/virtpin.h"
-#include "machine_rtc.h"
-#include "modesp32.h"
+#include "/home/labplus/esp/mpython/micropython/ports/esp32/machine_rtc.h"
+#include "/home/labplus/esp/mpython/micropython/ports/esp32/modesp32.h"
 
 // Used to implement a range of pull capabilities
 #define GPIO_PULL_DOWN (1)

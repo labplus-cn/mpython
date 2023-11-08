@@ -40,7 +40,9 @@
 #include "py/runtime.h"
 #include "py/mphal.h"
 #include "py/mperrno.h"
-#include "netutils.h"
+// #include "netutils.h"
+#include "shared/netutils/netutils.h"
+#include "esp_netif.h"
 #include "esp_eth.h"
 #include "esp_wifi.h"
 #include "esp_log.h"
@@ -752,6 +754,12 @@ STATIC mp_obj_t esp_phy_mode(size_t n_args, const mp_obj_t *args) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(esp_phy_mode_obj, 0, 1, esp_phy_mode);
 
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 3, 0)
+#define TEST_WIFI_AUTH_MAX 9
+#else
+#define TEST_WIFI_AUTH_MAX 8
+#endif
+_Static_assert(WIFI_AUTH_MAX == TEST_WIFI_AUTH_MAX, "Synchronize WIFI_AUTH_XXX constants with the ESP-IDF. Look at esp-idf/components/esp_wifi/include/esp_wifi_types.h");
 
 STATIC const mp_rom_map_elem_t mp_module_network_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_network) },
@@ -810,3 +818,7 @@ const mp_obj_module_t mp_module_network = {
     .base = { &mp_type_module },
     .globals = (mp_obj_dict_t *)&mp_module_network_globals,
 };
+
+// Note: This port doesn't define MICROPY_PY_NETWORK so this will not conflict
+// with the common implementation provided by extmod/modnetwork.c.
+MP_REGISTER_MODULE(MP_QSTR_network, mp_module_network);

@@ -29,8 +29,8 @@
 
 #include "py/nlr.h"
 #include "py/runtime.h"
-#include "modmachine.h"
-#include "mphalport.h"
+#include "/home/labplus/esp/mpython/micropython/ports/esp32/modmachine.h"
+#include "/home/labplus/esp/mpython/micropython/ports/esp32/mphalport.h"
 #include "soc/gpio_periph.h"
 
 // Forward dec'l
