@@ -51,5 +51,11 @@ class PM25():
         # print(dustDensity_list)
         # print("平均粉尘密度:")
         # print(dustDensity)
+        if (300>=dustDensity>150):
+            dustDensity = dustDensity/1.5
+        elif(500>=dustDensity>300):
+            dustDensity = dustDensity/2.25
+        elif(dustDensity>500):
+            dustDensity = -1
         
         return dustDensity

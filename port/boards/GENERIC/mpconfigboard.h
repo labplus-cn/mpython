@@ -1,8 +1,9 @@
-#define MICROPY_HW_BOARD_NAME "v1.19 demo"
+#define MICROPY_HW_BOARD_NAME "v1.19.1"
 #define MICROPY_HW_MCU_NAME "ESP32"
 
 #define MICROPY_BUILDIN_ADC                 (1)
 #define MICROPY_BUILDIN_DAC                 (1)
+#define MODULE_CEXAMPLE_ENABLED (1)
 
 #define MPYTHON_PORT_ROOT_POINTER \
         struct _MP3DecInfo  *mp3DecInfo; \
