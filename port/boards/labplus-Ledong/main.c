@@ -174,7 +174,7 @@ soft_reset:
         hw_init_flags |= 0x0001;
     } else {
         oled_drawImg(img_00030);
-        // oled_drawImg( img_InnovaBit);
+        // oled_drawImg(img_InnovaBit);
         oled_show();
         oled_deinit();
     }

@@ -205,24 +205,18 @@ class MOTION(object):
     def __init__(self):
         self.i2c = i2c
         addr = self.i2c.scan()
-        if 38 in addr:
-            MOTION.chip = 1  # MSA300
-            MOTION.IIC_ADDR = 38
-        elif 107 in addr:
-            MOTION.chip = 2  # QMI8658
+        if 107 in addr:
             MOTION.IIC_ADDR = 107
         else:
             raise OSError("MOTION init error")
-        if(MOTION.chip == 1):
-            pass
-        elif(MOTION.chip == 2):
-            MOTION._writeReg(0x60, 0x01) # soft reset regist value.
-            time.sleep_ms(20)
-            MOTION._writeReg(0x02, 0x60) # Enabe reg address auto increment auto
-            MOTION._writeReg(0x08, 0x03) # Enable accel and gyro
-            MOTION._writeReg(0x03, 0x1c) # accel range:4g ODR 128HZ
-            MOTION._writeReg(0x04, 0x40) # gyro ODR 8000HZ, FS 256dps
-            MOTION._writeReg(0x06, 0x55) # Enable accel and gyro Low-Pass Filter
+
+        MOTION._writeReg(0x60, 0x01) # soft reset regist value.
+        time.sleep_ms(20)
+        MOTION._writeReg(0x02, 0x60) # Enabe reg address auto increment auto
+        MOTION._writeReg(0x08, 0x03) # Enable accel and gyro
+        MOTION._writeReg(0x03, 0x1c) # accel range:4g ODR 128HZ
+        MOTION._writeReg(0x04, 0x40) # gyro ODR 8000HZ, FS 256dps
+        MOTION._writeReg(0x06, 0x55) # Enable accel and gyro Low-Pass Filter
         # print('Motion init finished!')
 
     # @staticmethod
@@ -234,20 +228,14 @@ class MOTION(object):
         i2c.writeto_mem(MOTION.IIC_ADDR, reg, value.to_bytes(1, 'little'))
 
     def get_fw_version(self):
-        if(self.chip==1):
-            pass
-        elif(self.chip==2):
-            MOTION._writeReg(0x0a, 0x10) # send ctrl9R read FW cmd
-            while True:
-                if (MOTION._readReg(0x2F, 1)[0] & 0X01) == 0X01:
-                    break
-            buf = MOTION._readReg(0X49, 3)
-            # print(buf[0])
-            # print(buf[1])
-            # print(buf[2])
+        MOTION._writeReg(0x0a, 0x10) # send ctrl9R read FW cmd
+        while True:
+            if (MOTION._readReg(0x2F, 1)[0] & 0X01) == 0X01:
+                break
+        buf = MOTION._readReg(0X49, 3)
         
     class Accelerometer():
-        """MSA300"""
+        """QMI8658C"""
         # Range and resolustion
         RANGE_2G = const(0)
         RANGE_4G = const(1)
@@ -256,241 +244,90 @@ class MOTION(object):
         RES_14_BIT = const(0) 
         RES_12_BIT = const(1)
         RES_10_BIT = const(2)
-        # Event
-        TILT_LEFT = const(0)
-        TILT_RIGHT = const(1)
-        TILT_UP = const(2)
-        TILT_DOWN = const(3)
-        FACE_UP = const(4)
-        FACE_DOWN = const(5)
-        SINGLE_CLICK = const(6)
-        DOUBLE_CLICK = const(7)
-        FREEFALL = const(8)
-
-        """QMI8658C"""
-        # Range and resolustion
-        # QMI8658C_RANGE_2G = const(0x00)
-        # QMI8658C_RANGE_4G = const(0x10)
-        # QMI8658C_RANGE_8G = const(0x20)
-        # QMI8658C_RANGE_16G = const(0x40)
 
         def __init__(self):
-            if(MOTION.chip==1):
-                self.set_resolution(MOTION.Accelerometer.RES_10_BIT)
-                self.set_range(MOTION.Accelerometer.RANGE_2G)
-                MOTION._writeReg(0x12, 0x03)               # polarity of y,z axis,
-                MOTION._writeReg(0x11, 0)                  # set power mode = normal
-                # interrupt
-                MOTION._writeReg(0x16, 0x70)      # int enabled: Orient | S_TAP | D_TAP 
-                MOTION._writeReg(0x17, 0x08)      # int enabled: Freefall
-                MOTION._writeReg(0x19, 0x71)      # int1 map to: Orient, S_TAP, D_TAP, Freefall
-                MOTION._writeReg(0x20, 0x02)      # int1 active level = 0, output = OD
-                MOTION._writeReg(0x21, 0x0C)      # int tempoary latched 25ms
-                # freefall:
-                #   single mode: |acc_x| < Threshold && |acc_y| < Threshold && |acc_z| < Threshold, at least time > Duration
-                #   sum mode: |acc_x| + |acc_y| + |acc_z| < Threshold, at least time > Duration
-                MOTION._writeReg(0x22, 20)    # Freefall Duration:(n+1)*2ms, range from 2ms to 512ms
-                MOTION._writeReg(0x23, 48)    # Freefall Threshold: n*7.81mg
-                MOTION._writeReg(0x24, 0x01)  # Freefall mode = 0-singlemode;hysteresis = n*125mg
-                # tap:
-                MOTION._writeReg(0x2A, 0x06)  # Tap duration:quit = 30ms, shock=50ms, time window for secent shock=500ms
-                MOTION._writeReg(0x2B, 0x0A)  # Tap threshold = 10*[62.5mg@2G | 125mg@4G | 250mg@8G | 500mg@16g]
-                # Orient
-                MOTION._writeReg(0x2C, 0x18)  # Orient hysteresis= 1*62.5mg; 
-                                            #        block mode = 10 z_axis blocking or slope in any axis > 0.2g;
-                                            #        orient mode = 00-symetrical
-                MOTION._writeReg(0x2D, 8)     # Z-axis block
-                # int pin irq register
-                self.int = Pin(37, Pin.IN)
-                self.int.irq(trigger=Pin.IRQ_FALLING, handler=self.irq)
-                # event handler 
-                self.event_tilt_up = None
-                self.event_tilt_down = None
-                self.event_tilt_left = None
-                self.event_tilt_right = None
-                self.event_face_up = None
-                self.event_face_down = None
-                self.event_single_click = None
-                self.event_double_click = None
-                self.event_freefall = None
-            elif(MOTION.chip==2):
-                # 设置偏移值
-                self.x_offset = 0
-                self.y_offset = 0
-                self.z_offset = 0
-                self.get_nvs_offset()
-                try:
-                    id =  MOTION._readReg(0x0, 2)
-                except:
-                    pass
-                self.set_range(MOTION.Accelerometer.RANGE_2G) #设置默认分辨率+-2g
-                self.int = Pin(37, Pin.IN)
-                self.int.irq(trigger=Pin.IRQ_FALLING, handler=self.irq)
-                # event handler 
-                self.wom = None
+            # 设置偏移值
+            self.x_offset = 0
+            self.y_offset = 0
+            self.z_offset = 0
+            self.get_nvs_offset()
+            try:
+                id =  MOTION._readReg(0x0, 2)
+            except:
+                pass
+            self.set_range(MOTION.Accelerometer.RANGE_2G) #设置默认分辨率+-2g
+            self.int = Pin(37, Pin.IN)
+            self.int.irq(trigger=Pin.IRQ_FALLING, handler=self.irq)
+            # event handler 
+            self.wom = None
             
 
-        def irq(self, arg):
-            if(MOTION.chip==1):
-                reg_int = MOTION._readReg(0x09)[0]
-                reg_orent = MOTION._readReg(0x0C)[0]
-                # orient_int
-                if (reg_int & 0x40):
-                    if ((reg_orent & 0x30) == 0x00 and self.event_tilt_left is not None):
-                        schedule(self.event_tilt_left, self.TILT_LEFT)
-                    if ((reg_orent & 0x30) == 0x10 and self.event_tilt_right is not None):
-                        schedule(self.event_tilt_right, self.TILT_RIGHT)
-                    if ((reg_orent & 0x30) == 0x20 and self.event_tilt_up is not None):
-                        schedule(self.event_tilt_up, self.TILT_UP)
-                    if ((reg_orent & 0x30) == 0x30 and self.event_tilt_down is not None):
-                        schedule(self.event_tilt_down, self.TILT_DOWN)
-                    if ((reg_orent & 0x40) == 0x00 and self.event_face_up):
-                        schedule(self.event_face_up, self.FACE_UP)
-                    if ((reg_orent & 0x40) == 0x40 and self.event_face_down):
-                        schedule(self.event_face_down, self.FACE_DOWN)
-                # single tap
-                if (reg_int & 0x20):
-                    if (self.event_single_click is not None):
-                        schedule(self.event_single_click, self.SINGLE_CLICK)
-                # double tap
-                if (reg_int & 0x10):
-                    if (self.event_double_click is not None):
-                        schedule(self.event_double_click, self.DOUBLE_CLICK)
-                # freefall
-                if (reg_int & 0x01):
-                    if (self.event_freefall is not None):
-                        schedule(self.event_freefall, self.FREEFALL)
-                # print("acc sensor interrupt, because 0x%2x, orient = 0x%2x" % (reg_int, reg_orent))
-            elif(MOTION.chip==2):  
-                flag = MOTION._readReg(0x2F, 1)[0]
-                if (flag & 0x04) == 0x04:
-                    print('wom int trigged.')
+        def irq(self, arg): 
+            flag = MOTION._readReg(0x2F, 1)[0]
+            if (flag & 0x04) == 0x04:
+                print('wom int trigged.')
 
         def wom_config(self):
-            if(MOTION.chip==1):
-                pass
-            elif(MOTION.chip==2):
-                MOTION._writeReg(0x60, 0x01) # soft reset regist value.
-                time.sleep_ms(20)
-                MOTION._writeReg(0x08, 0x0) # disable all sensor
-                MOTION._writeReg(0x03, 0x1c) # accel range:4g ODR 128HZ
-                MOTION._writeReg(0x0B, 0xfF) # CAL_L WoM Threshold(1mg/LSB resolution)
-                MOTION._writeReg(0x0C, 0x8F) # CAL_H WoM (INT1 blank time 0x1f)
-                MOTION._writeReg(0x0A, 0x08)
-                while True:
-                    if (MOTION._readReg(0x2F, 1)[0] & 0X01) == 0X01:
-                        break
-                MOTION._writeReg(0x08, 0x01) # enable accel
+            MOTION._writeReg(0x60, 0x01) # soft reset regist value.
+            time.sleep_ms(20)
+            MOTION._writeReg(0x08, 0x0) # disable all sensor
+            MOTION._writeReg(0x03, 0x1c) # accel range:4g ODR 128HZ
+            MOTION._writeReg(0x0B, 0xfF) # CAL_L WoM Threshold(1mg/LSB resolution)
+            MOTION._writeReg(0x0C, 0x8F) # CAL_H WoM (INT1 blank time 0x1f)
+            MOTION._writeReg(0x0A, 0x08)
+            while True:
+                if (MOTION._readReg(0x2F, 1)[0] & 0X01) == 0X01:
+                    break
+            MOTION._writeReg(0x08, 0x01) # enable accel
 
         def set_resolution(self, resolution):# set data output rate
-            if(MOTION.chip==1):
-                format = MOTION._readReg(0x0f, 1)
-                format = format[0] & ~0xC
-                format |= (resolution << 2)
-                MOTION._writeReg(0x0f, format)
-            elif(MOTION.chip==2):
-                self.odr = resolution
-                format = MOTION._readReg(0x03, 1)
-                format = format[0] & 0xf0
-                format |= (resolution & 0x0f)
-                MOTION._writeReg(0x03, format)
+            self.odr = resolution
+            format = MOTION._readReg(0x03, 1)
+            format = format[0] & 0xf0
+            format |= (resolution & 0x0f)
+            MOTION._writeReg(0x03, format)
                 
         def set_range(self, range):
-            if(MOTION.chip==1):
-                self.range = range
-                format = MOTION._readReg(0x0f, 1)
-                format = format[0] & ~0x3
-                format |= range
-                MOTION._writeReg(0x0f, format)
-            elif(MOTION.chip==2):
-                if(range==3):
-                    range = 64 #0x40
-                else:
-                    range = range << 4
-                self.FS = 2*(2**(range >> 4))
-                format = MOTION._readReg(0x03, 1)
-                format = format[0] & 0x8F
-                format |= range
-                MOTION._writeReg(0x03, format)
+            if(range==3):
+                range = 64 #0x40
+            else:
+                range = range << 4
+            self.FS = 2*(2**(range >> 4))
+            format = MOTION._readReg(0x03, 1)
+            format = format[0] & 0x8F
+            format |= range
+            MOTION._writeReg(0x03, format)
 
         def set_offset(self, x=None, y=None, z=None):
-            if(MOTION.chip==1):
-                for i in (x, y, z):
-                    if i is not None:
-                        if i < -1 or i > 1:
-                            raise ValueError("out of range,only offset 1 gravity")
-                if x is not None:
-                    MOTION._writeReg(0x39, int(round(x/0.0039)))
-                elif y is not None:
-                    MOTION._writeReg(0x38, int(round(y/0.0039)))
-                elif z is not None:
-                    MOTION._writeReg(0x3A, int(round(z/0.0039)))
-            elif(MOTION.chip==2):
-                for i in (x, y, z):
-                    if i is not None:
-                        if i < -16 or i > 16:
-                            raise ValueError("超出调整范围!!!")
-                if x is not None:
-                    self.x_offset = x
-                    self.set_nvs_offset("x", x)
-                if y is not None:
-                    self.y_offset = y
-                    self.set_nvs_offset("y", y)
-                if z is not None:
-                    self.z_offset = z
-                    self.set_nvs_offset("z", z)
+            for i in (x, y, z):
+                if i is not None:
+                    if i < -16 or i > 16:
+                        raise ValueError("超出调整范围!!!")
+            if x is not None:
+                self.x_offset = x
+                self.set_nvs_offset("x", x)
+            if y is not None:
+                self.y_offset = y
+                self.set_nvs_offset("y", y)
+            if z is not None:
+                self.z_offset = z
+                self.set_nvs_offset("z", z)
                 
         def get_x(self):
-            if(MOTION.chip==1):
-                retry = 0
-                if (retry < 5):
-                    try:
-                        buf = MOTION._readReg(0x02, 2)
-                        x = ustruct.unpack('h', buf)[0]
-                        return x / 4 / 4096 * 2**self.range
-                    except:
-                        retry = retry + 1
-                else:
-                    raise Exception("i2c read/write error!")
-            elif(MOTION.chip==2):
-                buf = MOTION._readReg(0x35, 2)
-                x = ustruct.unpack('<h', buf)[0]
-                return (x * self.FS) / 32768 + self.x_offset
+            buf = MOTION._readReg(0x35, 2)
+            x = ustruct.unpack('<h', buf)[0]
+            return (x * self.FS) / 32768 + self.x_offset
 
         def get_y(self):
-            if(MOTION.chip==1):
-                retry = 0
-                if (retry < 5):
-                    try:
-                        buf = MOTION._readReg(0x04, 2)
-                        y = ustruct.unpack('h', buf)[0]
-                        return y / 4 / 4096 * 2**self.range
-                    except:
-                        retry = retry + 1
-                else:
-                    raise Exception("i2c read/write error!")
-            elif(MOTION.chip==2):
-                buf = MOTION._readReg(0x37, 2)
-                y = ustruct.unpack('<h', buf)[0]
-                return (y * self.FS) / 32768  + self.y_offset
+            buf = MOTION._readReg(0x37, 2)
+            y = ustruct.unpack('<h', buf)[0]
+            return (y * self.FS) / 32768  + self.y_offset
 
         def get_z(self):
-            if(MOTION.chip==1):
-                retry = 0
-                if (retry < 5):
-                    try:
-                        buf = MOTION._readReg(0x06, 2)
-                        z = ustruct.unpack('h', buf)[0]
-                        return z / 4 / 4096 * 2**self.range
-                    except:
-                        retry = retry + 1
-                else:
-                    raise Exception("i2c read/write error!")
-            elif(MOTION.chip==2):
-                buf = MOTION._readReg(0x39, 2)
-                z = ustruct.unpack('<h', buf)[0]
-                return (z * self.FS) / 32768 + self.z_offset
-                # return -(z * self.FS) / 32768
+            buf = MOTION._readReg(0x39, 2)
+            z = ustruct.unpack('<h', buf)[0]
+            return (z * self.FS) / 32768 + self.z_offset
+            # return -(z * self.FS) / 32768
      
         def roll_pitch_angle(self):
             x, y, z = self.get_x(), self.get_y(), -self.get_z()
@@ -537,93 +374,69 @@ class MOTION(object):
         RANGE_2048_DPS = const(0x70)
 
         def __init__(self):
-            if(MOTION.chip==1):
-                pass
-            elif(MOTION.chip==2):
-                # 设置偏移值
-                self.x_offset = 0
-                self.y_offset = 0
-                self.z_offset = 0
-                self.get_nvs_offset()
-                self.set_range(MOTION.Gyroscope.RANGE_256_DPS)
+            # 设置偏移值
+            self.x_offset = 0
+            self.y_offset = 0
+            self.z_offset = 0
+            self.get_nvs_offset()
+            self.set_range(MOTION.Gyroscope.RANGE_256_DPS)
 
         def set_range(self, range):
-            if(MOTION.chip==1):
-                pass
-            elif(MOTION.chip==2):
-                self.FS = 16*(2**(range >> 4))        
-                format = MOTION._readReg(0x04, 1)
-                format = format[0] & 0x8F
-                format |= range
-                MOTION._writeReg(0x04, format)
+            self.FS = 16*(2**(range >> 4))        
+            format = MOTION._readReg(0x04, 1)
+            format = format[0] & 0x8F
+            format |= range
+            MOTION._writeReg(0x04, format)
 
         def set_ODR(self, odr):  # set data output rate
-            if(MOTION.chip==1):
-                pass
-            elif(MOTION.chip==2):
-                self.odr = odr
-                format = MOTION._readReg(0x04, 1)
-                format = format[0] & 0xF0
-                format |= odr
-                MOTION._writeReg(0x04, format)
+            self.odr = odr
+            format = MOTION._readReg(0x04, 1)
+            format = format[0] & 0xF0
+            format |= odr
+            MOTION._writeReg(0x04, format)
 
         def get_x(self):
-            if(MOTION.chip==1):
-                pass
-            elif(MOTION.chip==2):
-                buf = MOTION._readReg(0x3b, 2)
-                x = ustruct.unpack('<h', buf)[0]
-                return (x * self.FS) / 32768 + self.x_offset
+            buf = MOTION._readReg(0x3b, 2)
+            x = ustruct.unpack('<h', buf)[0]
+            return (x * self.FS) / 32768 + self.x_offset
 
         def get_y(self):
-            if(MOTION.chip==1):
-                pass
-            elif(MOTION.chip==2):
-                buf = MOTION._readReg(0x3d, 2)
-                y = ustruct.unpack('<h', buf)[0]
-                return (y * self.FS) / 32768 + self.y_offset
+            buf = MOTION._readReg(0x3d, 2)
+            y = ustruct.unpack('<h', buf)[0]
+            return (y * self.FS) / 32768 + self.y_offset
 
         def get_z(self):
-            if(MOTION.chip==1):
-                pass
-            elif(MOTION.chip==2):
-                buf = MOTION._readReg(0x3f, 2)
-                z = ustruct.unpack('<h', buf)[0]
-                return (z * self.FS) / 32768 + self.z_offset
+            buf = MOTION._readReg(0x3f, 2)
+            z = ustruct.unpack('<h', buf)[0]
+            return (z * self.FS) / 32768 + self.z_offset
         
         def set_offset(self, x=None, y=None, z=None):
-            if(MOTION.chip==1):
-                pass
-            elif(MOTION.chip==2):
-                for i in (x, y, z):
-                    if i is not None:
-                        if i < -4096 or i > 4096:
-                            raise ValueError("超出调整范围!!!")
-                if x is not None:
-                    self.x_offset = x
-                    self.set_nvs_offset("x", x)
-                if y is not None:
-                    self.y_offset = y
-                    self.set_nvs_offset("y", y)
-                if z is not None:
-                    self.z_offset = z
-                    self.set_nvs_offset("z", z)
+            for i in (x, y, z):
+                if i is not None:
+                    if i < -4096 or i > 4096:
+                        raise ValueError("超出调整范围!!!")
+            if x is not None:
+                self.x_offset = x
+                self.set_nvs_offset("x", x)
+            if y is not None:
+                self.y_offset = y
+                self.set_nvs_offset("y", y)
+            if z is not None:
+                self.z_offset = z
+                self.set_nvs_offset("z", z)
 
         def get_nvs_offset(self):
-            if(MOTION.chip==1):
-                pass
-            elif(MOTION.chip==2):
-                try:
-                    tmp = NVS("offset_g")
-                    self.x_offset = round(tmp.get_i32("x")/1e5, 5)
-                    self.y_offset = round(tmp.get_i32("y")/1e5, 5)
-                    self.z_offset = round(tmp.get_i32("z")/1e5, 5)
-                except OSError as e:
-                    # print('Gyroscope get_nvs_offset:',e)
-                    self.set_offset(0,0,0)
-                    # self.x_offset = 0
-                    # self.y_offset = 0
-                    # self.z_offset = 0
+            try:
+                tmp = NVS("offset_g")
+                self.x_offset = round(tmp.get_i32("x")/1e5, 5)
+                self.y_offset = round(tmp.get_i32("y")/1e5, 5)
+                self.z_offset = round(tmp.get_i32("z")/1e5, 5)
+            except OSError as e:
+                # print('Gyroscope get_nvs_offset:',e)
+                self.set_offset(0,0,0)
+                # self.x_offset = 0
+                # self.y_offset = 0
+                # self.z_offset = 0
 
         def set_nvs_offset(self, key, value):
             try:
@@ -632,8 +445,7 @@ class MOTION(object):
                 nvs.commit()
             except OSError as e:
                 print('Gyroscope set_nvs_offset error:',e)
-
-    
+   
 motion = MOTION()
 accelerometer = motion.Accelerometer()
 gyroscope = motion.Gyroscope()
@@ -765,19 +577,7 @@ class Magnetic(object):
                     _raw_y = 0.0
                     _raw_z = 0.0
 
-                    # self.i2c.writeto(self.addr, b'\x1B\x08', True)  #set
-                    # self.i2c.writeto(self.addr, b'\x1B\x01', True)
-                    
-                    # while True:
-                    #     buf = self._readReg(0x18, 1)
-                    #     status = buf[0]
-                    #     if(status & 0x40):
-                    #         break
-
-                    # _buf = self._readReg(0x00, 9)
-
                     self.i2c.writeto(self.addr, b'\x1B\x08', True)  #set
-                    # self.i2c.writeto(self.addr, b'\x1B\x80', True)
                     self.i2c.writeto(self.addr, b'\x1B\x01', True)
                     
                     while True:
@@ -996,115 +796,11 @@ class Magnetic(object):
             except:
                 retry = retry + 1
         else:
-            raise Exception("i2c read/write error!") 
+            raise Exception("i2c read/write error!")  
 
 # Magnetic
 if 48 in i2c.scan():
     magnetic = Magnetic()
-
-class BME280(object):
-    def __init__(self):
-        self.addr = 119
-        # The “ctrl_hum” register sets the humidity data acquisition options of the device
-        # 0x01 = [2:0]oversampling ×1
-        i2c.writeto(self.addr, b'\xF2\x01')
-        # The “ctrl_meas” register sets the pressure and temperature data acquisition options of the device.
-        # The register needs to be written after changing “ctrl_hum” for the changes to become effective.
-        # 0x27 = [7:5]Pressure oversampling ×1 | [4:2]Temperature oversampling ×4 | [1:0]Normal mode
-        i2c.writeto(self.addr, b'\xF4\x27')
-        # The “config” register sets the rate, filter and interface options of the device. Writes to the “config”
-        # register in normal mode may be ignored. In sleep mode writes are not ignored.
-        i2c.writeto(self.addr, b'\xF5\x00')
-
-        i2c.writeto(self.addr, b'\x88', False)
-        bytes = i2c.readfrom(self.addr, 6)
-        self.dig_T = ustruct.unpack('Hhh', bytes)
-
-        i2c.writeto(self.addr, b'\x8E', False)
-        bytes = i2c.readfrom(self.addr, 18)
-        self.dig_P = ustruct.unpack('Hhhhhhhhh', bytes)
-
-        i2c.writeto(self.addr, b'\xA1', False)
-        self.dig_H = array.array('h', [0, 0, 0, 0, 0, 0])
-        self.dig_H[0] = i2c.readfrom(self.addr, 1)[0]
-        i2c.writeto(self.addr, b'\xE1', False)
-        buff = i2c.readfrom(self.addr, 7)
-        self.dig_H[1] = ustruct.unpack('h', buff[0:2])[0]
-        self.dig_H[2] = buff[2]
-        self.dig_H[3] = (buff[3] << 4) | (buff[4] & 0x0F)
-        self.dig_H[4] = (buff[5] << 4) | (buff[4] >> 4 & 0x0F)
-        self.dig_H[5] = buff[6]
-
-    def temperature(self):
-        retry = 0
-        if (retry < 5):
-            try:
-                i2c.writeto(self.addr, b'\xFA', False)
-                buff = i2c.readfrom(self.addr, 3)
-                T = (((buff[0] << 8) | buff[1]) << 4) | (buff[2] >> 4 & 0x0F)
-                c1 = (T / 16384.0 - self.dig_T[0] / 1024.0) * self.dig_T[1]
-                c2 = ((T / 131072.0 - self.dig_T[0] / 8192.0) * (T / 131072.0 - self.dig_T[0] / 8192.0)) * self.dig_T[2]
-                self.tFine = c1 + c2
-                return self.tFine / 5120.0
-            except:
-                retry = retry + 1
-        else:
-            raise Exception("i2c read/write error!")
-
-    def pressure(self):
-        retry = 0
-        if (retry < 5):
-            try:
-                self.temperature()
-                i2c.writeto(self.addr, b'\xF7', False)
-                buff = i2c.readfrom(self.addr, 3)
-                P = (((buff[0] << 8) | buff[1]) << 4) | (buff[2] >> 4 & 0x0F)
-                c1 = self.tFine / 2.0 - 64000.0
-                c2 = c1 * c1 * self.dig_P[5] / 32768.0
-                c2 = c2 + c1 * self.dig_P[4] * 2.0
-                c2 = c2 / 4.0 + self.dig_P[3] * 65536.0
-                c1 = (self.dig_P[2] * c1 * c1 / 524288.0 + self.dig_P[1] * c1) / 524288.0
-                c1 = (1.0 + c1 / 32768.0) * self.dig_P[0]
-                if c1 == 0.0:
-                    return 0
-                p = 1048576.0 - P
-                p = (p - c2 / 4096.0) * 6250.0 / c1
-                c1 = self.dig_P[8] * p * p / 2147483648.0
-                c2 = p * self.dig_P[7] / 32768.0
-                p = p + (c1 + c2 + self.dig_P[6]) / 16.0
-                return p
-            except:
-                retry = retry + 1
-        else:
-            raise Exception("i2c read/write error!")
-
-    def humidity(self):
-        retry = 0
-        if (retry < 5):
-            try:
-                self.temperature()
-                i2c.writeto(self.addr, b'\xFD', False)
-                buff = i2c.readfrom(self.addr, 2)
-                H = buff[0] << 8 | buff[1]
-                h = self.tFine - 76800.0
-                h = (H - (self.dig_H[3] * 64.0 + self.dig_H[4] / 16384.0 * h)) * \
-                    (self.dig_H[1] / 65536.0 * (1.0 + self.dig_H[5] / 67108864.0 * h * \
-                    (1.0 + self.dig_H[2] / 67108864.0 * h)))
-                h = h * (1.0 - self.dig_H[0] * h / 524288.0)
-                if h > 100.0:
-                    return 100.0
-                elif h < 0.0:
-                    return 0.0
-                else:
-                    return h
-            except:
-                retry = retry + 1
-        else:
-            raise Exception("i2c read/write error!")
-
-# bm280
-# if 119 in i2c.scan():
-#     bme280 = BME280()
 
 class PinMode(object):
     IN = 1
@@ -1113,10 +809,8 @@ class PinMode(object):
     ANALOG = 4
     OUT_DRAIN = 5
 
-
 pins_remap_esp32 = (33, 32, 35, 34, 39, 0, 16, 17, 26, 25, 36, 2, -1, 18, 19, 21, 5, -1, -1, 22, 23, -1, -1, 27, 14, 12,
                     13, 15, 4)
-
 
 class MPythonPin():
     def __init__(self, pin, mode=PinMode.IN, pull=None):
@@ -1180,7 +874,6 @@ class MPythonPin():
         self.pwm.freq(freq)
         self.pwm.duty(duty)
 
-
 '''
 # to be test
 class LightSensor(ADC):
@@ -1196,7 +889,6 @@ class LightSensor(ADC):
         return super().read() * 1.1 / 4095 / 6.81 / 0.011
     
 '''
-
 
 class wifi:
     def __init__(self):
@@ -1248,7 +940,6 @@ class wifi:
     def disable_APWiFi(self):
         self.ap.active(False)
         print('disable AP WiFi...')
-
 
 # 3 rgb leds
 rgb = NeoPixel(Pin(17, Pin.OUT), 3, 3, 1, brightness=0.3)
@@ -1319,8 +1010,6 @@ class Button:
     def irq(self, *args, **kws):
         self.__pin.irq(*args, **kws)
 
-
-
 class Touch:
 
     def __init__(self, pin):
@@ -1369,12 +1058,8 @@ class Touch:
     def read(self):
         return self.__touch_pad.read()
 
-
-# button_a = Pin(0, Pin.IN, Pin.PULL_UP)
-# button_b = Pin(2, Pin.IN, Pin.PULL_UP)
-button_a = Button(0)
-button_b = Button(2)
-
+button_a = Button(34)
+button_b = Button(38)
 
 # touchpad
 touchpad_p = touchPad_P = Touch(Pin(27))
@@ -1384,8 +1069,31 @@ touchpad_h = touchPad_H = Touch(Pin(13))
 touchpad_o = touchPad_O = Touch(Pin(15))
 touchpad_n = touchPad_N = Touch(Pin(4))
 
-from gui import *
+# shield 
+class Ledong_shield(object):
+    def __init__(self):
+        self.speed = 0 
+        self.i2c = i2c
+        self.i2c_addr = 17
 
+    def set_motor(self, motor_num, speed):
+        self.speed = speed
+        if self.speed > 100:
+            self.speed = 100
+        if self.speed < -100:
+            self.speed = -100
+        self.i2c.writeto(self.i2c_addr, bytearray([motor_num, self.speed]), True)
+
+    def power_off(self):
+        self.i2c.writeto(self.i2c_addr, b'\x06\x01', True)
+
+    def get_battery_level(self):
+        self.i2c.writeto(self.i2c_addr, b'\x05', True)
+        return self.i2c.readfrom(self.i2c_addr, 1)[0]
+
+ledong_shield = Ledong_shield()
+
+from gui import *
 
 def numberMap(inputNum, bMin, bMax, cMin, cMax):
     outputNum = 0
