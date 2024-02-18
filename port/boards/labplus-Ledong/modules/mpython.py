@@ -1010,6 +1010,13 @@ class Button:
     def irq(self, *args, **kws):
         self.__pin.irq(*args, **kws)
 
+    def status(self):
+        val = self.__pin.value()
+        if(val==0):
+            return 1
+        elif(val==1):
+            return 0
+
 class Touch:
 
     def __init__(self, pin):
