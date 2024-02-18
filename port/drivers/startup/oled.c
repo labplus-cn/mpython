@@ -91,7 +91,7 @@ void oled_drawImg(const uint8_t * img)
 }
 
 // const uint8_t * ani_startup[1] = {
-//     img_00030
+//     img_mpython
 // };
 
 void oled_drawAnimation(const uint8_t **pImgs, int len, int frameRate)
