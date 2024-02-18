@@ -1,5 +1,5 @@
 '''
-20231212 educore
+20240218 educore
 '''
 import gc
 from mpython import MPythonPin,PinMode,Pin,sound,light,OLED,Image,i2c,I2C,wifi,button_a,button_b,sleep_ms,sleep,numberMap
@@ -321,7 +321,7 @@ class MqttClient():
         self.topic_msg_dict = {}
         self.topic_callback = {}
         self.tim_count = 0
-        self.connected = False
+        self._connected = False
         self.lock = False
 
     def connect(self, server, port, client_id, user, psd):
@@ -334,7 +334,7 @@ class MqttClient():
             self.user = user
             self.passsword = psd
             print('Connected to MQTT Broker "{}"'.format(self.server))
-            self.connected = True
+            self._connected = True
             self.client.set_callback(self.on_message)
             time.sleep(0.5)
             self.tim = Timer(15)
@@ -344,7 +344,7 @@ class MqttClient():
             print('Connected to MQTT Broker error:{}'.format(e))
 
     def connected(self):
-        return self.connected
+        return self._connected
 
     def publish(self, topic, content):
         try:
@@ -424,10 +424,10 @@ class MqttClient():
             self.tim_count = 0
             try:
                 self.client.ping() # 心跳消息
-                self.connected = True
+                self._connected = True
             except Exception as e:
                 print('MQTT keepalive ping error:'+str(e))
-                self.connected = False
+                self._connected = False
    
 
 '''
@@ -645,4 +645,59 @@ class Webcamera():
         except Exception as e:
             self.fcr.blinks = 0
             self.fcr.mouth = 0
+
+
+class EduButton:
+    def __init__(self,_type='a'): 
+        self.button_a = button_a
+        self.button_b = button_b
+        self.type = _type
+        self.func_event_change = None
+
+    def func(self,_):
+        self.func_event_change()
+
+    @property
+    def event_pressed(self):
+        return self.func_event_change
+
+    @event_pressed.setter
+    def event_pressed(self, new_event_change):
+        if new_event_change != self.func_event_change:
+            self.func_event_change = new_event_change
+            if(self.type=='a'):
+                self.button_a.event_pressed = self.func
+            elif(self.type=='b'):
+                self.button_b.event_pressed = self.func
+
+    def status(self):
+        if(self.type=='a'):
+            return self.button_a.status()
+        elif(self.type=='b'):
+            return self.button_b.status()
+
+            
+import music
+
+class speaker():
+    def __init__(self,pin=None): 
+        self.pin = pin
+        self.type = 1
+        if(pin==None):
+            self.type = 1
+        else:
+            self.type = 2
+
+    def tone(self,frep,durl):
+        if(self.type == 1):
+            music.pitch(int(frep), int(durl))
+        elif(self.type == 2):
+            music.pitch(int(frep), int(durl), pin=pins_esp32[self.pin])
+
+    def stop(self):
+        if(self.type == 1):
+            music.stop()
+        elif(self.type == 2):
+            music.stop(pins_esp32[self.pin])
+    
 

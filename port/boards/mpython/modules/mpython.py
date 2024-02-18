@@ -1315,6 +1315,13 @@ class Button:
 
     def value(self):
         return self.__pin.value()
+    
+    def status(self):
+        val = self.__pin.value()
+        if(val==0):
+            return 1
+        elif(val==1):
+            return 0
 
     def irq(self, *args, **kws):
         self.__pin.irq(*args, **kws)

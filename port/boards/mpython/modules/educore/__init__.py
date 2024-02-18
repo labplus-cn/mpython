@@ -1,4 +1,5 @@
 print('educore init')
+
 from ._educore import *
 from ._camera1956 import Camera1956
 from ._smartcamera import EduSmartCamera
@@ -33,4 +34,9 @@ accelerometer = edu.accelerometer
 # 网页版人工智能摄像头
 webcamera = Webcamera()
 
-print('done')
+button_a = EduButton('a')
+button_b = EduButton('b')
+
+
+
+# print('done')
