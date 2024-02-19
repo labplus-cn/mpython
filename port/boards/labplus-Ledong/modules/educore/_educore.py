@@ -688,11 +688,11 @@ class speaker():
         else:
             self.type = 2
 
-    def tone(self,frep,durl):
+    def tone(self,freq=1000,durl=0):
         if(self.type == 1):
-            music.pitch(int(frep), int(durl))
+            music.pitch(int(freq), int(durl))
         elif(self.type == 2):
-            music.pitch(int(frep), int(durl), pin=pins_esp32[self.pin])
+            music.pitch(int(freq), int(durl), pin=pins_esp32[self.pin])
 
     def stop(self):
         if(self.type == 1):
