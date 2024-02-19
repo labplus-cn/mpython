@@ -34,9 +34,11 @@ accelerometer = edu.accelerometer
 # 网页版人工智能摄像头
 webcamera = Webcamera()
 
+# 按键A/B
 button_a = EduButton('a')
 button_b = EduButton('b')
 
-
+# 电机
+parrot = PARROT()
 
 # print('done')
