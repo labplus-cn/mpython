@@ -41,6 +41,7 @@ class pin():
         self._event_rising = None
         self._event_falling = None
         self._pin = MPythonPin(self.pin_num, PinMode.IN)
+        self._iqr_func = None
 
     def read_digital(self):
         if(pins_state[self.pin_num]!=PinMode.IN):
@@ -89,9 +90,9 @@ class pin():
     @event_change.setter
     def event_change(self, new_event_change):
         if new_event_change != self._event_change:
-            # print("Value changed from {} to {}".format(self._event_change,new_value))
             self._event_change = new_event_change
-            self.irq(handler=self._event_change, trigger=Pin.IRQ_RISING|Pin.IRQ_FALLING)
+            self._iqr_func = self._event_change
+            self.irq(handler=self.func, trigger=Pin.IRQ_RISING|Pin.IRQ_FALLING)
 
     @property
     def event_rising(self):
@@ -101,7 +102,8 @@ class pin():
     def event_rising(self, new_event_rising):
         if new_event_rising != self._event_rising:
             self._event_rising = new_event_rising
-            self.irq(handler=self._event_rising, trigger=Pin.IRQ_RISING)
+            self._iqr_func = self._event_rising
+            self.irq(handler=self.func, trigger=Pin.IRQ_RISING)
 
     @property
     def event_falling(self):
@@ -111,7 +113,11 @@ class pin():
     def event_falling(self, new_event_falling):
         if new_event_falling != self._event_falling:
             self._event_falling = new_event_falling
-            self.irq(handler=self._event_falling, trigger=Pin.IRQ_FALLING)
+            self._iqr_func = self._event_falling
+            self.irq(handler=self.func, trigger=Pin.IRQ_FALLING)
+    
+    def func(self,_):
+        self._iqr_func()
 
 '''
 声音值
@@ -324,7 +330,7 @@ class MqttClient():
         self._connected = False
         self.lock = False
 
-    def connect(self, server, port, client_id, user, psd):
+    def connect(self, server="iot.mpython.cn", port=1883, client_id="", user="", psd=""):
         try:
             self.client = MQTT(client_id, server, port, user, psd, 60)
             self.client.connect()
@@ -700,4 +706,3 @@ class speaker():
         elif(self.type == 2):
             music.stop(pins_esp32[self.pin])
     
-
