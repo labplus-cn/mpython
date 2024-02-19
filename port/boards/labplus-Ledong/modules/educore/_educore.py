@@ -2,7 +2,7 @@
 20240218 educore
 '''
 import gc
-from mpython import MPythonPin,PinMode,Pin,sound,light,OLED,Image,i2c,I2C,wifi,button_a,button_b,sleep_ms,sleep,numberMap
+from mpython import MPythonPin,PinMode,Pin,sound,light,OLED,Image,i2c,I2C,wifi,button_a,button_b,sleep_ms,sleep,numberMap,ledong_shield
 from mpython import accelerometer as _accelerometer
 from bluebit import Scan_Rfid
 from servo import Servo
@@ -225,8 +225,8 @@ class PARROT():
                 print('位置参数数量错误')
                 return
             else:
-                _parrot.set_speed(args_list[0], args_list[1])
-            # print(args_list)
+                # _parrot.set_speed(args_list[0], args_list[1])
+                ledong_shield.set_motor(args_list[0], args_list[1])
         else:
             '''
             外接电机
