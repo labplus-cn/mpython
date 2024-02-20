@@ -1,5 +1,5 @@
 '''
-20240218 educore
+educore
 '''
 import gc
 from mpython import MPythonPin,PinMode,Pin,sound,light,OLED,Image,i2c,I2C,wifi,button_a,button_b,sleep_ms,sleep,numberMap,ledong_shield
@@ -44,44 +44,44 @@ class pin():
         self._iqr_func = None
 
     def read_digital(self):
-        if(pins_state[self.pin_num]!=PinMode.IN):
-            pins_state[self.pin_num]=PinMode.IN
-            self._pin = MPythonPin(self.pin_num, PinMode.IN)
-            return self._pin.read_digital()
-        else:
-            return self._pin.read_digital()
+        # if(pins_state[self.pin_num]!=PinMode.IN):
+        pins_state[self.pin_num]=PinMode.IN
+        self._pin = MPythonPin(self.pin_num, PinMode.IN)
+        return self._pin.read_digital()
+        # else:
+        #     return self._pin.read_digital()
 
     def write_digital(self, value):
-        if(pins_state[self.pin_num]!=PinMode.OUT):
-            pins_state[self.pin_num]=PinMode.OUT
-            self._pin = MPythonPin(self.pin_num, PinMode.OUT, Pin.PULL_UP)
-            return self._pin.write_digital(value)
-        else:
-            return self._pin.write_digital(value)
+        # if(pins_state[self.pin_num]!=PinMode.OUT):
+        pins_state[self.pin_num]=PinMode.OUT
+        self._pin = MPythonPin(self.pin_num, PinMode.OUT, Pin.PULL_UP)
+        return self._pin.write_digital(value)
+        # else:
+        #     return self._pin.write_digital(value)
 
     def read_analog(self):
-        if(pins_state[self.pin_num]!=PinMode.ANALOG):
-            pins_state[self.pin_num]=PinMode.ANALOG
-            self._pin = MPythonPin(self.pin_num, PinMode.ANALOG)
-            return self._pin.read_analog()
-        else:
-            return self._pin.read_analog()
+        # if(pins_state[self.pin_num]!=PinMode.ANALOG):
+        pins_state[self.pin_num]=PinMode.ANALOG
+        self._pin = MPythonPin(self.pin_num, PinMode.ANALOG)
+        return self._pin.read_analog()
+        # else:
+        #     return self._pin.read_analog()
         
     def write_analog(self, value=0, freq=5000):
-        if(pins_state[self.pin_num]!=PinMode.PWM):
-            pins_state[self.pin_num]=PinMode.PWM
-            self._pin = MPythonPin(self.pin_num, PinMode.PWM)
-            return self._pin.write_analog(duty=value, freq=freq)
-        else:
-            return self._pin.write_analog(duty=value, freq=freq)
+        # if(pins_state[self.pin_num]!=PinMode.PWM):
+        pins_state[self.pin_num]=PinMode.PWM
+        self._pin = MPythonPin(self.pin_num, PinMode.PWM)
+        return self._pin.write_analog(duty=value, freq=freq)
+        # else:
+        #     return self._pin.write_analog(duty=value, freq=freq)
 
     def irq(self, handler=None, trigger=Pin.IRQ_RISING):
-        if(pins_state[self.pin_num]!=PinMode.IN):
-            pins_state[self.pin_num]=PinMode.IN
-            self._pin = MPythonPin(self.pin_num, PinMode.IN)
-            self._pin.irq(trigger=trigger, handler=handler)
-        else:
-            self._pin.irq(trigger=trigger, handler=handler)
+        # if(pins_state[self.pin_num]!=PinMode.IN):
+        pins_state[self.pin_num]=PinMode.IN
+        self._pin = MPythonPin(self.pin_num, PinMode.IN)
+        self._pin.irq(trigger=trigger, handler=handler)
+        # else:
+        #     self._pin.irq(trigger=trigger, handler=handler)
     
     @property
     def event_change(self):
@@ -492,12 +492,14 @@ class Ultrasonic(HCSR04):
 '''
 DHT11
 '''
-class dht11():
+class _dht11():
     def __init__(self, pin):
         self._pin = pins_esp32[pin]
         self.dht11 = _dht.DHT11(Pin(self._pin))
         self.tim = Timer(16)
         self.tim.init(period=1000, mode=Timer.PERIODIC, callback=self.timer_tick)
+        time.sleep(1.5)
+        self.dht11.measure()
 
     def timer_tick(self,_):
         try: 
@@ -507,6 +509,17 @@ class dht11():
 
     def read(self):
         return self.dht11.temperature(),self.dht11.humidity()
+
+dht11_old_pin = None
+dht11_thing = None
+
+def dht11(pin):
+    global dht11_old_pin,dht11_thing
+    if dht11_old_pin != pin:
+        dht11_thing = _dht11(pin)
+        dht11_old_pin = pin
+    return dht11_thing
+
 
 '''
 DS18b20
