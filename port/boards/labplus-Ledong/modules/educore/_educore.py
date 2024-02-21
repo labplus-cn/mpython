@@ -1,8 +1,9 @@
 '''
-educore
+educore ledong
 '''
 import gc
-from mpython import MPythonPin,PinMode,Pin,sound,light,OLED,Image,i2c,I2C,wifi,button_a,button_b,sleep_ms,sleep,numberMap,ledong_shield
+from mpython import MPythonPin,PinMode,Pin,sound,OLED,Image,i2c,I2C,wifi,button_a,button_b,sleep_ms,sleep,numberMap,ledong_shield
+from mpython import light as _light
 from mpython import accelerometer as _accelerometer
 from bluebit import Scan_Rfid
 from servo import Servo
@@ -718,4 +719,26 @@ class speaker():
             music.stop()
         elif(self.type == 2):
             music.stop(pins_esp32[self.pin])
+
+
+class light():
+    def __init__(self,pin=None): 
+        self.pin_num = pin
+        self.type = 1
+        if(self.pin_num==None):
+            self.type = 1
+        else:
+            self.type = 2
+            self.pin = MPythonPin(self.pin_num, PinMode.ANALOG)
+
+    def read(self):
+        if(self.type == 1):
+            return  _light.read()
+        elif(self.type == 2):
+            return self.pin.read_analog()
+            
+    @staticmethod
+    def read():
+        return _light.read()
+
     
