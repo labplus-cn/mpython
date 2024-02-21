@@ -2,8 +2,9 @@
 educore
 '''
 import gc
-from mpython import MPythonPin,PinMode,Pin,sound,light,OLED,Image,i2c,I2C,wifi,button_a,button_b,sleep_ms,sleep,numberMap
+from mpython import MPythonPin,PinMode,Pin,sound,OLED,Image,i2c,I2C,wifi,button_a,button_b,sleep_ms,sleep,numberMap
 from mpython import accelerometer as _accelerometer
+from mpython import light as _light
 from bluebit import Scan_Rfid
 from servo import Servo
 from umqtt.simple import MQTTClient as MQTT
@@ -492,12 +493,14 @@ class Ultrasonic(HCSR04):
 '''
 DHT11
 '''
-class dht11():
+class _dht11():
     def __init__(self, pin):
         self._pin = pins_esp32[pin]
         self.dht11 = _dht.DHT11(Pin(self._pin))
         self.tim = Timer(16)
         self.tim.init(period=1000, mode=Timer.PERIODIC, callback=self.timer_tick)
+        time.sleep(1.5)
+        self.dht11.measure()
 
     def timer_tick(self,_):
         try: 
@@ -507,6 +510,17 @@ class dht11():
 
     def read(self):
         return self.dht11.temperature(),self.dht11.humidity()
+
+dht11_old_pin = None
+dht11_thing = None
+
+def dht11(pin):
+    global dht11_old_pin,dht11_thing
+    if dht11_old_pin != pin:
+        dht11_thing = _dht11(pin)
+        dht11_old_pin = pin
+    return dht11_thing
+
 
 '''
 DS18b20
@@ -705,4 +719,24 @@ class speaker():
             music.stop()
         elif(self.type == 2):
             music.stop(pins_esp32[self.pin])
-    
+
+
+class light():
+    def __init__(self,pin=None): 
+        self.pin_num = pin
+        self.type = 1
+        if(self.pin_num==None):
+            self.type = 1
+        else:
+            self.type = 2
+            self.pin = MPythonPin(self.pin_num, PinMode.ANALOG)
+
+    def read(self):
+        if(self.type == 1):
+            return  _light.read()
+        elif(self.type == 2):
+            return self.pin.read_analog()
+            
+    @staticmethod
+    def read():
+        return _light.read()
