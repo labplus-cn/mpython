@@ -659,10 +659,10 @@ class Webcamera():
         self.id = str(id)
         self.topic = str(id)
         self._MQTTClient = MqttClient()
-        self._MQTTClient.connect('8.135.108.214', 1883, self.id, self.id, self.id)
+        self._MQTTClient.connect(server='8.135.108.214',  port=1883,  client_id=self.id,  user=self.id, psd=self.id)
         self._MQTTClient.Received(self.topic, self.callbackFunction)
 
-    def callbackFunction():
+    def callbackFunction(self):
         try:
             msg = self._MQTTClient.receive(topic=self.topic)
             # print(msg)
