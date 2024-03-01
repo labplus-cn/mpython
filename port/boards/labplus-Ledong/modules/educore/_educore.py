@@ -331,7 +331,18 @@ class MqttClient():
         self._connected = False
         self.lock = False
 
-    def connect(self, server="iot.mpython.cn", port=1883, client_id="", user="", psd=""):
+    def connect(self, **kwargs):
+        server = kwargs.get('server',"iot.mpython.cn" )
+        port = kwargs.get('port',1883 )
+        client_id = kwargs.get('client_id',"" )
+        user = kwargs.get('user',"" )
+        psd = kwargs.get('psd',None)
+        password = kwargs.get('password',None)
+        if(psd==None and password==None):
+            psd = ""
+        elif(password!=None):
+            psd = password
+
         try:
             self.client = MQTT(client_id, server, port, user, psd, 60)
             self.client.connect()
@@ -666,7 +677,9 @@ class Webcamera():
             self.fcr.blinks = 0
             self.fcr.mouth = 0
 
-
+'''
+按键
+'''
 class EduButton:
     def __init__(self,_type='a'): 
         self.button_a = button_a
@@ -696,7 +709,9 @@ class EduButton:
         elif(self.type=='b'):
             return self.button_b.status()
 
-            
+'''
+麦克风
+'''
 import music
 
 class speaker():
@@ -719,8 +734,10 @@ class speaker():
             music.stop()
         elif(self.type == 2):
             music.stop(pins_esp32[self.pin])
-
-
+            
+'''
+光线传感器
+'''
 class light():
     def __init__(self,pin=None): 
         self.pin_num = pin
