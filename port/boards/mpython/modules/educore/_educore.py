@@ -3,8 +3,9 @@ educore
 '''
 import gc
 from mpython import MPythonPin,PinMode,Pin,sound,OLED,Image,i2c,I2C,wifi,button_a,button_b,sleep_ms,sleep,numberMap
-from mpython import accelerometer as _accelerometer
 from mpython import light as _light
+from mpython import accelerometer as _accelerometer
+
 from bluebit import Scan_Rfid
 from servo import Servo
 from umqtt.simple import MQTTClient as MQTT
@@ -331,7 +332,17 @@ class MqttClient():
         self._connected = False
         self.lock = False
 
-    def connect(self, server="iot.mpython.cn", port=1883, client_id="", user="", psd=""):
+    def connect(self, **kwargs):
+        server = kwargs.get('server',"iot.mpython.cn" )
+        port = kwargs.get('port',1883 )
+        client_id = kwargs.get('client_id',"" )
+        user = kwargs.get('user',"" )
+        psd = kwargs.get('psd',None)
+        password = kwargs.get('password',None)
+        if(psd==None and password==None):
+            psd = ""
+        elif(password!=None):
+            psd = password
         try:
             self.client = MQTT(client_id, server, port, user, psd, 60)
             self.client.connect()
@@ -648,10 +659,10 @@ class Webcamera():
         self.id = str(id)
         self.topic = str(id)
         self._MQTTClient = MqttClient()
-        self._MQTTClient.connect('8.135.108.214', 1883, self.id, self.id, self.id)
+        self._MQTTClient.connect(server='8.135.108.214',  port=1883,  client_id=self.id,  user=self.id, psd=self.id)
         self._MQTTClient.Received(self.topic, self.callbackFunction)
 
-    def callbackFunction():
+    def callbackFunction(self):
         try:
             msg = self._MQTTClient.receive(topic=self.topic)
             # print(msg)
@@ -696,7 +707,9 @@ class EduButton:
         elif(self.type=='b'):
             return self.button_b.status()
 
-            
+'''
+麦克风
+'''          
 import music
 
 class speaker():
