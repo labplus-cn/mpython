@@ -64,7 +64,7 @@ class PM25():
         
     def read(self, sample_size=30):
         vals = []
-        print('测量中..')
+        print('PM2.5测量中..')
         while True:
             sleep(0.002)
             try:
