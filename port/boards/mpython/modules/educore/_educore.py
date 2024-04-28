@@ -8,7 +8,7 @@ from mpython import accelerometer as _accelerometer
 
 from bluebit import Scan_Rfid
 from servo import Servo
-from umqtt.simple import MQTTClient as MQTT
+from umqtt.robust import MQTTClient as MQTT
 import ubinascii
 import time
 from machine import Timer
