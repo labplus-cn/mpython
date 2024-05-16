@@ -1,11 +1,16 @@
 '''
-educore ledong
+educore
 '''
 import gc
-from mpython import MPythonPin,PinMode,Pin,sound,OLED,Image,i2c,I2C,wifi,button_a,button_b,sleep_ms,sleep,numberMap,ledong_shield
-from mpython import light as _light
+from mpython import MPythonPin,PinMode,Pin,OLED,Image,i2c,I2C,wifi,button_a,button_b,sleep_ms,sleep,numberMap,ledong_shield,Magnetic
 from mpython import accelerometer as _accelerometer
-from bluebit import Scan_Rfid
+from mpython import rgb as _rgb
+from mpython import light as _light
+from mpython import sound as _sound
+import network
+import neopixel
+import machine
+from bluebit import Scan_Rfid,Barometric
 from servo import Servo
 from umqtt.robust import MQTTClient as MQTT
 import ubinascii
@@ -13,7 +18,7 @@ import time
 from machine import Timer
 from hcsr04 import HCSR04
 import dht as _dht
-import parrot as _parrot
+# import parrot as _parrot
 from ds18x20 import DS18X20
 import onewire
 import math
@@ -61,12 +66,11 @@ class pin():
         #     return self._pin.write_digital(value)
 
     def read_analog(self):
-        # if(pins_state[self.pin_num]!=PinMode.ANALOG):
+        if self.pin_num not in [0, 1, 2, 3, 4, 10]:
+            return self.read_digital()
         pins_state[self.pin_num]=PinMode.ANALOG
         self._pin = MPythonPin(self.pin_num, PinMode.ANALOG)
         return self._pin.read_analog()
-        # else:
-        #     return self._pin.read_analog()
         
     def write_analog(self, value=0, freq=5000):
         # if(pins_state[self.pin_num]!=PinMode.PWM):
@@ -123,12 +127,51 @@ class pin():
 '''
 声音值
 '''
-# sound.read()
+class sound():
+    def __init__(self,pin=None): 
+        self.pin_num = pin
+        self.type = 1
+        if(self.pin_num==None):
+            self.type = 1
+        else:
+            self.type = 2
+            self.pin = MPythonPin(self.pin_num, PinMode.ANALOG)
+
+    def read(self):
+        if(self.type == 1):
+            return  _sound.read()
+        elif(self.type == 2):
+            return self.pin.read_analog()
+            
+    @staticmethod
+    def read():
+        return _sound.read()
+
 
 '''
-光线值
+光线传感器
 '''
-# light.read()
+class light():
+    def __init__(self,pin=None): 
+        self.pin_num = pin
+        self.type = 1
+        if(self.pin_num==None):
+            self.type = 1
+        else:
+            self.type = 2
+            self.pin = MPythonPin(self.pin_num, PinMode.ANALOG)
+
+    def read(self):
+        if(self.type == 1):
+            return  _light.read()
+        elif(self.type == 2):
+            return self.pin.read_analog()
+            
+    @staticmethod
+    def read():
+        return _light.read()
+
+
 
 '''
 加速度计
@@ -179,6 +222,9 @@ class OLED(OLED):
                 if(_str=='HAPPY'):
                     self.image_picture = Image()
                     self.blit(self.image_picture.load('face/4.pbm', 0), 32, 0)
+                elif(_str=='SAD'):
+                    self.image_picture = Image()
+                    self.blit(self.image_picture.load('face/5.pbm', 0), 32, 0)
             else:
                 # print("字符串中不包含换行符")
                 self.DispChar(str(_str), 0, 0, 1, True)
@@ -193,13 +239,11 @@ class OLED(OLED):
 '''
 电机控制
 '''
-class PARROT():
+class parrot():
     M1 = 1
     M2 = 2
-    def __init__(self):
-        self.mode = True
 
-    def set_speed(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """
         Args:
             *args: 不定数量的位置参数，用位置参数占位符。
@@ -210,50 +254,49 @@ class PARROT():
                     - speed: 
         """
         args_list = []
-        in0 = kwargs.get('in0', None)
-        in1 = kwargs.get('in1', None)
-        speed = kwargs.get('speed', None)
+        self.in0 = kwargs.get('in0', None)
+        self.in1 = kwargs.get('in1', None)
+        # speed = kwargs.get('speed', None)
 
-        if(in0==None):
+        if(self.in0==None):
             '''
             内置电机
             '''
+            self.type = 1
             self.mode = True
             for arg in args:
-                # print("Positional argument: {}".format(arg))
                 args_list.append(arg)
-            if(in0 is None and len(args_list)!=2):
+            if(self.in0 is None and len(args_list)!=1):
                 print('位置参数数量错误')
-                return
             else:
-                # _parrot.set_speed(args_list[0], args_list[1])
-                ledong_shield.set_motor(args_list[0], args_list[1])
+                self.args_list = args_list
         else:
             '''
             外接电机
             '''
+            self.type = 2
             self.mode = False
-            # for key, value in kwargs.items():
-            #     print("Keyword argument: {} = {}".format(key,value))
-            if(in0==None or in1==None or speed==None):
+ 
+            if(self.in0==None or self.in1==None):
                 print('关键字参数错误')
-                return
-            elif(speed>=0):
-                out0 = MPythonPin(0, PinMode.PWM)
-                out1 = MPythonPin(1, PinMode.PWM)
-                # speed = 100
+            self.out0 = MPythonPin(self.in0, PinMode.PWM)
+            self.out1 = MPythonPin(self.in1, PinMode.PWM)
+           
+    def speed(self,speed):
+        if(self.type==1):
+            ledong_shield.set_motor(self.args_list[0],int(speed))
+        elif(self.type==2):
+            if(speed>=0):
                 speed = int(numberMap(speed, 0, 100, 0, 1023))
-                out0.write_analog(speed)
+                self.out0.write_analog(speed)
                 sleep_ms(2)
-                out1.write_analog(0)
+                self.out1.write_analog(0)
                 sleep_ms(2)
             elif(speed<0):
-                out0 = MPythonPin(0, PinMode.PWM)
-                out1 = MPythonPin(1, PinMode.PWM)
                 speed = int(numberMap(math.fabs(speed), 0, 100, 0, 1023))
-                out1.write_analog(speed)
+                self.out1.write_analog(speed)
                 sleep_ms(2)
-                out0.write_analog(0)
+                self.out0.write_analog(0)
                 sleep_ms(2)
 
 '''
@@ -264,18 +307,23 @@ class servo(Servo):
         super().__init__(pin)
     
     def angle(self, value):
+        value = int(value)
+        if(value<0):
+            value = 0
+        if(value>180):
+            value = 180
         self.write_angle(value)
     
 
 '''继承Scan_Rfid'''
-class Scan_Rfid(Scan_Rfid):
+class rfid(Scan_Rfid):
     def __init__(self,sda,scl):
         _sda = pins_esp32[sda]
         _scl = pins_esp32[scl]
         if(sda==20 or scl==19):
             self.i2c_1 = i2c
         else:
-            self.i2c_1 = I2C(scl=Pin(_scl), sda=Pin(_sda), freq=400000)
+            self.i2c_1 = I2C(1, scl=Pin(_scl), sda=Pin(_sda), freq=400000)
         # print(self.i2c_1.scan())
         super().__init__()
     
@@ -314,6 +362,12 @@ class WiFi(wifi):
 
     def connect(self, ssid, psd, timeout=10000):
         self.connectWiFi(ssid, psd, int(timeout/1000))
+    
+    def status(self):
+        return self.sta.isconnected()
+
+    def info(self):
+        return str(self.sta.ifconfig())
 
 
 '''MQTT'''
@@ -342,9 +396,8 @@ class MqttClient():
             psd = ""
         elif(password!=None):
             psd = password
-
         try:
-            self.client = MQTT(client_id, server, port, user, psd, 60)
+            self.client = MQTT(client_id, server, port, user, psd, 0)
             self.client.connect()
             self.server = server
             self.port = port
@@ -372,7 +425,7 @@ class MqttClient():
         except Exception as e:
             print('publish error:{}'.format(e))
 
-    def receive(self, topic):
+    def message(self, topic):
         topic = str(topic)
         if(not topic in self.topic_msg_dict):
             # self.topic_msg_dict[topic] = None
@@ -382,7 +435,7 @@ class MqttClient():
         else:
             return self.topic_msg_dict[topic]
         
-    def Received(self, topic, callback):
+    def received(self, topic, callback):
         self.subscribe(topic, callback)
 
     def subscribe(self, topic, callback):
@@ -451,55 +504,41 @@ class MqttClient():
 '''
 ble 模拟键盘鼠标
 '''
-# from mpython_ble.hidcode import Mouse as _Mouse
-# from mpython_ble.hidcode import KeyboardCode as _KeyboardCode
-
-# class KeyboardCode():
-#     SPACE = 0
-#     CLICK = 1
-#     DCLICK = 2
-
-# class Mouse():
-#     SPACE = 0
-
-# class HID():
-#     def __init__(self, name='mpy_hid'):
-#         from mpython_ble.application import HID as _HID
-#         self.connection_state = False
-#         self._ble_hid = _HID(name=bytes(name, 'utf-8'), battery_level=100)
-#         self._ble_hid.hid_device.connection_callback(self._ble_hid_connect_callback)
-#         # 广播
-#         self._ble_hid.advertise(True)
-    
-#     def _ble_hid_connect_callback(self, _1, _2, _3):
-#         self.connection_state = True
-
-#     def isconnected(self):
-#         return self.connection_state
-
-#     def keyboard_send(self,key):
-#         self._ble_hid.keyboard_send(_KeyboardCode.SPACE)
-
-#     def mouse_key(self,key):
-#         if(key==1):
-#             self._ble_hid.mouse_click(_Mouse.LEFT)
-#         elif(key==2):
-#             self._ble_hid.mouse_click(_Mouse.LEFT)
-#             time.sleep(0.1)
-#             self._ble_hid.mouse_click(_Mouse.LEFT)
 
 '''
 超声波
 '''
-class Ultrasonic(HCSR04):
-    def __init__(self, trig=1, echo=0):
-        self._trig = pins_esp32[trig]
-        self._echo = pins_esp32[echo]
-        super().__init__(trigger_pin=self._trig, echo_pin=self._echo)
+# class Ultrasonic(HCSR04):
+#     def __init__(self, trig=1, echo=0):
+#         self._trig = pins_esp32[trig]
+#         self._echo = pins_esp32[echo]
+#         super().__init__(trigger_pin=self._trig, echo_pin=self._echo)
+
+#     def distance(self):
+#         return self.distance_cm()
+
+class ultrasonic(object):
+    """
+    超声波模块控制类
+    """
+    def __init__(self, sda=20, scl=19):
+        _sda = pins_esp32[sda]
+        _scl = pins_esp32[scl]
+        if(sda==20 or scl==19):
+            self.i2c = i2c
+        else:
+            self.i2c = I2C(1, scl=Pin(_scl), sda=Pin(_sda), freq=400000)
 
     def distance(self):
-        return self.distance_cm()
-
+        """
+        获取超声波测距
+        :return: 返回测距,单位cm
+        """
+        self.i2c.writeto(0x0b, bytearray([1]))
+        sleep_ms(2)
+        temp = self.i2c.readfrom(0x0b, 2)
+        distanceCM = int((temp[0] + temp[1] * 256) / 10)
+        return distanceCM
 
 '''
 DHT11
@@ -525,7 +564,7 @@ class _dht11():
 dht11_old_pin = None
 dht11_thing = None
 
-def dht11(pin):
+def dht(pin):
     global dht11_old_pin,dht11_thing
     if dht11_old_pin != pin:
         dht11_thing = _dht11(pin)
@@ -594,10 +633,17 @@ def get_dict_from_str(s):
 # d = get_dict_from_file(s)
 # print(d["001"])
 
+"""
+uuid
+"""
+def uuid():
+    return ubinascii.hexlify(machine.unique_id()).decode().upper()
+
+
 '''
-educore定时器
+六轴 educore定时器
 '''
-class EduCoreTIMER():
+class accelerometer():
     def __init__(self):
         self.tim_count = 0
         self.tim = Timer(17)
@@ -640,7 +686,18 @@ class EduCoreTIMER():
         self._is_shaked = (diff_x * diff_x + diff_y * diff_y + diff_z * diff_z > 1)
         if self._is_shaked: 
             self.accelerometer.shake_status = True
-
+        
+    def X(self):
+        return self.accelerometer.x()
+    
+    def Y(self):
+        return self.accelerometer.y()
+    
+    def Z(self):
+        return self.accelerometer.z()
+    
+    def shake(self):
+        return self.accelerometer.shake()
 
 
 
@@ -650,8 +707,9 @@ class FCR:
         self.id = None
         self.blinks = None
         self.mouth = None
+        self.status = 0
 
-class Webcamera():
+class webcamera():
     def __init__(self): 
         self.fcr = FCR()
     
@@ -661,6 +719,10 @@ class Webcamera():
         self._MQTTClient = MqttClient()
         self._MQTTClient.connect(server='8.135.108.214',  port=1883,  client_id=self.id,  user=self.id, psd=self.id)
         self._MQTTClient.Received(self.topic, self.callbackFunction)
+    
+    def result(self):
+        d = {"blink":self.fcr.blinks,"mouth_open":self.fcr.mouth,"status":self.fcr.status}
+        return d
 
     def callbackFunction(self):
         try:
@@ -670,22 +732,27 @@ class Webcamera():
                 msg = eval(msg)
                 self.fcr.blinks = msg[0]
                 self.fcr.mouth = msg[1]
+                self.fcr.status = 1
             else:
-                self.fcr.blinks = 0
-                self.fcr.mouth = 0
+                self.fcr.blinks = None
+                self.fcr.mouth = None
+                self.fcr.status = 0
         except Exception as e:
             self.fcr.blinks = 0
             self.fcr.mouth = 0
+            self.fcr.status = 0
 
-'''
-按键
-'''
-class EduButton:
+
+class button:
+    a = 'a'
+    b = 'b'
     def __init__(self,_type='a'): 
         self.button_a = button_a
         self.button_b = button_b
         self.type = _type
         self.func_event_change = None
+        if(self.type not in ['a','b']):
+             self.pin = MPythonPin(self.type, PinMode.IN)
 
     def func(self,_):
         self.func_event_change()
@@ -702,16 +769,21 @@ class EduButton:
                 self.button_a.event_pressed = self.func
             elif(self.type=='b'):
                 self.button_b.event_pressed = self.func
+            else:
+                print('Not supported')
+
 
     def status(self):
         if(self.type=='a'):
             return self.button_a.status()
         elif(self.type=='b'):
             return self.button_b.status()
-
+        else:
+            val = self.pin.read_digital()
+            return val
 '''
 麦克风
-'''
+'''          
 import music
 
 class speaker():
@@ -723,22 +795,33 @@ class speaker():
         else:
             self.type = 2
 
-    def tone(self,freq=1000,durl=0):
+    def tone(self,freq=1000,durl=None):
+        if(isinstance(freq,list)):
+            freq = freq[0]
+
         if(self.type == 1):
-            music.pitch(int(freq), int(durl))
+            if(durl==None):
+                music.pitch(int(freq))
+            else:
+                music.pitch(int(freq), int(durl))
         elif(self.type == 2):
-            music.pitch(int(freq), int(durl), pin=pins_esp32[self.pin])
+            if(durl==None):
+                music.pitch(int(freq), pin=pins_esp32[self.pin])
+            else:
+                music.pitch(int(freq), int(durl), pin=pins_esp32[self.pin])
 
     def stop(self):
         if(self.type == 1):
             music.stop()
         elif(self.type == 2):
             music.stop(pins_esp32[self.pin])
-            
+
+
+
 '''
-光线传感器
+rgb
 '''
-class light():
+class rgb():
     def __init__(self,pin=None): 
         self.pin_num = pin
         self.type = 1
@@ -746,16 +829,80 @@ class light():
             self.type = 1
         else:
             self.type = 2
-            self.pin = MPythonPin(self.pin_num, PinMode.ANALOG)
+            self.pin = pins_esp32[self.pin_num]
+            self.my_rgb = neopixel.NeoPixel(Pin(self.pin), n=10, bpp=3, timing=1)
+
+    def write(self,index=[0,1,2],r=0,g=0,b=0):
+        if(self.type == 1):
+            for i in index:
+                _rgb[i]=(r,g,b)
+                _rgb.write()
+                sleep_ms(1)
+        elif(self.type == 2):
+            for i in index:
+                self.my_rgb[i]=(r,g,b)
+                self.my_rgb.write()
+                sleep_ms(1)
+            
+        
+    def clear(self):
+        if(self.type == 1):
+            _rgb.fill((0,0,0))
+            _rgb.write()
+            sleep_ms(1)
+        elif(self.type == 2):
+            self.my_rgb.fill((0,0,0))
+            self.my_rgb.write()
+            sleep_ms(1)
+
+
+'''
+人体红外
+'''
+class tsd():
+    def __init__(self,pin=None): 
+        self.pin_num = pin
+        self.type = 1
+        self.pin = MPythonPin(self.pin_num, PinMode.IN)
 
     def read(self):
-        if(self.type == 1):
-            return  _light.read()
-        elif(self.type == 2):
-            return self.pin.read_analog()
-            
-    @staticmethod
-    def read():
-        return _light.read()
-
+        return  self.pin.read_digital()
     
+'''
+气压
+'''
+class pressure(object):
+    def __init__(self, sda=20, scl=19):
+        _sda = pins_esp32[sda]
+        _scl = pins_esp32[scl]
+        if(sda==20 or scl==19):
+            self.i2c = i2c
+            self.dev = Barometric(self.i2c)
+            print(self.i2c)
+        else:
+            self.i2c = I2C(1, scl=Pin(_scl), sda=Pin(_sda), freq=400000)
+            time.sleep(0.1)
+            self.dev = Barometric(self.i2c)
+
+    def read(self):
+        # 百帕
+        return self.dev.pressure()/100
+
+
+'''
+地磁
+'''
+class compass(object):
+    def __init__(self):
+        if 48 in i2c.scan():
+            self.type = 1
+            self.magnetic = Magnetic()
+        else:
+            self.type = -1
+            print('Not supported')
+        
+    def adjust(self):
+        self.magnetic.calibrate()
+
+    def direction(self):
+        return self.magnetic.get_heading()

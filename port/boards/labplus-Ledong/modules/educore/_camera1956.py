@@ -9,6 +9,7 @@ class FCR:
         self.id = None
         self.blinks = None
         self.mouth = None
+        self.status = 0
 
 class Camera1956:
     def __init__(self, rx=Pin.P16, tx=Pin.P15):
@@ -17,14 +18,13 @@ class Camera1956:
         self.fcr.mouth = None
         self.fcr.id = None
         self.fun = 1
-        self.uart = UART(2, baudrate=115200, rx=rx, tx=tx, rxbuf=256)
+        self.uart = UART(2, baudrate=1500000, rx=rx, tx=tx, rxbuf=512)
         self.lock = False
         time.sleep(0.1)
         self.wait_for_ai_init()
         self.uart_listen()
 
     def wait_for_ai_init(self): 
-        # self.lock = True
         shake_cmd = 0xEF
         num = 0        
         while True:
@@ -99,16 +99,41 @@ class Camera1956:
                     pass
     
     def process_messages(self,CMD):
-        if(CMD[0]==1):
+        if(CMD[0]==1 and CMD[1]!=0xff and CMD[2]!=0xff):
             self.fcr.blinks = CMD[1]
             self.fcr.mouth = CMD[2]
             self.fcr.id = None
+            self.fcr.status = 1
+        elif(CMD[0]==1 and CMD[1]==0xff and CMD[2]==0xff):
+            self.fcr.blinks = None
+            self.fcr.mouth = None
+            self.fcr.status = 0
         elif(CMD[0]==2):
             if(CMD[2]==0xFF):
                 self.fcr.id = None
             else:
                 self.fcr.id = CMD[2]
 
+    def result(self):
+        d = {"blink":self.fcr.blinks,"mouth_open":self.fcr.mouth,"status":self.fcr.status}
+        return d
+    
+    def init(self, *args, **kwargs):
+        args_list = []
+        self.model_choose = kwargs.get('model', None)
+        for arg in args:
+            args_list.append(arg)
+        args_len = len(args_list)
+        if(self.model_choose is None and args_len<1):
+            print('参数错误')
+        else:
+            self.model_choose = args_list[0]
+        
+        if(self.model_choose=='BLINK_MOUTH_DETECT' and args_len==1):
+            self.mode = self.model_choose
+        elif(self.model_choose=='FACE_DETECT' and args_len==1):
+            self.mode = self.model_choose
+        
     def stop(self):
         '''停止'''
         self.uart.write(bytes(self.Generate_CMD([0xEE])))
