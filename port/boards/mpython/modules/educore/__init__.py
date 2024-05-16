@@ -15,6 +15,11 @@ class smartcamera(EduSmartCamera):
         super().__init__(tx=_tx, rx=_rx)
 
 
+class smartcamera1956(Camera1956):
+    def __init__(self, tx=15, rx=16):
+        _tx = pins_esp32[tx]
+        _rx = pins_esp32[rx]
+        super().__init__(tx=_tx, rx=_rx)
 
 # wifi
 wifi = WiFi()
@@ -23,23 +28,23 @@ wifi = WiFi()
 oled = OLED()
 
 # MQTT 
-MQTTClient = MqttClient()
+mqttclient = MqttClient()
 
 # educore定时器
-edu = EduCoreTIMER()
+# edu = EduCoreTIMER()
 
 # 六轴加速度计数据
-accelerometer = edu.accelerometer
+# accelerometer = edu.accelerometer
 
 # 网页版人工智能摄像头
-webcamera = Webcamera()
+webcamera = webcamera()
 
 # 按键A/B
-button_a = EduButton('a')
-button_b = EduButton('b')
+# button_a = EduButton('a')
+# button_b = EduButton('b')
 
 # 电机
-parrot = PARROT()
+# parrot = PARROT()
 
 
 

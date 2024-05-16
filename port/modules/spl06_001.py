@@ -1,11 +1,14 @@
 from time import sleep_ms
-from mpython import i2c
+from mpython import i2c as _i2c
 
 class Barometric(object):
     """SPL06-001"""
     '''乐动模块 气压传感器'''
-    def __init__(self):
-        self.i2c = i2c
+    def __init__(self,i2c=None):
+        if(i2c==None):
+            self.i2c = _i2c
+        else:
+            self.i2c = i2c
         addr = self.i2c.scan()
 
         if 119 in addr:

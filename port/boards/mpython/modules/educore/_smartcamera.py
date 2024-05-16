@@ -2,7 +2,6 @@ from machine import Pin, UART
 from .k210 import *
 import time
 import gc
-# gc.collect()
 
 class EduSmartCamera:
     def __init__(self, rx=Pin.P15, tx=Pin.P16):
@@ -89,12 +88,6 @@ class EduSmartCamera:
                     # del _cmd
                     gc.collect()
     
-    # def sensor_config(self,_choice,_framesize,_pixformat,_w,_h,_vflip,_hmirror,_brightness,_contrast,_saturation,_gain,_whitebal,_freq,_dual_buff):
-    #     self.lock=True
-    #     _str = str(_framesize)+'|'+ str(_pixformat)+'|'+ str(_vflip)+'|'+ str(_hmirror)+'|'+ str(_brightness)+'|'+ str(_contrast)+'|'+ str(_saturation)+'|'+ str(_gain)+'|'+ str(_whitebal)+'|'+ str(_w)+'|'+ str(_h)+'|'+ str(_freq)+'|'+ str(_dual_buff)
-    #     AI_Uart_CMD_String(uart=self.uart, cmd=AI['sensor'][0], cmd_type=AI['sensor'][1], cmd_data=[_choice,0,0], str_buf=_str)
-    #     self.lock=False
-
     # def mnist_init(self, _choice):
     #     self.mnist = MNIST(self.uart, choice=_choice)
     #     self.mode = MNIST_MODE
@@ -103,13 +96,44 @@ class EduSmartCamera:
     #     self.yolo_detect = YOLO(self.uart, choice=_choice)
     #     self.mode = OBJECT_RECOGNIZATION_MODE
 
-    # def face_detect_init(self, _choice):
-    #     self.face_detect = FACE_DETECT(self.uart, choice=_choice)
-    #     self.mode = FACE_DETECTION_MODE
+    def face_detect_init(self, _choice):
+        self.face_detect = FACE_DETECT(self.uart, choice=_choice)
+        self.mode = FACE_DETECTION_MODE
 
     def face_recognize_init(self, _face_num, _accuracy, _choice):
         self.fcr = Face_recogization(self.uart, face_num=_face_num, accuracy=_accuracy, choice=_choice)
         self.mode = FACE_RECOGNIZATION_MODE
+
+    def init(self, *args, **kwargs):
+        args_list = []
+        self.model_choose = kwargs.get('model', None)
+        for arg in args:
+            args_list.append(arg)
+        args_len = len(args_list)
+        if(self.model_choose is None and args_len<1):
+            print('参数错误')
+        else:
+            self.model_choose = args_list[0]
+        
+        if(self.model_choose=='FACE_RECOGNIZE' and args_len==3):
+            self.face_recognize_init(args_list[1],60,args_list[2])
+            self.fcr.add_face()
+        elif(self.model_choose=='FACE_RECOGNIZE' and args_len==1):
+            self.face_recognize_init(3,60,1)
+    
+    def result(self):
+        d = {"id":None,"similarity":None,"status": 0}
+        if(self.mode == FACE_RECOGNIZATION_MODE):
+            self.fcr.recognize()
+            d = {"id":None,"similarity":None,"status": 0}
+            if(self.fcr.id!=None):
+                d = {"id":self.fcr.id ,"similarity":self.fcr.max_score,"status": 1}
+            else:
+                d = {"id":None,"similarity":None,"status": 0}
+            return d
+        else:
+            return d
+
 
     def thread_listen(self):
         self._task = TASK(func=self.uart_thread,sec=0.03)
