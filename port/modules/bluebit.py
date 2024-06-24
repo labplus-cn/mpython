@@ -1090,11 +1090,12 @@ class MP3_(object):
         self._vol = vol
         var = [0xAE, vol]
         self._cmdWrite(var)
-        while True:
-            if(self.uart.any()):
-                buff = self.uart.read(2)
+        sleep_ms(50)
+        # while True:
+        #     if(self.uart.any()):
+        #         buff = self.uart.read(2)
                 # print(buff)
-                break
+                # break
     
     def song_num(self):
         """查询 SD 卡内音乐文件总数"""
