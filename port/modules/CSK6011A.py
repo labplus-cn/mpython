@@ -96,3 +96,51 @@ class SpeechSynthesis(object):
 
 # speech_synthesis = SpeechSynthesis(uart_num=1, pin_tx=Pin.P16, pin_rx=Pin.P15)
 # speech_synthesis.play('行路难（其一）【唐】 李白 金樽清酒斗十千，玉盘珍羞直万钱。停杯投箸不能食，拔剑四顾心茫然。欲渡黄河冰塞川，将登太行雪满山。闲来垂钓碧溪上，忽复乘舟梦日边。行路难，行路难，多歧路，今安在？长风破浪会有时，直挂云帆济沧海。')
+
+
+# CSK6011A i2c地址
+CSK6011A_I2C_ADDR = 0x40
+class SpeechSynthesisI2C(object):
+    def __init__(self,i2c=i2c):
+        gc.collect()
+        self.font_gb2312 = utf8_gb2312()
+        self.i2c = i2c
+        self.cache_s = '语音合成'
+        self.cache_byte = b'\xd3\xef\xd2\xf4\xba\xcf\xb3\xc9'
+
+    def play(self,s):
+        busy_status = self.busy_status()
+        s_len = len(s)
+        wait_ms = 250 * s_len
+        if(not busy_status):
+            print('Synthetic audio ...')
+            if(s == self.cache_s):
+                r = self.cache_byte
+            else:
+                r = self.font_gb2312.str(str(s))
+                self.cache_s = s
+                self.cache_byte = r
+            data_len = len(list(r)) + 2 
+            revise_cmd = [0xFD, data_len >> 8, data_len & 0xff, 0x01, 0x00] + list(r)
+            # self.uart.write(bytes(revise_cmd))
+            sleep_ms(wait_ms)
+        else:
+            print('busy status')
+            pass
+
+    def busy_status(self):
+        try:
+            # self.uart.write(bytes([0xFD, 0x00, 0x01, 0x21]))
+            sleep_ms(10)
+            # if (self.uart.any()):
+            #     tmp = self.uart.read().decode('utf-8').strip()
+            #     if(tmp=='O'):
+            #         return False
+            #     elif(tmp=='AN'):
+            #         return True
+        except:
+            return True
+
+    def release(self):
+        self.font_gb2312.__del__()
+        gc.collect()

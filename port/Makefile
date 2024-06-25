@@ -1,7 +1,6 @@
 # Select the board to build for: if not given on the command line,
 # then default to GENERIC.
-BOARD ?= labplus-Ledong
-# BOARD ?= mpython-classroom-kit
+BOARD ?= labplus-experiment-box-2024
 
 # If the build directory is not given, make it reflect the board name.
 BUILD ?= build/$(BOARD)/
