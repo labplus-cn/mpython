@@ -923,12 +923,12 @@ class wifi:
 # rgb.write()
 
 # light sensor
-# light = ADC(Pin(39))
-# light.atten(light.ATTN_11DB)
+light = ADC(Pin(39))
+light.atten(light.ATTN_11DB)
 
 # sound sensor
-# sound = ADC(Pin(36))
-# sound.atten(sound.ATTN_11DB)
+sound = ADC(Pin(36))
+sound.atten(sound.ATTN_11DB)
 
 # buttons
 class Button:
