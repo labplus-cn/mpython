@@ -18,12 +18,12 @@ class SolarPanel():
 
         参数
         :servo_num: 舵机编号：1~2
-        :angle: 舵机角度：0~180
+        :angle: 舵机角度：-90~90
 
         返回值：无
         """
         try:
-            angle = max(min(angle, 180), 0)
+            angle = max(min(angle, 90), -90)
             self.i2c.writeto(18, bytearray([servo_num, angle]))
         except Exception as e:
             print(e)
@@ -53,8 +53,8 @@ class SolarPanel():
 #     solar_panel.set_servo(1, 0)
 #     solar_panel.set_servo(2, 0)
 #     time.sleep(1)
-#     solar_panel.set_servo(1, 180)
-#     solar_panel.set_servo(2, 180)
+#     solar_panel.set_servo(1, -90)
+#     solar_panel.set_servo(2, -90)
 #     time.sleep(1)
 #     solar_panel.set_servo(1, 90)
 #     solar_panel.set_servo(2, 90)

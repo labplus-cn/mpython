@@ -918,9 +918,9 @@ class wifi:
         self.ap.active(False)
         print('disable AP WiFi...')
 
-# 3 rgb leds
-# rgb = NeoPixel(Pin(17, Pin.OUT), 3, 3, 1, brightness=0.3)
-# rgb.write()
+# 4 rgb leds
+rgb = NeoPixel(Pin(17, Pin.OUT), 4, 3, 1, brightness=0.3)
+rgb.write()
 
 # light sensor
 light = ADC(Pin(39))
