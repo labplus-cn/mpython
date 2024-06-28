@@ -1,7 +1,7 @@
-#mPythonType:0
 from mpython import i2c
 import struct
 
+# 太阳能板模块
 class SolarPanel():
     def __init__(self):
         self.i2c = i2c
@@ -42,8 +42,6 @@ class SolarPanel():
             return struct.unpack('4H', tmp)
         except Exception as e:
             print(e)
-
-
 
 
 # import time
