@@ -718,7 +718,7 @@ class webcamera():
         self.topic = str(id)
         self._MQTTClient = MqttClient()
         self._MQTTClient.connect(server='8.135.108.214',  port=1883,  client_id=self.id,  user=self.id, psd=self.id)
-        self._MQTTClient.Received(self.topic, self.callbackFunction)
+        self._MQTTClient.received(self.topic, self.callbackFunction)
     
     def result(self):
         d = {"blink":self.fcr.blinks,"mouth_open":self.fcr.mouth,"status":self.fcr.status}
@@ -726,8 +726,8 @@ class webcamera():
 
     def callbackFunction(self):
         try:
-            msg = self._MQTTClient.receive(topic=self.topic)
-            # print(msg)
+            msg = self._MQTTClient.message(topic=self.topic)
+            print(msg)
             if(msg):
                 msg = eval(msg)
                 self.fcr.blinks = msg[0]

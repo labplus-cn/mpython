@@ -120,6 +120,10 @@ class EduSmartCamera:
             self.fcr.add_face()
         elif(self.model_choose=='FACE_RECOGNIZE' and args_len==1):
             self.face_recognize_init(3,60,1)
+        elif(self.model_choose=='FACE_DETECT' and args_len==1):
+            self.face_detect_init(1)
+        elif(self.model_choose=='FACE_DETECT' and args_len==2):
+            self.face_detect_init(args_list[1])
     
     def result(self):
         d = {"id":None,"similarity":None,"status": 0}
@@ -130,6 +134,14 @@ class EduSmartCamera:
                 d = {"id":self.fcr.id ,"similarity":self.fcr.max_score,"status": 1}
             else:
                 d = {"id":None,"similarity":None,"status": 0}
+            return d
+        elif(self.mode == FACE_DETECTION_MODE):
+            self.face_detect.recognize()
+            d = {"face_num":None,"similarity":None,"status": 0}
+            if(self.face_detect.face_num!=None):
+                d = {"face_num":self.face_detect.face_num ,"similarity":self.face_detect.max_score,"status": 1}
+            else:
+                d = {"face_num":None,"similarity":None,"status": 0}
             return d
         else:
             return d
