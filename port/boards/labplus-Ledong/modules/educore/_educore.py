@@ -727,7 +727,6 @@ class webcamera():
     def callbackFunction(self):
         try:
             msg = self._MQTTClient.message(topic=self.topic)
-            print(msg)
             if(msg):
                 msg = eval(msg)
                 self.fcr.blinks = msg[0]
@@ -738,6 +737,7 @@ class webcamera():
                 self.fcr.mouth = None
                 self.fcr.status = 0
         except Exception as e:
+            print(e)
             self.fcr.blinks = 0
             self.fcr.mouth = 0
             self.fcr.status = 0
