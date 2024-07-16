@@ -39,6 +39,7 @@ from pm25 import PM25
 from max30102 import MAX30102
 from CSK6011A import SpeechSynthesis
 from solar import SolarPanel
+from paj7620 import  PAJ7620
 
 class Thermistor:
     """
