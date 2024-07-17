@@ -50,7 +50,7 @@ class utf8_gb2312(object):
 
 
 class SpeechSynthesis(object):
-    def __init__(self,uart_num=1, pin_tx=Pin.P16, pin_rx=Pin.P15):
+    def __init__(self,uart_num=1, pin_tx=Pin.P9, pin_rx=Pin.P8):
         gc.collect()
         self.font_gb2312 = utf8_gb2312()
         self.uart = UART(uart_num, baudrate=115200, tx=pin_tx, rx=pin_rx)

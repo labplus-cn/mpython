@@ -1073,6 +1073,14 @@ class Ledong_shield(object):
     def get_battery_level(self):
         self.i2c.writeto(self.i2c_addr, b'\x05', True)
         return self.i2c.readfrom(self.i2c_addr, 1)[0]
+    
+    # MP3模块进入u盘模式(不要在播放状态下操作)
+    def set_masstorage_mode(self):
+        self.i2c.writeto(self.i2c_addr,b'\x05' )
+                         
+    # MP3从U盘模式退出。
+    def set_mp3_mode(self):
+        self.i2c.writeto(self.i2c_addr,b'\x04')
 
 ledong_shield = Ledong_shield()
 
