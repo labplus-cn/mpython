@@ -1,6 +1,6 @@
 # Select the board to build for: if not given on the command line,
 # then default to GENERIC.
-BOARD ?= mpython-camera-v831
+BOARD ?= labplus-camera-v831
 
 # If the build directory is not given, make it reflect the board name.
 BUILD ?= build/$(BOARD)/
