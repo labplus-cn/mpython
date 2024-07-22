@@ -103,12 +103,12 @@ void mpython_display_exception(mp_obj_t exc_in)
                 mp_obj_print_helper(&print, exc->args->items[0], PRINT_STR);
             }
         }
-        oled_init();
-        oled_clear();
-        oled_print(vstr_null_terminated_str(&vstr), 0, 0);
-        oled_show();
+        // oled_init();
+        // oled_clear();
+        // oled_print(vstr_null_terminated_str(&vstr), 0, 0);
+        // oled_show();
         vstr_clear(&vstr);
-        oled_deinit();
+        // oled_deinit();
     }
 }
 
@@ -169,15 +169,15 @@ soft_reset:
     hw_init_flags = 0;
     // startup
     // iic总线错误,打印提示信息
-    if (oled_init() == false) { 
-        ESP_LOGE("system", "%s", msg_iic_failed);
-        hw_init_flags |= 0x0001;
-    } else {
-        oled_drawImg(img_mpython);
-        // oled_drawImg(img_InnovaBit);
-        oled_show();
-        oled_deinit();
-    }
+    // if (oled_init() == false) { 
+    //     ESP_LOGE("system", "%s", msg_iic_failed);
+    //     hw_init_flags |= 0x0001;
+    // } else {
+    //     oled_drawImg(img_mpython);
+
+    //     oled_show();
+    //     oled_deinit();
+    // }
 
     // initialise the stack pointer for the main thread
     mp_stack_set_top((void *)sp);

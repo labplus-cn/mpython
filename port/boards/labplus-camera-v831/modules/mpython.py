@@ -9,7 +9,7 @@
 # V1.2 add servo/ui class,by tangliufeng
 
 from machine import I2C, PWM, Pin, ADC, TouchPad
-from ssd1106 import SSD1106_I2C
+# from ssd1106 import SSD1106_I2C
 import esp, math, time, network
 import ustruct, array
 from neopixel import NeoPixel
@@ -86,120 +86,120 @@ class TextMode():
     xor = 4
 
 
-class OLED(SSD1106_I2C):
-    """ 128x64 oled display """
+# class OLED(SSD1106_I2C):
+#     """ 128x64 oled display """
 
-    def __init__(self):
-        super().__init__(128, 64, i2c)
-        self.f = Font()
-        if self.f is None:
-            raise Exception('font load failed')
+#     def __init__(self):
+#         super().__init__(128, 64, i2c)
+#         self.f = Font()
+#         if self.f is None:
+#             raise Exception('font load failed')
 
-    def DispChar(self, s, x, y, mode=TextMode.normal, auto_return=False):
-            row = 0
-            str_width = 0
-            if self.f is None:
-                return
-            for c in s:
-                data = self.f.GetCharacterData(c)
-                if data is None:
-                    if auto_return is True:
-                        x = x + self.f.width
-                    else:
-                        x = x + self.width
-                    continue
-                width, bytes_per_line = ustruct.unpack('HH', data[:4])
-                # print('character [%d]: width = %d, bytes_per_line = %d' % (ord(c)
-                # , width, bytes_per_line))
-                if auto_return is True:
-                    if x > self.width - width:
-                        str_width += self.width - x
-                        x = 0
-                        row += 1
-                        y += self.f.height
-                        if y > (self.height - self.f.height)+0:
-                            y, row = 0, 0
-                for h in range(0, self.f.height):
-                    w = 0
-                    i = 0
-                    while w < width:
-                        mask = data[4 + h * bytes_per_line + i]
-                        if (width - w) >= 8:
-                            n = 8
-                        else:
-                            n = width - w
-                        py = y + h
-                        page = py >> 3
-                        bit = 0x80 >> (py % 8)
-                        for p in range(0, n):
-                            px = x + w + p
-                            c = 0
-                            if (mask & 0x80) != 0:
-                                if mode == TextMode.normal or \
-                                        mode == TextMode.trans:
-                                    c = 1
-                                if mode == TextMode.rev:
-                                    c = 0
-                                if mode == TextMode.xor:
-                                    c = self.buffer[page * (self.width if auto_return is True else 128) + px] & bit
-                                    if c != 0:
-                                        c = 0
-                                    else:
-                                        c = 1
-                                super().pixel(px, py, c)
-                            else:
-                                if mode == TextMode.normal:
-                                    c = 0
-                                    super().pixel(px, py, c)
-                                if mode == TextMode.rev:
-                                    c = 1
-                                    super().pixel(px, py, c)
-                            mask = mask << 1
-                        w = w + 8
-                        i = i + 1
-                x = x + width + 1
-                str_width += width + 1
-            return (str_width-1,(x-1, y))
+#     def DispChar(self, s, x, y, mode=TextMode.normal, auto_return=False):
+#             row = 0
+#             str_width = 0
+#             if self.f is None:
+#                 return
+#             for c in s:
+#                 data = self.f.GetCharacterData(c)
+#                 if data is None:
+#                     if auto_return is True:
+#                         x = x + self.f.width
+#                     else:
+#                         x = x + self.width
+#                     continue
+#                 width, bytes_per_line = ustruct.unpack('HH', data[:4])
+#                 # print('character [%d]: width = %d, bytes_per_line = %d' % (ord(c)
+#                 # , width, bytes_per_line))
+#                 if auto_return is True:
+#                     if x > self.width - width:
+#                         str_width += self.width - x
+#                         x = 0
+#                         row += 1
+#                         y += self.f.height
+#                         if y > (self.height - self.f.height)+0:
+#                             y, row = 0, 0
+#                 for h in range(0, self.f.height):
+#                     w = 0
+#                     i = 0
+#                     while w < width:
+#                         mask = data[4 + h * bytes_per_line + i]
+#                         if (width - w) >= 8:
+#                             n = 8
+#                         else:
+#                             n = width - w
+#                         py = y + h
+#                         page = py >> 3
+#                         bit = 0x80 >> (py % 8)
+#                         for p in range(0, n):
+#                             px = x + w + p
+#                             c = 0
+#                             if (mask & 0x80) != 0:
+#                                 if mode == TextMode.normal or \
+#                                         mode == TextMode.trans:
+#                                     c = 1
+#                                 if mode == TextMode.rev:
+#                                     c = 0
+#                                 if mode == TextMode.xor:
+#                                     c = self.buffer[page * (self.width if auto_return is True else 128) + px] & bit
+#                                     if c != 0:
+#                                         c = 0
+#                                     else:
+#                                         c = 1
+#                                 super().pixel(px, py, c)
+#                             else:
+#                                 if mode == TextMode.normal:
+#                                     c = 0
+#                                     super().pixel(px, py, c)
+#                                 if mode == TextMode.rev:
+#                                     c = 1
+#                                     super().pixel(px, py, c)
+#                             mask = mask << 1
+#                         w = w + 8
+#                         i = i + 1
+#                 x = x + width + 1
+#                 str_width += width + 1
+#             return (str_width-1,(x-1, y))
 
-    def DispChar_font(self, font, s, x, y, invert=False):
-        """
-        custom font display.Ref by , https://github.com/peterhinch/micropython-font-to-py
-        :param font:  use font_to_py.py script convert to `py` from `ttf` or `otf`.
-        """
-        screen_width = self.width
-        screen_height = self.height
-        text_row = x
-        text_col = y
-        text_length = 0
-        if font.hmap():
-            font_map = framebuf.MONO_HMSB if font.reverse() else framebuf.MONO_HLSB
-        else:
-            raise ValueError('Font must be horizontally mapped.')
-        for c in s:
-            glyph, char_height, char_width = font.get_ch(c)
-            buf = bytearray(glyph)
-            if invert:
-                for i, v in enumerate(buf):
-                    buf[i] = 0xFF & ~ v
-            fbc = framebuf.FrameBuffer(buf, char_width, char_height, font_map)
-            if text_row + char_width > screen_width - 1:
-                text_length += screen_width-text_row
-                text_row = 0
-                text_col += char_height
-            if text_col + char_height > screen_height + 2:
-                text_col = 0
+#     def DispChar_font(self, font, s, x, y, invert=False):
+#         """
+#         custom font display.Ref by , https://github.com/peterhinch/micropython-font-to-py
+#         :param font:  use font_to_py.py script convert to `py` from `ttf` or `otf`.
+#         """
+#         screen_width = self.width
+#         screen_height = self.height
+#         text_row = x
+#         text_col = y
+#         text_length = 0
+#         if font.hmap():
+#             font_map = framebuf.MONO_HMSB if font.reverse() else framebuf.MONO_HLSB
+#         else:
+#             raise ValueError('Font must be horizontally mapped.')
+#         for c in s:
+#             glyph, char_height, char_width = font.get_ch(c)
+#             buf = bytearray(glyph)
+#             if invert:
+#                 for i, v in enumerate(buf):
+#                     buf[i] = 0xFF & ~ v
+#             fbc = framebuf.FrameBuffer(buf, char_width, char_height, font_map)
+#             if text_row + char_width > screen_width - 1:
+#                 text_length += screen_width-text_row
+#                 text_row = 0
+#                 text_col += char_height
+#             if text_col + char_height > screen_height + 2:
+#                 text_col = 0
 
-            super().blit(fbc, text_row, text_col)
-            text_row = text_row + char_width+1
-            text_length += char_width+1
-        return (text_length-1, (text_row-1, text_col))
+#             super().blit(fbc, text_row, text_col)
+#             text_row = text_row + char_width+1
+#             text_length += char_width+1
+#         return (text_length-1, (text_row-1, text_col))
 
 # display
-if 60 in i2c.scan():
-    oled = OLED()
-    display = oled
-else:
-    pass
+# if 60 in i2c.scan():
+#     oled = OLED()
+#     display = oled
+# else:
+#     pass
 
 class MOTION(object):
     def __init__(self):
@@ -1069,12 +1069,12 @@ button_a = Button(34)
 button_b = Button(38)
 
 # touchpad
-touchpad_p = touchPad_P = Touch(Pin(27))
-touchpad_y = touchPad_Y = Touch(Pin(14))
-touchpad_t = touchPad_T = Touch(Pin(12))
-touchpad_h = touchPad_H = Touch(Pin(13))
-touchpad_o = touchPad_O = Touch(Pin(15))
-touchpad_n = touchPad_N = Touch(Pin(4))
+# touchpad_p = touchPad_P = Touch(Pin(27))
+# touchpad_y = touchPad_Y = Touch(Pin(14))
+# touchpad_t = touchPad_T = Touch(Pin(12))
+# touchpad_h = touchPad_H = Touch(Pin(13))
+# touchpad_o = touchPad_O = Touch(Pin(15))
+# touchpad_n = touchPad_N = Touch(Pin(4))
 
 # shield 
 class Ledong_shield(object):
