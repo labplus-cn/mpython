@@ -101,8 +101,51 @@ def uart_handle(uart):
                     return CMD
             else:
                 gc.collect()
-        elif num>6:
-            # print('uart num timeout')
+        elif num>3:
+            return CMD
+
+def uart_handle_1(uart):
+    num = 0
+    while True:
+        num +=1
+        CMD = []
+        if(uart.any()):
+            head = uart.read(2)
+            if(head==None or len(head)!=2):
+                return []
+            elif(head and head[0] == 0xBB):
+                CMD.extend([0xBB])
+                CMD.append(head[1])
+                if(CMD[1]==0x01):
+                    res = uart.read(9)
+                    if(res==None or len(res)!=9):
+                        # print('!')
+                        return []
+                    for i in range(9):
+                        CMD.append(res[i])                  
+                    checksum = CheckCode(CMD[:10])
+                    if(res and checksum == CMD[10]):
+                        return CMD
+                elif(CMD[1]==0x02):
+                    res = uart.read(6)
+                    if(res==None or len(res)!=6):
+                        return []
+                    str_len = res[5]
+                    str_temp = uart.read(str_len)
+                    # CMD.append(res)
+                    # CMD.append(str_temp)
+                    
+                    for i in range(6):
+                        CMD.append(res[i])
+
+                    # for i in range(int(str_len)):
+                    #     CMD.append(str_temp[i])
+                    CMD.append(str_temp)
+                    print(CMD)
+                    return CMD
+            else:
+                gc.collect()
+        elif num>3:
             return CMD
 
 def AI_Uart_CMD(uart, data_type, cmd, cmd_type, cmd_data=[0, 0, 0, 0, 0, 0, 0, 0]):

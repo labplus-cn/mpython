@@ -618,37 +618,38 @@ class VisualTracking(object):
     def __init__(self, uart):
         self.uart = uart
         self.lock = False
-        self.line_data = {'rect': None, 'pixels': None, 'cx': None, 'cy': None, 'rotation': None}
-        self.rotation_angle = None
+        self.line_data = {'pixels': None, 'cx': None, 'cy': None, 'angle': None}
+        # self.rotation_angle = None
         AI_Uart_CMD(self.uart, 0x01, AI['VISUAL_TRACKING_MODE'][0], AI['VISUAL_TRACKING_MODE'][1])
         time.sleep(0.1)
 
     def recognize(self):
-        time.sleep_ms(5)
+        time.sleep_ms(1)
         gc.collect()
         try:
             tmp = self.AI_WaitForK210(0x01, AI['VISUAL_TRACKING_MODE'][0], AI['VISUAL_TRACKING_MODE'][2])
             self.line_data = tmp
-            self.rotation_angle = round(self.line_data['rotation']*180/math.pi,2)
+            # self.rotation_angle = round(self.line_data['rotation']*180/math.pi,2)
         except Exception as e:
             # print('err:',e)
-            self.line_data = {'rect': None, 'pixels': None, 'cx': None, 'cy': None, 'rotation': None}
-            self.rotation_angle = None
+            self.line_data = {'pixels': None, 'cx': None, 'cy': None, 'angle': None}
+            # self.rotation_angle = None
 
     def AI_WaitForK210(self, data_type, cmd, cmd_type, cmd_data=[0, 0, 0, 0, 0, 0]): 
         if(not self.lock):    
             AI_Uart_CMD(self.uart, data_type, cmd, cmd_type, cmd_data)
 
-        CMD = uart_handle(self.uart)
+        CMD = uart_handle_1(self.uart)
         if(len(CMD)>=5):
             # print(CMD)
             if(CMD[1]==0x01 and CMD[2]==AI['VISUAL_TRACKING_MODE'][0] and CMD[3]==AI['VISUAL_TRACKING_MODE'][2] and CMD[4]==0xff):
                 self.lock = True
-                return {'rect': None, 'pixels': None, 'cx': None, 'cy': None, 'rotation': None}
+                return {'pixels': None, 'cx': None, 'cy': None, 'angle': None}
             elif(CMD[1]==0x02 and CMD[2]==AI['VISUAL_TRACKING_MODE'][0] and CMD[3]==AI['VISUAL_TRACKING_MODE'][2]):
                 self.lock = True
-                _str = str(bytes(CMD[20:-1]).decode('UTF-8','ignore'))
+                # _str = str(bytes(CMD[8:-1]).decode('UTF-8','ignore'))
+                _str = str(CMD[-1].decode('UTF-8','ignore'))
                 data = eval(_str)
                 return data
         else:
-            return {'rect': None, 'pixels': None, 'cx': None, 'cy': None, 'rotation': None}
+            return {'pixels': None, 'cx': None, 'cy': None, 'angle': None}
