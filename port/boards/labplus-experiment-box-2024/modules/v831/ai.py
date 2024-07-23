@@ -639,7 +639,7 @@ class VisualTracking(object):
         if(not self.lock):    
             AI_Uart_CMD(self.uart, data_type, cmd, cmd_type, cmd_data)
 
-        CMD = uart_handle_1(self.uart)
+        CMD = uart_handle_str(self.uart)
         if(len(CMD)>=5):
             # print(CMD)
             if(CMD[1]==0x01 and CMD[2]==AI['VISUAL_TRACKING_MODE'][0] and CMD[3]==AI['VISUAL_TRACKING_MODE'][2] and CMD[4]==0xff):

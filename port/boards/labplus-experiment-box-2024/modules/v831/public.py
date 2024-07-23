@@ -104,7 +104,7 @@ def uart_handle(uart):
         elif num>3:
             return CMD
 
-def uart_handle_1(uart):
+def uart_handle_str(uart):
     num = 0
     while True:
         num +=1
@@ -141,7 +141,7 @@ def uart_handle_1(uart):
                     # for i in range(int(str_len)):
                     #     CMD.append(str_temp[i])
                     CMD.append(str_temp)
-                    print(CMD)
+                    # print(CMD)
                     return CMD
             else:
                 gc.collect()
