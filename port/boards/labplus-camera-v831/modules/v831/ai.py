@@ -1,7 +1,6 @@
 from v831.public import *
 import gc
 import time
-import math
 
 OBJ_TYPE = ['飞机','自行车','鸟','船','瓶子','公交车','汽车','猫','椅子','奶牛','餐桌','狗','屋子','摩托','人','盆栽','羊','沙发','火车','电视']
 
@@ -16,13 +15,13 @@ class Face_recogization(object):
         self.count = 0
         self.lock = False
         AI_Uart_CMD(self.uart, 0x01, AI['face_recognize'][0], AI['face_recognize'][1], cmd_data=[self.face_num,self.accuracy])
-        time.sleep(2)
+        time.sleep(1)
 
     def add_face(self):
         AI_Uart_CMD(self.uart, 0x01, AI['face_recognize'][0], AI['face_recognize'][2])
 
     def recognize(self):
-        time.sleep_ms(20)
+        time.sleep_ms(10)
         try:
             self.id,self.max_score=self.AI_WaitForK210(0x01, AI['face_recognize'][0], AI['face_recognize'][3])
         except Exception as e:
@@ -32,7 +31,6 @@ class Face_recogization(object):
 
     def AI_WaitForK210(self, data_type, cmd, cmd_type, cmd_data=[0, 0, 0, 0, 0, 0]):   
         if(not self.lock):           
-            # print('AI_Uart_CMD'+str(time.time_ns()))            
             AI_Uart_CMD(self.uart, data_type, cmd, cmd_type, cmd_data)
         CMD = uart_handle(self.uart)
 
@@ -60,7 +58,7 @@ class Self_learning_classfier(object):
         self.count = 0
         self.lock = False
         AI_Uart_CMD(self.uart, 0x01, AI['self_learn'][0], AI['self_learn'][1], cmd_data=[self.class_num,self.sample_num])
-        time.sleep(2)
+        time.sleep(1)
         
     def add_class_img(self):
         AI_Uart_CMD(self.uart, 0x01, AI['self_learn'][0], AI['self_learn'][2])
@@ -73,7 +71,6 @@ class Self_learning_classfier(object):
         pass
 
     def predict(self):
-        # self.count += 1
         time.sleep_ms(20)
         try:
             self.id,self.max_score = self.AI_WaitForK210(0x01, AI['self_learn'][0], AI['self_learn'][3])
@@ -196,7 +193,7 @@ class FACE_DETECT(object):
         time.sleep(0.2)
 
     def recognize(self):
-        time.sleep_ms(20)
+        time.sleep_ms(10)
         try:
             self.face_num,self.max_score = self.AI_WaitForK210(0x01, AI['face_detection'][0], AI['face_detection'][2])
         except Exception as e:
@@ -300,7 +297,8 @@ class QRCode_recognization(object):
             elif(CMD[1]==0x02):
                 if(CMD[2]==AI['qrcode'][0] and CMD[3]==AI['qrcode'][3]):
                     id = CMD[4]
-                    info = str(bytes(CMD[20:-1]).decode('UTF-8','ignore'))
+                    # info = str(bytes(CMD[20:-1]).decode('UTF-8','ignore'))
+                    info = str(CMD[-1].decode('UTF-8','ignore'))
                     return id,info
         else:
             return None,None
@@ -318,7 +316,7 @@ class Guidepost(object):
         time.sleep(0.5)
 
     def recognize(self):
-        time.sleep_ms(10)
+        time.sleep_ms(5)
         try:
             max_index,self.max_score = self.AI_WaitForK210(0x01, AI['guidepost'][0], AI['guidepost'][2])
             self.id = self.labels[max_index]
@@ -330,7 +328,7 @@ class Guidepost(object):
             AI_Uart_CMD(self.uart, data_type, cmd, cmd_type, cmd_data)
 
         CMD = uart_handle(self.uart)
-        # print(CMD)
+
         if(len(CMD)>0):
             if(CMD[2]==AI['guidepost'][0] and CMD[3]==0x02):
                 if(CMD[4]==0xff):
@@ -364,15 +362,15 @@ class V831_MODEL(object):
 
     def AI_WaitForK210(self, data_type, cmd, cmd_type, cmd_data=[0, 0, 0, 0, 0, 0]):            
         AI_Uart_CMD(self.uart, data_type, cmd, cmd_type, cmd_data)
-        _CMD = uart_handle(self.uart)
+        CMD = uart_handle(self.uart)
 
-        if(len(_CMD)>0):
-            if(_CMD[3]==self.CommandList[0] and _CMD[4]==self.CommandList[3]):
-                if(_CMD[5]==0xff):
+        if(len(CMD)>0):
+            if(CMD[3]==self.CommandList[0] and CMD[4]==self.CommandList[3]):
+                if(CMD[5]==0xff):
                     return None,None
                 else:
-                    return _CMD[5],round(int(_CMD[6])/100,2)
-            elif(_CMD[2]==0x02):
+                    return CMD[5],round(int(CMD[6])/100,2)
+            elif(CMD[2]==0x02):
                 pass
         else:
             return None,None
@@ -394,12 +392,10 @@ class Track(object):
         self.count = None
         self.code = None
         self.lock = False
-        self.tmp_count = 0
         AI_Uart_CMD(self.uart, 0x01, AI['track'][0], AI['track'][1])
         time.sleep(0.1)
 
     def recognize(self):
-        self.tmp_count += 1
         time.sleep_ms(5)
         try:
             self.x,self.y,self.cx,self.cy,self.w,self.h,self.pixels,self.count,self.code = self.AI_WaitForK210(0x01, AI['track'][0], AI['track'][2])
@@ -409,7 +405,6 @@ class Track(object):
 
 
     def AI_WaitForK210(self, data_type, cmd, cmd_type, cmd_data=[0, 0, 0, 0, 0, 0]): 
-        gc.collect()           
         if(not self.lock): 
             AI_Uart_CMD(self.uart, data_type, cmd, cmd_type, cmd_data)
      
@@ -419,7 +414,8 @@ class Track(object):
                 self.lock = True
                 return None,None,None,None,None,None,None,None,None
             elif(CMD[1]==0x02 and CMD[2]==0x0c and CMD[3]==0x02):
-                _str = str(bytes(CMD[20:-1]).decode('UTF-8','ignore'))
+                # _str = str(bytes(CMD[20:-1]).decode('UTF-8','ignore'))
+                _str = str(CMD[-1].decode('UTF-8','ignore'))
                 # print(_str)
                 data = _str.split('|')
                 return int(data[0]),int(data[1]),round(float(data[2]),2),round(float(data[3]),2),int(data[4]),int(data[5]),int(data[6]),int(data[7]),hammingWeight(int(CMD[4]))
@@ -444,9 +440,8 @@ class Color_Extracto(object):
         time.sleep(0.1)
 
     def recognize(self):
-        # self.count += 1
         gc.collect()   
-        time.sleep_ms(10)
+        time.sleep_ms(5)
         try:
             self.L,self.A,self.B = self.AI_WaitForK210(0x01, AI['color_extracto'][0], AI['color_extracto'][2])
         except Exception as e:
@@ -454,7 +449,6 @@ class Color_Extracto(object):
         self.LAB_Data = [self.L,self.A,self.B]
 
     def AI_WaitForK210(self, data_type, cmd, cmd_type, cmd_data=[0, 0, 0, 0, 0, 0]): 
-        # gc.collect()           
         if(not self.lock):
             AI_Uart_CMD(self.uart, data_type, cmd, cmd_type, cmd_data)
 
@@ -465,7 +459,8 @@ class Color_Extracto(object):
                 return None,None,None
             elif(CMD[1]==0x02 and CMD[2]==AI['color_extracto'][0] and CMD[3]==AI['color_extracto'][2]):
                 self.lock = True
-                _str = str(bytes(CMD[20:-1]).decode('UTF-8','ignore'))
+                # _str = str(bytes(CMD[20:-1]).decode('UTF-8','ignore'))
+                _str = str(CMD[-1].decode('UTF-8','ignore'))
                 data = _str.split('|')
                 return int(data[0]),int(data[1]),int(data[2])
         else:
@@ -513,7 +508,8 @@ class Apriltag(object):
                 return self.none_result
             elif(CMD[1]==0x02 and CMD[2]==AI['apriltag'][0] and CMD[3]==AI['apriltag'][2]):
                 self.lock = True
-                _str = str(bytes(CMD[20:-1]).decode('UTF-8','ignore'))
+                # _str = str(bytes(CMD[20:-1]).decode('UTF-8','ignore'))
+                _str = str(CMD[-1].decode('UTF-8','ignore'))
                 data = eval(_str)
                 return int(data[0]),int(data[1]),float(data[2]),float(data[3]),float(data[4]),float(data[5]),float(data[6]),float(data[7]),float(data[8])
         else:
@@ -549,20 +545,19 @@ class YOLO_MODEL(object):
         gc.collect()           
         if(not self.lock): 
             AI_Uart_CMD(self.uart, data_type, cmd, cmd_type, cmd_data)
-        _CMD = uart_handle(self.uart)
+        CMD = uart_handle(self.uart)
 
-        # print(_CMD)
-
-        if(len(_CMD)>0):
-            if(_CMD[2]==self.CommandList[0] and _CMD[3]==self.CommandList[2]):
-                if(_CMD[4]==0xff):
+        if(len(CMD)>0):
+            if(CMD[2]==self.CommandList[0] and CMD[3]==self.CommandList[2]):
+                if(CMD[4]==0xff):
                     self.lock = True
                     return None,None
                 else:
-                    return _CMD[4],round(int(_CMD[5])/100,2)
-            elif(_CMD[1]==0x02):
+                    return CMD[4],round(int(CMD[5])/100,2)
+            elif(CMD[1]==0x02):
                 self.lock = True
-                _str = str(bytes(CMD[20:-1]).decode('UTF-8','ignore'))
+                # _str = str(bytes(CMD[20:-1]).decode('UTF-8','ignore'))
+                _str = str(CMD[-1].decode('UTF-8','ignore'))
                 data = _str.split('|')
                 return int(data[0]),int(data[1])
         else:
@@ -592,20 +587,21 @@ class Restnet18_MODEL(object):
         gc.collect()           
         if(not self.lock): 
             AI_Uart_CMD(self.uart, data_type, cmd, cmd_type, cmd_data)
-        _CMD = uart_handle(self.uart)
+        CMD = uart_handle(self.uart)
 
-        if(len(_CMD)>0):
-            if(_CMD[1]==0x01 and _CMD[2]==self.CommandList[0] and _CMD[3]==self.CommandList[2]):
-                if(_CMD[4]==0xff):
+        if(len(CMD)>0):
+            if(CMD[1]==0x01 and CMD[2]==self.CommandList[0] and CMD[3]==self.CommandList[2]):
+                if(CMD[4]==0xff):
                     self.lock = True
                     return None,None
                 else:
-                    return _CMD[4],round(int(_CMD[5])/100,2)
-            elif(_CMD[1]==0x02  and _CMD[2]==self.CommandList[0] and _CMD[3]==self.CommandList[2]):
+                    return CMD[4],round(int(CMD[5])/100,2)
+            elif(CMD[1]==0x02  and CMD[2]==self.CommandList[0] and CMD[3]==self.CommandList[2]):
                 self.lock = True
-                _str = str(bytes(_CMD[20:-1]).decode('UTF-8','ignore'))
+                # _str = str(bytes(_CMD[20:-1]).decode('UTF-8','ignore'))
+                _str = str(CMD[-1].decode('UTF-8','ignore'))
                 data = eval(_str)
-                # print(data)
+
                 return int(data[0]),int(data[1])
         else:
             return None,None
@@ -618,8 +614,7 @@ class VisualTracking(object):
     def __init__(self, uart):
         self.uart = uart
         self.lock = False
-        self.line_data = {'rect': None, 'pixels': None, 'cx': None, 'cy': None, 'rotation': None}
-        self.rotation_angle = None
+        self.line_data = {'pixels': None, 'cx': None, 'cy': None, 'angle': None}
         AI_Uart_CMD(self.uart, 0x01, AI['VISUAL_TRACKING_MODE'][0], AI['VISUAL_TRACKING_MODE'][1])
         time.sleep(0.1)
 
@@ -629,26 +624,27 @@ class VisualTracking(object):
         try:
             tmp = self.AI_WaitForK210(0x01, AI['VISUAL_TRACKING_MODE'][0], AI['VISUAL_TRACKING_MODE'][2])
             self.line_data = tmp
-            self.rotation_angle = round(self.line_data['rotation']*180/math.pi,2)
         except Exception as e:
-            # print('err:',e)
-            self.line_data = {'rect': None, 'pixels': None, 'cx': None, 'cy': None, 'rotation': None}
-            self.rotation_angle = None
+            print('err:',e)
+            self.line_data = {'pixels': None, 'cx': None, 'cy': None, 'angle': None}
 
     def AI_WaitForK210(self, data_type, cmd, cmd_type, cmd_data=[0, 0, 0, 0, 0, 0]): 
         if(not self.lock):    
             AI_Uart_CMD(self.uart, data_type, cmd, cmd_type, cmd_data)
 
-        CMD = uart_handle(self.uart)
+        CMD = uart_handle_str(self.uart)
         if(len(CMD)>=5):
-            # print(CMD)
             if(CMD[1]==0x01 and CMD[2]==AI['VISUAL_TRACKING_MODE'][0] and CMD[3]==AI['VISUAL_TRACKING_MODE'][2] and CMD[4]==0xff):
                 self.lock = True
-                return {'rect': None, 'pixels': None, 'cx': None, 'cy': None, 'rotation': None}
+                return {'pixels': None, 'cx': None, 'cy': None, 'angle': None}
             elif(CMD[1]==0x02 and CMD[2]==AI['VISUAL_TRACKING_MODE'][0] and CMD[3]==AI['VISUAL_TRACKING_MODE'][2]):
                 self.lock = True
-                _str = str(bytes(CMD[20:-1]).decode('UTF-8','ignore'))
-                data = eval(_str)
-                return data
+                if(CMD[-1]!=None):
+                    _str = str(CMD[-1].decode('UTF-8','ignore'))
+                    data = eval(_str)
+                    return data
+                else:
+                    # print('=none=')
+                    return {'pixels': None, 'cx': None, 'cy': None, 'angle': None}
         else:
-            return {'rect': None, 'pixels': None, 'cx': None, 'cy': None, 'rotation': None}
+            return {'pixels': None, 'cx': None, 'cy': None, 'angle': None}
