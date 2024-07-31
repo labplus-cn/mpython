@@ -577,7 +577,7 @@ class Restnet18_MODEL(object):
         time.sleep(0.3)
 
     def recognize(self):
-        time.sleep_ms(1)
+        time.sleep_ms(5)
         try:
             self.id,self.max_score = self.AI_WaitForK210(0x01, self.CommandList[0], self.CommandList[2])
         except:
@@ -619,7 +619,7 @@ class VisualTracking(object):
         time.sleep(0.1)
 
     def recognize(self):
-        time.sleep_ms(5)
+        time.sleep_ms(2)
         gc.collect()
         try:
             tmp = self.AI_WaitForK210(0x01, AI['VISUAL_TRACKING_MODE'][0], AI['VISUAL_TRACKING_MODE'][2])
@@ -633,7 +633,9 @@ class VisualTracking(object):
             AI_Uart_CMD(self.uart, data_type, cmd, cmd_type, cmd_data)
 
         CMD = uart_handle_str(self.uart)
+
         if(len(CMD)>=5):
+            print(CMD)
             if(CMD[1]==0x01 and CMD[2]==AI['VISUAL_TRACKING_MODE'][0] and CMD[3]==AI['VISUAL_TRACKING_MODE'][2] and CMD[4]==0xff):
                 self.lock = True
                 return {'pixels': None, 'cx': None, 'cy': None, 'angle': None}
@@ -644,7 +646,6 @@ class VisualTracking(object):
                     data = eval(_str)
                     return data
                 else:
-                    # print('=none=')
                     return {'pixels': None, 'cx': None, 'cy': None, 'angle': None}
         else:
             return {'pixels': None, 'cx': None, 'cy': None, 'angle': None}
