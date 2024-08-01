@@ -132,7 +132,7 @@ def uart_handle(uart):
                         CMD.append(str_temp)
                         return CMD
             else:
-                print('head:{}'.format(head))
+                # print('head:{}'.format(head))
                 return []
         else:
             return []
@@ -209,14 +209,12 @@ def AI_Uart_CMD_String(uart=None, cmd=0xfe, cmd_type=0xfe, cmd_data=[0, 0, 0], s
     for i in range(len(CMD)):
         check_sum = check_sum+CMD[i]
     
-    # uart.write(bytes(CMD))
     str_temp = bytes(str_buf, 'utf-8')
     str_len = len(str_temp)
-    # uart.write(bytes([str_len]))
-    # uart.write(str_temp)
+ 
     for i in range(len(str_temp)):
         check_sum = check_sum + str_temp[i]
-    # uart.write(bytes([check_sum & 0xFF]))
+    
     CMD = bytes(CMD) + bytes([str_len]) + str_temp + bytes([check_sum & 0xFF])
     uart.write(CMD)
 

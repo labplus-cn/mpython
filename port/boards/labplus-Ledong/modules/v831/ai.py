@@ -659,7 +659,9 @@ class Restnet18_MODEL_1000(object):
         self.max_score = 0
         self.lock = False
         AI_Uart_CMD(self.uart, 0x01, self.CommandList[0], self.CommandList[1])
-        time.sleep(0.2)
+        from v831.label_1000classes import labels
+        self.category_list = labels
+        time.sleep(0.5)
 
     def recognize(self):
         time.sleep_ms(5)
@@ -722,7 +724,7 @@ class LPR(object):
                     return None
             elif(CMD[1]==0x02  and CMD[2]==self.CommandList[0] and CMD[3]==self.CommandList[2]):
                 self.lock = True
-                _str = str(CMD[-1].decode('UTF-8','ignore'))
+                _str = str(CMD[-1].decode('UTF-8','ignore').strip())
 
                 return _str
         else:

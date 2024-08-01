@@ -281,7 +281,7 @@ class CameraV831:
         elif(mode==MODEL_YOLO_MODE):
             self.mode = MODEL_YOLO_MODE
 
-        time.sleep(0.3)
+        time.sleep(0.5)
         print('当前模式:',MODE[self.mode])
         self.lock = False
 
