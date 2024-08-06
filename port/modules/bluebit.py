@@ -38,6 +38,8 @@ from weather import WEATHER
 from pm25 import PM25
 from max30102 import MAX30102
 from CSK6011A import SpeechSynthesis
+from solar import SolarPanel
+from paj7620 import  PAJ7620
 
 class Thermistor:
     """
@@ -312,6 +314,8 @@ class Ultrasonic(object):
         sleep_ms(2)
         temp = self.i2c.readfrom(0x0b, 2)
         distanceCM = (temp[0] + temp[1] * 256) / 10
+        if(distanceCM>200):
+            distanceCM=200
         return distanceCM
 
 class SEGdisplay(object):
@@ -1008,8 +1012,8 @@ class MP3_(object):
     WT2003H4-16S
     2022.02.12
     """
-    def __init__(self, tx=-1, rx=-1, uart_num=1):
-        self.uart = UART(uart_num, 9600, stop=2, tx=tx, rx=rx)
+    def __init__(self, tx=Pin.P14, uart_num=1):
+        self.uart = UART(uart_num, 9600, stop=2, tx=tx)
         self._vol = 15
         self.is_paused = False
         self.set_output_mode(1)
@@ -1088,24 +1092,20 @@ class MP3_(object):
         self._vol = vol
         var = [0xAE, vol]
         self._cmdWrite(var)
-        while True:
-            if(self.uart.any()):
-                buff = self.uart.read(2)
-                # print(buff)
-                break
+        sleep_ms(10)
     
-    def song_num(self):
-        """查询 SD 卡内音乐文件总数"""
-        var = [0xC5]
-        self._cmdWrite(var)
-        while True:
-            if(self.uart.any()):
-                buff = self.uart.read(3)
-                num = (buff[1] << 8) + buff[2]
-                if(buff[0]==197):
-                    return num
-                else:
-                    return 0
+    # def song_num(self):
+    #     """查询 SD 卡内音乐文件总数"""
+    #     var = [0xC5]
+    #     self._cmdWrite(var)
+    #     while True:
+    #         if(self.uart.any()):
+    #             buff = self.uart.read(3)
+    #             num = (buff[1] << 8) + buff[2]
+    #             if(buff[0]==197):
+    #                 return num
+    #             else:
+    #                 return 0
 
 
 
@@ -1723,8 +1723,8 @@ class GamePadVal():
         return _battery_level
     
 class ASRPRO(object):
-    def __init__(self, tx=Pin.P16, rx=Pin.P15, uart_num=1):
-        self.uart = UART(uart_num, baudrate=115200, rx=rx, tx=tx)
+    def __init__(self, rx=Pin.P13, uart_num=1):
+        self.uart = UART(uart_num, baudrate=115200, rx=rx)
         self.identifying_word = -1
 
     def any(self):
