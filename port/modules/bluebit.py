@@ -1011,9 +1011,11 @@ class MP3_(object):
     MP3模块
     WT2003H4-16S
     2022.02.12
-    """
     def __init__(self, tx=Pin.P14, uart_num=1):
         self.uart = UART(uart_num, 9600, stop=2, tx=tx)
+    """
+    def __init__(self, tx=-1, rx=-1, uart_num=1):
+        self.uart = UART(uart_num, 9600, stop=2, tx=tx, rx=rx)
         self._vol = 15
         self.is_paused = False
         self.set_output_mode(1)
@@ -1723,8 +1725,8 @@ class GamePadVal():
         return _battery_level
     
 class ASRPRO(object):
-    def __init__(self, rx=Pin.P13, uart_num=1):
-        self.uart = UART(uart_num, baudrate=115200, rx=rx)
+    def __init__(self, tx=Pin.P16, rx=Pin.P15, uart_num=1):
+        self.uart = UART(uart_num, baudrate=115200, rx=rx, tx=tx)
         self.identifying_word = -1
 
     def any(self):
