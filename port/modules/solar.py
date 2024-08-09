@@ -8,7 +8,7 @@ class SolarPanel():
         if 18 in self.i2c.scan():
             print('Solar panel initialization')
         else:
-            print('Solar panel initialization error')
+            print('Solar panel initialization error ! ! !')
             print(self.i2c.scan())
             
 
@@ -38,10 +38,14 @@ class SolarPanel():
         try:
             self.i2c.writeto(18, b'\x03')
             tmp = self.i2c.readfrom(18, 8)
-            # print(tmp)
-            return struct.unpack('4H', tmp)
+            tmp = struct.unpack('4H', tmp)
+            if(tmp!=None):
+                return struct.unpack('4H', tmp)
+            else:
+                return [None]*4
         except Exception as e:
             print(e)
+            return [None]*4
 
 
 # import time
