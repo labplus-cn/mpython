@@ -38,6 +38,8 @@ from weather import WEATHER
 from pm25 import PM25
 from max30102 import MAX30102
 from CSK6011A import SpeechSynthesis
+from solar import SolarPanel
+from paj7620 import  PAJ7620
 
 class Thermistor:
     """
@@ -1009,6 +1011,8 @@ class MP3_(object):
     MP3模块
     WT2003H4-16S
     2022.02.12
+    def __init__(self, tx=Pin.P14, uart_num=1):
+        self.uart = UART(uart_num, 9600, stop=2, tx=tx)
     """
     def __init__(self, tx=-1, rx=-1, uart_num=1):
         self.uart = UART(uart_num, 9600, stop=2, tx=tx, rx=rx)
@@ -1090,25 +1094,20 @@ class MP3_(object):
         self._vol = vol
         var = [0xAE, vol]
         self._cmdWrite(var)
-        sleep_ms(50)
-        # while True:
-        #     if(self.uart.any()):
-        #         buff = self.uart.read(2)
-                # print(buff)
-                # break
+        sleep_ms(10)
     
-    def song_num(self):
-        """查询 SD 卡内音乐文件总数"""
-        var = [0xC5]
-        self._cmdWrite(var)
-        while True:
-            if(self.uart.any()):
-                buff = self.uart.read(3)
-                num = (buff[1] << 8) + buff[2]
-                if(buff[0]==197):
-                    return num
-                else:
-                    return 0
+    # def song_num(self):
+    #     """查询 SD 卡内音乐文件总数"""
+    #     var = [0xC5]
+    #     self._cmdWrite(var)
+    #     while True:
+    #         if(self.uart.any()):
+    #             buff = self.uart.read(3)
+    #             num = (buff[1] << 8) + buff[2]
+    #             if(buff[0]==197):
+    #                 return num
+    #             else:
+    #                 return 0
 
 
 
