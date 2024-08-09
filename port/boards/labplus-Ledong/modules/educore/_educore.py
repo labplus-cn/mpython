@@ -795,20 +795,20 @@ class speaker():
         else:
             self.type = 2
 
-    def tone(self,freq=1000,durl=None):
+    def tone(self,freq=1000,dual=None):
         if(isinstance(freq,list)):
             freq = freq[0]
 
         if(self.type == 1):
-            if(durl==None):
+            if(dual==None):
                 music.pitch(int(freq))
             else:
-                music.pitch(int(freq), int(durl))
+                music.pitch(int(freq), int(dual))
         elif(self.type == 2):
-            if(durl==None):
+            if(dual==None):
                 music.pitch(int(freq), pin=pins_esp32[self.pin])
             else:
-                music.pitch(int(freq), int(durl), pin=pins_esp32[self.pin])
+                music.pitch(int(freq), int(dual), pin=pins_esp32[self.pin])
 
     def stop(self):
         if(self.type == 1):
