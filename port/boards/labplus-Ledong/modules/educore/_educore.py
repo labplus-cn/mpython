@@ -10,7 +10,7 @@ from mpython import sound as _sound
 import network
 import neopixel
 import machine
-from bluebit import Scan_Rfid,Barometric
+from bluebit import Scan_Rfid_Edu,Barometric
 from servo import Servo
 from umqtt.robust import MQTTClient as MQTT
 import ubinascii
@@ -316,7 +316,7 @@ class servo(Servo):
     
 
 '''继承Scan_Rfid'''
-class rfid(Scan_Rfid):
+class rfid(Scan_Rfid_Edu):
     def __init__(self,sda,scl):
         _sda = pins_esp32[sda]
         _scl = pins_esp32[scl]
@@ -795,20 +795,20 @@ class speaker():
         else:
             self.type = 2
 
-    def tone(self,freq=1000,dual=None):
+    def tone(self,freq=1000,dur=None):
         if(isinstance(freq,list)):
             freq = freq[0]
 
         if(self.type == 1):
-            if(dual==None):
+            if(dur==None):
                 music.pitch(int(freq))
             else:
-                music.pitch(int(freq), int(dual))
+                music.pitch(int(freq), int(dur))
         elif(self.type == 2):
-            if(dual==None):
+            if(dur==None):
                 music.pitch(int(freq), pin=pins_esp32[self.pin])
             else:
-                music.pitch(int(freq), int(dual), pin=pins_esp32[self.pin])
+                music.pitch(int(freq), int(dur), pin=pins_esp32[self.pin])
 
     def stop(self):
         if(self.type == 1):
