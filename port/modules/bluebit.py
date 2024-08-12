@@ -1401,6 +1401,130 @@ class Rfid():
         """
         return self._serial_number
 
+
+    def _judge_block(self, block_number):
+        """判断block是否可用。
+
+        RFID卡内储存空间分为16 个扇区，每个扇区由4 块（块0、块1、块2、块3）组成，（我们也
+        将16 个扇区的64 个块按绝对地址编号为0~63。第0 扇区的块0（即绝对地址0 块），它用于存放厂商代码，已经固化，不可更改。
+        每个扇区的块0、块1、块2 为数据块，可用于存贮数据。
+
+        :param block_number: 块编号
+        """
+        unused_blocked = [i*2 ^ 2-1 for i in range(1, 16)]
+        unused_blocked.append(0)
+        if block_number in unused_blocked:
+            raise Exception(
+                "This block {} can't be accessed!" .format(block_number))
+        else:
+            return True
+
+    def auth(self, block_number=1):
+        serNum = self._get_serNum(self._serial_number)
+        if self._judge_block(block_number):
+            self.rfid.init(self.i2c)
+            if self.rfid.find_card():
+                self.rfid.anticoll()
+                if self.rfid.select_tag(serNum):
+                    return self.rfid.auth(serNum, block_number)
+
+    def read_block(self, block_number=1):
+        """读取块数据,长度16字节
+
+        :param block_number: 块编号
+        """
+        self.auth(block_number)
+        return self.rfid.read_block(block_number)
+
+    def write_block(self, buf, block_number=1):
+        """写块数据,长度16字节
+
+        :param bytes buf: 块编号
+        :param int block_number: 块编号
+        """
+        self.auth(block_number)
+        return self.rfid.write_block(block_number, buf)
+
+    def set_purse(self, block_number=1):
+        """
+        设置电子钱包,默认使用block 1。
+
+        :param int block_number: 块编号
+        """
+        if block_number != 1:
+            self.purse_block = block_number
+        else:
+            self.purse_block = 1
+        self.auth(self.purse_block)
+        return self.rfid.set_purse(self.purse_block)
+
+    def get_balance(self):
+        """
+        获取电子钱包余额。使用该函数前,必须对数据块进行 ``set_purse()`` 设置。
+
+        :return: 返回余额
+        """
+        if self.purse_block is None:
+            self.purse_block = 1
+        self.auth(self.purse_block)
+        return self.rfid.balance(self.purse_block)
+
+    def increment(self, value):
+        """
+        给电子钱包充值。使用该函数前,必须对数据块进行 ``set_purse()`` 设置。
+
+        :param int value: 充值 
+        """
+        if self.purse_block is None:
+            self.purse_block = 1
+        self.auth(self.purse_block)
+        return self.rfid.increment(self.purse_block, value)
+
+    def decrement(self, value):
+        """
+        给电子钱包扣费。使用该函数前,必须对数据块进行 ``set_purse()`` 设置。
+
+        :param int value: 扣费 
+        """
+        if self.purse_block is None:
+            self.purse_block = 1
+        self.auth(self.purse_block)
+        return self.rfid.decrement(self.purse_block, value)
+    
+
+
+class Rfid_Edu():
+    """
+    Rfid类,提供读写block和电子钱包操作。
+
+    :param i2c: I2C实例对象
+    :param serial_number: RFID卡序列号
+
+    """
+
+    import rfid
+
+    def __init__(self, i2c, serial_number):
+        self.i2c = i2c
+        self._serial_number = serial_number
+        self.purse_block = None
+
+    def _get_serNum(self, serial_number):
+        serNumCheck = 0
+        buf = serial_number.to_bytes(4, 'little')
+        for i in range(4):
+            serNumCheck ^= buf[i]
+        serNum_list = [int(i) for i in buf]
+        serNum_list.append(serNumCheck)
+        return (tuple(serNum_list))
+
+    def serial_number(self):
+        """
+        获取序列号
+        """
+        return str(self._serial_number)
+
+
     def _judge_block(self, block_number):
         """判断block是否可用。
 
@@ -1511,6 +1635,27 @@ class Scan_Rfid():
                 serial_num = int.from_bytes(bytes(serial_tuple[:-1]), 'little')
                 print("find card: {}" .format(serial_num))
                 return Rfid(i2c, serial_num)
+
+class Scan_Rfid_Edu():
+    """扫描Rfid卡类.
+    """
+    import rfid
+
+    @classmethod
+    def scanning(cls, i2c=i2c):
+        """
+        扫描RFID卡,返回Rfid对象
+
+        :param obj i2c: I2C实例对象
+        :return: 返回Rfid对象
+        """
+        cls.rfid.init(i2c)
+        if cls.rfid.find_card():
+            serial_tuple = cls.rfid.anticoll()
+            if serial_tuple:
+                serial_num = int.from_bytes(bytes(serial_tuple[:-1]), 'little')
+                print("find card: {}" .format(serial_num))
+                return Rfid_Edu(i2c, serial_num)
 
 class VoiceAssistant():
     """语音助手类"""
