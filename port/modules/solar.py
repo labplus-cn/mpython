@@ -40,7 +40,7 @@ class SolarPanel():
             tmp = self.i2c.readfrom(18, 8)
             tmp = struct.unpack('4H', tmp)
             if(tmp!=None):
-                return struct.unpack('4H', tmp)
+                return tmp
             else:
                 return [None]*4
         except Exception as e:
