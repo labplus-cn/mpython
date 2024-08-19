@@ -41,6 +41,7 @@ class Face_recogization(object):
                         self.lock = True
                         return None,None
                     else:
+                        self.lock = True
                         return CMD[4],round(int(CMD[5])/100,2)
             elif(CMD[1]==0x02):
                 pass
@@ -211,6 +212,7 @@ class FACE_DETECT(object):
                     self.lock = True
                     return None,None
                 else:
+                    self.lock = True
                     return CMD[4],round(int(CMD[5])/100,2)
             elif(CMD[1]==0x02):
                 pass
@@ -233,7 +235,6 @@ class Color_recognization(object):
         time.sleep_ms(50)
         
     def recognize(self):
-        # self.count += 1
         time.sleep_ms(10)
         try:
             self.id = self.AI_WaitForK210(0x01, AI['color'][0], AI['color'][3])
@@ -243,7 +244,6 @@ class Color_recognization(object):
     def AI_WaitForK210(self, data_type, cmd, cmd_type, cmd_data=[0, 0, 0, 0, 0, 0]):    
         if(not self.lock):        
             AI_Uart_CMD(self.uart, data_type, cmd, cmd_type, cmd_data)
-            # print('cmd')
         CMD = uart_handle(self.uart)
 
         if(len(CMD)>0):
@@ -252,6 +252,7 @@ class Color_recognization(object):
                     self.lock = True
                     return None
                 else:
+                    self.lock = True
                     return CMD[4]
             elif(CMD[1]==0x02):
                 pass
@@ -296,6 +297,7 @@ class QRCode_recognization(object):
                         return None,None
             elif(CMD[1]==0x02):
                 if(CMD[2]==AI['qrcode'][0] and CMD[3]==AI['qrcode'][3]):
+                    self.lock = True
                     id = CMD[4]
                     # info = str(bytes(CMD[20:-1]).decode('UTF-8','ignore'))
                     info = str(CMD[-1].decode('UTF-8','ignore'))
@@ -350,6 +352,7 @@ class V831_MODEL(object):
         self.CommandList = AI['kpu_model']
         self.id = None
         self.max_score = None
+        self.lock = False
         AI_Uart_CMD_String(uart=self.uart, cmd=self.CommandList[0], cmd_type=self.CommandList[2], str_buf=komodel_path)
         time.sleep(0.5)
 
@@ -367,8 +370,10 @@ class V831_MODEL(object):
         if(len(CMD)>0):
             if(CMD[3]==self.CommandList[0] and CMD[4]==self.CommandList[3]):
                 if(CMD[5]==0xff):
+                    self.lock = True
                     return None,None
                 else:
+                    self.lock = True
                     return CMD[5],round(int(CMD[6])/100,2)
             elif(CMD[2]==0x02):
                 pass
@@ -414,6 +419,7 @@ class Track(object):
                 self.lock = True
                 return None,None,None,None,None,None,None,None,None
             elif(CMD[1]==0x02 and CMD[2]==0x0c and CMD[3]==0x02):
+                self.lock = True
                 # _str = str(bytes(CMD[20:-1]).decode('UTF-8','ignore'))
                 _str = str(CMD[-1].decode('UTF-8','ignore'))
                 # print(_str)
