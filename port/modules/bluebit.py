@@ -1011,11 +1011,12 @@ class MP3_(object):
     MP3模块
     WT2003H4-16S
     2022.02.12
+    2024.8 去除rx引脚参数
     def __init__(self, tx=Pin.P14, uart_num=1):
         self.uart = UART(uart_num, 9600, stop=2, tx=tx)
     """
     def __init__(self, tx=-1, rx=-1, uart_num=1):
-        self.uart = UART(uart_num, 9600, stop=2, tx=tx, rx=rx)
+        self.uart = UART(uart_num, 9600, stop=2, tx=tx)
         self._vol = 15
         self.is_paused = False
         self.set_output_mode(1)
