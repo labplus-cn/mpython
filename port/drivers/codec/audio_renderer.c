@@ -102,10 +102,10 @@ static void init_i2s(renderer_config_t *config)
 
     #if !MICROPY_BUILDIN_DAC || !MICROPY_BUILDIN_ADC
     i2s_pin_config_t i2s_pin_cfg;
-    i2s_pin_cfg.bck_io_num = GPIO_NUM_27; //18;
-    i2s_pin_cfg.ws_io_num = GPIO_NUM_12; //5; 
-    i2s_pin_cfg.data_out_num = GPIO_NUM_25; //32;
-    i2s_pin_cfg.data_in_num = GPIO_NUM_26; //35;
+    i2s_pin_cfg.bck_io_num = GPIO_NUM_27; 
+    i2s_pin_cfg.ws_io_num = GPIO_NUM_12;  
+    i2s_pin_cfg.data_out_num = GPIO_NUM_26; 
+    i2s_pin_cfg.data_in_num = GPIO_NUM_25; 
     i2s_set_pin(I2S_USE_NUM, &i2s_pin_cfg);
     // i2s_mclk_gpio_select(config->i2s_num, GPIO_NUM_0);
     PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);
