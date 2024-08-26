@@ -10,7 +10,8 @@ from mpython import sound as _sound
 import network
 import neopixel
 import machine
-from bluebit import Scan_Rfid_Edu,Barometric
+from bluebit import Scan_Rfid_Edu,Barometric,DelveBit
+from bluebit import SoilHumiditySensor
 from servo import Servo
 from umqtt.robust import MQTTClient as MQTT
 import ubinascii
@@ -67,7 +68,13 @@ class pin():
 
     def read_analog(self):
         if self.pin_num not in [0, 1, 2, 3, 4, 10]:
-            return self.read_digital()
+            tmp = self.read_digital()
+            if(tmp==0):
+                return 0
+            elif(tmp==1):
+                return 4095
+            else:
+                return None
         pins_state[self.pin_num]=PinMode.ANALOG
         self._pin = MPythonPin(self.pin_num, PinMode.ANALOG)
         return self._pin.read_analog()
@@ -729,17 +736,17 @@ class webcamera():
             msg = self._MQTTClient.message(topic=self.topic)
             if(msg):
                 msg = eval(msg)
-                self.fcr.blinks = msg[0]
-                self.fcr.mouth = msg[1]
-                self.fcr.status = 1
+                self.fcr.blinks = msg["blink"]
+                self.fcr.mouth = msg["mouth_open"]
+                self.fcr.status = msg["status"]
             else:
                 self.fcr.blinks = None
                 self.fcr.mouth = None
                 self.fcr.status = 0
         except Exception as e:
             print(e)
-            self.fcr.blinks = 0
-            self.fcr.mouth = 0
+            self.fcr.blinks = None
+            self.fcr.mouth = None
             self.fcr.status = 0
 
 
@@ -906,3 +913,35 @@ class compass(object):
 
     def direction(self):
         return self.magnetic.get_heading()
+    
+
+'''
+重力传感器
+'''
+class force(object):
+    def __init__(self, sda=20, scl=19):
+        self._zero_scale = 0
+        _sda = pins_esp32[sda]
+        _scl = pins_esp32[scl]
+        if(sda==20 or scl==19):
+            self.i2c = i2c
+            self.dev = DelveBit(address=0x6F, i2c=self.i2c)
+        else:
+            self.i2c = I2C(1, scl=Pin(_scl), sda=Pin(_sda), freq=400000)
+            time.sleep(0.1)
+            self.dev = DelveBit(address=0x6F, i2c=self.i2c)
+
+    def zero(self):
+        self._zero_scale = self.dev.common_measure()
+
+    def read(self,mass=True):
+        tmp = self.dev.common_measure() - self._zero_scale
+        if(tmp!=None):
+            if(mass):
+                # g  1000克(g)受到9.80665牛顿(N)
+                m = round((tmp/9.80665)*1000,2)
+                return m
+            else:
+                return round(tmp,2)
+        else:
+            return None

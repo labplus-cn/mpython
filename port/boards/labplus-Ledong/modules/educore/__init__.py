@@ -1,7 +1,6 @@
 print('educore init')
 
 from ._educore import *
-# from ._educore import _pin as pin
 from ._camera1956 import Camera1956
 from ._smartcamera import EduSmartCamera
 from ._ble import *

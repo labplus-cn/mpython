@@ -1015,7 +1015,7 @@ class MP3_(object):
         self.uart = UART(uart_num, 9600, stop=2, tx=tx)
     """
     def __init__(self, tx=-1, rx=-1, uart_num=1):
-        self.uart = UART(uart_num, 9600, stop=2, tx=tx, rx=rx)
+        self.uart = UART(uart_num, 9600, stop=2, tx=tx)
         self._vol = 15
         self.is_paused = False
         self.set_output_mode(1)
@@ -1802,6 +1802,10 @@ class SoilHumiditySensor():
     def set_threshold(self, threshold):
         '''设置土壤湿度传感器阈值，模拟值'''
         self.threshold = threshold
+
+    def read(self):
+        _soil_humidity =  self.pin.read_analog()
+        return int(numberMap(_soil_humidity,0,4095,4095,0))
 
 from mpython import button_a,button_b
 class GamePadVal():
