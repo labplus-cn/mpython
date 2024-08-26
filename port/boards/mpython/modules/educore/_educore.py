@@ -11,6 +11,7 @@ import network
 import neopixel
 import machine
 from bluebit import Scan_Rfid_Edu,Barometric,DelveBit
+from bluebit import SoilHumiditySensor
 from servo import Servo
 from umqtt.robust import MQTTClient as MQTT
 import ubinascii
@@ -736,17 +737,17 @@ class webcamera():
             msg = self._MQTTClient.message(topic=self.topic)
             if(msg):
                 msg = eval(msg)
-                self.fcr.blinks = msg[0]
-                self.fcr.mouth = msg[1]
-                self.fcr.status = 1
+                self.fcr.blinks = msg["blink"]
+                self.fcr.mouth = msg["mouth_open"]
+                self.fcr.status = msg["status"]
             else:
                 self.fcr.blinks = None
                 self.fcr.mouth = None
                 self.fcr.status = 0
         except Exception as e:
             print(e)
-            self.fcr.blinks = 0
-            self.fcr.mouth = 0
+            self.fcr.blinks = None
+            self.fcr.mouth = None
             self.fcr.status = 0
 
 

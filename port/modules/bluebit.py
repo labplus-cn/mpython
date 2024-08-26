@@ -1804,6 +1804,10 @@ class SoilHumiditySensor():
         '''设置土壤湿度传感器阈值，模拟值'''
         self.threshold = threshold
 
+    def read(self):
+        _soil_humidity =  self.pin.read_analog()
+        return int(numberMap(_soil_humidity,0,4095,4095,0))
+
 from mpython import button_a,button_b
 class GamePadVal():
     '''
