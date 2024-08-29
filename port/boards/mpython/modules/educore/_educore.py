@@ -150,9 +150,9 @@ class sound():
         elif(self.type == 2):
             return self.pin.read_analog()
             
-    @staticmethod
-    def read():
-        return _sound.read()
+    # @staticmethod
+    # def read():
+    #     return _sound.read()
 
 
 '''
@@ -169,14 +169,16 @@ class light():
             self.pin = MPythonPin(self.pin_num, PinMode.ANALOG)
 
     def read(self):
+        # print(111)
         if(self.type == 1):
             return  _light.read()
         elif(self.type == 2):
             return self.pin.read_analog()
             
-    @staticmethod
-    def read():
-        return _light.read()
+    # @staticmethod
+    # def read():
+    #     print(222)
+    #     return _light.read()
 
 
 
