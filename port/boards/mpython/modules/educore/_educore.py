@@ -332,7 +332,8 @@ class rfid(Scan_Rfid_Edu):
         if(sda==20 or scl==19):
             self.i2c_1 = i2c
         else:
-            self.i2c_1 = I2C(1, scl=Pin(_scl), sda=Pin(_sda), freq=400000)
+            self.i2c_1 = I2C(scl=Pin(_scl), sda=Pin(_sda), freq=400000)
+            time.sleep_ms(100)
         # print(self.i2c_1.scan())
         super().__init__()
     
@@ -536,7 +537,8 @@ class ultrasonic(object):
         if(sda==20 or scl==19):
             self.i2c = i2c
         else:
-            self.i2c = I2C(1, scl=Pin(_scl), sda=Pin(_sda), freq=400000)
+            self.i2c = I2C(scl=Pin(_scl), sda=Pin(_sda), freq=400000)
+            time.sleep_ms(100)
 
     def distance(self):
         """
@@ -890,8 +892,8 @@ class pressure(object):
             self.dev = Barometric(self.i2c)
             print(self.i2c)
         else:
-            self.i2c = I2C(1, scl=Pin(_scl), sda=Pin(_sda), freq=400000)
-            time.sleep(0.1)
+            self.i2c = I2C(scl=Pin(_scl), sda=Pin(_sda), freq=400000)
+            time.sleep_ms(100)
             self.dev = Barometric(self.i2c)
 
     def read(self):
@@ -929,8 +931,8 @@ class force(object):
             self.i2c = i2c
             self.dev = DelveBit(address=0x6F, i2c=self.i2c)
         else:
-            self.i2c = I2C(1, scl=Pin(_scl), sda=Pin(_sda), freq=400000)
-            time.sleep(0.1)
+            self.i2c = I2C(scl=Pin(_scl), sda=Pin(_sda), freq=400000)
+            time.sleep_ms(100)
             self.dev = DelveBit(address=0x6F, i2c=self.i2c)
 
     def zero(self):
