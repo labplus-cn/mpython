@@ -2,7 +2,7 @@
 educore
 '''
 import gc
-from mpython import MPythonPin,PinMode,Pin,OLED,Image,i2c,I2C,wifi,button_a,button_b,sleep_ms,sleep,numberMap,ledong_shield,Magnetic
+from mpython import MPythonPin,PinMode,Pin,OLED,Image,i2c,I2C,wifi,Button,button_a,button_b,sleep_ms,sleep,numberMap,ledong_shield,Magnetic
 from mpython import accelerometer as _accelerometer
 from mpython import rgb as _rgb
 from mpython import light as _light
@@ -761,7 +761,9 @@ class button:
         self.type = _type
         self.func_event_change = None
         if(self.type not in ['a','b']):
-             self.pin = MPythonPin(self.type, PinMode.IN)
+            # self.pin = MPythonPin(self.type, PinMode.IN)
+            self.pin = pins_esp32[self.type]
+            self.button = Button(self.pin)
 
     def func(self,_):
         self.func_event_change()
@@ -779,7 +781,8 @@ class button:
             elif(self.type=='b'):
                 self.button_b.event_pressed = self.func
             else:
-                print('Not supported')
+                # print('Not supported')
+                self.button.event_pressed = self.func
 
 
     def status(self):
@@ -788,8 +791,9 @@ class button:
         elif(self.type=='b'):
             return self.button_b.status()
         else:
-            val = self.pin.read_digital()
-            return val
+            # val = self.pin.read_digital()
+            # return val
+            return self.button.status()
 '''
 麦克风
 '''          
