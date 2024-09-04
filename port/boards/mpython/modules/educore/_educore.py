@@ -952,3 +952,6 @@ class force(object):
                 return round(tmp,2)
         else:
             return None
+
+def abs(num):
+    return math.fabs(num)
