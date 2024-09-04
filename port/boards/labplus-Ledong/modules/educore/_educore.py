@@ -547,6 +547,10 @@ class ultrasonic(object):
         sleep_ms(2)
         temp = self.i2c.readfrom(0x0b, 2)
         distanceCM = int((temp[0] + temp[1] * 256) / 10)
+
+        if(distanceCM>200):
+            distanceCM = 200
+
         return distanceCM
 
 '''
@@ -951,3 +955,8 @@ class force(object):
                 return round(tmp,2)
         else:
             return None
+        
+def abs(num):
+    return math.fabs(num)
+
+
