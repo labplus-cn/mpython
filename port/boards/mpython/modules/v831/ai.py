@@ -729,3 +729,13 @@ class LPR(object):
                 return _str
         else:
             return None
+
+class IMAGE_CAPTURE(object):
+    """ """
+    def __init__(self,uart,path,width,high):
+        self.uart = uart
+        self.CommandList = AI['image_capture']
+        self.lock = False
+        parameter = str([path,width,high])
+        AI_Uart_CMD_String(uart=self.uart, cmd=self.CommandList[0], cmd_type=self.CommandList[1], cmd_data=[], str_buf=parameter)
+        time.sleep(0.1)

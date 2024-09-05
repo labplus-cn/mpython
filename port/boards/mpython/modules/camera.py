@@ -179,6 +179,10 @@ class CameraV831:
     def lpr_init(self):
         self.lpr = LPR(self.uart)
         self.mode = LPR_MODE
+    
+    def img_capture_init(self,path,width,high):
+        self.img_capture = IMAGE_CAPTURE(self.uart,path,width,high)
+        self.mode = IMAGE_CAPTURE
 
     def set_led(self,power=False):
         if(power):

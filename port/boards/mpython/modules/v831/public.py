@@ -31,7 +31,8 @@ AI ={
     'model_yolo':[0x10,0x01,0x02],
     'model_restnet18':[0x11,0x01,0x02],
     'lpr':[0x12,0x01,0x02],
-    'sobel':[0x13,0x01,0x02]#19
+    'sobel':[0x13,0x01,0x02],
+    'image_capture':[0x14,0x01,0x02] #20
 }
 
 DEFAULT_MODE = 1 #默认
@@ -53,6 +54,7 @@ MODEL_YOLO_MODE = 16
 MODEL_resnet18_MODE = 17
 LPR_MODE = 18
 SOBEL_MODE = 19
+IMAGE_CAPTURE = 20
 
 
 Factory_MODE = 0xFD
