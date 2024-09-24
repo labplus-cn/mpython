@@ -235,6 +235,7 @@ class Color_recognization(object):
         time.sleep_ms(50)
         
     def recognize(self):
+        # self.count += 1
         time.sleep_ms(10)
         try:
             self.id = self.AI_WaitForK210(0x01, AI['color'][0], AI['color'][3])
@@ -244,6 +245,7 @@ class Color_recognization(object):
     def AI_WaitForK210(self, data_type, cmd, cmd_type, cmd_data=[0, 0, 0, 0, 0, 0]):    
         if(not self.lock):        
             AI_Uart_CMD(self.uart, data_type, cmd, cmd_type, cmd_data)
+            # print('cmd')
         CMD = uart_handle(self.uart)
 
         if(len(CMD)>0):
@@ -735,3 +737,13 @@ class LPR(object):
                 return _str
         else:
             return None
+
+class IMAGE_CAPTURE(object):
+    """ """
+    def __init__(self,uart,path,width,high):
+        self.uart = uart
+        self.CommandList = AI['image_capture']
+        self.lock = False
+        parameter = str([path,width,high])
+        AI_Uart_CMD_String(uart=self.uart, cmd=self.CommandList[0], cmd_type=self.CommandList[1], cmd_data=[], str_buf=parameter)
+        time.sleep(0.1)

@@ -180,6 +180,17 @@ class CameraV831:
         self.lpr = LPR(self.uart)
         self.mode = LPR_MODE
     
+    def canvas_init(self):
+        AI_Uart_CMD(self.uart, 0x01, 0x01, 0xFA, [0x01])
+        self.mode = DEFAULT_MODE
+    
+    def canvas_clear(self):
+        AI_Uart_CMD(self.uart, 0x01, 0x01, 0xFA, [0x02])
+    
+    def canvas_txt(self,txt='',scale=1,x=0,y=0):
+        _str = str([x,y,txt])
+        AI_Uart_CMD_String(uart=self.uart, cmd=0x01, cmd_type=0xFA, cmd_data=[scale], str_buf=_str)
+
     def img_capture_init(self,path,width,high):
         self.img_capture = IMAGE_CAPTURE(self.uart,path,width,high)
         self.mode = IMAGE_CAPTURE

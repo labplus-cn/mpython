@@ -191,6 +191,9 @@ class CameraV831:
         _str = str([x,y,txt])
         AI_Uart_CMD_String(uart=self.uart, cmd=0x01, cmd_type=0xFA, cmd_data=[scale], str_buf=_str)
 
+    def img_capture_init(self,path,width,high):
+        self.img_capture = IMAGE_CAPTURE(self.uart,path,width,high)
+        self.mode = IMAGE_CAPTURE
 
     def set_led(self,power=False):
         if(power):
