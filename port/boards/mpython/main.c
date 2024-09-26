@@ -173,7 +173,7 @@ soft_reset:
         ESP_LOGE("system", "%s", msg_iic_failed);
         hw_init_flags |= 0x0001;
     } else {
-        oled_drawImg(img_mpython);
+        oled_drawImg(img_uae);
         // oled_drawImg(img_InnovaBit);
         oled_show();
         oled_deinit();
