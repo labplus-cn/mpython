@@ -191,10 +191,14 @@ class SHT20(object):
 
         :return: 温度,单位摄氏度
         """
-        self.i2c.writeto(0x40, b'\xf3')
-        sleep_ms(70)
-        t = i2c.readfrom(0x40, 2)
-        return -46.86 + 175.72 * (t[0] * 256 + t[1]) / 65535
+        try:
+            self.i2c.writeto(0x40, b'\xf3')
+            sleep_ms(100)
+            t = i2c.readfrom(0x40, 2)
+            return -46.86 + 175.72 * (t[0] * 256 + t[1]) / 65535
+        except Exception as e:
+            print(e)
+            return -1
 
     def humidity(self):
         """
@@ -202,10 +206,13 @@ class SHT20(object):
 
         :return: 湿度,单位%
         """
-        self.i2c.writeto(0x40, b'\xf5')
-        sleep_ms(25)
-        t = i2c.readfrom(0x40, 2)
-        return -6 + 125 * (t[0] * 256 + t[1]) / 65535
+        try:
+            self.i2c.writeto(0x40, b'\xf5')
+            sleep_ms(35)
+            t = i2c.readfrom(0x40, 2)
+            return -6 + 125 * (t[0] * 256 + t[1]) / 65535
+        except Exception as e:
+            return -1
 
 
 class Color(object):
@@ -310,13 +317,16 @@ class Ultrasonic(object):
 
         :return: 返回测距,单位cm
         """
-        self.i2c.writeto(0x0b, bytearray([1]))
-        sleep_ms(2)
-        temp = self.i2c.readfrom(0x0b, 2)
-        distanceCM = (temp[0] + temp[1] * 256) / 10
-        if(distanceCM>200):
-            distanceCM=200
-        return distanceCM
+        try:
+            self.i2c.writeto(0x0b, bytearray([1]))
+            sleep_ms(2)
+            temp = self.i2c.readfrom(0x0b, 2)
+            distanceCM = (temp[0] + temp[1] * 256) / 10
+            if(distanceCM>200):
+                distanceCM=200
+            return distanceCM
+        except Exception as e:
+            return -1
 
 class SEGdisplay(object):
     """
