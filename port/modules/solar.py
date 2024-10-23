@@ -1,4 +1,4 @@
-from mpython import i2c
+from mpython import i2c,numberMap
 import struct
 
 # 太阳能板模块
@@ -11,7 +11,6 @@ class SolarPanel():
             print('Solar panel initialization error')
             print(self.i2c.scan())
             
-
     def set_servo(self, servo_num, angle):
         """
         设置舵机转动角度
@@ -22,6 +21,13 @@ class SolarPanel():
 
         返回值：无
         """
+        angle = max(min(angle, 180), 0)
+        if(servo_num==1):
+            angle = numberMap(angle,0,180,-90,90)
+        elif(servo_num==2):
+            angle = max(min(angle, 90), 10)
+            # angle = numberMap(angle,10,90,10,90)
+
         try:
             angle = max(min(angle, 90), -90)
             self.i2c.writeto(18, bytearray([servo_num, angle]))

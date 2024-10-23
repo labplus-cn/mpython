@@ -918,9 +918,30 @@ class wifi:
         self.ap.active(False)
         print('disable AP WiFi...')
 
-# 4 rgb leds
-rgb = NeoPixel(Pin(17, Pin.OUT), 4, 3, 1, brightness=0.3)
-rgb.write()
+
+class RGB:
+    def __init__(self):
+        # 4 rgb leds
+        self.rgb_box = NeoPixel(Pin(17, Pin.OUT), 4, 3, 1, brightness=0.2)
+        self.rgb_box.write()
+    
+    def fill(self,r,g,b):
+        self.rgb_box.fill((r,g,b))
+        self.rgb_box.write()
+        sleep_ms(1)
+    
+    def set_rgb(self,index,r,g,b):
+        if(index==2):
+            index = 3
+        elif(index==3):
+            index = 2
+        self.rgb_box[index] = (r,g,b)
+        self.rgb_box.write()
+        sleep_ms(1)
+
+    
+rgb = RGB()
+
 
 # light sensor
 light = ADC(Pin(39))
@@ -1041,8 +1062,9 @@ class Touch:
     def read(self):
         return self.__touch_pad.read()
 
-button_a = Button(34)
-button_b = Button(38)
+button_a = Button(38)
+button_b = Button(34)
+
 
 # touchpad
 # touchpad_p = touchPad_P = Touch(Pin(27))
@@ -1058,6 +1080,7 @@ class Ledong_shield(object):
         self.speed = 0 
         self.i2c = i2c
         self.i2c_addr = 17
+        self.motor_num = [0,2,1]
 
     def set_motor(self, motor_num, speed):
         self.speed = speed
@@ -1065,14 +1088,17 @@ class Ledong_shield(object):
             self.speed = 100
         if self.speed < -100:
             self.speed = -100
-        self.i2c.writeto(self.i2c_addr, bytearray([motor_num, self.speed]), True)
+        self.i2c.writeto(self.i2c_addr, bytearray([self.motor_num[motor_num], self.speed]), True)
 
     def power_off(self):
         self.i2c.writeto(self.i2c_addr, b'\x06\x01', True)
 
     def get_battery_level(self):
         self.i2c.writeto(self.i2c_addr, b'\x03', True)
-        return self.i2c.readfrom(self.i2c_addr, 1)[0]
+        buf = self.i2c.readfrom(self.i2c_addr, 1)[0]
+        print(buf)
+        # data = ustruct.unpack('>H', buf)
+        return buf
     
     # MP3模块进入u盘模式(不要在播放状态下操作)
     def set_masstorage_mode(self):
