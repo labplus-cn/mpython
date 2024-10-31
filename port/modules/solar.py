@@ -23,9 +23,9 @@ class SolarPanel():
         """
         angle = max(min(angle, 180), 0)
         if(servo_num==1):
-            angle = numberMap(angle,0,180,-90,90)
+            angle = int(numberMap(angle,0,180,-90,90))
         elif(servo_num==2):
-            angle = max(min(angle, 90), 10)
+            angle = int(max(min(angle, 90), 10))
             # angle = numberMap(angle,10,90,10,90)
 
         try:
@@ -44,10 +44,14 @@ class SolarPanel():
         try:
             self.i2c.writeto(18, b'\x03')
             tmp = self.i2c.readfrom(18, 8)
-            # print(tmp)
-            return struct.unpack('4H', tmp)
+            tmp = struct.unpack('4H', tmp)
+            if(tmp!=None):
+                return tmp
+            else:
+                return [None]*4
         except Exception as e:
             print(e)
+            return [None]*4
 
 
 # import time

@@ -1095,10 +1095,10 @@ class Ledong_shield(object):
 
     def get_battery_level(self):
         self.i2c.writeto(self.i2c_addr, b'\x03', True)
-        buf = self.i2c.readfrom(self.i2c_addr, 1)[0]
-        print(buf)
-        # data = ustruct.unpack('>H', buf)
-        return buf
+        buf = self.i2c.readfrom(self.i2c_addr, 2)
+        data = (buf[1] << 8) + buf[0]
+        data = max(min(data, 4200), 3300)
+        return data
     
     # MP3模块进入u盘模式(不要在播放状态下操作)
     def set_masstorage_mode(self):
