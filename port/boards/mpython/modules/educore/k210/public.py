@@ -28,6 +28,9 @@ AI ={
     'color_statistics':[0x0d,0x01,0x02,0x03,0x04],
     'color_extracto':[0x0e,0x01,0x02],
     'apriltag':[0x0f,0x01,0x02,0x03],
+    'kpu_model_yolo':[0x10,0x01,0x02,0x03],
+    'video': [0x14,0x01,0x02],
+    'factory':[99,0x01,0x02,0x03,0x04,0x05]
 }
 
 DEFAULT_MODE = 1 #默认
@@ -45,6 +48,11 @@ TRACK_MODE = 12 #寻找色块识别
 COLOR_STATISTICS_MODE = 13 #图像处理
 COLOR_EXTRACTO_MODE = 14 # LAB颜色提取器
 APRILTAG_MODE = 15 # AprilTag模式
+KPU_YOLO_MODEL_MODE = 16 # 自定义yolo模型
+VIDEO_MODE = 20 # 采集图像
+
+FACTORY_MODE = 99 
+
 
 MODE=['保留','默认','数字识别','物体识别','人脸检测','人脸识别','自学习分类','颜色识别','二维码识别','语音识别','交通标志识别','KPU自定义模型','寻找色块识别','图像处理','LAB颜色提取器','AprilTag']
 
@@ -55,50 +63,106 @@ def CheckCode(tmp):
     return sum & 0xff
 
 def uart_handle(uart):
-    num = 0
-    while True:
-        gc.collect()
-        num +=1
-        CMD = []
-        if(uart.any()):
-            head = uart.read(3)
-            if(head==None or len(head)!=3):
-                # print('!')
-                return []
-            elif(head and head[0] == 0xBB and head[1] == 0xAA):
-                CMD.extend([0xBB,0xAA])
-                CMD.append(head[2])
+    gc.collect()
+    CMD = []
+    HEAD = []
+    # while True:
+    if(uart.any()):
+        head = uart.read(3)
+    
+        if b"\xbb" in head:
+            for i in range(len(head)):
+                HEAD.append(head[i])
+        
+            if(HEAD[0] == 0xBB):
+                CMD.extend([HEAD[0],HEAD[1],HEAD[2]])
                 if(CMD[2]==0x01):
                     res = uart.read(9)
-                    if(res==None or len(res)!=9):
-                        # print('!')
-                        return []
+                    
                     for i in range(9):
                         CMD.append(res[i])                  
                     checksum = CheckCode(CMD[:11])
                     if(res and checksum == CMD[11]):
-                        # print('CMD===')
                         return CMD
+                    else:
+                        print(CMD)
                 elif(CMD[2]==0x02):
                     res = uart.read(18)
-                    if(res==None or len(res)!=18):
-                        # print('@@@')
-                        return []
+                    
                     str_len = res[17]
+                    sleep_ms(1)
                     str_temp = uart.read(str_len)
                     checksum  = uart.read(1)
                     for i in range(18):
                         CMD.append(res[i])
-                    for i in range(int(str_len)):
-                        CMD.append(str_temp[i])
+        
+                    CMD.append(str_temp)
                     CMD.append(checksum[0])
-                    # print(CMD)
+                
                     return CMD
-            else:
-                gc.collect()
-        elif num>6:
-            # print('uart num timeout')
-            return CMD
+            elif(HEAD[1] == 0xBB):
+                CMD.extend([HEAD[1],HEAD[2]])
+                CMD.append(uart.read(1))
+                if(CMD[2]==0x01):
+                    res = uart.read(9)
+                    
+                    for i in range(9):
+                        CMD.append(res[i])                  
+                    checksum = CheckCode(CMD[:11])
+                    if(res and checksum == CMD[11]):
+                        return CMD
+                    else:
+                        print(CMD)
+                elif(CMD[2]==0x02):
+                    res = uart.read(18)
+                    str_len = res[17]
+                    sleep_ms(1)
+                    str_temp = uart.read(str_len)
+                    checksum  = uart.read(1)
+
+                    for i in range(18):
+                        CMD.append(res[i])
+                
+                    CMD.append(str_temp)
+                    CMD.append(checksum[0])
+
+                    return CMD
+            elif(HEAD[2] == 0xBB):
+                CMD.append(HEAD[2])
+                tmp = uart.read(2)
+                for i in range(2):
+                    CMD.append(tmp[i]) 
+                if(CMD[2]==0x01):
+                    res = uart.read(9)
+                    
+                    for i in range(9):
+                        CMD.append(res[i])                  
+                    checksum = CheckCode(CMD[:11])
+                    if(res and checksum == CMD[11]):
+                        return CMD
+                    else:
+                        print(CMD)
+                elif(CMD[2]==0x02):
+                    res = uart.read(18)
+                    str_len = res[17]
+                    sleep_ms(1)
+                    str_temp = uart.read(str_len)
+                    checksum  = uart.read(1)
+
+                    for i in range(18):
+                        CMD.append(res[i])
+                    
+                    CMD.append(str_temp)
+                    CMD.append(checksum[0])
+            
+                    return CMD
+        else:
+            # print(head)
+            # print('&===111===&')
+            return []
+    else:
+        # print('&222')
+        return []
 
 def AI_Uart_CMD(uart, data_type, cmd, cmd_type, cmd_data=[0, 0, 0, 0, 0, 0, 0, 0]):
     gc.collect()
@@ -109,9 +173,9 @@ def AI_Uart_CMD(uart, data_type, cmd, cmd_type, cmd_data=[0, 0, 0, 0, 0, 0, 0, 0
         CMD.append(0)
     for i in range(len(CMD)):
         check_sum = check_sum+CMD[i]
-    # print_x16(CMD)
+
+    CMD.append(check_sum & 0xFF)
     uart.write(bytes(CMD))
-    uart.write(bytes([check_sum & 0xFF]))
 
 
 def AI_Uart_CMD_String(uart=None, cmd=0xfe, cmd_type=0xfe, cmd_data=[0, 0, 0], str_len=0, str_buf=''):
@@ -123,15 +187,15 @@ def AI_Uart_CMD_String(uart=None, cmd=0xfe, cmd_type=0xfe, cmd_data=[0, 0, 0], s
         CMD.append(0)
     for i in range(len(CMD)):
         check_sum = check_sum+CMD[i]
-    # print_x16(CMD)
-    uart.write(bytes(CMD))
+  
     str_temp = bytes(str_buf, 'utf-8')
     str_len = len(str_temp)
-    uart.write(bytes([str_len]))
-    uart.write(str_temp)
+    
     for i in range(len(str_temp)):
-        check_sum = check_sum + str_temp[i]
-    uart.write(bytes([check_sum & 0xFF]))   
+        check_sum = check_sum + str_temp[i]  
+
+    CMD = bytes(CMD) + bytes([str_len]) + str_temp + bytes([check_sum & 0xFF])
+    uart.write(CMD)
 
 def print_x16(date):
     for i in range(len(date)):
