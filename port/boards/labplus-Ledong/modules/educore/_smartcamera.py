@@ -6,10 +6,10 @@ import gc
 class EduSmartCamera:
     def __init__(self, rx=Pin.P15, tx=Pin.P16):
         self.sensor_choice = 1
-        self.uart = UART(2, baudrate=1152000, rx=rx, tx=tx ,rxbuf=256)
+        self.uart = UART(2, baudrate=1152000, rx=rx, tx=tx ,rxbuf=1024)
         self.mode = DEFAULT_MODE
         self.lock = False
-        time.sleep(0.2)
+        time.sleep(0.1)
         self.wait_for_ai_init()
         self.thread_listen()
 
@@ -148,7 +148,7 @@ class EduSmartCamera:
 
 
     def thread_listen(self):
-        self._task = TASK(func=self.uart_thread,sec=0.03)
+        self._task = TASK(func=self.uart_thread,sec=0.005)
         self._task.start()
 
     def uart_thread(self):           
@@ -166,8 +166,6 @@ class EduSmartCamera:
                             self.face_detect.face_num,self.face_detect.max_score = None,0
                         else:
                             self.face_detect.face_num,self.face_detect.max_score = CMD[5],round(int(CMD[6])/100,2)
-                    elif(CMD[2]==0x02):
-                        pass
                 else:
                     pass
             elif(self.mode==FACE_RECOGNIZATION_MODE and self.fcr!=None):#5
@@ -177,8 +175,6 @@ class EduSmartCamera:
                             self.fcr.id,self.fcr.max_score = None,0
                         else:
                             self.fcr.id,self.fcr.max_score = CMD[5],round(int(CMD[6])/100,2)
-                    elif(CMD[2]==0x02):
-                        pass
                 else:
                     pass
         

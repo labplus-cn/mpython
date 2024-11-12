@@ -34,10 +34,7 @@ class Maix_asr(object):
         time.sleep_ms(30)
         if(not self.lock):
             AI_Uart_CMD(self.uart, 0x01, AI['asr'][0], AI['asr'][3])
-        # try:
-        #     self.result = self.AI_WaitForK210(0x01, AI['asr'][0], AI['asr'][3])
-        # except:
-        #     self.result = None
+      
 
     def release(self):
         pass    
