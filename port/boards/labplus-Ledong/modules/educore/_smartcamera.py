@@ -148,7 +148,7 @@ class EduSmartCamera:
 
 
     def thread_listen(self):
-        self._task = TASK(func=self.uart_thread,sec=0.005)
+        self._task = TASK(func=self.uart_thread,sec=0.05)
         self._task.start()
 
     def uart_thread(self):           
