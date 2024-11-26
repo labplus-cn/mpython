@@ -1,12 +1,11 @@
 import usocket as socket
 import ustruct as struct
 from ubinascii import hexlify
-
+from time import sleep_ms
 class MQTTException(Exception):
     pass
 
 class MQTTClient:
-
     def __init__(self, client_id, server, port=0, user=None, password=None, keepalive=0,
                  ssl=False, ssl_params={}):
         if port == 0:
