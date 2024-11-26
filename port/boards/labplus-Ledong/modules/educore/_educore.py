@@ -525,33 +525,51 @@ ble 模拟键盘鼠标
 #     def distance(self):
 #         return self.distance_cm()
 
-class ultrasonic(object):
+class ultrasonic():
     """
     超声波模块控制类
     """
-    def __init__(self, sda=20, scl=19):
-        _sda = pins_esp32[sda]
-        _scl = pins_esp32[scl]
-        if(sda==20 or scl==19):
-            self.i2c = i2c
-        else:
-            self.i2c = I2C(scl=Pin(_scl), sda=Pin(_sda), freq=400000)
-            time.sleep_ms(100)
-
+    def __init__(self,  **kwargs):
+        self.type = -1
+        sda = kwargs.get('sda',None)
+        scl = kwargs.get('scl',None)
+        trig = kwargs.get('trig',None)
+        echo = kwargs.get('echo',None)
+        if(sda != None and scl != None):
+            self.type = 1
+            _sda = pins_esp32[sda]
+            _scl = pins_esp32[scl]
+            if(sda==20 or scl==19):
+                self.i2c = i2c
+            else:
+                self.i2c = I2C(scl=Pin(_scl), sda=Pin(_sda), freq=400000)
+                time.sleep_ms(100)
+        elif(trig != None and echo != None):
+            self.type = 2
+            self._trig = pins_esp32[trig]
+            self._echo = pins_esp32[echo]
+            self.hcsr04 = HCSR04(trigger_pin=self._trig, echo_pin=self._echo)
+            
     def distance(self):
         """
         获取超声波测距
-        :return: 返回测距,单位cm
+        :return: 返回测距,单位cm,0-200cm
         """
-        self.i2c.writeto(0x0b, bytearray([1]))
-        sleep_ms(2)
-        temp = self.i2c.readfrom(0x0b, 2)
-        distanceCM = int((temp[0] + temp[1] * 256) / 10)
-
-        if(distanceCM>200):
-            distanceCM = 200
-
-        return distanceCM
+        try:
+            if(self.type==1):
+                self.i2c.writeto(0x0b, bytearray([1]))
+                sleep_ms(2)
+                temp = self.i2c.readfrom(0x0b, 2)
+                distanceCM = int((temp[0] + temp[1] * 256) / 10)
+                distanceCM = max(min(distanceCM,200),0)
+                return distanceCM
+            elif(self.type==2):
+                sleep_ms(5)
+                distanceCM = int(max(min(self.hcsr04.distance_cm(),200),0))
+                return distanceCM
+        except Exception as e:
+            print(e)
+        
 
 '''
 DHT11
