@@ -1,5 +1,6 @@
 import utime
 from . import simple
+from time import sleep_ms
 
 class MQTTClient(simple.MQTTClient):
 
@@ -27,6 +28,7 @@ class MQTTClient(simple.MQTTClient):
                 self.delay(i)
 
     def publish(self, topic, msg, retain=False, qos=0):
+        sleep_ms(5)
         while 1:
             try:
                 return super().publish(topic, msg, retain, qos)
