@@ -49,8 +49,8 @@ include $(TOP)/py/py.mk
 
 GIT_SUBMODULES = lib/berkeley-db-1.xx
 
-# PORT ?= /dev/ttyCH343USB0
-PORT ?= /dev/ttyUSB0
+PORT ?= /dev/ttyCH343USB0
+# PORT ?= /dev/ttyUSB0
 # PORT ?= /dev/ttyACM0
 BAUD ?= 2000000
 FLASH_MODE ?= dio
@@ -477,6 +477,7 @@ BUILTIN_C ?= $(addprefix builtins/, \
 	machine_servo.c \
 	machine_touchpad.c \
 	modmusic.c \
+	modmachine.c \
 	modmusictunes.c \
 	modnetwork.c \
 	modradio.c \
