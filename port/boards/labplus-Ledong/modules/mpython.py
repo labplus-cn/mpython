@@ -19,6 +19,8 @@ import framebuf
 import calibrate_img
 from micropython import schedule,const
 import NVS
+import ubinascii
+import machine
 
 i2c = I2C(0, scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=400000)
 
@@ -1109,3 +1111,19 @@ def numberMap(inputNum, bMin, bMax, cMin, cMax):
     outputNum = 0
     outputNum = ((cMax - cMin) / (bMax - bMin)) * (inputNum - bMin) + cMin
     return outputNum
+
+
+"""
+uuid
+"""
+def uuid():
+    uuid = ''
+    try:
+        uuid = ubinascii.hexlify(machine.unique_id_custom()).decode().upper()
+    except Exception as e:
+        uuid = ubinascii.hexlify(machine.unique_id()).decode().upper()
+    
+    if(uuid=='ffffffffffff'.upper()):
+        uuid = ubinascii.hexlify(machine.unique_id()).decode().upper()
+
+    return uuid
