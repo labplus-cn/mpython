@@ -924,6 +924,7 @@ class wifi:
             time.sleep_ms(500)
         print("")
         print('WiFi(%s,%sdBm) Connection Successful, Config:%s' % (ssid, str(wifi_dbm), str(self.sta.ifconfig())))
+        time.sleep_ms(100)
 
     def disconnectWiFi(self):
         if self.sta.isconnected():

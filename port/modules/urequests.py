@@ -71,7 +71,7 @@ def request(method, url, data=None, json=None, headers={}, stream=None, params=N
   ai = usocket.getaddrinfo(host, port)
   addr = ai[0][4]
   s = usocket.socket()
-  s.settimeout(5)
+  s.settimeout(30.0)
   s.connect(addr)
   if proto == "https:":
     s = ussl.wrap_socket(s,do_handshake=False)
@@ -141,9 +141,11 @@ def request(method, url, data=None, json=None, headers={}, stream=None, params=N
     file.close()
 
   l = s.readline()
-  protover, status, msg = l.split(None, 2)
-  status = int(status)
-  #print(protover, status, msg)
+  # protover, status, msg = l.split(None, 2)
+  l = l.split(None, 2)
+  status = int(l[1])
+  # print(l)
+
   while True:
     l = s.readline()
     if not l or l == b"\r\n":
@@ -157,13 +159,13 @@ def request(method, url, data=None, json=None, headers={}, stream=None, params=N
 
   resp = Response(s)
   resp.status_code = status
-  resp.reason = msg.rstrip()
+  if(len(l) > 2):
+    msg = l[2]
+    resp.reason = msg.rstrip()
   return resp
-
 
 def head(url, **kw):
   return request("HEAD", url, **kw)
-
 
 def get(url, **kw):
   return request("GET", url, **kw)
@@ -172,14 +174,11 @@ def get(url, **kw):
 def post(url, **kw):
   return request("POST", url, **kw)
 
-
 def put(url, **kw):
   return request("PUT", url, **kw)
 
-
 def patch(url, **kw):
   return request("PATCH", url, **kw)
-
 
 def delete(url, **kw):
   return request("DELETE", url, **kw)
