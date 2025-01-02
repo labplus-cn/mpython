@@ -476,6 +476,7 @@ BUILTIN_C ?= $(addprefix builtins/, \
 	machine_pin.c \
 	machine_servo.c \
 	machine_touchpad.c \
+	modmachine.c \
 	modmusic.c \
 	modmusictunes.c \
 	modnetwork.c \
