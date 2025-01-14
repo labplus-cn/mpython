@@ -1,32 +1,3 @@
-/*
- * This file is part of the MicroPython project, http://micropython.org/
- *
- * Development of the code in this file was sponsored by Microbric Pty Ltd
- *
- * The MIT License (MIT)
- *
- * Copyright (c) 2013-2015 Damien P. George
- * Copyright (c) 2016 Paul Sokolovsky
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
 #include <stdint.h>
 #include <stdio.h>
 
@@ -54,6 +25,7 @@
 #include "extmod/machine_spi.h"
 #include "modmachine.h"
 #include "machine_rtc.h"
+
 
 #if MICROPY_PY_MACHINE
 
@@ -202,9 +174,18 @@ STATIC mp_obj_t machine_unique_id(void) {
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(machine_unique_id_obj, machine_unique_id);
 
 STATIC mp_obj_t machine_unique_id_custom(void) {
-    uint8_t chipid[6];
-    esp_efuse_mac_get_custom(chipid);
-    return mp_obj_new_bytes(chipid, 6);
+    esp_err_t ret = ESP_OK;
+    uint8_t custom_mac[6];
+    uint8_t custom_error_mac[8] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
+    ret = esp_efuse_mac_get_custom(custom_mac);
+    if (ret != ESP_OK) {
+        // ESP_LOGE("Get base MAC address from BLK3 of EFUSE error (%s)", esp_err_to_name(ret));
+        return mp_obj_new_bytes(custom_error_mac, 6);
+    }
+    else {
+        return mp_obj_new_bytes(custom_mac, 6);
+        // ESP_LOGI(TAG, "custom_mac===");
+    }
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(machine_unique_id_custom_obj, machine_unique_id_custom);
 
