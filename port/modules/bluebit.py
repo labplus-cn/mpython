@@ -1902,3 +1902,218 @@ class ASRPRO(object):
         except Exception as e:
             self.identifying_word = -1
             pass
+
+
+'''
+编码电机模块 甘肃
+'''
+
+MOTOR_right = const(0x01)
+"""
+M1电机编号，0x01
+"""
+
+MOTOR_left = const(0x02)
+"""
+M2电机编号，0x02
+"""
+i2c_scan = i2c.scan()
+
+class EncoderMotor(object):
+    def __init__(self):
+        self.batch = -1 
+        if 18 in i2c_scan:
+            # 编码电机(新)
+            self.i2c_addr = 18
+            self.batch = 1 
+            self.stop()
+            # print('编码电机')
+        else:
+            print('编码电机有故障！')
+        
+    def stop(self):
+        if (self.batch == 1):
+            attempts=0
+            while True:
+                try:
+                    i2c.writeto(self.i2c_addr, bytearray([1]))
+                except Exception as e:
+                    attempts = attempts + 1
+                    if attempts > 2:
+                        break
+                else:
+                    break
+
+    def move(self, speed_l, speed_r):
+        """
+        设置电机速度
+        :param int motor_no: 控制电机编号，可以使用 ``MOTOR_left``, ``MOTOR_right`` ,或者直接写入电机编号。
+        :param int speed: 电机速度，范围-100~100，负值代表反转。
+        """
+        """
+        设置小车移动速度，可前进后退
+        :param int speed_l: 左电机速度 -100 -- 100。
+        :param int speed_r: 右电机速度 -100 -- 100。
+        """
+        if (self.batch == 1):
+            if speed_l < -100:
+                speed_l = -100
+            if speed_r < -100:
+                speed_r = -100
+            if speed_l > 100:
+                speed_l = 100
+            if speed_r > 100:
+                speed_r = 100
+     
+            attempts=0
+            while True:
+                try:
+                    i2c.writeto(self.i2c_addr, bytearray([2, speed_l, speed_r]))
+                except Exception as e:
+                    attempts = attempts + 1
+                    if attempts > 2:
+                        break
+                else:
+                    break
+
+    def turn_angle(self, dir, speed, angle):
+        """
+        设置电机转向 
+        :param int dir: 左转： 3 右转： 4
+        :param int speed: 左电机速度 0 -- 100。
+        :param int angle: 左电机速度 0 -- 360
+        """
+        if (self.batch == 1):
+            if speed < 0:
+                speed = 0
+            if speed > 100:
+                speed = 100
+            if dir !=3 and dir != 4:
+                return
+            tmp = [0]*2
+            tmp[0] = angle & 0xff
+            tmp[1] = (angle >> 8) & 0xff
+         
+            attempts=0
+            while True:
+                try:
+                    i2c.writeto(self.i2c_addr, bytearray([dir, speed, tmp[0], tmp[1]]))
+                except Exception as e:
+                    attempts = attempts + 1
+                    if attempts > 2:
+                        break
+                else:
+                    break
+        elif (self.batch == 0):
+            print('编码电机才支持')
+            pass
+
+    def move_distance(self, speed, distance):
+        """
+        设置小车移动动指定距离，单位:mm 可前进后退
+        :param int speed: 电机速度 -100 -- 100。
+        :param int distance: 移动距离 0 --- 65535 mm
+        """
+        distance = distance*10
+        if (self.batch == 1):
+            if distance < 0:
+                distance = 0
+            if distance > 65535:
+                distance = 65535
+            tmp = [0]*2
+            tmp[0] = distance & 0xff
+            tmp[1] = (distance >> 8) & 0xff
+            attempts=0
+            while True:
+                try:
+                    i2c.writeto(self.i2c_addr, bytearray([5, speed, tmp[0], tmp[1]]))
+                except Exception as e:
+                    attempts = attempts + 1
+                    if attempts > 2:
+                        break
+                else:
+                    break
+        elif (self.batch == 0):
+            print('新编码电机才支持')
+            return
+
+    def set_correct(self, correct):
+        """
+        设置小车移动指定距离可转向时修正系数，以修正精确度
+        :param int correct: 修正系数 -100 -- 100
+        """
+        if (self.batch == 1):
+            if correct < -100:
+                correct = -100
+            if correct > 100:
+                correct = 100
+            attempts=0
+            while True:
+                try:
+                    i2c.writeto(self.i2c_addr, bytearray([6, correct]))
+                except Exception as e:
+                    attempts = attempts + 1
+                    if attempts > 2:
+                        break
+                else:
+                    break
+        elif (self.batch == 0):
+            print('新编码电机才支持')
+            return
+        
+    def motor_run(self,num,speed):
+        """"
+        单个编码电机驱动num:电机编号 M1:1 M2:2 speed:转速量程 -100-100
+        """
+        i2c.writeto(self.i2c_addr,bytearray([8, num, speed]))
+    
+    def setvater_pump(self,speed):
+        """
+        水泵开关 speed:转速量程:-100-180
+        """
+        i2c.writeto(self.i2c_addr,bytearray([7, speed]))
+
+    def motor_info(self,num,off):
+        """ 串口获取速度值输出 num:电机编号 M1:1 M2:2 off:开关 1:开  0:关"""
+        i2c.writeto(self.i2c_addr,bytearray([9, num, off]))
+        
+'''
+循迹传感器 甘肃
+'''
+class LineFollow(object):
+    def __init__(self,num1,num2):
+        if(isinstance(num1, int) and isinstance(num2, int)):
+            self.pin1 = MPythonPin(num1, PinMode.ANALOG)
+            self.pin2 = MPythonPin(num2, PinMode.ANALOG)
+            self.threshold = [2000, 2000]
+        else:
+            raise ValueError('参数错误')
+
+    def detect(self,num):
+        '''是否探测到，num 1/2 return int 0/1'''
+        if(isinstance(num, int)):
+            tmp = self.get_raw_val()[num-1]
+            if(tmp<=self.threshold[num-1]):
+                return 1
+            else:
+                return 0
+
+    def get_raw_val(self):
+        ''' list [0,0]  0-4095 '''
+        try:
+            tmp = [max(min(self.pin1.read_analog(), 4095), 0),max(min(self.pin2.read_analog(), 4095), 0)]
+            return tmp
+        except Exception as e:
+            print(e)
+            return [-1,-1]
+       
+    def set_threshold(self, threshold):
+        '''设置阈值'''
+        if(isinstance(threshold, list)):
+            if(len(threshold) == 2):
+                self.threshold = threshold
+            else:
+                raise ValueError('参数错误')
+        else:
+            raise ValueError('参数错误')
+                  
