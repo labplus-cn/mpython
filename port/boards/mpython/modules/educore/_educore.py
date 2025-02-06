@@ -7,6 +7,7 @@ from mpython import accelerometer as _accelerometer
 from mpython import rgb as _rgb
 from mpython import light as _light
 from mpython import sound as _sound
+from mpython import uuid
 import network
 import neopixel
 import machine
@@ -666,11 +667,11 @@ def get_dict_from_str(s):
 # d = get_dict_from_file(s)
 # print(d["001"])
 
-"""
-uuid
-"""
-def uuid():
-    return ubinascii.hexlify(machine.unique_id()).decode().upper()
+# """
+# uuid
+# """
+# def uuid():
+#     return ubinascii.hexlify(machine.unique_id()).decode().upper()
 
 
 '''
