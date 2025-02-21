@@ -175,6 +175,7 @@ soft_reset:
     } else {
         oled_drawImg(img_mpython);
         // oled_drawImg(img_InnovaBit);
+        // oled_drawImg(img_uae);
         oled_show();
         oled_deinit();
     }
