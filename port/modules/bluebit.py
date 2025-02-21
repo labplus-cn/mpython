@@ -1905,7 +1905,11 @@ class ASRPRO(object):
 
 
 '''
+<<<<<<< HEAD
 编码电机模块 甘肃
+=======
+编码电机
+>>>>>>> 1684ae266982d2fb4bcf6762b4be0a9d7f6e1e45
 '''
 
 MOTOR_right = const(0x01)
@@ -1919,6 +1923,11 @@ M2电机编号，0x02
 """
 i2c_scan = i2c.scan()
 
+<<<<<<< HEAD
+=======
+_speed_buf = {}
+
+>>>>>>> 1684ae266982d2fb4bcf6762b4be0a9d7f6e1e45
 class EncoderMotor(object):
     def __init__(self):
         self.batch = -1 
@@ -2077,6 +2086,7 @@ class EncoderMotor(object):
         """ 串口获取速度值输出 num:电机编号 M1:1 M2:2 off:开关 1:开  0:关"""
         i2c.writeto(self.i2c_addr,bytearray([9, num, off]))
         
+<<<<<<< HEAD
 '''
 循迹传感器 甘肃
 '''
@@ -2117,3 +2127,5 @@ class LineFollow(object):
         else:
             raise ValueError('参数错误')
                   
+=======
+>>>>>>> 1684ae266982d2fb4bcf6762b4be0a9d7f6e1e45
