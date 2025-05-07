@@ -23,14 +23,14 @@
 | blue:bit modules library for mPython. 
 | more about with bluebit info browse http://wiki.labplus.cn/index.php?title=Bluebit
 """
-from mpython import i2c, sleep_ms, MPythonPin, PinMode,numberMap
+from mpython import i2c, sleep, sleep_ms, MPythonPin, PinMode,numberMap
 from micropython import const
 from machine import UART, ADC, Pin
 import framebuf
 import ubinascii
 import ustruct
 import math
-
+import time
 from spl06_001 import Barometric
 from apds9960 import Gesture
 from ATGM336H_5N import GPS
@@ -1024,8 +1024,8 @@ class MP3_(object):
     def __init__(self, tx=Pin.P14, uart_num=1):
         self.uart = UART(uart_num, 9600, stop=2, tx=tx)
     """
-    def __init__(self, tx=-1, rx=-1, uart_num=1):
-        self.uart = UART(uart_num, 9600, stop=2, tx=tx)
+    def __init__(self, uart_num=1, tx=-1, rx=-1):
+        self.uart = UART(uart_num, 9600, stop=2, tx=tx, rx=0)
         self._vol = 15
         self.is_paused = False
         self.set_output_mode(1)
@@ -1300,84 +1300,84 @@ class DelveBit(object):
                 continue
 
 
-class EncoderMotor(object):
-    """
-    blue:bit编码电机驱动,提供pwm、cruise、position 三种驱动方式。
+# class EncoderMotor(object):
+#     """
+#     blue:bit编码电机驱动,提供pwm、cruise、position 三种驱动方式。
 
-    :param address: 模块的I2C地址,可再模块拨动选择不同的地址避免冲突。
-    :param i2c: I2C实例对象,默认i2c=i2c
-    """
+#     :param address: 模块的I2C地址,可再模块拨动选择不同的地址避免冲突。
+#     :param i2c: I2C实例对象,默认i2c=i2c
+#     """
 
-    PWM_MODE = b'\x05'
-    """pwm模式"""
+#     PWM_MODE = b'\x05'
+#     """pwm模式"""
 
-    CRUISE_MODE = b'\x0a'
-    """巡航模式"""
+#     CRUISE_MODE = b'\x0a'
+#     """巡航模式"""
 
-    POSITION_MODE = b'\x0f'
-    """定位模式"""
+#     POSITION_MODE = b'\x0f'
+#     """定位模式"""
 
-    def __init__(self, address, i2c=i2c):
-        self.i2c = i2c
-        self.address = address
+#     def __init__(self, address, i2c=i2c):
+#         self.i2c = i2c
+#         self.address = address
 
-    def _effect(self, mode):
-        """
-        生效
-        """
-        write_buf = b'\x00' + mode
-        self.i2c.writeto(self.address, write_buf)
-        sleep_ms(10)
+#     def _effect(self, mode):
+#         """
+#         生效
+#         """
+#         write_buf = b'\x00' + mode
+#         self.i2c.writeto(self.address, write_buf)
+#         sleep_ms(10)
 
-    def motor_stop(self):
-        """
-        停止编码电机转动
-        """
+#     def motor_stop(self):
+#         """
+#         停止编码电机转动
+#         """
 
-        self.i2c.writeto(self.address, b'\x00\x00')
-        sleep_ms(10)
+#         self.i2c.writeto(self.address, b'\x00\x00')
+#         sleep_ms(10)
 
-    def set_pwm(self, speed1, speed2):
-        """
-        pwm模式
+#     def set_pwm(self, speed1, speed2):
+#         """
+#         pwm模式
 
-        :param speed1: 设置M1通道编码电机速度,范围-1023~1023
-        :param speed2: 设置M2通道编码电机速度,范围-1023~1023
-        """
-        if speed1 > 1023 or speed1 < -1023 or speed2 > 1023 or speed2 < -1023:
-            raise ValueError("Speed out of range:-1023~1023")
-        write_buf = b'\x06' + ustruct.pack('>HH', speed1, speed2)
-        self.i2c.writeto(self.address, write_buf)
-        sleep_ms(10)
-        self._effect(self.PWM_MODE)
+#         :param speed1: 设置M1通道编码电机速度,范围-1023~1023
+#         :param speed2: 设置M2通道编码电机速度,范围-1023~1023
+#         """
+#         if speed1 > 1023 or speed1 < -1023 or speed2 > 1023 or speed2 < -1023:
+#             raise ValueError("Speed out of range:-1023~1023")
+#         write_buf = b'\x06' + ustruct.pack('>HH', speed1, speed2)
+#         self.i2c.writeto(self.address, write_buf)
+#         sleep_ms(10)
+#         self._effect(self.PWM_MODE)
 
-    def set_cruise(self, speed1, speed2):
-        """
-        Cruise巡航模式,设定速度后,当编码电机受阻时,会根据反馈,自动调整扭力,稳定在恒定的速度。
+#     def set_cruise(self, speed1, speed2):
+#         """
+#         Cruise巡航模式,设定速度后,当编码电机受阻时,会根据反馈,自动调整扭力,稳定在恒定的速度。
 
-        :param speed1: 设置M1通道编码电机速度,范围-1023~1023
-        :param speed2: 设置M2通道编码电机速度,范围-1023~1023
-        """
-        if speed1 > 1023 or speed1 < -1023 or speed2 > 1023 or speed2 < -1023:
-            raise ValueError("Speed out of range:-1023~1023")
-        write_buf = b'\x0a' + ustruct.pack('>HH', speed1, speed2)
-        self.i2c.writeto(self.address, write_buf)
-        sleep_ms(10)
-        self._effect(self.CRUISE_MODE)
+#         :param speed1: 设置M1通道编码电机速度,范围-1023~1023
+#         :param speed2: 设置M2通道编码电机速度,范围-1023~1023
+#         """
+#         if speed1 > 1023 or speed1 < -1023 or speed2 > 1023 or speed2 < -1023:
+#             raise ValueError("Speed out of range:-1023~1023")
+#         write_buf = b'\x0a' + ustruct.pack('>HH', speed1, speed2)
+#         self.i2c.writeto(self.address, write_buf)
+#         sleep_ms(10)
+#         self._effect(self.CRUISE_MODE)
 
-    def set_position(self, turn1, turn2):
-        """
-        定位模式,可设置编码编码电机定点位置,范围-1023~1023。
+#     def set_position(self, turn1, turn2):
+#         """
+#         定位模式,可设置编码编码电机定点位置,范围-1023~1023。
 
-        :param turn1: 设置M1通道编码电机定位,-1023~1023
-        :param turn2: 设置M2通道编码电机定位,-1023~1023
-        """
-        if turn1 > 1023 or turn1 < -1023 or turn2 > 1023 or turn2 < -1023:
-            raise ValueError("Position out of range:0~1023")
-        write_buf = b'\x10' + ustruct.pack('>ll', turn1, turn2)
-        self.i2c.writeto(self.address, write_buf)
-        sleep_ms(10)
-        self._effect(self.POSITION_MODE)
+#         :param turn1: 设置M1通道编码电机定位,-1023~1023
+#         :param turn2: 设置M2通道编码电机定位,-1023~1023
+#         """
+#         if turn1 > 1023 or turn1 < -1023 or turn2 > 1023 or turn2 < -1023:
+#             raise ValueError("Position out of range:0~1023")
+#         write_buf = b'\x10' + ustruct.pack('>ll', turn1, turn2)
+#         self.i2c.writeto(self.address, write_buf)
+#         sleep_ms(10)
+#         self._effect(self.POSITION_MODE)
 
 
 class Rfid():
@@ -2117,3 +2117,47 @@ class LineFollow(object):
         else:
             raise ValueError('参数错误')
                   
+
+'''
+DC01 PM2.5驱动
+'''
+class PM25_DC(object):
+    def __init__(self, tx=Pin.P1, rx=Pin.P0, uart_num=1):
+        self.K = 0.4 # (注:户读取到的灰尘传感器原始 PM2.5，需要参照 TSI仪器光度法标定一个K 值系数，一般建议 0.4)
+        self.uart = UART(uart_num, baudrate=9600, stop=1, tx=tx, rx=rx, timeout=30)
+        sleep(0.1)
+
+    def read(self): #单位 微克/立方米
+        _pm25 = -1 
+        data = bytes(0x00)
+        time_cnt = time.ticks_ms()
+        while True:
+            if self.uart.any():
+                head = self.uart.read(1)   
+                if(head[0] == 0xA5):
+                    data = head
+                    res = self.uart.read(3)
+                    data = head + res 
+                else:
+                    # print('0000')
+                    pass
+                
+                if len(data)==4:
+                    DATAH = data[1]
+                    DATAL = data[2]
+                    sum = 0xA5 + DATAH + DATAL # 计算校验和
+                    sum = sum ^ 0x80 # ^异或，得到低7位数据
+                    if(sum == data[3]):
+                        # _pm25 = (data[1]*128) + data[2]
+                        _pm25 = self.K * ((DATAH << 7) | (DATAL & 0x7F))   # 校验成功，计算浓度值
+                        break
+                    else:
+                        # print(sum)
+                        # print(data[3] & 0x7F)
+                        # print(K * ((DATAH << 7) | (DATAL & 0x7F)))
+                        # print('===')
+                        pass
+            elif time.ticks_ms() - time_cnt > 2000:
+                break
+        return _pm25
+    
