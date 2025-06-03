@@ -31,6 +31,7 @@ import ubinascii
 import ustruct
 import math
 import time
+
 from spl06_001 import Barometric
 from apds9960 import Gesture
 from ATGM336H_5N import GPS
@@ -1024,12 +1025,12 @@ class MP3_(object):
     def __init__(self, tx=Pin.P14, uart_num=1):
         self.uart = UART(uart_num, 9600, stop=2, tx=tx)
     """
-    def __init__(self, uart_num=1, tx=-1, rx=-1):
-        self.uart = UART(uart_num, 9600, stop=2, tx=tx, rx=0)
-        self._vol = 15
+    def __init__(self, uart_num=1, tx=-1, rx=0):
+        self.uart = UART(uart_num, 9600, stop=2, tx=tx, rx=rx)
+        self._vol = 60
         self.is_paused = False
         self.set_output_mode(1)
-        self.volume(15)
+        self.volume(60)
 
     def _cmdWrite(self, cmd):
         sum = 0
@@ -1100,8 +1101,9 @@ class MP3_(object):
         self._cmdWrite(var)
 
     def volume(self, vol):
-        """设置音量 0~30"""
+        """设置音量 0~100"""
         self._vol = vol
+        vol = int(numberMap(vol,0,100,0,30))
         var = [0xAE, vol]
         self._cmdWrite(var)
         sleep_ms(10)
@@ -2078,7 +2080,7 @@ class EncoderMotor(object):
         i2c.writeto(self.i2c_addr,bytearray([9, num, off]))
         
 '''
-循迹传感器 甘肃
+循迹传感器 
 '''
 class LineFollow(object):
     def __init__(self,num1,num2):
@@ -2152,12 +2154,7 @@ class PM25_DC(object):
                         _pm25 = self.K * ((DATAH << 7) | (DATAL & 0x7F))   # 校验成功，计算浓度值
                         break
                     else:
-                        # print(sum)
-                        # print(data[3] & 0x7F)
-                        # print(K * ((DATAH << 7) | (DATAL & 0x7F)))
-                        # print('===')
                         pass
             elif time.ticks_ms() - time_cnt > 2000:
                 break
         return _pm25
-    
