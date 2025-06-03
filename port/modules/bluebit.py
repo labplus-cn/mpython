@@ -30,6 +30,7 @@ import framebuf
 import ubinascii
 import ustruct
 import math
+import time
 
 from spl06_001 import Barometric
 from apds9960 import Gesture
@@ -1016,11 +1017,11 @@ class MP3_(object):
         self.uart = UART(uart_num, 9600, stop=2, tx=tx)
     """
     def __init__(self, tx=-1, rx=-1, uart_num=1):
-        self.uart = UART(uart_num, 9600, stop=2, tx=tx)
-        self._vol = 15
+        self.uart = UART(uart_num, 9600, stop=2, tx=tx, rx=0)
+        self._vol = 60
         self.is_paused = False
         self.set_output_mode(1)
-        self.volume(15)
+        self.volume(60)
 
     def _cmdWrite(self, cmd):
         sum = 0
@@ -1091,8 +1092,9 @@ class MP3_(object):
         self._cmdWrite(var)
 
     def volume(self, vol):
-        """设置音量 0~30"""
+        """设置音量 0~100"""
         self._vol = vol
+        vol = int(numberMap(vol,0,100,0,30)) # 0~30
         var = [0xAE, vol]
         self._cmdWrite(var)
         sleep_ms(10)
@@ -1893,3 +1895,87 @@ class ASRPRO(object):
         except Exception as e:
             self.identifying_word = -1
             pass
+
+
+
+
+'''
+循迹传感器
+'''
+class LineFollow(object):
+    def __init__(self,num1,num2):
+        if(isinstance(num1, int) and isinstance(num2, int)):
+            self.pin1 = MPythonPin(num1, PinMode.ANALOG)
+            self.pin2 = MPythonPin(num2, PinMode.ANALOG)
+            self.threshold = [2000, 2000]
+        else:
+            raise ValueError('参数错误')
+
+    def detect(self,num):
+        '''是否探测到，num 1/2 return int 0/1'''
+        if(isinstance(num, int)):
+            tmp = self.get_raw_val()[num-1]
+            if(tmp<=self.threshold[num-1]):
+                return 1
+            else:
+                return 0
+
+    def get_raw_val(self):
+        ''' list [0,0]  0-4095 '''
+        try:
+            tmp = [max(min(self.pin1.read_analog(), 4095), 0),max(min(self.pin2.read_analog(), 4095), 0)]
+            return tmp
+        except Exception as e:
+            print(e)
+            return [-1,-1]
+       
+    def set_threshold(self, threshold):
+        '''设置阈值'''
+        if(isinstance(threshold, list)):
+            if(len(threshold) == 2):
+                self.threshold = threshold
+            else:
+                raise ValueError('参数错误')
+        else:
+            raise ValueError('参数错误')
+
+'''
+DC01 PM2.5驱动
+'''
+class PM25_DC(object):
+    def __init__(self, tx=Pin.P1, rx=Pin.P0, uart_num=1):
+        self.K = 0.4 # (注:户读取到的灰尘传感器原始 PM2.5，需要参照 TSI仪器光度法标定一个K 值系数，一般建议 0.4)
+        self.uart = UART(uart_num, baudrate=9600, stop=1, tx=tx, rx=rx, timeout=30)
+        time.sleep_ms(100)
+
+    def read(self): #单位 微克/立方米
+        _pm25 = -1 
+        data = bytes(0x00)
+        time_cnt = time.ticks_ms()
+        while True:
+            time.sleep_ms(5)
+            if self.uart.any():
+                head = self.uart.read(1)   
+                if(head[0] == 0xA5):
+                    data = head
+                    res = self.uart.read(3)
+                    data = head + res 
+                else:
+                    # print('0000')
+                    pass
+                
+                if len(data)==4:
+                    DATAH = data[1]
+                    DATAL = data[2]
+                    sum = 0xA5 + DATAH + DATAL # 计算校验和
+                    sum = sum ^ 0x80 # ^异或，得到低7位数据
+                    if(sum == data[3]):
+                        # _pm25 = (data[1]*128) + data[2]
+                        _pm25 = self.K * ((DATAH << 7) | (DATAL & 0x7F))   # 校验成功，计算浓度值
+                        break
+                    else:
+                        pass
+            elif time.ticks_ms() - time_cnt > 2000:
+                break
+        return _pm25
+    
