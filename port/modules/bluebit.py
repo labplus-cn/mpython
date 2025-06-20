@@ -34,7 +34,7 @@ import time
 
 from spl06_001 import Barometric
 from apds9960 import Gesture
-from ATGM336H_5N import GPS
+from ATGM336H_5N import GPS,BDS
 from weather import WEATHER
 from pm25 import PM25
 from max30102 import MAX30102
