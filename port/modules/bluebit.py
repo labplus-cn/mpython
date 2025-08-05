@@ -41,6 +41,8 @@ from max30102 import MAX30102
 from CSK6011A import SpeechSynthesis
 from solar import SolarPanel
 from paj7620 import  PAJ7620
+from acd1200 import ACD1200
+from forece import Forece
 
 class Thermistor:
     """
@@ -192,13 +194,14 @@ class SHT20(object):
 
         :return: 温度,单位摄氏度
         """
+        time.sleep_ms(10)
         try:
             self.i2c.writeto(0x40, b'\xf3')
-            sleep_ms(100)
+            sleep_ms(70)
             t = i2c.readfrom(0x40, 2)
             return -46.86 + 175.72 * (t[0] * 256 + t[1]) / 65535
         except Exception as e:
-            print(e)
+            # print(e)
             return -1
 
     def humidity(self):
@@ -2127,13 +2130,16 @@ class PM25_DC(object):
     def __init__(self, tx=Pin.P1, rx=Pin.P0, uart_num=1):
         self.K = 0.4 # (注:户读取到的灰尘传感器原始 PM2.5，需要参照 TSI仪器光度法标定一个K 值系数，一般建议 0.4)
         self.uart = UART(uart_num, baudrate=9600, stop=1, tx=tx, rx=rx, timeout=30)
-        sleep(0.1)
+        self._pm25 = -1
+        time.sleep_ms(100)
 
     def read(self): #单位 微克/立方米
-        _pm25 = -1 
+        _pm25 = self._pm25 
         data = bytes(0x00)
         time_cnt = time.ticks_ms()
+        
         while True:
+            time.sleep_ms(10)
             if self.uart.any():
                 head = self.uart.read(1)   
                 if(head[0] == 0xA5):
@@ -2150,8 +2156,8 @@ class PM25_DC(object):
                     sum = 0xA5 + DATAH + DATAL # 计算校验和
                     sum = sum ^ 0x80 # ^异或，得到低7位数据
                     if(sum == data[3]):
-                        # _pm25 = (data[1]*128) + data[2]
                         _pm25 = self.K * ((DATAH << 7) | (DATAL & 0x7F))   # 校验成功，计算浓度值
+                        self._pm25 = _pm25
                         break
                     else:
                         pass
