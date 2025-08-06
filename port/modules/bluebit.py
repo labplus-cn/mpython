@@ -41,6 +41,8 @@ from max30102 import MAX30102
 from CSK6011A import SpeechSynthesis
 from solar import SolarPanel
 from paj7620 import  PAJ7620
+from acd1200 import ACD1200
+from forece import Forece
 
 class Thermistor:
     """
@@ -1807,8 +1809,9 @@ class SoilHumiditySensor():
         self.threshold = threshold
 
     def read(self):
-        _soil_humidity =  self.pin.read_analog()
-        return int(numberMap(_soil_humidity,0,4095,4095,0))
+        # _soil_humidity =  self.pin.read_analog()
+        # return int(numberMap(_soil_humidity,0,4095,4095,0))
+        return self.get_raw_val()
 
 from mpython import button_a,button_b
 class GamePadVal():
