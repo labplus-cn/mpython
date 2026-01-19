@@ -201,7 +201,7 @@ if 60 in i2c.scan():
     oled = OLED()
     display = oled
 else:
-    pass
+    print("oled init error!")
 
 class MOTION(object):
     def __init__(self):
@@ -803,6 +803,8 @@ class Magnetic(object):
 # Magnetic
 if 48 in i2c.scan():
     magnetic = Magnetic()
+else:
+    print("magnetic not found!")
 
 class PinMode(object):
     IN = 1
