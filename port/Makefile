@@ -129,10 +129,10 @@ endif
 
 # Support BLE by default.
 # Can be explicitly disabled on the command line or board config.
-MICROPY_PY_BLUETOOTH ?= 1
-ifeq ($(MICROPY_PY_BLUETOOTH),1)
+MICROPY_PY_BLUETOOTH ?= 0
 SDKCONFIG += boards/sdkconfig.ble
 
+ifeq ($(MICROPY_PY_BLUETOOTH),1)
 # Use NimBLE on ESP32.
 MICROPY_BLUETOOTH_NIMBLE ?= 1
 # Use Nimble bindings, but ESP32 IDF provides the Nimble library.
@@ -470,6 +470,15 @@ INC += -Idrivers/rfid
 DRIVERS_SRC_C += $(addprefix drivers/,\
 	rfid/mfrc522.c \
 	)
+
+# ps3 driver
+INC += -Idrivers/ps3/ps3/include
+DRIVERS_SRC_C += $(addprefix drivers/ps3/ps3/,\
+	ps3.c \
+	ps3_l2cap.c \
+	ps3_parser.c \
+	ps3_spp.c \
+	)
 # mpython builtin modules
 INC += -Ibuiltins
 BUILTIN_C ?= $(addprefix builtins/, \
@@ -487,6 +496,7 @@ BUILTIN_C ?= $(addprefix builtins/, \
 	modrgbLED5x5.c \
 	modrfid.c \
 	esp32_nvs.c \
+	modps3.c \
 	)
 
 # mpython project builtin modules source files 
@@ -777,6 +787,26 @@ $(eval $(call gen_espidf_lib_rule,mdns,$(ESPIDF_MDNS_O)))
 $(eval $(call gen_espidf_lib_rule,wpa_supplicant,$(ESPIDF_WPA_SUPPLICANT_O)))
 $(eval $(call gen_espidf_lib_rule,sdmmc,$(ESPIDF_SDMMC_O)))
 $(eval $(call gen_espidf_lib_rule,bt_nimble,$(ESPIDF_BT_NIMBLE_O)))
+
+ifeq ($(CONFIG_BLUEDROID_ENABLED),y)
+# Find all bluedroid include directories
+ESPIDF_BT_BLUEDROID_INC = $(shell find $(ESPCOMP)/bt -type d -name "include")
+INC_ESPCOMP += $(addprefix -I,$(ESPIDF_BT_BLUEDROID_INC))
+INC_ESPCOMP += -I$(ESPCOMP)/bt/host/bluedroid/api/include/api
+INC_ESPCOMP += -I$(ESPCOMP)/bt/host/bluedroid/btc/include/btc
+INC_ESPCOMP += -I$(ESPCOMP)/bt/host/bluedroid/stack/include/stack
+INC_ESPCOMP += -I$(ESPCOMP)/bt/host/bluedroid/osi/include/osi
+INC_ESPCOMP += -I$(ESPCOMP)/bt/host/bluedroid/device/include/device
+INC_ESPCOMP += -I$(ESPCOMP)/bt/host/bluedroid/bta/include/bta
+
+# Find all source files for Bluedroid
+ESPIDF_BT_BLUEDROID_SRC = \
+	$(shell find $(ESPCOMP)/bt/common -name "*.c") \
+	$(shell find $(ESPCOMP)/bt/host/bluedroid -name "*.c")
+
+ESPIDF_BT_BLUEDROID_O = $(patsubst %.c,%.o,$(ESPIDF_BT_BLUEDROID_SRC))
+$(eval $(call gen_espidf_lib_rule,bt_bluedroid,$(ESPIDF_BT_BLUEDROID_O)))
+endif
 
 ifeq ($(ESPIDF_CURHASH),$(ESPIDF_SUPHASH_V4))
 $(eval $(call gen_espidf_lib_rule,esp_common,$(ESPIDF_ESP_COMMON_O)))
