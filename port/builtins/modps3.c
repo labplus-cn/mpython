@@ -184,13 +184,13 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_2(ps3_set_rumble_obj, ps3_set_rumble);
 
 STATIC const mp_rom_map_elem_t ps3_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_ps3) },
-    { MP_ROM_QSTR(MP_QSTR_init), MP_ROM_FROM_OBJ(&ps3_init_obj) },
-    { MP_ROM_QSTR(MP_QSTR_deinit), MP_ROM_FROM_OBJ(&ps3_deinit_obj) },
-    { MP_ROM_QSTR(MP_QSTR_is_connected), MP_ROM_FROM_OBJ(&ps3_is_connected_obj) },
-    { MP_ROM_QSTR(MP_QSTR_get_button), MP_ROM_FROM_OBJ(&ps3_get_button_obj) },
-    { MP_ROM_QSTR(MP_QSTR_get_analog), MP_ROM_FROM_OBJ(&ps3_get_analog_obj) },
-    { MP_ROM_QSTR(MP_QSTR_set_led), MP_ROM_FROM_OBJ(&ps3_set_led_obj) },
-    { MP_ROM_QSTR(MP_QSTR_set_rumble), MP_ROM_FROM_OBJ(&ps3_set_rumble_obj) },
+    { MP_ROM_QSTR(MP_QSTR_init), MP_ROM_PTR(&ps3_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_deinit), MP_ROM_PTR(&ps3_deinit_obj) },
+    { MP_ROM_QSTR(MP_QSTR_is_connected), MP_ROM_PTR(&ps3_is_connected_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_button), MP_ROM_PTR(&ps3_get_button_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_analog), MP_ROM_PTR(&ps3_get_analog_obj) },
+    { MP_ROM_QSTR(MP_QSTR_set_led), MP_ROM_PTR(&ps3_set_led_obj) },
+    { MP_ROM_QSTR(MP_QSTR_set_rumble), MP_ROM_PTR(&ps3_set_rumble_obj) },
 };
 STATIC MP_DEFINE_CONST_DICT(ps3_module_globals, ps3_module_globals_table);
 
