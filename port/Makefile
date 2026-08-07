@@ -803,7 +803,7 @@ INC_ESPCOMP += -I$(ESPCOMP)/bt/host/bluedroid/bta/include/bta
 # Find all source files for Bluedroid, excluding unsupported profiles
 ESPIDF_BT_BLUEDROID_SRC = \
 	$(shell find $(ESPCOMP)/bt/common -name "*.c") \
-	$(shell find $(ESPCOMP)/bt/host/bluedroid -name "*.c" ! -path "*/battery/*" ! -path "*/dis/*" ! -path "*/hf_ag/*")
+	$(shell find $(ESPCOMP)/bt/host/bluedroid -name "*.c" ! -path "*/battery/*" ! -path "*/dis/*" ! -path "*/hf_ag/*" ! -path "*/wechat_AirSync/*")
 
 ESPIDF_BT_BLUEDROID_O = $(patsubst %.c,%.o,$(ESPIDF_BT_BLUEDROID_SRC))
 $(eval $(call gen_espidf_lib_rule,bt_bluedroid,$(ESPIDF_BT_BLUEDROID_O)))
