@@ -640,6 +640,7 @@ ESPIDF_SPI_FLASH_O = $(patsubst %.c,%.o,$(wildcard $(ESPCOMP)/spi_flash/*.c))
 ESPIDF_ULP_O = $(patsubst %.c,%.o,$(wildcard $(ESPCOMP)/ulp/*.c))
 
 $(BUILD)/$(ESPCOMP)/lwip/%.o: CFLAGS += -Wno-address -Wno-unused-variable -Wno-unused-but-set-variable
+$(BUILD)/$(ESPCOMP)/bt/%.o: CFLAGS += -Wno-error
 ESPIDF_LWIP_O = $(patsubst %.c,%.o,\
 	$(wildcard $(ESPCOMP)/lwip/apps/dhcpserver/*.c) \
 	$(wildcard $(ESPCOMP)/lwip/lwip/src/api/*.c) \
