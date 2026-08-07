@@ -3,6 +3,17 @@
 
 #include "sdkconfig.h"
 
+// Map new ESP-IDF v4.x macros to legacy ones used by the PS3 library
+#if defined(CONFIG_BT_BLUEDROID_ENABLED) && !defined(CONFIG_BLUEDROID_ENABLED)
+#define CONFIG_BLUEDROID_ENABLED 1
+#endif
+#if defined(CONFIG_BT_CLASSIC_ENABLED) && !defined(CONFIG_CLASSIC_BT_ENABLED)
+#define CONFIG_CLASSIC_BT_ENABLED 1
+#endif
+#if defined(CONFIG_BTDM_CTRL_MODE_BTDM) && !defined(CONFIG_BTDM_CONTROLLER_MODE_BTDM)
+#define CONFIG_BTDM_CONTROLLER_MODE_BTDM 1
+#endif
+
 /** Check if the project is configured properly */
 #ifndef ARDUINO_ARCH_ESP32
 
