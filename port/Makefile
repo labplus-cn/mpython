@@ -802,6 +802,7 @@ INC_ESPCOMP += -I$(ESPCOMP)/bt/host/bluedroid/bta/include/bta
 
 # Find all source files for Bluedroid, excluding unsupported profiles
 ESPIDF_BT_BLUEDROID_SRC = \
+	$(wildcard $(ESPCOMP)/bt/controller/*.c) \
 	$(shell find $(ESPCOMP)/bt/common -name "*.c") \
 	$(shell find $(ESPCOMP)/bt/host/bluedroid -name "*.c" ! -path "*/battery/*" ! -path "*/dis/*" ! -path "*/hf_ag/*" ! -path "*/wechat_AirSync/*" ! -path "*/ble_button/*")
 
