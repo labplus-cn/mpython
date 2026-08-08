@@ -43,25 +43,33 @@ void ps3_spp_init()
     esp_err_t ret;
 
 #ifndef ARDUINO_ARCH_ESP32
-    esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
-    if ((ret = esp_bt_controller_init(&bt_cfg)) != ESP_OK) {
-        ESP_LOGE(PS3_TAG, "%s initialize controller failed: %s\n", __func__, esp_err_to_name(ret));
-        return;
+    if (esp_bt_controller_get_status() == ESP_BT_CONTROLLER_STATUS_IDLE) {
+        esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
+        if ((ret = esp_bt_controller_init(&bt_cfg)) != ESP_OK) {
+            ESP_LOGE(PS3_TAG, "%s initialize controller failed: %s\n", __func__, esp_err_to_name(ret));
+            return;
+        }
     }
 
-    if ((ret = esp_bt_controller_enable(BT_MODE)) != ESP_OK) {
-        ESP_LOGE(PS3_TAG, "%s enable controller failed: %s\n", __func__, esp_err_to_name(ret));
-        return;
+    if (esp_bt_controller_get_status() != ESP_BT_CONTROLLER_STATUS_ENABLED) {
+        if ((ret = esp_bt_controller_enable(BT_MODE)) != ESP_OK) {
+            ESP_LOGE(PS3_TAG, "%s enable controller failed: %s\n", __func__, esp_err_to_name(ret));
+            return;
+        }
     }
 
-    if ((ret = esp_bluedroid_init()) != ESP_OK) {
-        ESP_LOGE(PS3_TAG, "%s initialize bluedroid failed: %s\n", __func__, esp_err_to_name(ret));
-        return;
+    if (esp_bluedroid_get_status() == ESP_BLUEDROID_STATUS_UNINITIALIZED) {
+        if ((ret = esp_bluedroid_init()) != ESP_OK) {
+            ESP_LOGE(PS3_TAG, "%s initialize bluedroid failed: %s\n", __func__, esp_err_to_name(ret));
+            return;
+        }
     }
 
-    if ((ret = esp_bluedroid_enable()) != ESP_OK) {
-        ESP_LOGE(PS3_TAG, "%s enable bluedroid failed: %s\n", __func__, esp_err_to_name(ret));
-        return;
+    if (esp_bluedroid_get_status() != ESP_BLUEDROID_STATUS_ENABLED) {
+        if ((ret = esp_bluedroid_enable()) != ESP_OK) {
+            ESP_LOGE(PS3_TAG, "%s enable bluedroid failed: %s\n", __func__, esp_err_to_name(ret));
+            return;
+        }
     }
 #endif
 
