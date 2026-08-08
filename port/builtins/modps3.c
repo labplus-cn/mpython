@@ -43,8 +43,11 @@ STATIC mp_obj_t ps3_init(size_t n_args, const mp_obj_t *args) {
         }
     }
     if (esp_bt_controller_get_status() != ESP_BT_CONTROLLER_STATUS_ENABLED) {
-        // Enable in Dual Mode (BLE + Classic) so BLE continues to work
+        #if defined(CONFIG_BTDM_CTRL_MODE_BR_EDR_ONLY) || defined(CONFIG_BTDM_CONTROLLER_MODE_BR_EDR_ONLY)
+        if (esp_bt_controller_enable(ESP_BT_MODE_CLASSIC_BT) != ESP_OK) {
+        #else
         if (esp_bt_controller_enable(ESP_BT_MODE_BTDM) != ESP_OK) {
+        #endif
             mp_raise_msg(&mp_type_RuntimeError, MP_ERROR_TEXT("Bluetooth controller enable failed"));
         }
     }
