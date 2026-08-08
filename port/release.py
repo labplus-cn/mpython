@@ -3,20 +3,22 @@ import sys
 OFFSET_BOOTLOADER = 0x1000
 OFFSET_PARTITIONS = 0x8000
 OFFSET_APPLICATION = 0x10000
+OFFSET_VFS = 0x200000
 OFFSET_FONT = 0x400000
 
 files_in = [
     ('bootloader', OFFSET_BOOTLOADER, sys.argv[1]),
     ('partitions', OFFSET_PARTITIONS, sys.argv[2]),
     ('application', OFFSET_APPLICATION, sys.argv[3]),
-    ('font', OFFSET_FONT, sys.argv[4]),
+    ('vfs', OFFSET_VFS, sys.argv[4]),
+    ('font', OFFSET_FONT, sys.argv[5]),
 ]
-file_out = sys.argv[5]
+file_out = sys.argv[6]
 
 cur_offset = 0
 with open(file_out, 'wb') as fout:
     for name, offset, file_in in files_in:
-        assert offset >= cur_offset
+        assert offset >= cur_offset, "Error: Overlap detected for %s! offset=0x%x, cur_offset=0x%x" % (name, offset, cur_offset)
         fout.write(b'\xff' * (offset - cur_offset))
         cur_offset = offset
         with open(file_in, 'rb') as fin:
