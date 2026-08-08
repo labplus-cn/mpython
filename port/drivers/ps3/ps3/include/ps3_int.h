@@ -13,6 +13,9 @@
 #if defined(CONFIG_BTDM_CTRL_MODE_BTDM) && !defined(CONFIG_BTDM_CONTROLLER_MODE_BTDM)
 #define CONFIG_BTDM_CONTROLLER_MODE_BTDM 1
 #endif
+#if defined(CONFIG_BTDM_CTRL_MODE_BR_EDR_ONLY) && !defined(CONFIG_BTDM_CONTROLLER_MODE_BR_EDR_ONLY)
+#define CONFIG_BTDM_CONTROLLER_MODE_BR_EDR_ONLY 1
+#endif
 
 /** Check if the project is configured properly */
 #ifndef ARDUINO_ARCH_ESP32
