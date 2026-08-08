@@ -98,19 +98,21 @@ STATIC mp_obj_t ps3_get_button(mp_obj_t button_obj) {
     else if (strcmp(name, "l3") == 0) pressed = current_ps3_data.button.l3;
     else if (strcmp(name, "r3") == 0) pressed = current_ps3_data.button.r3;
     else if (strcmp(name, "start") == 0) pressed = current_ps3_data.button.start;
-    else if (strcmp(name, "up") == 0) pressed = current_ps3_data.button.up;
-    else if (strcmp(name, "right") == 0) pressed = current_ps3_data.button.right;
-    else if (strcmp(name, "down") == 0) pressed = current_ps3_data.button.down;
-    else if (strcmp(name, "left") == 0) pressed = current_ps3_data.button.left;
-    else if (strcmp(name, "l2") == 0) pressed = current_ps3_data.button.l2;
-    else if (strcmp(name, "r2") == 0) pressed = current_ps3_data.button.r2;
-    else if (strcmp(name, "l1") == 0) pressed = current_ps3_data.button.l1;
-    else if (strcmp(name, "r1") == 0) pressed = current_ps3_data.button.r1;
-    else if (strcmp(name, "triangle") == 0) pressed = current_ps3_data.button.triangle;
-    else if (strcmp(name, "circle") == 0) pressed = current_ps3_data.button.circle;
-    else if (strcmp(name, "cross") == 0) pressed = current_ps3_data.button.cross;
-    else if (strcmp(name, "square") == 0) pressed = current_ps3_data.button.square;
     else if (strcmp(name, "ps") == 0) pressed = current_ps3_data.button.ps;
+    
+    // Pressure sensitive buttons - check both digital and analog values for clone controller compatibility
+    else if (strcmp(name, "up") == 0) pressed = current_ps3_data.button.up || (current_ps3_data.analog.button.up > 10);
+    else if (strcmp(name, "right") == 0) pressed = current_ps3_data.button.right || (current_ps3_data.analog.button.right > 10);
+    else if (strcmp(name, "down") == 0) pressed = current_ps3_data.button.down || (current_ps3_data.analog.button.down > 10);
+    else if (strcmp(name, "left") == 0) pressed = current_ps3_data.button.left || (current_ps3_data.analog.button.left > 10);
+    else if (strcmp(name, "l2") == 0) pressed = current_ps3_data.button.l2 || (current_ps3_data.analog.button.l2 > 10);
+    else if (strcmp(name, "r2") == 0) pressed = current_ps3_data.button.r2 || (current_ps3_data.analog.button.r2 > 10);
+    else if (strcmp(name, "l1") == 0) pressed = current_ps3_data.button.l1 || (current_ps3_data.analog.button.l1 > 10);
+    else if (strcmp(name, "r1") == 0) pressed = current_ps3_data.button.r1 || (current_ps3_data.analog.button.r1 > 10);
+    else if (strcmp(name, "triangle") == 0) pressed = current_ps3_data.button.triangle || (current_ps3_data.analog.button.triangle > 10);
+    else if (strcmp(name, "circle") == 0) pressed = current_ps3_data.button.circle || (current_ps3_data.analog.button.circle > 10);
+    else if (strcmp(name, "cross") == 0) pressed = current_ps3_data.button.cross || (current_ps3_data.analog.button.cross > 10);
+    else if (strcmp(name, "square") == 0) pressed = current_ps3_data.button.square || (current_ps3_data.analog.button.square > 10);
     else {
         mp_raise_ValueError(MP_ERROR_TEXT("unknown button name"));
     }
