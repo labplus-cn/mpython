@@ -157,9 +157,7 @@ void mp_task(void *pvParameter) {
             // No SPIRAM, fallback to normal allocation
             mp_task_heap_size = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
             #if CONFIG_BLUEDROID_ENABLED
-            if (mp_task_heap_size > 48 * 1024) {
-                mp_task_heap_size -= 32 * 1024;
-            }
+            mp_task_heap_size = 64 * 1024;
             #endif
             mp_task_heap = malloc(mp_task_heap_size);
             break;
@@ -168,9 +166,7 @@ void mp_task(void *pvParameter) {
     // Allocate the uPy heap using malloc and get the largest available region
     size_t mp_task_heap_size = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
     #if CONFIG_BLUEDROID_ENABLED
-    if (mp_task_heap_size > 48 * 1024) {
-        mp_task_heap_size -= 32 * 1024;
-    }
+    mp_task_heap_size = 64 * 1024;
     #endif
     void *mp_task_heap = malloc(mp_task_heap_size);
     #endif
