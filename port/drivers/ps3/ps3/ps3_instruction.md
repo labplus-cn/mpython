@@ -38,7 +38,7 @@ import ps3
 
 ### 1. `ps3.init([mac_address_str])`
 * **功能**：初始化蓝牙控制器与 Bluedroid 协议栈并开启 PS3 监听。
-* **参数**：可选传入 MAC 地址字符串（如 `"01:02:03:04:05:06"`）。如果不传入，则默认使用当前芯片内置的 MAC。
+* **参数**：可选传入 MAC 地址字符串（如 `"20:00:00:01:01:66"`）。如果不传入，则默认使用当前芯片内置的 MAC。
 * **返回**：`None`
 
 ### 2. `ps3.deinit()`
@@ -84,3 +84,76 @@ import ps3
 我们在 [`G:\labplus-project\mpython-files\mpython\ps3_example.py`](file:///G:/labplus-project/mpython-files/mpython/ps3_example.py) 中存放了掌控板的完整图形屏交互例子。
 
 您可以将该 `ps3_example.py` 烧录并作为 `main.py` 运行，来测试手柄按键与摇杆数据的获取效果。
+
+---
+
+## 四、 Mind+ 图形化积木与 MicroPython API 对应参考
+
+为了方便在 Mind+ 中进行 Python 代码掌控板编程，以下是图形化积木与 `ps3` 驱动库 API 的直接对应关系表：
+
+### 1. 手柄初始化积木
+* **图形化积木**：`初始化PS3手柄，设置蓝牙配对码(冒号为英文状态): ["20:00:00:01:01:66"]`
+* **Python API**：
+  ```python
+  ps3.init("20:00:00:01:01:66")
+  ```
+
+### 2. 获取 MAC 地址积木
+* **图形化积木**：`获取ESP32主板的Mac地址`
+* **Python API**：
+  ```python
+  import machine
+  import ubinascii
+  # 获取板子的 6 字节 MAC，并转换为 16 进制大写的 MAC 字符串
+  mac_str = ":".join(["{:02X}".format(b) for b in machine.unique_id()])
+  ```
+
+### 3. 连接状态判断积木
+* **图形化积木**：`ESP32是否连上PS3手柄?` (返回 `True`/`False`)
+* **Python API**：
+  ```python
+  ps3.is_connected()
+  ```
+
+### 4. 按键状态判断积木
+* **图形化积木**：`PS3手柄按键 [X键] 状态 [按下/放开]` (返回 `True`/`False`)
+* **Python API**：
+  * 检测**按下**（Pressed）：
+    ```python
+    ps3.get_button("cross")
+    ```
+  * 检测**放开**（Released）：
+    ```python
+    not ps3.get_button("cross")
+    ```
+  * *附：按键名称参数对应表*
+    * **X键** -> `"cross"` | **O键** -> `"circle"` | **三角键** -> `"triangle"` | **方块键** -> `"square"`
+    * **上键** -> `"up"` | **下键** -> `"down"` | **左键** -> `"left"` | **右键** -> `"right"`
+    * **L1键** -> `"l1"` | **R1键** -> `"r1"` | **L2键** -> `"l2"` | **R2键** -> `"r2"`
+    * **L3键** -> `"l3"` (左摇杆下压) | **R3键** -> `"r3"` (右摇杆下压)
+    * **Select键** -> `"select"` | **Start键** -> `"start"` | **PS键** -> `"ps"`
+
+### 5. 获取按键模拟压感值积木
+* **图形化积木**：`获取PS3手柄按键 [X键] 的值` (返回数字 `0 ~ 255`)
+* **Python API**：
+  ```python
+  ps3.get_analog("cross")
+  ```
+
+### 6. 摇杆数值读取积木
+* **图形化积木**：`PS3手柄摇杆 [左侧X值]` (返回数字 `-128 ~ 127`)
+* **Python API**：
+  * **左侧X值** (Left Stick X) -> `ps3.get_analog("lx")`
+  * **左侧Y值** (Left Stick Y) -> `ps3.get_analog("ly")`
+  * **右侧X值** (Right Stick X) -> `ps3.get_analog("rx")`
+  * **右侧Y值** (Right Stick Y) -> `ps3.get_analog("ry")`
+
+### 7. 手柄震动与指示灯积木 (扩展)
+* **设置手柄 LED 灯**：`设置PS3手柄LED为 [LED 1]` (参数支持 `1` 到 `4`)
+  ```python
+  ps3.set_led(1)
+  ```
+* **控制手柄震动**：`设置PS3手柄震动强度为 [60]%, 持续 [500] 毫秒` (强度范围 `0-100`，持续时间单位为 ms)
+  ```python
+  ps3.set_rumble(60, 500)
+  ```
