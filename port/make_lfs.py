@@ -21,8 +21,6 @@ def make_lfs(source_dir, output_bin, total_size):
             cmd = [
                 mkfatfs_bin,
                 "-c", source_dir if os.path.exists(source_dir) else ".",
-                "-p", str(page_size),
-                "-b", str(block_size),
                 "-s", str(total_size),
                 "-t", "littlefs",
                 output_bin
