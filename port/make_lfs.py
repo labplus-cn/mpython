@@ -7,7 +7,7 @@ def make_lfs(source_dir, output_bin, total_size):
     block_size = 4096
     page_size = 256
     
-    # 1. 尝试使用 littlefs-python 包 (如果用户环境已通过 pip install littlefs-python 安装)
+    # 1. 尝试使用 littlefs-python 包
     try:
         from littlefs import LittleFS
         print("[make_lfs] 正在使用 Python littlefs 包生成 LittleFS v2 映像...")
@@ -40,9 +40,36 @@ def make_lfs(source_dir, output_bin, total_size):
     except ImportError:
         pass
 
+    # 2. 尝试调用系统的 mklittlefs 命令行工具
+    try:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        mklittlefs_bin = os.path.join(script_dir, "tools", "mklittlefs", "mklittlefs")
+        if not os.path.exists(mklittlefs_bin):
+            mklittlefs_bin = "mklittlefs"  # 找不到则降级回系统 PATH 中的工具
+            print("[make_lfs] 未检测到内置工具，尝试调用系统 PATH 中的 mklittlefs...")
+        else:
+            print("[make_lfs] 正在使用内置工具: %s..." % mklittlefs_bin)
+            
+        cmd = [
+            mklittlefs_bin,
+            "-c", source_dir if os.path.exists(source_dir) else ".",
+            "-p", str(page_size),
+            "-b", str(block_size),
+            "-s", str(total_size),
+            output_bin
+        ]
+        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if result.returncode == 0:
+            print("[make_lfs] 成功使用 %s 生成映像: %s" % (os.path.basename(mklittlefs_bin), output_bin))
+            return True
+        else:
+            print("[make_lfs] %s 报错: %s" % (os.path.basename(mklittlefs_bin), result.stderr.decode()))
+    except FileNotFoundError:
+        print("[make_lfs] 找不到 mklittlefs 工具。")
+
     print("\n" + "="*60)
     print(" [错误] 无法生成 VFS 映像！")
-    print(" Python 环境中缺少 littlefs-python 库，或者未安装在当前使用的 Python 中。")
+    print(" Python 环境中缺少 littlefs-python 库，且系统未安装 mklittlefs。")
     print(" 请运行以下命令将其安装到当前执行 make 的 Python 环境中：")
     print("     python -m pip install littlefs-python")
     print("="*60 + "\n")
