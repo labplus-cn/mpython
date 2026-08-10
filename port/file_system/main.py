@@ -11,7 +11,7 @@ except Exception:
 
 # 获取文件系统打包日期
 try:
-    with open(".build_date", "r") as f:
+    with open("build_date.txt", "r") as f:
         fs_date = f.read().strip()
 except Exception:
     fs_date = "Unknown"
