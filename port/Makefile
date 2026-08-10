@@ -918,7 +918,7 @@ VFS_DIR ?= file_system
 $(BUILD)/vfs.bin:
 	$(ECHO) "Create LFS VFS image from $(VFS_DIR)"
 	$(Q)$(PYTHON) -c "import os; os.makedirs('$(VFS_DIR)', exist_ok=True)"
-	$(Q)$(PYTHON) make_lfs.py $(VFS_DIR) $@ 2097152
+	$(Q)$(PYTHON) make_lfs.py $(VFS_DIR) $@ 1572864
 
 $(BUILD)/$(FIRMWARE_NAME).bin: $(BUILD)/bootloader.bin $(BUILD)/partitions.bin $(BUILD)/application.bin $(BUILD)/vfs.bin Noto_Sans_CJK_SC_Light16.bin
 	$(ECHO) "Create $@, with address from 0"
