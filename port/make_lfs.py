@@ -42,9 +42,16 @@ def make_lfs(source_dir, output_bin, total_size):
 
     # 2. 尝试调用系统的 mklittlefs 命令行工具
     try:
-        print("[make_lfs] 未检测到 littlefs 库，尝试调用 mklittlefs 系统命令行工具...")
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        mklittlefs_bin = os.path.join(script_dir, "tools", "mklittlefs", "mklittlefs")
+        if not os.path.exists(mklittlefs_bin):
+            mklittlefs_bin = "mklittlefs"  # 找不到则降级回系统 PATH 中的工具
+            print("[make_lfs] 未检测到内置工具，尝试调用系统 PATH 中的 mklittlefs...")
+        else:
+            print("[make_lfs] 正在使用内置工具: %s..." % mklittlefs_bin)
+            
         cmd = [
-            "mklittlefs",
+            mklittlefs_bin,
             "-c", source_dir if os.path.exists(source_dir) else ".", # 若源目录不存在则打包当前空文件夹
             "-p", str(page_size),
             "-b", str(block_size),
@@ -53,10 +60,10 @@ def make_lfs(source_dir, output_bin, total_size):
         ]
         result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.returncode == 0:
-            print("[make_lfs] 成功使用 mklittlefs 生成映像: %s" % output_bin)
+            print("[make_lfs] 成功使用 %s 生成映像: %s" % (os.path.basename(mklittlefs_bin), output_bin))
             return True
         else:
-            print("[make_lfs] mklittlefs 报错:", result.stderr.decode())
+            print("[make_lfs] %s 报错: %s" % (os.path.basename(mklittlefs_bin), result.stderr.decode()))
     except FileNotFoundError:
         print("[make_lfs] 找不到 mklittlefs 工具。")
         
