@@ -13,7 +13,7 @@ def make_lfs(source_dir, output_bin, total_size):
         print("[make_lfs] 正在使用 Python littlefs 包生成 LittleFS v2 映像...")
         
         # 创建内存中的 LittleFS 对象
-        lfs = LittleFS(block_size=block_size, block_count=total_size // block_size, page_size=page_size)
+        lfs = LittleFS(block_size=block_size, block_count=total_size // block_size, prog_size=page_size, read_size=page_size)
         
         # 递归写入文件
         def add_dir(path, lfs_path):
