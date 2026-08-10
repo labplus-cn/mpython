@@ -8,7 +8,7 @@ def make_lfs(source_dir, output_bin, total_size):
     page_size = 256
     
     # 写入临时的编译日期文件到打包目录中
-    build_date_path = os.path.join(source_dir, ".build_date")
+    build_date_path = os.path.join(source_dir, "build_date.txt")
     try:
         import datetime
         build_date = datetime.datetime.now().strftime("%Y-%m-%d")
