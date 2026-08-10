@@ -27,11 +27,17 @@ def make_lfs(source_dir, output_bin, total_size):
                 output_bin
             ]
             result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            if result.returncode == 0:
-                print("[make_lfs] 成功使用 mkfatfs 生成映像: %s" % output_bin)
+            
+            # 部分版本的 mkfatfs 在成功生成映像后可能会返回非 0 状态码
+            # 因此我们以“输出文件是否存在且大小正确”作为最终的成功判定标准
+            if os.path.exists(output_bin) and os.path.getsize(output_bin) == total_size:
+                if result.returncode != 0:
+                    print("[make_lfs] mkfatfs 成功生成映像 (警告: 返回码为 %d): %s" % (result.returncode, output_bin))
+                else:
+                    print("[make_lfs] 成功使用 mkfatfs 生成映像: %s" % output_bin)
                 return True
             else:
-                print("[make_lfs] mkfatfs 报错返回码: %d" % result.returncode)
+                print("[make_lfs] mkfatfs 执行失败！返回码: %d" % result.returncode)
                 print("[make_lfs] mkfatfs stdout: %s" % result.stdout.decode())
                 print("[make_lfs] mkfatfs stderr: %s" % result.stderr.decode())
         else:
@@ -39,42 +45,9 @@ def make_lfs(source_dir, output_bin, total_size):
     except Exception as e:
         print("[make_lfs] 运行 mkfatfs 失败:", e)
 
-    # 2. 如果 mkfatfs 失败，尝试使用 littlefs-python 包
-    try:
-        from littlefs import LittleFS
-        print("[make_lfs] 正在使用 Python littlefs 包生成 LittleFS 映像...")
-        
-        # 创建内存中的 LittleFS 对象
-        lfs = LittleFS(block_size=block_size, block_count=total_size // block_size, prog_size=page_size, read_size=page_size)
-        
-        def add_dir(path, lfs_path):
-            if lfs_path != "/":
-                lfs.mkdir(lfs_path)
-            for entry in os.scandir(path):
-                rel_path = os.path.join(lfs_path, entry.name).replace("\\", "/")
-                if entry.is_dir():
-                    add_dir(entry.path, rel_path)
-                elif entry.is_file():
-                    with open(entry.path, 'rb') as f:
-                        data = f.read()
-                    with lfs.open(rel_path, 'wb') as lf:
-                        lf.write(data)
-                        
-        if os.path.exists(source_dir):
-            add_dir(source_dir, "/")
-        
-        with open(output_bin, 'wb') as f:
-            f.write(lfs.context.buffer)
-        print("[make_lfs] 成功生成 LFS 映像: %s" % output_bin)
-        return True
-    except ImportError:
-        pass
-
     print("\n" + "="*60)
-    print(" [错误] 无法生成 VFS 映像！")
-    print(" 未找到定制的 mkfatfs 工具，且 Python 环境缺少 littlefs-python。")
-    print(" 请运行以下命令将其安装到当前执行 make 的 Python 环境中：")
-    print("     python -m pip install littlefs-python")
+    print(" [错误] 无法使用 mkfatfs 生成 VFS 映像！")
+    print(" 请检查 tools/mkfatfs 是否存在，或者检查执行日志。")
     print("="*60 + "\n")
     sys.exit(1)
 
