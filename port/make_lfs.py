@@ -21,8 +21,9 @@ def make_lfs(source_dir, output_bin, total_size):
             cmd = [
                 mkfatfs_bin,
                 "-c", source_dir if os.path.exists(source_dir) else ".",
-                "-s", str(total_size),
+                "-s", hex(total_size),
                 "-t", "littlefs",
+                "-d", "5",
                 output_bin
             ]
             result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -30,7 +31,9 @@ def make_lfs(source_dir, output_bin, total_size):
                 print("[make_lfs] 成功使用 mkfatfs 生成映像: %s" % output_bin)
                 return True
             else:
-                print("[make_lfs] mkfatfs 报错: %s" % result.stderr.decode())
+                print("[make_lfs] mkfatfs 报错返回码: %d" % result.returncode)
+                print("[make_lfs] mkfatfs stdout: %s" % result.stdout.decode())
+                print("[make_lfs] mkfatfs stderr: %s" % result.stderr.decode())
         else:
             print("[make_lfs] 未找到 tools/mkfatfs 工具。")
     except Exception as e:
