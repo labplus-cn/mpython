@@ -7,70 +7,48 @@ def make_lfs(source_dir, output_bin, total_size):
     block_size = 4096
     page_size = 256
     
-    # 1. 尝试使用 littlefs-python 包 (如果用户环境已通过 pip install littlefs-python 安装)
-    try:
-        from littlefs import LittleFS
-        print("[make_lfs] 正在使用 Python littlefs 包生成 LittleFS v2 映像...")
-        
-        # 创建内存中的 LittleFS 对象
-        lfs = LittleFS(block_size=block_size, block_count=total_size // block_size, page_size=page_size)
-        
-        # 递归写入文件
-        def add_dir(path, lfs_path):
-            if lfs_path != "/":
-                lfs.mkdir(lfs_path)
-            for entry in os.scandir(path):
-                rel_path = os.path.join(lfs_path, entry.name).replace("\\", "/")
-                if entry.is_dir():
-                    add_dir(entry.path, rel_path)
-                elif entry.is_file():
-                    with open(entry.path, 'rb') as f:
-                        data = f.read()
-                    with lfs.open(rel_path, 'wb') as lf:
-                        lf.write(data)
-                        
-        if os.path.exists(source_dir):
-            add_dir(source_dir, "/")
-        
-        # 写入生成的二进制文件
-        with open(output_bin, 'wb') as f:
-            f.write(lfs.context.buffer)
-        print("[make_lfs] 成功生成 LFS 映像: %s" % output_bin)
-        return True
-    except ImportError:
-        pass
-
-    # 2. 尝试调用系统的 mklittlefs 命令行工具
+    # 1. 首先尝试调用定制版 mkfatfs 命令行工具 (支持 -t littlefs)
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        mklittlefs_bin = os.path.join(script_dir, "tools", "mklittlefs", "mklittlefs")
-        if not os.path.exists(mklittlefs_bin):
-            mklittlefs_bin = "mklittlefs"  # 找不到则降级回系统 PATH 中的工具
-            print("[make_lfs] 未检测到内置工具，尝试调用系统 PATH 中的 mklittlefs...")
-        else:
-            print("[make_lfs] 正在使用内置工具: %s..." % mklittlefs_bin)
-            
-        cmd = [
-            mklittlefs_bin,
-            "-c", source_dir if os.path.exists(source_dir) else ".", # 若源目录不存在则打包当前空文件夹
-            "-p", str(page_size),
-            "-b", str(block_size),
-            "-s", str(total_size),
-            output_bin
-        ]
-        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if result.returncode == 0:
-            print("[make_lfs] 成功使用 %s 生成映像: %s" % (os.path.basename(mklittlefs_bin), output_bin))
-            return True
-        else:
-            print("[make_lfs] %s 报错: %s" % (os.path.basename(mklittlefs_bin), result.stderr.decode()))
-    except FileNotFoundError:
-        print("[make_lfs] 找不到 mklittlefs 工具。")
+        mkfatfs_bin = os.path.join(script_dir, "tools", "mkfatfs")
         
-    print("\n[错误] 无法生成 VFS 映像！")
-    print("请安装以下任意一种工具以继续编译：")
-    print("1. 安装 Python 包（推荐）：pip install littlefs-python")
-    print("2. 安装系统工具：下载 mklittlefs 二进制文件并加入 PATH 环境变量。")
+        # 兼容 Windows 系统的 .exe
+        if not os.path.exists(mkfatfs_bin) and os.path.exists(mkfatfs_bin + ".exe"):
+            mkfatfs_bin += ".exe"
+
+        if os.path.exists(mkfatfs_bin):
+            print("[make_lfs] 正在使用定制工具: %s..." % mkfatfs_bin)
+            cmd = [
+                mkfatfs_bin,
+                "-c", source_dir if os.path.exists(source_dir) else ".",
+                "-s", hex(total_size),
+                "-t", "littlefs",
+                "-d", "5",
+                output_bin
+            ]
+            result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            
+            # 部分版本的 mkfatfs 在成功生成映像后可能会返回非 0 状态码
+            # 因此我们以“输出文件是否存在且大小正确”作为最终的成功判定标准
+            if os.path.exists(output_bin) and os.path.getsize(output_bin) == total_size:
+                if result.returncode != 0:
+                    print("[make_lfs] mkfatfs 成功生成映像 (警告: 返回码为 %d): %s" % (result.returncode, output_bin))
+                else:
+                    print("[make_lfs] 成功使用 mkfatfs 生成映像: %s" % output_bin)
+                return True
+            else:
+                print("[make_lfs] mkfatfs 执行失败！返回码: %d" % result.returncode)
+                print("[make_lfs] mkfatfs stdout: %s" % result.stdout.decode())
+                print("[make_lfs] mkfatfs stderr: %s" % result.stderr.decode())
+        else:
+            print("[make_lfs] 未找到 tools/mkfatfs 工具。")
+    except Exception as e:
+        print("[make_lfs] 运行 mkfatfs 失败:", e)
+
+    print("\n" + "="*60)
+    print(" [错误] 无法使用 mkfatfs 生成 VFS 映像！")
+    print(" 请检查 tools/mkfatfs 是否存在，或者检查执行日志。")
+    print("="*60 + "\n")
     sys.exit(1)
 
 if __name__ == "__main__":
