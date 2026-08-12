@@ -22,6 +22,7 @@
 
 from .peripheral import Peripheral
 from .centeral import Centeral
+from .codexpad import CodexPad
 from .uart import BLEUART
 from .hid import HID
 
