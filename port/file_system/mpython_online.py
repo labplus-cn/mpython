@@ -263,7 +263,7 @@ def del_gesture():
     del _i2c['ig']
     _gesture = None
 
-ext = ADC(Pin(34))
+# ext = ADC(Pin(34))
 
 def timer11_tick(_):
     global _is_shaked, _is_thrown, _last_x, _last_y, _last_z, _count_shaked, _count_thrown
@@ -367,7 +367,7 @@ def timer12_tick(_):
     dict = {}
     dict["l"] = light.read()
     dict["s"] = sound.read()
-    dict["e"] = ext.read()
+    # dict["e"] = ext.read()
     dict["x"] = accelerometer.get_x()
     dict["y"] = accelerometer.get_y()
     dict["z"] = accelerometer.get_z()

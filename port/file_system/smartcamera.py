@@ -18,11 +18,11 @@ class SmartCamera:
         # 等待K210复位完成
         time.sleep(3)
 
-        # self.repl.enter_raw_repl(5, True)
-        try:
-            self.repl.enter_raw_repl(5, True)
-        except:
-            raise OSError(uerrno.ENODEV)
+        self.repl.enter_raw_repl(5, True)
+        # try:
+        #     self.repl.enter_raw_repl(5, True)
+        # except:
+        #     raise OSError(uerrno.ENODEV)
 
         # 主绘图对象
         # self.image = Image(self.repl, ref='img')
