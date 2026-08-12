@@ -58,7 +58,7 @@ def main():
     contains(init, "from .codexpad import CodexPad", "application/__init__.py")
     for needle in (
         "from mpython_ble.application import CodexPad",
-        "pad.connect()",
+        "pad.connect(",
         "pad.poll()",
         "BUTTON_START | BUTTON_CROSS_A",
     ):
