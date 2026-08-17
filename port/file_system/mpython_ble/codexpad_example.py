@@ -1,7 +1,8 @@
 """CodexPad C10/S10 example for the ESP32 掌控板 1.0.
 
-For several controllers, hold the same button combination on the target while
-the scan runs and replace ``connect`` with ``scan_and_connect`` below.
+Set ``CODEXPAD_MAC`` to a human-readable BLE address to select one controller.
+If it is empty, the example connects to the strongest CodexPad advertisement;
+for several controllers without a known address, use the button-mask fallback.
 """
 
 import time
@@ -13,11 +14,18 @@ from mpython_ble.application.codexpad import (
 )
 
 
+CODEXPAD_MAC = ""
+
+
 def main():
     pad = CodexPad(debug=False)
 
-    # Normal mode selects the strongest matching CodexPad advertisement.
-    if not pad.connect(timeout_ms=20000, scan_ms=5000):
+    if CODEXPAD_MAC:
+        connected = pad.connect(CODEXPAD_MAC, timeout_ms=20000, scan_ms=5000)
+    else:
+        # Normal mode selects the strongest matching CodexPad advertisement.
+        connected = pad.connect(timeout_ms=20000, scan_ms=5000)
+    if not connected:
         raise RuntimeError(pad.last_error)
 
     # To select a particular controller instead, use:

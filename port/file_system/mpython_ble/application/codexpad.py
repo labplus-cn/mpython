@@ -90,6 +90,34 @@ def _advertised_state(payload):
     return struct.unpack_from("<I", data, 11)[0], data[8], data[15]
 
 
+def _parse_address(address):
+    """Normalize a human-readable BLE address to the scan-result bytes."""
+    if isinstance(address, str):
+        text = address.strip().replace("-", ":")
+        parts = text.split(":") if ":" in text else [
+            text[index:index + 2] for index in range(0, len(text), 2)
+        ]
+        if len(parts) != 6 or any(len(part) != 2 for part in parts):
+            raise ValueError("CodexPad MAC must contain six hexadecimal octets")
+        try:
+            octets = bytearray(6)
+            for index, part in enumerate(parts):
+                octets[index] = int(part, 16)
+            return bytes(octets)
+        except ValueError:
+            raise ValueError("CodexPad MAC must contain hexadecimal octets")
+    if isinstance(address, (bytes, bytearray)):
+        if len(address) != 6:
+            raise ValueError("CodexPad MAC must contain six bytes")
+        return bytes(address)
+    raise TypeError("CodexPad MAC must be a string or six-byte value")
+
+
+def _format_address(address):
+    """Format scan-result bytes in the same order accepted by connect()."""
+    return ":".join("{:02X}".format(value) for value in bytes(address))
+
+
 class CodexPad(object):
     """Input driver shared by CodexPad C10 and S10."""
 
@@ -103,12 +131,14 @@ class CodexPad(object):
         self.debug = debug
         self.connected_handle = None
         self.device_name = None
+        self.device_address = None
         self.model = None
         self.last_error = None
         self.last_callback_error = None
         self._state = "idle"
         self._candidate = None
         self._scan_entries = {}
+        self._target_address = None
         self._button_mask = None
         self._service_ranges = {}
         self._service_queue = []
@@ -139,15 +169,33 @@ class CodexPad(object):
         """Set ``callback(button_states, axis_values)`` for input updates."""
         self._input_callback = callback
 
-    def connect(self, timeout_ms=20000, scan_ms=5000):
-        return self._connect_with_mask(None, timeout_ms, scan_ms)
+    def connect(self, mac=None, timeout_ms=20000, scan_ms=5000):
+        """Connect to CodexPad, optionally filtering by its BLE MAC address.
+
+        ``mac`` accepts the Mind+ style ``AA:BB:CC:DD:EE:FF`` string.  The
+        old positional ``connect(timeout_ms, scan_ms)`` form remains valid.
+        """
+        if isinstance(mac, int):
+            if timeout_ms != 20000:
+                scan_ms, timeout_ms = timeout_ms, mac
+            else:
+                timeout_ms = mac
+            mac = None
+        elif isinstance(mac, str):
+            mac = mac.strip()
+        target_address = _parse_address(mac) if mac else None
+        return self._connect_with_mask(None, timeout_ms, scan_ms, target_address)
+
+    def connect_by_mac(self, mac, timeout_ms=20000, scan_ms=5000):
+        """Mind+ compatible alias for connecting to one MAC address."""
+        return self.connect(mac, timeout_ms, scan_ms)
 
     def scan_and_connect(self, button_mask, timeout_ms=20000, scan_ms=5000):
         if button_mask == BUTTON_HOME:
             raise ValueError("BUTTON_HOME alone cannot be used as a connection mask")
-        return self._connect_with_mask(button_mask, timeout_ms, scan_ms)
+        return self._connect_with_mask(button_mask, timeout_ms, scan_ms, None)
 
-    def _connect_with_mask(self, button_mask, timeout_ms, scan_ms):
+    def _connect_with_mask(self, button_mask, timeout_ms, scan_ms, target_address):
         if self._ready:
             return True
         if self._state != "idle":
@@ -156,6 +204,7 @@ class CodexPad(object):
         self._auto_reconnect = True
         self.last_error = None
         self._button_mask = button_mask
+        self._target_address = target_address
         self._start_scan(scan_ms)
         deadline = time.ticks_add(time.ticks_ms(), timeout_ms)
         while time.ticks_diff(deadline, time.ticks_ms()) > 0:
@@ -241,6 +290,7 @@ class CodexPad(object):
         self._candidate = None
         self._scan_entries = {}
         self.device_name = None
+        self.device_address = None
         self.model = None
         self._service_ranges = {}
         self._service_queue = []
@@ -413,6 +463,8 @@ class CodexPad(object):
                 entry[2], entry[3], entry[4] = advertised
             if entry[1] is None or not entry[1].startswith(self.name_prefix):
                 return
+            if self._target_address is not None and addr != self._target_address:
+                return
             if self._button_mask is not None and entry[2] != self._button_mask:
                 return
             if self._button_mask is not None and entry[3] is not None:
@@ -433,6 +485,7 @@ class CodexPad(object):
                 return
             addr_type, addr, name, rssi = self._candidate
             self.device_name = name.decode("utf-8", "ignore")
+            self.device_address = _format_address(addr)
             self.model = self.device_name
             self._state = "connecting"
             print("CodexPad: found", self.device_name, "RSSI", rssi)
