@@ -125,7 +125,8 @@ class CodexPad(object):
         if isinstance(name_prefix, str):
             name_prefix = name_prefix.encode()
         self.ble = ble if ble is not None else bluetooth.BLE()
-        self.ble.active(True)
+        if not self.ble.active():
+            self.ble.active(True)
         self.ble.irq(self._irq)
         self.name_prefix = bytes(name_prefix)
         self.debug = debug
